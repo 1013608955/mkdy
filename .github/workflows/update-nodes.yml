@@ -2,7 +2,7 @@ name: 极致免费节点更新（三来源 + 域名去重 + Reality/TLS优先 + 
 
 on:
   schedule:
-    - cron: '0 */3 * * *'  # 每3小时一次
+    - cron: '0 */3 * * *'
   workflow_dispatch:
 
 jobs:
@@ -20,126 +20,13 @@ jobs:
       - name: 安装 requests
         run: pip install requests
 
-      - name: 三来源拉取 + 加强去重 + Reality/TLS优先 + TCP测试 + Base64
+      - name: 运行更新脚本
+        run: python update_nodes.py
+
+      - name: Commit 并推送
         run: |
-          python << 'EOF'
-import requests
-import re
-import socket
-import time
-import base64
-import json
-
-sources = [
-    "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",
-    "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt",
-    "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/all_extracted_configs.txt",
-]
-
-all_lines = set()
-for url in sources:
-    try:
-        resp = requests.get(url, timeout=40)
-        resp.raise_for_status()
-        count = 0
-        for line in resp.text.split('\n'):
-            l = line.strip()
-            if l and not l.startswith('#'):
-                all_lines.add(l)
-                count += 1
-        print(f"拉取成功 {url}，新增 {count} 条")
-    except Exception as e:
-        print(f"拉取失败 {url}: {e}")
-
-unique_lines = list(all_lines)
-print(f"全局字符串去重后总节点：{len(unique_lines)} 条")
-
-# 分离 Reality/TLS 节点（优先保留）
-priority_lines = []
-normal_lines = []
-for line in unique_lines:
-    lower_line = line.lower()
-    if 'reality' in lower_line or 'tls' in lower_line:
-        priority_lines.append(line)
-    else:
-        normal_lines.append(line)
-
-processing_order = priority_lines + normal_lines
-print(f"优先（Reality/TLS）节点：{len(priority_lines)} 条，普通节点：{len(normal_lines)} 条")
-
-valid_lines = []
-seen_ips = set()
-seen_domains = set()
-
-def extract_ip_domain_port(line):
-    ip = domain = None
-    port = 443
-
-    port_match = re.search(r':(\d+)', line)
-    if port_match:
-        port = int(port_match.group(1))
-
-    if line.startswith('vmess://'):
-        try:
-            decoded = base64.b64decode(line[8:] + '==').decode('utf-8', errors='ignore')
-            cfg = json.loads(decoded)
-            ip = cfg.get('add')
-            domain = cfg.get('host') or cfg.get('sni')
-            port = cfg.get('port', 443)
-        except:
-            pass
-
-    if not ip:
-        ip_match = re.search(r'@([\d\.]+):', line)
-        if ip_match:
-            ip = ip_match.group(1)
-
-    if not domain:
-        domain_match = re.search(r'sni=([^&]+)|host=([^&]+)|peer=([^&]+)', line, re.IGNORECASE)
-        if domain_match:
-            domain = next((g for g in domain_match.groups() if g), None)
-
-    return ip, domain or "", port
-
-for idx, line in enumerate(processing_order):
-    if idx % 500 == 0:
-        print(f"处理进度：{idx}/{len(processing_order)}")
-
-    ip, domain, port = extract_ip_domain_port(line)
-
-    # 域名去重（优先）
-    if domain and domain in seen_domains:
-        continue
-    if domain:
-        seen_domains.add(domain)
-
-    # IP去重
-    if ip and ip in seen_ips:
-        continue
-    if ip:
-        seen_ips.add(ip)
-
-    # 只对明文IP节点做TCP测试
-    if ip:
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(1)
-            result = sock.connect_ex((ip, port))
-            sock.close()
-            if result != 0:
-                continue
-            print(f"IP可用保留: {ip}:{port}")
-        except:
-            continue
-    else:
-        print(f"域名节点保留: {domain or '未知'}")
-
-    valid_lines.append(line)
-
-combined = '\n'.join(valid_lines)
-encoded = base64.b64encode(combined.encode('utf-8')).decode('utf-8')
-
-with open('s1.txt', 'w') as f:
-    f.write(encoded)
-
-print(f"最终独特可用节点：{len(valid_lines)} 条（独特IP {len(seen_ips)}
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add s1.txt
+          git diff --staged --quiet || git commit -m "三来源+Reality优先更新订阅: $(date +'%Y-%m-%d')"
+          git push
