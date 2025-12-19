@@ -1,15 +1,13 @@
-name: 极致并行更新免费节点（TCP + Base64）
+name: 最终极致免费节点更新（TCP + Base64）
 
 on:
   schedule:
-    - cron: '0 */4 * * *'  # 每4小时一次
+    - cron: '0 */4 * * *'  # 每4小时一次，可改成 */3 为每3小时
   workflow_dispatch:
 
 jobs:
-  prepare:
+  update:
     runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.split.outputs.matrix }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,19 +20,22 @@ jobs:
       - name: 安装 requests
         run: pip install requests
 
-      - name: 拉取、合并字符串去重并平均拆分
-        id: split
+      - name: 拉取、去重、TCP测试 + Base64
         run: |
           python << 'EOF'
           import requests
+          import re
+          import socket
+          import time
+          import base64
           import json
 
           sources = [
-              "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",  # 每5分钟更新，高质量主力
-              "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt",  # 每15分钟，优质聚合
+              "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",  # 每5分钟更新，主力
+              "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt",  # 每15分钟更新，优质
           ]
 
-          all_lines = set()
+          all_lines = set()  # 全局字符串去重
           for url in sources:
               try:
                   resp = requests.get(url, timeout=40)
@@ -43,51 +44,17 @@ jobs:
                       l = line.strip()
                       if l and not l.startswith('#'):
                           all_lines.add(l)
-                  print(f"成功拉取 {url}")
+                  print(f"拉取成功 {url}")
               except Exception as e:
                   print(f"拉取失败 {url}: {e}")
 
           unique_lines = list(all_lines)
-          print(f"全局字符串去重后总节点：{len(unique_lines)} 条")
+          print(f"全局字符串去重后：{len(unique_lines)} 条")
 
-          num_jobs = 3  # 3个并行job
-          chunk_size = len(unique_lines) // num_jobs
-          matrix = {"include": []}
-
-          for i in range(num_jobs):
-              start = i * chunk_size
-              end = start + chunk_size if i < num_jobs - 1 else len(unique_lines)
-              chunk = unique_lines[start:end]
-              matrix["include"].append({
-                  "job_id": i,
-                  "lines": '\n'.join(chunk)
-              })
-              print(f"分配 Job {i}: {len(chunk)} 条")
-
-          print(f"::set-output name=matrix::{json.dumps(matrix)}")
-          EOF
-
-  process:
-    needs: prepare
-    runs-on: ubuntu-latest
-    strategy:
-      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
-    steps:
-      - name: TCP测试 + IP去重
-        run: |
-          python << 'EOF'
-          import re
-          import socket
-          import time
-
-          lines = """${{ matrix.lines }}""".split('\n')
-          valid = []
+          valid_lines = []
           seen_ips = set()
 
-          for line in lines:
-              if not line:
-                  continue
-
+          for line in unique_lines:
               host = ip = None
               port = 443
               port_match = re.search(r':(\d+)', line)
@@ -96,8 +63,6 @@ jobs:
 
               if line.startswith('vmess://'):
                   try:
-                      import base64
-                      import json
                       decoded = base64.b64decode(line[8:] + '==').decode('utf-8', errors='ignore')
                       cfg = json.loads(decoded)
                       host = cfg.get('add') or cfg.get('host')
@@ -113,8 +78,8 @@ jobs:
               if host and re.match(r'^\d{1,3}(\.\d{1,3}){3}$', host):
                   ip = host
 
-              if not ip:
-                  valid.append(line)
+              if not ip:  # 域名节点直接保留
+                  valid_lines.append(line)
                   continue
 
               if ip in seen_ips:
@@ -127,57 +92,22 @@ jobs:
                   result = sock.connect_ex((ip, port))
                   sock.close()
                   if result == 0:
-                      valid.append(line)
+                      valid_lines.append(line)
+                      print(f"保留可用: {ip}:{port}")
+                  else:
+                      print(f"丢弃不可用: {ip}:{port}")
               except:
-                  pass
+                  print(f"TCP失败: {ip}:{port}")
 
-              time.sleep(0.05)
+              time.sleep(0.1)
 
-          with open(f'result-job-${{ matrix.job_id }}.txt', 'w') as f:
-              f.write('\n'.join(valid))
-
-          print(f"Job ${{ matrix.job_id }} 完成：{len(valid)} 条")
-          EOF
-
-      - name: 上传结果
-        uses: actions/upload-artifact@v4
-        with:
-          name: result-job-${{ matrix.job_id }}
-          path: result-job-${{ matrix.job_id }}.txt
-
-  merge:
-    needs: process
-    runs-on: ubuntu-latest
-    steps:
-      - name: 下载所有结果
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-
-      - name: 最终合并 + Base64
-        run: |
-          python << 'EOF'
-          import glob
-          import base64
-
-          all_valid = []
-          seen = set()
-
-          for file in glob.glob("artifacts/*/result-job-*.txt"):
-              with open(file, 'r', encoding='utf-8') as f:
-                  for line in f.read().split('\n'):
-                      l = line.strip()
-                      if l and l not in seen:
-                          all_valid.append(l)
-                          seen.add(l)
-
-          combined = '\n'.join(all_valid)
+          combined = '\n'.join(valid_lines)
           encoded = base64.b64encode(combined.encode('utf-8')).decode('utf-8')
 
           with open('s1.txt', 'w') as f:
               f.write(encoded)
 
-          print(f"最终独特可用节点：{len(all_valid)} 条")
+          print(f"最终独特可用节点：{len(valid_lines)} 条（独特IP {len(seen_ips)} 个）")
           EOF
 
       - name: Commit 并推送
@@ -185,5 +115,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git add s1.txt
-          git diff --staged --quiet || git commit -m "极致并行更新订阅: $(date +'%Y-%m-%d')"
+          git diff --staged --quiet || git commit -m "极致更新订阅: $(date +'%Y-%m-%d')"
           git push
