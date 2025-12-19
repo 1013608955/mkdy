@@ -1,0 +1,92 @@
+name: 每天自动更新免费节点
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天UTC 0点运行（北京时间早上8点）
+  workflow_dispatch:  # 支持手动一键触发
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 仓库
+        uses: actions/checkout@v4
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 安装依赖
+        run: pip install requests
+
+      - name: 拉取并过滤节点
+        run: |
+          python << 'EOF'
+          import requests
+          import re
+          import subprocess
+          import time
+
+          # 来源链接（可加多个，用列表）
+          sources = [
+              "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
+              # "https://raw.githubusercontent.com/free-nodes/v2rayfree/main/v220251219",  # 取消注释添加更多
+              # "https://raw.githubusercontent.com/freefq/free/master/v2",
+          ]
+
+          valid_lines = []
+
+          for url in sources:
+              try:
+                  resp = requests.get(url, timeout=20)
+                  resp.raise_for_status()
+                  lines = resp.text.strip().split('\n')
+                  print(f"从 {url} 拉取 {len(lines)} 条节点")
+              except Exception as e:
+                  print(f"拉取 {url} 失败: {e}")
+                  continue
+
+              for line in lines:
+                  line = line.strip()
+                  if not line:
+                      continue
+
+                  # 提取IP（支持常见协议）
+                  ip_match = re.search(r'@([\d\.]+):', line)  # 如 @123.45.67.89:
+                  if not ip_match:
+                      # vmess base64需特殊处理，简单跳过或保留（免费节点多明文）
+                      valid_lines.append(line)
+                      continue
+
+                  ip = ip_match.group(1)
+
+                  # ping 测试（3次，超时2秒）
+                  try:
+                      result = subprocess.run(['ping', '-c', '3', '-W', '2', ip],
+                                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                      if result.returncode == 0:
+                          valid_lines.append(line)
+                          print(f"可用: {ip}")
+                      else:
+                          print(f"不可用: {ip}")
+                  except:
+                      print(f"ping失败: {ip}")
+
+                  time.sleep(0.5)  # 避免太快被限
+
+          # 去重并写入文件
+          unique_lines = list(dict.fromkeys(valid_lines))  # 保留顺序去重
+          with open('s.txt', 'w', encoding='utf-8') as f:
+              f.write('\n'.join(unique_lines) + '\n')
+
+          print(f"最终保留 {len(unique_lines)} 条节点")
+          EOF
+
+      - name: Commit 并推送更新
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add s.txt
+          git commit -m "自动更新节点: $(date +'%Y-%m-%d')" || echo "无变化"
+          git push
