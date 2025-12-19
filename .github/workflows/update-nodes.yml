@@ -1,12 +1,11 @@
-name: 并行更新免费节点（合并去重后平均分配 + TCP + Base64）
+name: 极致并行更新免费节点（TCP + Base64）
 
 on:
   schedule:
-    - cron: '0 */4 * * *'  # 每4小时一次
+    - cron: '0 */4 * * *'  # 每4小时
   workflow_dispatch:
 
 jobs:
-  # 主 job：拉取所有来源 → 全局字符串去重 → 平均拆分任务
   prepare:
     runs-on: ubuntu-latest
     outputs:
@@ -20,7 +19,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: 拉取、合并、全局字符串去重并平均拆分
+      - name: 拉取、合并字符串去重并平均拆分
         id: split
         run: |
           python << 'EOF'
@@ -28,11 +27,11 @@ jobs:
           import json
 
           sources = [
-              "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",
-              "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt",
+              "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",  # 每5分钟，主力高质量
+              "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt",  # 每15分钟，优质
           ]
 
-          all_lines = set()  # 全局字符串去重
+          all_lines = set()
           for url in sources:
               try:
                   resp = requests.get(url, timeout=40)
@@ -45,10 +44,9 @@ jobs:
                   print(f"拉取失败 {url}: {e}")
 
           unique_lines = list(all_lines)
-          print(f"合并后全局字符串去重：{len(unique_lines)} 条")
+          print(f"全局去重后：{len(unique_lines)} 条")
 
-          # 平均分配给 4 个并行 job（可改成 3~6 个）
-          num_jobs = 4
+          num_jobs = 3  # 3并行，均衡
           chunk_size = len(unique_lines) // num_jobs
           matrix = {"include": []}
 
@@ -65,7 +63,6 @@ jobs:
           print(f"::set-output name=matrix::{json.dumps(matrix)}")
           EOF
 
-  # 并行子 job：每个处理自己的一份节点（IP去重 + TCP测试）
   process:
     needs: prepare
     runs-on: ubuntu-latest
@@ -73,13 +70,10 @@ jobs:
       matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
     steps:
       - name: TCP测试 + IP去重
-        id: test
         run: |
           python << 'EOF'
           import re
           import socket
-          import base64
-          import json
           import time
 
           lines = """${{ matrix.lines }}""".split('\n')
@@ -96,9 +90,10 @@ jobs:
               if port_match:
                   port = int(port_match.group(1))
 
-              # 提取 IP
               if line.startswith('vmess://'):
                   try:
+                      import base64
+                      import json
                       decoded = base64.b64decode(line[8:] + '==').decode('utf-8', errors='ignore')
                       cfg = json.loads(decoded)
                       host = cfg.get('add') or cfg.get('host')
@@ -114,7 +109,7 @@ jobs:
               if host and re.match(r'^\d{1,3}(\.\d{1,3}){3}$', host):
                   ip = host
 
-              if not ip:  # 域名节点直接保留
+              if not ip:
                   valid.append(line)
                   continue
 
@@ -122,7 +117,6 @@ jobs:
                   continue
               seen_ips.add(ip)
 
-              # TCP 测试
               try:
                   sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                   sock.settimeout(1)
@@ -130,30 +124,23 @@ jobs:
                   sock.close()
                   if result == 0:
                       valid.append(line)
-                      print(f"Job ${{ matrix.job_id }} 保留: {ip}:{port}")
-                  else:
-                      print(f"Job ${{ matrix.job_id }} 丢弃: {ip}:{port}")
               except:
-                  print(f"Job ${{ matrix.job_id }} TCP失败: {ip}:{port}")
+                  pass
 
               time.sleep(0.05)
 
-          result_str = '\n'.join(valid)
-          encoded_result = base64.b64encode(result_str.encode()).decode()
-          print(f"::set-output name=result::{encoded_result}")
-          print(f"Job ${{ matrix.job_id }} 处理完：{len(valid)} 条")
+          with open(f'result-job-${{ matrix.job_id }}.txt', 'w') as f:
+              f.write('\n'.join(valid))
+
+          print(f"Job ${{ matrix.job_id }} 完成：{len(valid)} 条")
           EOF
 
       - name: 上传结果
         uses: actions/upload-artifact@v4
         with:
           name: result-job-${{ matrix.job_id }}
-          path: result.txt  # 临时写文件供合并
-          retention-days: 1
-        run: |
-          echo "${{ steps.test.outputs.result }}" | base64 -d > result.txt
+          path: result-job-${{ matrix.job_id }}.txt
 
-  # 合并所有子 job 结果 + 生成最终 Base64
   merge:
     needs: process
     runs-on: ubuntu-latest
@@ -172,7 +159,7 @@ jobs:
           all_valid = []
           seen = set()
 
-          for file in glob.glob("artifacts/*/result.txt"):
+          for file in glob.glob("artifacts/*/result-job-*.txt"):
               with open(file, 'r', encoding='utf-8') as f:
                   for line in f.read().split('\n'):
                       l = line.strip()
@@ -186,13 +173,13 @@ jobs:
           with open('s1.txt', 'w') as f:
               f.write(encoded)
 
-          print(f"最终合并：{len(all_valid)} 条独特节点")
+          print(f"最终独特节点：{len(all_valid)} 条")
           EOF
 
-      - name: Commit 并推送
+      - name: Commit 更新
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git add s1.txt
-          git diff --staged --quiet || git commit -m "并行合并更新订阅: $(date +'%Y-%m-%d')"
+          git diff --staged --quiet || git commit -m "极致并行更新订阅: $(date +'%Y-%m-%d')"
           git push
