@@ -1,16 +1,18 @@
-name: 每天自动更新免费节点（快速版 + 彻底去重 + Base64）
+name: 并行更新免费节点（合并去重后平均分配 + TCP + Base64）
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 */4 * * *'  # 每4小时一次
   workflow_dispatch:
 
 jobs:
-  update:
+  # 主 job：拉取所有来源 → 全局字符串去重 → 平均拆分任务
+  prepare:
     runs-on: ubuntu-latest
-    timeout-minutes: 60  # 加这个防超6小时
+    outputs:
+      matrix: ${{ steps.split.outputs.matrix }}
     steps:
-      - name: Checkout 仓库
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: 设置 Python
@@ -18,106 +20,179 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: 安装依赖
-        run: pip install requests
-
-      - name: 快速拉取、去重并Base64
+      - name: 拉取、合并、全局字符串去重并平均拆分
+        id: split
         run: |
           python << 'EOF'
           import requests
-          import re
-          import subprocess
-          import time
-          import base64
           import json
 
-          # 2025年12月活跃来源（节点适中，高质量）
           sources = [
-              "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/all_extracted_configs.txt",  # 主力，几千条，每30分钟
-              "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",  # 每5分钟
-              "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt",  # 每15分钟，优质聚合
+              "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",
+              "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt",
           ]
 
-          valid_lines = []
-          seen_ips = set()
-          seen_lines = set()
-
+          all_lines = set()  # 全局字符串去重
           for url in sources:
               try:
-                  resp = requests.get(url, timeout=30)
+                  resp = requests.get(url, timeout=40)
                   resp.raise_for_status()
-                  lines = [l.strip() for l in resp.text.split('\n') if l.strip() and not l.startswith('#')]
-
-                  for line in lines:
-                      if line in seen_lines:
-                          continue
-
-                      host = None
-                      ip = None
-
-                      if line.startswith('vmess://'):
-                          try:
-                              decoded = base64.b64decode(line[8:] + '==').decode('utf-8', errors='ignore')
-                              config = json.loads(decoded)
-                              host = config.get('add') or config.get('host')
-                          except:
-                              pass
-
-                      if not host:
-                          match = re.search(r'@([^:]+):|host=([^&]+)', line)
-                          if match:
-                              host = next(g for g in match.groups() if g)
-
-                      if host and re.match(r'^\d{1,3}(\.\d{1,3}){3}$', host):
-                          ip = host
-
-                      # 无IP（域名或复杂）：字符串去重保留
-                      if not ip:
-                          if line not in seen_lines:
-                              valid_lines.append(line)
-                              seen_lines.add(line)
-                          continue
-
-                      if ip in seen_ips:
-                          print(f"重复IP丢弃: {ip}")
-                          continue
-                      seen_ips.add(ip)
-
-                      # 快速ping（1次，超时1秒）
-                      try:
-                          result = subprocess.run(['ping', '-c', '1', '-W', '1', ip],
-                                                  stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                          if result.returncode == 0:
-                              valid_lines.append(line)
-                              seen_lines.add(line)
-                              print(f"保留: {ip}")
-                          else:
-                              print(f"不可用: {ip}")
-                      except:
-                          print(f"ping失败: {ip}")
-
-                      time.sleep(0.1)  # 更小sleep
-
+                  for line in resp.text.split('\n'):
+                      l = line.strip()
+                      if l and not l.startswith('#'):
+                          all_lines.add(l)
               except Exception as e:
-                  print(f"来源失败: {e}")
+                  print(f"拉取失败 {url}: {e}")
 
-          combined = '\n'.join(valid_lines)
+          unique_lines = list(all_lines)
+          print(f"合并后全局字符串去重：{len(unique_lines)} 条")
+
+          # 平均分配给 4 个并行 job（可改成 3~6 个）
+          num_jobs = 4
+          chunk_size = len(unique_lines) // num_jobs
+          matrix = {"include": []}
+
+          for i in range(num_jobs):
+              start = i * chunk_size
+              end = start + chunk_size if i < num_jobs - 1 else len(unique_lines)
+              chunk = unique_lines[start:end]
+              matrix["include"].append({
+                  "job_id": i,
+                  "lines": '\n'.join(chunk)
+              })
+              print(f"Job {i}: {len(chunk)} 条")
+
+          print(f"::set-output name=matrix::{json.dumps(matrix)}")
+          EOF
+
+  # 并行子 job：每个处理自己的一份节点（IP去重 + TCP测试）
+  process:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    steps:
+      - name: TCP测试 + IP去重
+        id: test
+        run: |
+          python << 'EOF'
+          import re
+          import socket
+          import base64
+          import json
+          import time
+
+          lines = """${{ matrix.lines }}""".split('\n')
+          valid = []
+          seen_ips = set()
+
+          for line in lines:
+              if not line:
+                  continue
+
+              host = ip = None
+              port = 443
+              port_match = re.search(r':(\d+)', line)
+              if port_match:
+                  port = int(port_match.group(1))
+
+              # 提取 IP
+              if line.startswith('vmess://'):
+                  try:
+                      decoded = base64.b64decode(line[8:] + '==').decode('utf-8', errors='ignore')
+                      cfg = json.loads(decoded)
+                      host = cfg.get('add') or cfg.get('host')
+                      port = cfg.get('port', 443)
+                  except:
+                      pass
+
+              if not host:
+                  match = re.search(r'@([^:]+):|host=([^&]+)', line)
+                  if match:
+                      host = next((g for g in match.groups() if g), None)
+
+              if host and re.match(r'^\d{1,3}(\.\d{1,3}){3}$', host):
+                  ip = host
+
+              if not ip:  # 域名节点直接保留
+                  valid.append(line)
+                  continue
+
+              if ip in seen_ips:
+                  continue
+              seen_ips.add(ip)
+
+              # TCP 测试
+              try:
+                  sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                  sock.settimeout(1)
+                  result = sock.connect_ex((ip, port))
+                  sock.close()
+                  if result == 0:
+                      valid.append(line)
+                      print(f"Job ${{ matrix.job_id }} 保留: {ip}:{port}")
+                  else:
+                      print(f"Job ${{ matrix.job_id }} 丢弃: {ip}:{port}")
+              except:
+                  print(f"Job ${{ matrix.job_id }} TCP失败: {ip}:{port}")
+
+              time.sleep(0.05)
+
+          result_str = '\n'.join(valid)
+          encoded_result = base64.b64encode(result_str.encode()).decode()
+          print(f"::set-output name=result::{encoded_result}")
+          print(f"Job ${{ matrix.job_id }} 处理完：{len(valid)} 条")
+          EOF
+
+      - name: 上传结果
+        uses: actions/upload-artifact@v4
+        with:
+          name: result-job-${{ matrix.job_id }}
+          path: result.txt  # 临时写文件供合并
+          retention-days: 1
+        run: |
+          echo "${{ steps.test.outputs.result }}" | base64 -d > result.txt
+
+  # 合并所有子 job 结果 + 生成最终 Base64
+  merge:
+    needs: process
+    runs-on: ubuntu-latest
+    steps:
+      - name: 下载所有结果
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: 最终合并 + Base64
+        run: |
+          python << 'EOF'
+          import glob
+          import base64
+
+          all_valid = []
+          seen = set()
+
+          for file in glob.glob("artifacts/*/result.txt"):
+              with open(file, 'r', encoding='utf-8') as f:
+                  for line in f.read().split('\n'):
+                      l = line.strip()
+                      if l and l not in seen:
+                          all_valid.append(l)
+                          seen.add(l)
+
+          combined = '\n'.join(all_valid)
           encoded = base64.b64encode(combined.encode('utf-8')).decode('utf-8')
 
           with open('s1.txt', 'w') as f:
               f.write(encoded)
 
-          print(f"完成：{len(valid_lines)} 条（独特IP {len(seen_ips)} 个）")
+          print(f"最终合并：{len(all_valid)} 条独特节点")
           EOF
 
-      - name: Commit 更新
+      - name: Commit 并推送
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
           git add s1.txt
-          if git diff --staged --quiet; then
-              echo "无变化"
-          else
-              git commit -m "快速更新Base64订阅: $(date +'%Y-%m-%d')"
-              git push
-          fi
+          git diff --staged --quiet || git commit -m "并行合并更新订阅: $(date +'%Y-%m-%d')"
+          git push
