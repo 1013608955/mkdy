@@ -2,7 +2,7 @@ name: 极致并行更新免费节点（TCP + Base64）
 
 on:
   schedule:
-    - cron: '0 */4 * * *'  # 每4小时
+    - cron: '0 */4 * * *'  # 每4小时一次
   workflow_dispatch:
 
 jobs:
@@ -19,6 +19,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: 安装 requests
+        run: pip install requests
+
       - name: 拉取、合并字符串去重并平均拆分
         id: split
         run: |
@@ -27,8 +30,8 @@ jobs:
           import json
 
           sources = [
-              "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",  # 每5分钟，主力高质量
-              "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt",  # 每15分钟，优质
+              "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",  # 每5分钟更新，高质量主力
+              "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt",  # 每15分钟，优质聚合
           ]
 
           all_lines = set()
@@ -40,13 +43,14 @@ jobs:
                       l = line.strip()
                       if l and not l.startswith('#'):
                           all_lines.add(l)
+                  print(f"成功拉取 {url}")
               except Exception as e:
                   print(f"拉取失败 {url}: {e}")
 
           unique_lines = list(all_lines)
-          print(f"全局去重后：{len(unique_lines)} 条")
+          print(f"全局字符串去重后总节点：{len(unique_lines)} 条")
 
-          num_jobs = 3  # 3并行，均衡
+          num_jobs = 3  # 3个并行job
           chunk_size = len(unique_lines) // num_jobs
           matrix = {"include": []}
 
@@ -58,7 +62,7 @@ jobs:
                   "job_id": i,
                   "lines": '\n'.join(chunk)
               })
-              print(f"Job {i}: {len(chunk)} 条")
+              print(f"分配 Job {i}: {len(chunk)} 条")
 
           print(f"::set-output name=matrix::{json.dumps(matrix)}")
           EOF
@@ -173,10 +177,10 @@ jobs:
           with open('s1.txt', 'w') as f:
               f.write(encoded)
 
-          print(f"最终独特节点：{len(all_valid)} 条")
+          print(f"最终独特可用节点：{len(all_valid)} 条")
           EOF
 
-      - name: Commit 更新
+      - name: Commit 并推送
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
