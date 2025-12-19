@@ -30,10 +30,11 @@ jobs:
 
           # 来源链接（可加多个，用列表）
           sources = [
-              "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
-              # "https://raw.githubusercontent.com/free-nodes/v2rayfree/main/v220251219",  # 取消注释添加更多
-              # "https://raw.githubusercontent.com/freefq/free/master/v2",
-          ]
+    "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",  # 原有，质量高但少
+    "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/all_extracted_configs.txt",  # 新增，每30分钟更新，很多节点
+    "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/All_Config_base64_Sub.txt",  # 新增，大量节点
+    "https://raw.githubusercontent.com/free-nodes/v2rayfree/main/v2",  # 新增，经典每日更新
+]
 
           valid_lines = []
 
