@@ -1,4 +1,4 @@
-name: 每天自动更新免费节点
+name: 每天自动更新免费节点（Base64输出 + IP去重）
 
 on:
   schedule:
@@ -20,7 +20,7 @@ jobs:
       - name: 安装依赖
         run: pip install requests
 
-      - name: 拉取并过滤节点
+      - name: 拉取、过滤、IP去重并Base64编码
         run: |
           python << 'EOF'
           import requests
@@ -28,17 +28,18 @@ jobs:
           import subprocess
           import time
           import base64
+          import json
 
-          # 活跃来源（2025年12月确认有效，明文每行一个链接为主）
+          # 2025年活跃高质量来源（明文每行一个链接）
           sources = [
-              "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/all_extracted_configs.txt",  # 主力：5000+节点，每30分钟更新
-              "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",  # Base64格式，直接保留
-              "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/Splitted-By-Protocol/vmess.txt",  # barry-far新路径（如果可用）
-              "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Sub.txt",  # Epodonios聚合订阅
-              "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/Eternity.txt",  # 另一个经典聚合
+              "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/all_extracted_configs.txt",  # 主力，每30分钟更新
+              "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/All_Configs_Sub.txt",  # 每10分钟更新，大量节点
+              "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",  # 每5分钟更新
+              "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt",  # 聚合
           ]
 
           valid_lines = []
+          seen_ips = set()  # IP去重
 
           for url in sources:
               try:
@@ -47,71 +48,66 @@ jobs:
                   content = resp.text.strip()
                   print(f"从 {url} 拉取成功")
 
-                  # 特殊处理Base64订阅（单行或多行Base64）
-                  if 'Pawdroid' in url or len(content.split('\n')) <= 5 or not content.startswith(('vmess://', 'vless://', 'trojan://', 'ss://')):
-                      # 假设是Base64，整块添加（v2rayN支持直接Base64订阅）
-                      valid_lines.append(content)  # 添加整内容，或解码后split
-                      print("Base64格式，直接保留")
-                      continue
-
-                  lines = content.split('\n')
-                  print(f"共 {len(lines)} 条明文节点")
+                  lines = [line.strip() for line in content.split('\n') if line.strip() and not line.startswith('#')]
 
                   for line in lines:
-                      line = line.strip()
-                      if not line or line.startswith('#'):
-                          continue
+                      ip = None
 
-                      # 对于vmess://如果是Base64编码的，先尝试解码成标准链接
+                      # 处理 vmess:// Base64解码提取IP
                       if line.startswith('vmess://'):
                           try:
-                              decoded = base64.b64decode(line[8:]).decode('utf-8')
-                              if decoded.startswith('{'):
-                                  # 是json vmess，保留原样
-                                  pass
+                              decoded = base64.b64decode(line[8:] + '==').decode('utf-8', errors='ignore')
+                              config = json.loads(decoded)
+                              ip = config.get('add') or config.get('host')
                           except:
                               pass
 
-                      # 提取IP（常见格式：@ip:port 或 host=ip）
-                      ip = None
-                      ip_match = re.search(r'@([\d\.]+):', line) or re.search(r'host=([\d\.]+)', line) or re.search(r':([\d\.]+):', line)
-                      if ip_match:
-                          ip = ip_match.group(1)
-
+                      # 其他协议提取IP
                       if not ip:
-                          valid_lines.append(line)  # 无IP，保留（可能是域名或Base64）
+                          ip_match = (re.search(r'@([\d\.]+):', line) or
+                                      re.search(r'host=([\d\.]+)', line) or
+                                      re.search(r':([\d\.]+):', line))
+                          if ip_match:
+                              ip = ip_match.group(1)
+
+                      # 无IP或域名节点：直接保留（不去重）
+                      if not ip or not re.match(r'^\d{1,3}(\.\d{1,3}){3}$', ip):
+                          if line not in valid_lines:
+                              valid_lines.append(line)
                           continue
 
-                      # ping 测试
+                      # IP去重：只保留第一个
+                      if ip in seen_ips:
+                          print(f"重复IP丢弃: {ip}")
+                          continue
+                      seen_ips.add(ip)
+
+                      # ping过滤（2次，超时2秒）
                       try:
-                          result = subprocess.run(['ping', '-c', '3', '-W', '2', ip],
+                          result = subprocess.run(['ping', '-c', '2', '-W', '2', ip],
                                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                           if result.returncode == 0:
                               valid_lines.append(line)
-                              print(f"可用: {ip}")
+                              print(f"可用保留: {ip}")
                           else:
-                              print(f"不可用: {ip}")
+                              print(f"不可用丢弃: {ip}")
                       except:
-                          print(f"ping失败: {ip}")
+                          print(f"ping失败丢弃: {ip}")
 
-                      time.sleep(0.3)  # 防太快
+                      time.sleep(0.2)
 
               except Exception as e:
                   print(f"拉取 {url} 失败: {e}")
 
-          # 去重（保留顺序）
-          unique_lines = []
-          seen = set()
-          for line in valid_lines:
-              if line not in seen:
-                  seen.add(line)
-                  unique_lines.append(line)
+          # 最终：连接所有节点 + Base64编码
+          combined = '\n'.join(valid_lines)
+          base64_encoded = base64.b64encode(combined.encode('utf-8')).decode('utf-8')
 
-          # 写入 s1.txt
+          # 写入 s1.txt（单个Base64字符串）
           with open('s1.txt', 'w', encoding='utf-8') as f:
-              f.write('\n'.join(unique_lines) + '\n')
+              f.write(base64_encoded)
 
-          print(f"最终保留 {len(unique_lines)} 条节点")
+          print(f"最终处理完成：{len(valid_lines)} 条唯一IP节点 → Base64编码保存")
           EOF
 
       - name: Commit 并推送更新
@@ -122,6 +118,6 @@ jobs:
           if git diff --staged --quiet; then
               echo "无变化，不提交"
           else
-              git commit -m "自动更新节点: $(date +'%Y-%m-%d')"
+              git commit -m "自动更新Base64订阅: $(date +'%Y-%m-%d')"
               git push
           fi
