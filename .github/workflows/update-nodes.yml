@@ -142,13 +142,4 @@ encoded = base64.b64encode(combined.encode('utf-8')).decode('utf-8')
 with open('s1.txt', 'w') as f:
     f.write(encoded)
 
-print(f"最终独特可用节点：{len(valid_lines)} 条（独特IP {len(seen_ips)} + 独特域名 {len(seen_domains)}）")
-EOF
-
-      - name: Commit 并推送
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git add s1.txt
-          git diff --staged --quiet || git commit -m "三来源+Reality优先更新订阅: $(date +'%Y-%m-%d')"
-          git push
+print(f"最终独特可用节点：{len(valid_lines)} 条（独特IP {len(seen_ips)}
