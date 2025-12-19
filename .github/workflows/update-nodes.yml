@@ -1,8 +1,8 @@
-name: 加强版极致免费节点更新（域名去重 + TCP + Base64）
+name: 极致免费节点更新（三来源 + 域名去重 + Reality/TLS优先 + 每3小时）
 
 on:
   schedule:
-    - cron: '0 */4 * * *'  # 每4小时一次，可改 */3 为每3小时
+    - cron: '0 */3 * * *'  # 每3小时更新一次（北京时间 0点、3点、6点、9点、12点、15点、18点、21点）
   workflow_dispatch:
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
       - name: 安装 requests
         run: pip install requests
 
-      - name: 加强去重、TCP测试 + Base64
+      - name: 三来源拉取 + 加强去重 + Reality/TLS优先 + TCP测试 + Base64
         run: |
           python << 'EOF'
           import requests
@@ -31,8 +31,9 @@ jobs:
           import json
 
           sources = [
-              "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",
-              "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt",
+              "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",        # 每5分钟，高品质主力
+              "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt",  # 每15分钟，优质聚合
+              "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/all_extracted_configs.txt",  # 新增：每30分钟，大而全
           ]
 
           all_lines = set()
@@ -40,22 +41,39 @@ jobs:
               try:
                   resp = requests.get(url, timeout=40)
                   resp.raise_for_status()
+                  count = 0
                   for line in resp.text.split('\n'):
                       l = line.strip()
                       if l and not l.startswith('#'):
                           all_lines.add(l)
+                          count += 1
+                  print(f"拉取成功 {url}，新增 {count} 条")
               except Exception as e:
                   print(f"拉取失败 {url}: {e}")
 
           unique_lines = list(all_lines)
-          print(f"全局字符串去重后：{len(unique_lines)} 条")
+          print(f"全局字符串去重后总节点：{len(unique_lines)} 条")
+
+          # 分离 Reality/TLS 节点（优先保留）
+          priority_lines = []
+          normal_lines = []
+          for line in unique_lines:
+              lower_line = line.lower()
+              if 'reality' in lower_line or 'tls' in lower_line:
+                  priority_lines.append(line)
+              else:
+                  normal_lines.append(line)
+
+          # 先处理优先节点，再处理普通节点
+          processing_order = priority_lines + normal_lines
+          print(f"优先（Reality/TLS）节点：{len(priority_lines)} 条，普通节点：{len(normal_lines)} 条")
 
           valid_lines = []
           seen_ips = set()
-          seen_domains = set()  # 新增：域名/SNI去重
+          seen_domains = set()
 
-          def extract_ip_and_domain(line):
-              ip = domain = port = None
+          def extract_ip_domain_port(line):
+              ip = domain = None
               port = 443
 
               port_match = re.search(r':(\d+)', line)
@@ -67,25 +85,28 @@ jobs:
                       decoded = base64.b64decode(line[8:] + '==').decode('utf-8', errors='ignore')
                       cfg = json.loads(decoded)
                       ip = cfg.get('add')
-                      domain = cfg.get('host') or cfg.get('sni') or cfg.get('tls')
+                      domain = cfg.get('host') or cfg.get('sni')
                       port = cfg.get('port', 443)
                   except:
                       pass
 
-              # 提取明文IP和域名/SNI
-              ip_match = re.search(r'@([\d\.]+):', line)
-              if ip_match:
-                  ip = ip_match.group(1)
+              if not ip:
+                  ip_match = re.search(r'@([\d\.]+):', line)
+                  if ip_match:
+                      ip = ip_match.group(1)
 
-              # 提取域名/SNI（常见参数：sni=、host=、peer=等）
-              domain_match = re.search(r'sni=([^&]+)|host=([^&]+)|peer=([^&]+)', line, re.IGNORECASE)
-              if domain_match:
-                  domain = next((g for g in domain_match.groups() if g), None)
+              if not domain:
+                  domain_match = re.search(r'sni=([^&]+)|host=([^&]+)|peer=([^&]+)', line, re.IGNORECASE)
+                  if domain_match:
+                      domain = next((g for g in domain_match.groups() if g), None)
 
               return ip, domain or "", port
 
-          for line in unique_lines:
-              ip, domain, port = extract_ip_and_domain(line)
+          for idx, line in enumerate(processing_order):
+              if idx % 500 == 0:
+                  print(f"处理进度：{idx}/{len(processing_order)}")
+
+              ip, domain, port = extract_ip_domain_port(line)
 
               # 域名去重（优先）
               if domain and domain in seen_domains:
@@ -94,46 +115,4 @@ jobs:
                   seen_domains.add(domain)
 
               # IP去重
-              if ip and ip in seen_ips:
-                  continue
-              if ip:
-                  seen_ips.add(ip)
-
-              # TCP测试
-              test_ip = ip if ip else None
-              if not test_ip and domain:
-                  try:
-                      test_ip = socket.gethostbyname(domain)  # 域名解析为IP测试（可选，慢时可注释）
-                  except:
-                      test_ip = None
-
-              if test_ip:
-                  try:
-                      sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                      sock.settimeout(1)
-                      result = sock.connect_ex((test_ip, port))
-                      sock.close()
-                      if result != 0:
-                          continue  # TCP不通丢弃
-                  except:
-                      continue  # 测试失败丢弃
-
-              # 通过所有过滤，保留
-              valid_lines.append(line)
-
-          combined = '\n'.join(valid_lines)
-          encoded = base64.b64encode(combined.encode('utf-8')).decode('utf-8')
-
-          with open('s1.txt', 'w') as f:
-              f.write(encoded)
-
-          print(f"最终独特可用节点：{len(valid_lines)} 条（独特IP {len(seen_ips)} + 独特域名 {len(seen_domains)}）")
-          EOF
-
-      - name: Commit 并推送
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git add s1.txt
-          git diff --staged --quiet || git commit -m "加强域名去重更新订阅: $(date +'%Y-%m-%d')"
-          git push
+              if ip and ip in
