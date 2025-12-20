@@ -412,23 +412,24 @@ def process_node(line):
             if port_match:
                 port = int(port_match.group(1)) if port_match.group(1) in CONFIG["filter"]["valid_ports"] else 443
 
-    if is_private_ip(ip):
-        return None, "", "", 443, 9999
-    
-    if domain and not test_domain_resolve(domain):
-        return None, "", "", 443, 9999
-    
-    if ip and not test_tcp_connect(ip, port):
-        return None, "", "", 443, 9999
-    
-    is_valid, delay = test_proxy_valid(line)
-    if not is_valid:
-        return None, "", "", 443, 9999
-    
-    display_addr = ip or domain or "未知地址"
-    print(f"✅ 节点检测通过: {display_addr}:{port}（延迟{delay:.1f}ms）")
-    return line, domain, ip, port, delay
-    except Exception as e:
+        # 以下逻辑全部缩进，放在try块内
+        if is_private_ip(ip):
+            return None, "", "", 443, 9999
+        
+        if domain and not test_domain_resolve(domain):
+            return None, "", "", 443, 9999
+        
+        if ip and not test_tcp_connect(ip, port):
+            return None, "", "", 443, 9999
+        
+        is_valid, delay = test_proxy_valid(line)
+        if not is_valid:
+            return None, "", "", 443, 9999
+        
+        display_addr = ip or domain or "未知地址"
+        print(f"✅ 节点检测通过: {display_addr}:{port}（延迟{delay:.1f}ms）")
+        return line, domain, ip, port, delay
+    except Exception as e:  # 与try对齐，闭合代码块
         print(f"❌ 节点处理异常（{line[:20]}...）: {str(e)[:50]}")
         return None, "", "", 443, 9999
 
