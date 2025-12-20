@@ -1,28 +1,3 @@
-name: 极致免费节点更新（三来源 + 支持纯Base64来源 + 域名去重 + Reality/TLS优先 + 每3小时）
-
-on:
-  schedule:
-    - cron: '0 */3 * * *'  # 每3小时一次
-  workflow_dispatch:
-
-jobs:
-  update:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: 设置 Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: 安装 requests
-        run: pip install requests
-
-      - name: 三来源拉取 + 支持纯Base64 + 加强去重 + Reality/TLS优先 + TCP测试 + Base64
-        run: |
-          python << 'EOF'
 import requests
 import re
 import socket
@@ -33,7 +8,7 @@ import json
 sources = [
     "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",
     "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt",
-    "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt",
+    "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/all_extracted_configs.txt",
 ]
 
 all_lines = set()
@@ -41,24 +16,8 @@ for url in sources:
     try:
         resp = requests.get(url, timeout=40)
         resp.raise_for_status()
-        raw_content = resp.text.strip()
-
-        # 新增：判断是否为纯Base64来源（少于10行且不以常见协议开头）
-        lines = raw_content.split('\n')
-        if len(lines) <= 10 and not any(raw_content.lstrip().startswith(p) for p in ['vmess://', 'vless://', 'trojan://', 'ss://', '#']):
-            # 尝试整体Base64解码
-            try:
-                decoded = base64.b64decode(raw_content).decode('utf-8', errors='ignore')
-                print(f"检测到纯Base64来源 {url}，解码成功，提取链接")
-                lines = decoded.split('\n')
-            except:
-                print(f"来源 {url} 疑似纯Base64但解码失败，按普通处理")
-                lines = raw_content.split('\n')
-        else:
-            lines = raw_content.split('\n')
-
         count = 0
-        for line in lines:
+        for line in resp.text.split('\n'):
             l = line.strip()
             if l and not l.startswith('#'):
                 all_lines.add(l)
@@ -159,12 +118,3 @@ with open('s1.txt', 'w') as f:
     f.write(encoded)
 
 print(f"最终独特可用节点：{len(valid_lines)} 条（独特IP {len(seen_ips)} + 独特域名 {len(seen_domains)}）")
-EOF
-
-      - name: Commit 并推送
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git add s1.txt
-          git diff --staged --quiet || git commit -m "三来源+支持纯Base64更新订阅: $(date +'%Y-%m-%d')"
-          git push
