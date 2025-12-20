@@ -5,7 +5,6 @@ import base64
 import json
 import binascii
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from urllib.parse import urlparse
 import time
 
 # ====================== 配置项抽离（便于维护） ======================
@@ -18,15 +17,14 @@ CONFIG = {
     ],
     "request": {
         "timeout": 60,
-        "retry_times": 3,  # 拉取失败重试次数
-        "retry_delay": 2,  # 重试间隔（秒）
+        "retry_times": 3,
+        "retry_delay": 2,
         "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     },
     "detection": {
-        "tcp_timeout": 1,  # TCP端口检测超时
-        "proxy_test_timeout": 3,  # 代理连通性检测超时
-        "thread_pool_size": 20,  # 并发检测线程数（GitHub建议≤30）
-        "test_url": "http://www.google.com/generate_204"  # 代理测试地址
+        "tcp_timeout": 1,
+        "thread_pool_size": 20,
+        "test_url": "http://www.google.com/generate_204"
     },
     "filter": {
         "private_ips": [
@@ -36,13 +34,12 @@ CONFIG = {
             re.compile(r"^127\.\d+\.\d+\.\d+$"),
             re.compile(r"^0\.0\.0\.0$")
         ],
-        "valid_ports": range(1, 65535)  # 有效端口范围
+        "valid_ports": range(1, 65535)
     }
 }
 
 # ====================== 工具函数优化 ======================
 def is_base64(s):
-    """判断字符串是否为合法的Base64编码"""
     if not s or len(s) < 4:
         return False
     try:
@@ -55,7 +52,6 @@ def is_base64(s):
         return False
 
 def decode_base64_sub(text):
-    """解码Base64订阅文本，失败则返回原文本"""
     clean_text = re.sub(r'\s+', '', text.strip())
     if not clean_text:
         return text
@@ -75,7 +71,6 @@ def decode_base64_sub(text):
         return text
 
 def is_private_ip(ip):
-    """检测是否为私有IP"""
     if not ip:
         return False
     for pattern in CONFIG["filter"]["private_ips"]:
@@ -84,8 +79,7 @@ def is_private_ip(ip):
     return False
 
 def extract_ip_domain_port(line):
-    """提取节点的IP、域名、端口（增强过滤）"""
-    if not line:  # 新增：提前过滤空line
+    if not line:
         return None, None, 443
     
     ip = domain = None
@@ -96,14 +90,19 @@ def extract_ip_domain_port(line):
     if port_match:
         port = int(port_match.group(1))
         if port not in CONFIG["filter"]["valid_ports"]:
-            port = 443  # 重置为默认端口
+            port = 443
 
-    # 解析VMess节点（增强容错）
+    # 解析VMess节点（核心修复：清理非ASCII字符）
     if line.startswith('vmess://'):
         try:
             vmess_part = line[8:].strip()
             if not vmess_part:
                 return None, None, 443
+            
+            # 关键修复：过滤非ASCII字符（base64解码仅支持ASCII）
+            vmess_part = vmess_part.encode('ascii', 'ignore').decode('ascii')
+            
+            # 补位并解码
             padding = 4 - len(vmess_part) % 4
             if padding != 4:
                 vmess_part += '=' * padding
@@ -112,11 +111,12 @@ def extract_ip_domain_port(line):
             ip = cfg.get('add')
             domain = cfg.get('host') or cfg.get('sni')
             port = cfg.get('port', 443)
-            # 过滤私有IP
+            
             if is_private_ip(ip):
                 ip = None
-        except (json.JSONDecodeError, binascii.Error, TypeError):
-            pass
+        except (json.JSONDecodeError, binascii.Error, ValueError, TypeError):
+            # 捕获所有解码相关异常，避免中断
+            return None, None, 443
 
     # 提取非VMess节点的IP
     if not ip:
@@ -132,14 +132,12 @@ def extract_ip_domain_port(line):
         if domain_match:
             domain = next((g for g in domain_match.groups() if g), None)
 
-    # 最终端口验证
     if port not in CONFIG["filter"]["valid_ports"]:
         port = 443
 
     return ip, domain or "", port
 
 def test_tcp_connect(ip, port):
-    """测试TCP端口连通性（使用with确保资源释放）"""
     if not ip or port not in CONFIG["filter"]["valid_ports"]:
         return False
     try:
@@ -150,7 +148,6 @@ def test_tcp_connect(ip, port):
         return False
 
 def fetch_source(url):
-    """拉取数据源（带重试机制）"""
     headers = {"User-Agent": CONFIG["request"]["user_agent"]}
     for retry in range(CONFIG["request"]["retry_times"]):
         try:
@@ -174,29 +171,23 @@ def fetch_source(url):
                 return []
 
 def process_node(line):
-    """单节点处理（供线程池调用）—— 新增返回port，避免重复解析"""
-    if not line:  # 提前过滤空line
+    if not line:
         return None, "", "", 443
     
     ip, domain, port = extract_ip_domain_port(line)
-    
-    # 域名/IP去重标记
     domain_key = domain if domain else ""
     ip_key = ip if ip else ""
     
-    # 过滤私有IP
     if is_private_ip(ip):
         return None, domain_key, ip_key, port
     
-    # TCP端口检测
     if ip and not test_tcp_connect(ip, port):
         return None, domain_key, ip_key, port
     
     return line, domain_key, ip_key, port
 
-# ====================== 主流程优化 ======================
+# ====================== 主流程 ======================
 def main():
-    # 1. 多线程拉取所有数据源
     all_lines = set()
     with ThreadPoolExecutor(max_workers=5) as executor:
         future_to_url = {executor.submit(fetch_source, url): url for url in CONFIG["sources"]}
@@ -207,7 +198,6 @@ def main():
     unique_lines = list(all_lines)
     print(f"\n📊 全局去重后总节点：{len(unique_lines)} 条")
 
-    # 2. 优先级筛选（Reality/TLS节点优先）
     priority_lines = []
     normal_lines = []
     for line in unique_lines:
@@ -220,7 +210,6 @@ def main():
     processing_order = priority_lines + normal_lines
     print(f"📌 优先（Reality/TLS）节点：{len(priority_lines)} 条，普通节点：{len(normal_lines)} 条")
 
-    # 3. 多线程处理节点（去重+检测）
     valid_lines = []
     seen_ips = set()
     seen_domains = set()
@@ -231,49 +220,46 @@ def main():
             if idx % 500 == 0:
                 print(f"\n🔄 处理进度：{idx}/{len(processing_order)}")
             
-            result = future.result()
+            try:
+                result = future.result()
+            except Exception as e:
+                print(f"⚠️ 节点处理异常: {str(e)[:50]}")
+                continue
+            
             if not result:
                 continue
-            # 解构结果（新增port）
             line, domain_key, ip_key, port = result
             
-            # 新增：过滤line为None的情况（核心修复当前报错）
             if not line:
                 continue
 
-            # 域名去重（优先）
             if domain_key and domain_key in seen_domains:
                 continue
             if domain_key:
                 seen_domains.add(domain_key)
 
-            # IP去重
             if ip_key and ip_key in seen_ips:
                 continue
             if ip_key:
                 seen_ips.add(ip_key)
 
             valid_lines.append(line)
-            # 优化：直接用已获取的port，不再重复调用extract_ip_domain_port
             if ip_key:
                 print(f"✅ 保留IP节点: {ip_key}:{port}")
             else:
                 print(f"✅ 保留域名节点: {domain_key or '未知'}")
 
-    # 4. 生成最终订阅文件
     combined = '\n'.join(valid_lines)
     encoded = base64.b64encode(combined.encode('utf-8')).decode('utf-8')
 
     with open('s1.txt', 'w', encoding='utf-8') as f:
         f.write(encoded)
 
-    # 5. 输出统计信息
     print(f"\n🎉 最终处理完成：")
     print(f"   - 有效节点总数：{len(valid_lines)} 条")
     print(f"   - 独特IP数量：{len(seen_ips)} 个")
     print(f"   - 独特域名数量：{len(seen_domains)} 个")
     print(f"   - 订阅文件大小：{len(encoded)} 个Base64字符")
-    print(f"   - 文件保存路径：s1.txt")
 
 if __name__ == "__main__":
     start_time = time.time()
