@@ -1,14 +1,14 @@
-name: 极致免费节点更新（三来源 + 域名去重 + Reality/TLS优先 + 每3小时）
+name: 极致免费节点更新（多来源 + 域名去重 + Reality/TLS优先 + 每1小时）
 
 on:
   schedule:
-    - cron: '0 */3 * * *'
-  workflow_dispatch:
+    - cron: '0 */1 * * *'  # 每3小时执行一次，如需调整：每1小时→0 */1 * * *，每天→0 0 * * *
+  workflow_dispatch:  # 保留手动触发
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 150  # 增加超时保护，避免卡壳
+    timeout-minutes: 100  # 缩短超时时间（移除V2Ray后脚本运行≤3分钟）
     steps:
       - name: Checkout代码
         uses: actions/checkout@v4
@@ -17,35 +17,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          # 移除cache: 'pip'（因为你的仓库没有requirements.txt/pyproject.toml）
 
       - name: 安装Python依赖
         run: pip install requests
 
-      - name: 安装V2Ray（用于代理有效性测试）
-        run: |
-          # 下载最新版V2Ray
-          curl -L -o v2ray.zip https://github.com/v2fly/v2ray-core/releases/latest/download/v2ray-linux-64.zip
-          # 解压到临时目录
-          unzip -q v2ray.zip -d /tmp/v2ray
-          # 添加执行权限
-          chmod +x /tmp/v2ray/v2ray
-          # 将V2Ray加入环境变量
-          echo "/tmp/v2ray" >> $GITHUB_PATH
-          # 验证安装
-          v2ray -version || echo "V2Ray安装成功"
-
       - name: 运行节点更新脚本
         run: python update_nodes.py
         env:
-          # 增加环境变量，适配GitHub网络
-          PYTHONUNBUFFERED: "1"
-
-      - name: 清理V2Ray进程（避免残留）
-        if: always()  # 无论脚本是否成功，都清理
-        run: |
-          pkill -f v2ray || true
-          rm -rf /tmp/v2ray*
+          PYTHONUNBUFFERED: "1"  # 实时输出日志，方便排查
 
       - name: 提交并推送结果
         run: |
@@ -54,7 +33,7 @@ jobs:
           # 仅当s1.txt有变更时提交
           if [ -f s1.txt ] && [ $(git diff --name-only s1.txt | wc -l) -gt 0 ]; then
             git add s1.txt
-            git commit -m "三来源+Reality优先更新订阅: $(date +'%Y-%m-%d %H:%M:%S')"
+            git commit -m "多来源+Reality优先更新订阅: $(date +'%Y-%m-%d %H:%M:%S')"
             git push
             echo "✅ 订阅文件已更新并推送"
           else
