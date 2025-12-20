@@ -85,6 +85,9 @@ def is_private_ip(ip):
 
 def extract_ip_domain_port(line):
     """提取节点的IP、域名、端口（增强过滤）"""
+    if not line:  # 新增：提前过滤空line
+        return None, None, 443
+    
     ip = domain = None
     port = 443
 
@@ -100,7 +103,7 @@ def extract_ip_domain_port(line):
         try:
             vmess_part = line[8:].strip()
             if not vmess_part:
-                return None, None, None
+                return None, None, 443
             padding = 4 - len(vmess_part) % 4
             if padding != 4:
                 vmess_part += '=' * padding
@@ -171,26 +174,25 @@ def fetch_source(url):
                 return []
 
 def process_node(line):
-    """单节点处理（供线程池调用）"""
+    """单节点处理（供线程池调用）—— 新增返回port，避免重复解析"""
+    if not line:  # 提前过滤空line
+        return None, "", "", 443
+    
     ip, domain, port = extract_ip_domain_port(line)
     
-    # 域名/IP去重标记（返回给主线程处理）
+    # 域名/IP去重标记
     domain_key = domain if domain else ""
     ip_key = ip if ip else ""
     
     # 过滤私有IP
     if is_private_ip(ip):
-        return None, domain_key, ip_key
+        return None, domain_key, ip_key, port
     
     # TCP端口检测
     if ip and not test_tcp_connect(ip, port):
-        return None, domain_key, ip_key
+        return None, domain_key, ip_key, port
     
-    # 可选：代理连通性测试（如需开启，取消注释）
-    # if not test_proxy_connect(line):
-    #     return None, domain_key, ip_key
-    
-    return line, domain_key, ip_key
+    return line, domain_key, ip_key, port
 
 # ====================== 主流程优化 ======================
 def main():
@@ -232,7 +234,12 @@ def main():
             result = future.result()
             if not result:
                 continue
-            line, domain_key, ip_key = result
+            # 解构结果（新增port）
+            line, domain_key, ip_key, port = result
+            
+            # 新增：过滤line为None的情况（核心修复当前报错）
+            if not line:
+                continue
 
             # 域名去重（优先）
             if domain_key and domain_key in seen_domains:
@@ -247,8 +254,9 @@ def main():
                 seen_ips.add(ip_key)
 
             valid_lines.append(line)
+            # 优化：直接用已获取的port，不再重复调用extract_ip_domain_port
             if ip_key:
-                print(f"✅ 保留IP节点: {ip_key}:{extract_ip_domain_port(line)[2]}")
+                print(f"✅ 保留IP节点: {ip_key}:{port}")
             else:
                 print(f"✅ 保留域名节点: {domain_key or '未知'}")
 
