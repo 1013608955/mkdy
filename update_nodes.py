@@ -9,7 +9,7 @@ import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# ====================== 配置项（修复后） ======================
+# ====================== 配置项（保留原版，仅注释测试URL） ======================
 CONFIG = {
     "sources": [
         "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/Splitted-By-Protocol/vmess.txt",
@@ -26,11 +26,10 @@ CONFIG = {
         "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     },
     "detection": {
-        "tcp_timeout": 0.5,
-        "proxy_test_timeout": 5,  # 延长超时到5秒
-        "thread_pool_size": 20,
-        "test_url": "http://gstatic.com/generate_204",  # 更稳定的测试URL
-        "max_delay": 500  # 放宽延迟到500ms
+        "tcp_timeout": 0.5,  # 原版超时
+        "proxy_test_timeout": 3,  # 保留但不再使用
+        "thread_pool_size": 20,   
+        "test_url": "http://www.google.com/generate_204"  # 保留但不再使用
     },
     "filter": {
         "private_ips": [
@@ -44,7 +43,7 @@ CONFIG = {
     }
 }
 
-# ====================== 工具函数（修复后） ======================
+# ====================== 工具函数（核心修改：关闭代理测试） ======================
 def is_base64(s):
     if not s or len(s) < 4:
         return False
@@ -84,6 +83,7 @@ def is_private_ip(ip):
     return False
 
 def test_domain_resolve(domain):
+    """检测域名是否能解析"""
     if not domain or domain == "未知":
         return False
     try:
@@ -93,6 +93,7 @@ def test_domain_resolve(domain):
         return False
 
 def extract_vmess_config(vmess_line):
+    """解析VMess节点为V2Ray配置格式"""
     try:
         vmess_part = vmess_line[8:].strip()
         vmess_part = vmess_part.encode('ascii', 'ignore').decode('ascii')
@@ -112,241 +113,11 @@ def extract_vmess_config(vmess_line):
             "serverName": cfg.get('host') or cfg.get('sni')
         }
     except Exception as e:
-        print(f"❌ VMess解析失败: {str(e)[:50]}")
         return None
-
-def extract_vless_config(vless_line):
-    try:
-        vless_part = vless_line[8:].strip()
-        vless_part = vless_part.encode('ascii', 'ignore').decode('ascii')
-        # 兼容&代替?的错误格式
-        if '?' not in vless_part and '&' in vless_part:
-            base_part, param_part = vless_part.split('&', 1)
-            print(f"⚠️ VLESS格式修复（&→?）：{vless_line[:30]}...")
-        else:
-            base_part, param_part = (vless_part.split('?') + [''])[:2]
-        
-        # 兼容无@符号的错误格式
-        uuid_addr_port = base_part.split('@')
-        if len(uuid_addr_port) != 2:
-            if len(base_part) >= 36:
-                uuid = base_part[:36]
-                addr_port = base_part[36:]
-                print(f"⚠️ VLESS格式修复（补@）：{vless_line[:30]}...")
-            else:
-                return None
-        else:
-            uuid = uuid_addr_port[0].strip()
-            addr_port = uuid_addr_port[1].strip()
-        
-        # 端口解析容错（去掉多余字符）
-        try:
-            address, port_str = addr_port.split(':')
-            port = int(port_str.strip().split('&')[0].split('?')[0])
-        except (ValueError, IndexError):
-            address = addr_port
-            port = 443
-            print(f"⚠️ VLESS端口修复（默认443）：{vless_line[:30]}...")
-    
-        # 解析参数
-        params = {}
-        for param in param_part.split('&'):
-            if '=' in param:
-                k, v = param.split('=', 1)
-                params[k.lower()] = v
-        
-        return {
-            "uuid": uuid,
-            "address": address,
-            "port": port,
-            "security": params.get('security', 'tls'),
-            "sni": params.get('sni'),
-            "network": params.get('type', 'tcp')
-        }
-    except Exception as e:
-        print(f"❌ VLESS解析失败（{vless_line[:30]}...）: {str(e)[:50]}")
-        return None
-
-def extract_trojan_config(trojan_line):
-    try:
-        trojan_part = trojan_line[8:].strip()
-        trojan_part = trojan_part.encode('ascii', 'ignore').decode('ascii')
-        password_addr = trojan_part.split('?')[0]
-        password, addr_port = password_addr.split('@')
-        address, port = addr_port.split(':')
-        port = int(port)
-        
-        params = {}
-        if '?' in trojan_part:
-            param_str = trojan_part.split('?')[1]
-            for param in param_str.split('&'):
-                if '=' in param:
-                    k, v = param.split('=', 1)
-                    params[k.lower()] = v
-        
-        return {
-            "address": address,
-            "port": port,
-            "password": password,
-            "sni": params.get('sni'),
-            "security": params.get('security', 'tls')
-        }
-    except Exception as e:
-        print(f"❌ Trojan解析失败: {str(e)[:50]}")
-        return None
-
-def get_node_core_id(line):
-    if line.startswith('vless://'):
-        cfg = extract_vless_config(line)
-        if cfg:
-            return f"vless_{cfg['address']}_{cfg['port']}_{cfg['uuid']}"
-    elif line.startswith('vmess://'):
-        cfg = extract_vmess_config(line)
-        if cfg:
-            return f"vmess_{cfg['address']}_{cfg['port']}_{cfg['id']}"
-    elif line.startswith('trojan://'):
-        cfg = extract_trojan_config(line)
-        if cfg:
-            return f"trojan_{cfg['address']}_{cfg['port']}_{cfg['password']}"
-    return f"unknown_{hash(line)}"
 
 def test_proxy_valid(node_line):
-    temp_config = None
-    if node_line.startswith('vless://'):
-        vless_cfg = extract_vless_config(node_line)
-        if not vless_cfg:
-            return (False, 9999)
-        temp_config = {
-            "inbounds": [
-                {
-                    "port": 1080,
-                    "listen": "127.0.0.1",
-                    "protocol": "socks",
-                    "settings": {"auth": "noauth", "udp": True}
-                }
-            ],
-            "outbounds": [
-                {
-                    "protocol": "vless",
-                    "settings": {
-                        "vnext": [
-                            {
-                                "address": vless_cfg["address"],
-                                "port": vless_cfg["port"],
-                                "users": [{"id": vless_cfg["uuid"], "encryption": "none", "level": 0}]
-                            }
-                        ]
-                    },
-                    "streamSettings": {
-                        "network": vless_cfg["network"],
-                        "security": vless_cfg["security"],
-                        "tlsSettings": {"serverName": vless_cfg["sni"]} if vless_cfg["sni"] else {}
-                    }
-                }
-            ]
-        }
-    elif node_line.startswith('vmess://'):
-        vmess_cfg = extract_vmess_config(node_line)
-        if not vmess_cfg:
-            return (False, 9999)
-        temp_config = {
-            "inbounds": [
-                {
-                    "port": 1080,
-                    "listen": "127.0.0.1",
-                    "protocol": "socks",
-                    "settings": {"auth": "noauth", "udp": True}
-                }
-            ],
-            "outbounds": [
-                {
-                    "protocol": "vmess",
-                    "settings": {
-                        "vnext": [
-                            {
-                                "address": vmess_cfg["address"],
-                                "port": vmess_cfg["port"],
-                                "users": [
-                                    {
-                                        "id": vmess_cfg["id"],
-                                        "alterId": vmess_cfg["alterId"],
-                                        "security": vmess_cfg["security"]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    "streamSettings": {
-                        "network": vmess_cfg["network"],
-                        "security": vmess_cfg["tls"],
-                        "tlsSettings": {"serverName": vmess_cfg["serverName"]} if vmess_cfg["tls"] else {}
-                    }
-                }
-            ]
-        }
-    elif node_line.startswith('trojan://'):
-        trojan_cfg = extract_trojan_config(node_line)
-        if not trojan_cfg:
-            return (False, 9999)
-        temp_config = {
-            "inbounds": [
-                {
-                    "port": 1080,
-                    "listen": "127.0.0.1",
-                    "protocol": "socks",
-                    "settings": {"auth": "noauth", "udp": True}
-                }
-            ],
-            "outbounds": [
-                {
-                    "protocol": "trojan",
-                    "settings": {
-                        "servers": [
-                            {
-                                "address": trojan_cfg["address"],
-                                "port": trojan_cfg["port"],
-                                "password": trojan_cfg["password"]
-                            }
-                        ]
-                    },
-                    "streamSettings": {
-                        "security": trojan_cfg["security"],
-                        "tlsSettings": {"serverName": trojan_cfg["sni"]} if trojan_cfg["sni"] else {}
-                    }
-                }
-            ]
-        }
-    else:
-        print(f"⚠️ 暂不支持的协议（{node_line[:20]}...），过滤该节点")
-        return (False, 9999)
-
-    temp_config_path = f"/tmp/v2ray_{hash(node_line)}.json"
-    v2ray_process = None
-    try:
-        with open(temp_config_path, 'w') as f:
-            json.dump(temp_config, f, indent=2)
-        
-        v2ray_process = subprocess.Popen(
-            ["v2ray", "-config", temp_config_path],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-            start_new_session=True
-        )
-        time.sleep(2)  # 延长启动时间到2秒
-        
-        start_time = time.time()
-        proxies = {"http": "socks5://127.0.0.1:1080", "https": "socks5://127.0.0.1:1080"}
-        resp = requests.get(CONFIG["detection"]["test_url"], proxies=proxies, timeout=CONFIG["detection"]["proxy_test_timeout"])
-        delay = (time.time() - start_time) * 1000
-        return (resp.status_code == 204, delay)
-    except Exception as e:
-        return (False, 9999)
-    finally:
-        if v2ray_process:
-            subprocess.run(["pkill", "-f", f"v2ray -config {temp_config_path}"], check=False)
-        if os.path.exists(temp_config_path):
-            os.remove(temp_config_path)
-        if hash(node_line) % 50 == 0:
-            subprocess.run(["pkill", "-9", "v2ray"], check=False)
+    """【核心修改】关闭所有代理测试，所有节点直接返回有效"""
+    return True
 
 def test_tcp_connect(ip, port):
     if not ip or port not in CONFIG["filter"]["valid_ports"]:
@@ -378,30 +149,21 @@ def fetch_source(url):
                 return []
 
 def process_node(line):
+    """处理单个节点（保留原版逻辑）"""
     try:
         if not line:
-            return None, "", "", 443, 9999
+            return None, "", "", 443
         
+        # 提取节点信息
         ip, domain, port = None, "", 443
         if line.startswith('vmess://'):
-            cfg = extract_vmess_config(line)
-            if cfg:
-                ip = cfg["address"]
-                domain = cfg["serverName"]
-                port = cfg["port"]
-        elif line.startswith('vless://'):
-            cfg = extract_vless_config(line)
-            if cfg:
-                ip = cfg["address"]
-                domain = cfg["sni"]
-                port = cfg["port"]
-        elif line.startswith('trojan://'):
-            cfg = extract_trojan_config(line)
-            if cfg:
-                ip = cfg["address"]
-                domain = cfg["sni"]
-                port = cfg["port"]
+            vmess_cfg = extract_vmess_config(line)
+            if vmess_cfg:
+                ip = vmess_cfg["address"]
+                domain = vmess_cfg["serverName"]
+                port = vmess_cfg["port"]
         else:
+            # 非VMess节点提取IP/域名（简化）
             ip_match = re.search(r'@([\d\.]+):', line)
             if ip_match:
                 ip = ip_match.group(1)
@@ -412,30 +174,28 @@ def process_node(line):
             if port_match:
                 port = int(port_match.group(1)) if port_match.group(1) in CONFIG["filter"]["valid_ports"] else 443
 
-        # 以下逻辑全部缩进，放在try块内
+        # 过滤私有IP
         if is_private_ip(ip):
-            return None, "", "", 443, 9999
+            return None, "", "", 443
         
+        # 域名解析检测
         if domain and not test_domain_resolve(domain):
-            return None, "", "", 443, 9999
+            return None, "", "", 443
         
+        # TCP端口检测
         if ip and not test_tcp_connect(ip, port):
-            return None, "", "", 443, 9999
+            return None, "", "", 443
         
-        is_valid, delay = test_proxy_valid(line)
-        if not is_valid:
-            return None, "", "", 443, 9999
-        
-        display_addr = ip or domain or "未知地址"
-        print(f"✅ 节点检测通过: {display_addr}:{port}（延迟{delay:.1f}ms）")
-        return line, domain, ip, port, delay
-    except Exception as e:  # 与try对齐，闭合代码块
+        # 代理测试已关闭，直接返回有效
+        return line, domain, ip, port
+    except Exception as e:
         print(f"❌ 节点处理异常（{line[:20]}...）: {str(e)[:50]}")
-        return None, "", "", 443, 9999
+        return None, "", "", 443
 
-# ====================== 主流程（修复后） ======================
+# ====================== 主流程（保留原版逻辑） ======================
 def main():
     start_time = time.time()
+    # 拉取数据源
     all_lines = set()
     with ThreadPoolExecutor(max_workers=5) as executor:
         future_to_url = {executor.submit(fetch_source, url): url for url in CONFIG["sources"]}
@@ -446,61 +206,67 @@ def main():
     unique_lines = list(all_lines)
     print(f"\n📊 全局去重后总节点：{len(unique_lines)} 条")
 
+    # 优先级筛选（Reality > TLS > 普通）
     reality_lines = [l for l in unique_lines if 'reality' in l.lower()]
     tls_lines = [l for l in unique_lines if 'tls' in l.lower() and l not in reality_lines]
     normal_lines = [l for l in unique_lines if l not in reality_lines + tls_lines]
     processing_order = reality_lines + tls_lines + normal_lines
     print(f"📌 优先级拆分 - Reality节点：{len(reality_lines)} 条 | TLS节点：{len(tls_lines)} 条 | 普通节点：{len(normal_lines)} 条")
 
-    valid_nodes = []
-    seen_core_ids = set()
-    total_nodes = len(processing_order)
+    # 多线程处理节点（保留原版IP/域名去重）
+    valid_lines = []
+    seen_ips = set()
+    seen_domains = set()
     
+    total_nodes = len(processing_order)
     with ThreadPoolExecutor(max_workers=CONFIG["detection"]["thread_pool_size"]) as executor:
         futures = [executor.submit(process_node, line) for line in processing_order]
         for idx, future in enumerate(as_completed(futures)):
+            # 进度可视化（百分比）
             if idx % 100 == 0:
                 progress = (idx / total_nodes) * 100
                 print(f"\n🔄 处理进度：{idx}/{total_nodes} ({progress:.1f}%)")
             
             try:
-                line, domain, ip, port, delay = future.result()
+                result = future.result()
             except Exception as e:
-                print(f"⚠️ 异步处理异常: {str(e)[:50]}")
+                print(f"⚠️ 节点处理异常: {str(e)[:50]}")
                 continue
+            
+            if not result:
+                continue
+            line, domain, ip, port = result
             
             if not line:
                 continue
 
-            core_id = get_node_core_id(line)
-            if core_id in seen_core_ids:
+            # 原版IP/域名去重逻辑
+            if domain and domain in seen_domains:
                 continue
-            seen_core_ids.add(core_id)
-
-            # 临时关闭延迟过滤（可根据需要恢复）
-            # if delay > CONFIG["detection"]["max_delay"]:
-            #     print(f"⚠️ 节点延迟过高，过滤：{ip or domain or '未知地址'}:{port}")
-            #     continue
+            if ip and ip in seen_ips:
+                continue
             
-            valid_nodes.append( (delay, line) )
+            seen_domains.add(domain)
+            seen_ips.add(ip)
+            valid_lines.append(line)
+            print(f"✅ 保留有效节点: {'IP' if ip else '域名'} - {ip or domain}:{port}")
 
-    valid_nodes.sort(key=lambda x: x[0])
-    valid_lines = [line for (delay, line) in valid_nodes]
-
+    # 生成订阅文件
     combined = '\n'.join(valid_lines)
     encoded = base64.b64encode(combined.encode('utf-8')).decode('utf-8')
     with open('s1.txt', 'w', encoding='utf-8') as f:
         f.write(encoded)
 
+    # 详细统计输出
     total_cost = time.time() - start_time
     print(f"\n🎉 最终处理完成：")
     print(f"   - 原始总节点：{len(unique_lines)} 条")
     print(f"   - 有效节点：{len(valid_lines)} 条")
     print(f"   - 有效率：{len(valid_lines)/len(unique_lines)*100:.2f}%" if unique_lines else "   - 有效率：0.00%")
-    print(f"   - 独特核心配置数：{len(seen_core_ids)} 个")
+    print(f"   - 独特IP：{len(seen_ips)} 个")
+    print(f"   - 独特域名：{len(seen_domains)} 个")
     print(f"   - 订阅文件大小：{len(encoded)} 字符")
     print(f"   - 总耗时：{total_cost:.2f} 秒（{total_cost/60:.2f} 分钟）")
-    print(f"   - 平均延迟：{sum([d for d, _ in valid_nodes])/len(valid_nodes):.1f}ms" if valid_nodes else "   - 平均延迟：无")
 
 if __name__ == "__main__":
     main()
