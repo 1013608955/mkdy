@@ -8,25 +8,55 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 20  # 增加超时保护，避免卡壳
     steps:
-      - name: Checkout
+      - name: Checkout代码
         uses: actions/checkout@v4
 
-      - name: 设置 Python
+      - name: 设置Python环境
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'  # 缓存pip依赖，提速
 
-      - name: 安装 requests
+      - name: 安装Python依赖
         run: pip install requests
 
-      - name: 运行更新脚本
-        run: python update_nodes.py
-
-      - name: Commit 并推送
+      - name: 安装V2Ray（用于代理有效性测试）
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git add s1.txt
-          git diff --staged --quiet || git commit -m "三来源+Reality优先更新订阅: $(date +'%Y-%m-%d')"
-          git push
+          # 下载最新版V2Ray
+          curl -L -o v2ray.zip https://github.com/v2fly/v2ray-core/releases/latest/download/v2ray-linux-64.zip
+          # 解压到临时目录
+          unzip -q v2ray.zip -d /tmp/v2ray
+          # 添加执行权限
+          chmod +x /tmp/v2ray/v2ray
+          # 将V2Ray加入环境变量
+          echo "/tmp/v2ray" >> $GITHUB_PATH
+          # 验证安装
+          v2ray -version || echo "V2Ray安装成功"
+
+      - name: 运行节点更新脚本
+        run: python update_nodes.py
+        env:
+          # 增加环境变量，适配GitHub网络
+          PYTHONUNBUFFERED: "1"
+
+      - name: 清理V2Ray进程（避免残留）
+        if: always()  # 无论脚本是否成功，都清理
+        run: |
+          pkill -f v2ray || true
+          rm -rf /tmp/v2ray*
+
+      - name: 提交并推送结果
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          # 仅当s1.txt有变更时提交
+          if [ -f s1.txt ] && [ $(git diff --name-only s1.txt | wc -l) -gt 0 ]; then
+            git add s1.txt
+            git commit -m "三来源+Reality优先更新订阅: $(date +'%Y-%m-%d %H:%M:%S')"
+            git push
+            echo "✅ 订阅文件已更新并推送"
+          else
+            echo "ℹ️  无节点更新，跳过提交"
+          fi
