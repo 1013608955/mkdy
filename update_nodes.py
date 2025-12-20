@@ -8,7 +8,7 @@ import json
 sources = [
     "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",
     "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt",
-    "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/all_extracted_configs.txt",
+    "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt",
 ]
 
 all_lines = set()
