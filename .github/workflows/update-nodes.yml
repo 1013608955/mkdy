@@ -8,7 +8,7 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 20  # 增加超时保护，避免卡壳
+    timeout-minutes: 150  # 增加超时保护，避免卡壳
     steps:
       - name: Checkout代码
         uses: actions/checkout@v4
