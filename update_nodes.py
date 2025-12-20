@@ -4,10 +4,12 @@ import socket
 import base64
 import json
 import binascii
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import subprocess
+import os
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# ====================== 配置项抽离（便于维护） ======================
+# ====================== 配置项 ======================
 CONFIG = {
     "sources": [
         "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/Splitted-By-Protocol/vmess.txt",
@@ -23,8 +25,9 @@ CONFIG = {
     },
     "detection": {
         "tcp_timeout": 1,
-        "thread_pool_size": 20,
-        "test_url": "http://www.google.com/generate_204"
+        "proxy_test_timeout": 5,  # 代理测试超时（秒）
+        "thread_pool_size": 10,   # 降低线程数，避免V2Ray进程冲突
+        "test_url": "http://www.google.com/generate_204"  # 测试代理是否能访问外网
     },
     "filter": {
         "private_ips": [
@@ -38,7 +41,7 @@ CONFIG = {
     }
 }
 
-# ====================== 工具函数优化 ======================
+# ====================== 工具函数 ======================
 def is_base64(s):
     if not s or len(s) < 4:
         return False
@@ -55,7 +58,6 @@ def decode_base64_sub(text):
     clean_text = re.sub(r'\s+', '', text.strip())
     if not clean_text:
         return text
-    
     if is_base64(clean_text):
         try:
             padding = 4 - len(clean_text) % 4
@@ -65,7 +67,7 @@ def decode_base64_sub(text):
             print(f"✅ Base64解码成功，解析出明文内容（长度：{len(decoded)}）")
             return decoded
         except Exception as e:
-            print(f"❌ Base64解码失败，使用原文本: {str(e)[:50]}")
+            print(f"❌ Base64解码失败: {str(e)[:50]}")
             return text
     else:
         return text
@@ -78,64 +80,112 @@ def is_private_ip(ip):
             return True
     return False
 
-def extract_ip_domain_port(line):
-    if not line:
-        return None, None, 443
+def test_domain_resolve(domain):
+    """检测域名是否能解析"""
+    if not domain or domain == "未知":
+        return False
+    try:
+        socket.gethostbyname_ex(domain)
+        return True
+    except socket.gaierror:
+        return False
+
+def extract_vmess_config(vmess_line):
+    """解析VMess节点为V2Ray配置格式"""
+    try:
+        vmess_part = vmess_line[8:].strip()
+        vmess_part = vmess_part.encode('ascii', 'ignore').decode('ascii')
+        padding = 4 - len(vmess_part) % 4
+        if padding != 4:
+            vmess_part += '=' * padding
+        decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
+        cfg = json.loads(decoded)
+        return {
+            "address": cfg.get('add'),
+            "port": cfg.get('port', 443),
+            "id": cfg.get('id'),
+            "alterId": cfg.get('aid', 0),
+            "security": cfg.get('security', 'auto'),
+            "network": cfg.get('net', 'tcp'),
+            "tls": cfg.get('tls', ''),
+            "serverName": cfg.get('host') or cfg.get('sni')
+        }
+    except Exception as e:
+        return None
+
+def test_proxy_valid(node_line):
+    """测试代理是否能实际访问外网（仅支持VMess）"""
+    if not node_line.startswith('vmess://'):
+        return True  # 非VMess节点暂时跳过测试（可后续扩展）
     
-    ip = domain = None
-    port = 443
+    # 解析VMess配置
+    vmess_cfg = extract_vmess_config(node_line)
+    if not vmess_cfg or not vmess_cfg["address"] or not vmess_cfg["id"]:
+        return False
 
-    # 提取端口并验证有效性
-    port_match = re.search(r':(\d+)', line)
-    if port_match:
-        port = int(port_match.group(1))
-        if port not in CONFIG["filter"]["valid_ports"]:
-            port = 443
-
-    # 解析VMess节点（核心修复：清理非ASCII字符）
-    if line.startswith('vmess://'):
-        try:
-            vmess_part = line[8:].strip()
-            if not vmess_part:
-                return None, None, 443
-            
-            # 关键修复：过滤非ASCII字符（base64解码仅支持ASCII）
-            vmess_part = vmess_part.encode('ascii', 'ignore').decode('ascii')
-            
-            # 补位并解码
-            padding = 4 - len(vmess_part) % 4
-            if padding != 4:
-                vmess_part += '=' * padding
-            decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
-            cfg = json.loads(decoded)
-            ip = cfg.get('add')
-            domain = cfg.get('host') or cfg.get('sni')
-            port = cfg.get('port', 443)
-            
-            if is_private_ip(ip):
-                ip = None
-        except (json.JSONDecodeError, binascii.Error, ValueError, TypeError):
-            # 捕获所有解码相关异常，避免中断
-            return None, None, 443
-
-    # 提取非VMess节点的IP
-    if not ip:
-        ip_match = re.search(r'@([\d\.]+):', line)
-        if ip_match:
-            ip = ip_match.group(1)
-            if is_private_ip(ip):
-                ip = None
-
-    # 提取非VMess节点的域名
-    if not domain:
-        domain_match = re.search(r'sni=([^&]+)|host=([^&]+)|peer=([^&]+)', line, re.IGNORECASE)
-        if domain_match:
-            domain = next((g for g in domain_match.groups() if g), None)
-
-    if port not in CONFIG["filter"]["valid_ports"]:
-        port = 443
-
-    return ip, domain or "", port
+    # 生成临时V2Ray配置文件
+    temp_config = {
+        "inbounds": [
+            {
+                "port": 1080,
+                "listen": "127.0.0.1",
+                "protocol": "socks",
+                "settings": {"auth": "noauth", "udp": True}
+            }
+        ],
+        "outbounds": [
+            {
+                "protocol": "vmess",
+                "settings": {
+                    "vnext": [
+                        {
+                            "address": vmess_cfg["address"],
+                            "port": vmess_cfg["port"],
+                            "users": [
+                                {
+                                    "id": vmess_cfg["id"],
+                                    "alterId": vmess_cfg["alterId"],
+                                    "security": vmess_cfg["security"]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "streamSettings": {
+                    "network": vmess_cfg["network"],
+                    "security": vmess_cfg["tls"],
+                    "tlsSettings": {"serverName": vmess_cfg["serverName"]} if vmess_cfg["tls"] else {}
+                }
+            }
+        ]
+    }
+    temp_config_path = f"/tmp/v2ray_{hash(node_line)}.json"
+    v2ray_process = None
+    try:
+        # 写入临时配置
+        with open(temp_config_path, 'w') as f:
+            json.dump(temp_config, f)
+        
+        # 启动V2Ray进程
+        v2ray_process = subprocess.Popen(
+            ["v2ray", "-config", temp_config_path],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            start_new_session=True
+        )
+        time.sleep(2)  # 等待V2Ray启动
+        
+        # 测试代理
+        proxies = {"http": "socks5://127.0.0.1:1080", "https": "socks5://127.0.0.1:1080"}
+        resp = requests.get(CONFIG["detection"]["test_url"], proxies=proxies, timeout=CONFIG["detection"]["proxy_test_timeout"])
+        return resp.status_code == 204  # 204表示访问成功
+    except Exception as e:
+        return False
+    finally:
+        # 强制关闭V2Ray进程
+        if v2ray_process:
+            subprocess.run(["pkill", "-f", f"v2ray -config {temp_config_path}"], check=False)
+        if os.path.exists(temp_config_path):
+            os.remove(temp_config_path)
 
 def test_tcp_connect(ip, port):
     if not ip or port not in CONFIG["filter"]["valid_ports"]:
@@ -154,17 +204,13 @@ def fetch_source(url):
             resp = requests.get(url, timeout=CONFIG["request"]["timeout"], headers=headers)
             resp.raise_for_status()
             decoded_content = decode_base64_sub(resp.text)
-            lines = []
-            for line in decoded_content.split('\n'):
-                l = line.strip()
-                if l and not l.startswith('#'):
-                    lines.append(l)
-            print(f"✅ 拉取成功 {url}，有效节点 {len(lines)} 条（重试次数：{retry}）")
+            lines = [l.strip() for l in decoded_content.split('\n') if l.strip() and not l.startswith('#')]
+            print(f"✅ 拉取成功 {url}，有效节点 {len(lines)} 条（重试：{retry}）")
             return lines
         except Exception as e:
             error_msg = str(e)[:80]
             if retry < CONFIG["request"]["retry_times"] - 1:
-                print(f"⚠️ 拉取失败 {url}（重试 {retry+1}/{CONFIG['request']['retry_times']}）: {error_msg}")
+                print(f"⚠️ 拉取失败 {url}（重试 {retry+1}）: {error_msg}")
                 time.sleep(CONFIG["request"]["retry_delay"])
             else:
                 print(f"❌ 拉取最终失败 {url}: {error_msg}")
@@ -174,20 +220,47 @@ def process_node(line):
     if not line:
         return None, "", "", 443
     
-    ip, domain, port = extract_ip_domain_port(line)
-    domain_key = domain if domain else ""
-    ip_key = ip if ip else ""
-    
+    # 提取节点信息
+    ip, domain, port = None, "", 443
+    if line.startswith('vmess://'):
+        vmess_cfg = extract_vmess_config(line)
+        if vmess_cfg:
+            ip = vmess_cfg["address"]
+            domain = vmess_cfg["serverName"]
+            port = vmess_cfg["port"]
+    else:
+        # 非VMess节点提取IP/域名（简化）
+        ip_match = re.search(r'@([\d\.]+):', line)
+        if ip_match:
+            ip = ip_match.group(1)
+        domain_match = re.search(r'sni=([^&]+)|host=([^&]+)', line, re.IGNORECASE)
+        if domain_match:
+            domain = next((g for g in domain_match.groups() if g), "")
+        port_match = re.search(r':(\d+)', line)
+        if port_match:
+            port = int(port_match.group(1)) if port_match.group(1) in CONFIG["filter"]["valid_ports"] else 443
+
+    # 过滤私有IP
     if is_private_ip(ip):
-        return None, domain_key, ip_key, port
+        return None, "", "", 443
     
+    # 域名解析检测
+    if domain and not test_domain_resolve(domain):
+        return None, "", "", 443
+    
+    # TCP端口检测
     if ip and not test_tcp_connect(ip, port):
-        return None, domain_key, ip_key, port
+        return None, "", "", 443
     
-    return line, domain_key, ip_key, port
+    # 代理实际连通性测试
+    if not test_proxy_valid(line):
+        return None, "", "", 443
+    
+    return line, domain, ip, port
 
 # ====================== 主流程 ======================
 def main():
+    # 拉取数据源
     all_lines = set()
     with ThreadPoolExecutor(max_workers=5) as executor:
         future_to_url = {executor.submit(fetch_source, url): url for url in CONFIG["sources"]}
@@ -198,18 +271,13 @@ def main():
     unique_lines = list(all_lines)
     print(f"\n📊 全局去重后总节点：{len(unique_lines)} 条")
 
-    priority_lines = []
-    normal_lines = []
-    for line in unique_lines:
-        lower_line = line.lower()
-        if 'reality' in lower_line or 'tls' in lower_line:
-            priority_lines.append(line)
-        else:
-            normal_lines.append(line)
-    
+    # 优先级筛选（Reality/TLS优先）
+    priority_lines = [l for l in unique_lines if 'reality' in l.lower() or 'tls' in l.lower()]
+    normal_lines = [l for l in unique_lines if l not in priority_lines]
     processing_order = priority_lines + normal_lines
-    print(f"📌 优先（Reality/TLS）节点：{len(priority_lines)} 条，普通节点：{len(normal_lines)} 条")
+    print(f"📌 优先节点：{len(priority_lines)} 条，普通节点：{len(normal_lines)} 条")
 
+    # 多线程处理节点
     valid_lines = []
     seen_ips = set()
     seen_domains = set()
@@ -217,7 +285,7 @@ def main():
     with ThreadPoolExecutor(max_workers=CONFIG["detection"]["thread_pool_size"]) as executor:
         futures = [executor.submit(process_node, line) for line in processing_order]
         for idx, future in enumerate(as_completed(futures)):
-            if idx % 500 == 0:
+            if idx % 100 == 0:
                 print(f"\n🔄 处理进度：{idx}/{len(processing_order)}")
             
             try:
@@ -228,37 +296,30 @@ def main():
             
             if not result:
                 continue
-            line, domain_key, ip_key, port = result
+            line, domain, ip, port = result
             
             if not line:
                 continue
 
-            if domain_key and domain_key in seen_domains:
+            # 去重
+            if domain and domain in seen_domains:
                 continue
-            if domain_key:
-                seen_domains.add(domain_key)
-
-            if ip_key and ip_key in seen_ips:
+            if ip and ip in seen_ips:
                 continue
-            if ip_key:
-                seen_ips.add(ip_key)
-
+            
+            seen_domains.add(domain)
+            seen_ips.add(ip)
             valid_lines.append(line)
-            if ip_key:
-                print(f"✅ 保留IP节点: {ip_key}:{port}")
-            else:
-                print(f"✅ 保留域名节点: {domain_key or '未知'}")
+            print(f"✅ 保留有效节点: {'IP' if ip else '域名'} - {ip or domain}:{port}")
 
+    # 生成订阅文件
     combined = '\n'.join(valid_lines)
     encoded = base64.b64encode(combined.encode('utf-8')).decode('utf-8')
-
     with open('s1.txt', 'w', encoding='utf-8') as f:
         f.write(encoded)
 
     print(f"\n🎉 最终处理完成：")
-    print(f"   - 有效节点总数：{len(valid_lines)} 条")
-    print(f"   - 独特IP数量：{len(seen_ips)} 个")
-    print(f"   - 独特域名数量：{len(seen_domains)} 个")
+    print(f"   - 实际可用节点：{len(valid_lines)} 条")
     print(f"   - 订阅文件大小：{len(encoded)} 个Base64字符")
 
 if __name__ == "__main__":
