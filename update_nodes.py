@@ -7,7 +7,7 @@ import binascii
 
 # 数据源（支持返回明文/Base64编码的订阅链接）
 sources = [
-    "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",
+    "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/Splitted-By-Protocol/vmess.txt",
     "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt",
     "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt",
 ]
