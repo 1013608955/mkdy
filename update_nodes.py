@@ -8,7 +8,7 @@ import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# ====================== 配置项（移除代理测试相关参数） ======================
+# ====================== 配置项（轻度优化TCP检测，减少误删） ======================
 CONFIG = {
     "sources": [
         "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/Splitted-By-Protocol/vmess.txt",
@@ -24,7 +24,8 @@ CONFIG = {
         "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     },
     "detection": {
-        "tcp_timeout": 1,  # 仅保留TCP连接检测超时
+        "tcp_timeout": 3,  # 延长到3秒，适配海外慢节点
+        "tcp_retry": 1,    # 新增：TCP连接失败后重试1次
         "thread_pool_size": 15,
     },
     "filter": {
@@ -39,7 +40,7 @@ CONFIG = {
     }
 }
 
-# ====================== 工具函数（移除代理测试相关函数） ======================
+# ====================== 工具函数（优化TCP连接检测，增加重试） ======================
 def is_base64(s):
     if not s or len(s) < 4:
         return False
@@ -174,15 +175,26 @@ def extract_trojan_config(trojan_line):
         return None
 
 def test_tcp_connect(ip, port):
-    """检测IP+端口的TCP连接"""
+    """优化后的TCP连接检测：增加重试+延长超时，减少误判"""
     if not ip or port not in CONFIG["filter"]["valid_ports"]:
         return False
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.settimeout(CONFIG["detection"]["tcp_timeout"])
-            return sock.connect_ex((ip, port)) == 0
-    except (socket.gaierror, socket.timeout, OSError):
-        return False
+    
+    # 循环重试（基础1次 + 配置的重试次数）
+    for retry_num in range(CONFIG["detection"]["tcp_retry"] + 1):
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+                sock.settimeout(CONFIG["detection"]["tcp_timeout"])
+                # connect_ex返回0表示连接成功，非0失败
+                if sock.connect_ex((ip, port)) == 0:
+                    return True
+            # 重试间隔0.5秒，避免频繁检测被屏蔽
+            if retry_num < CONFIG["detection"]["tcp_retry"]:
+                time.sleep(0.5)
+        except (socket.gaierror, socket.timeout, OSError):
+            continue
+    
+    # 所有重试都失败，判定为连接失败
+    return False
 
 def fetch_source(url):
     """拉取远程节点数据源"""
@@ -205,7 +217,7 @@ def fetch_source(url):
                 return []
 
 def process_node(line):
-    """处理单个节点：仅保留基础过滤（移除代理测试）"""
+    """处理单个节点：仅保留基础过滤（减少误删）"""
     try:
         if not line:
             return None, "", "", 443
@@ -241,7 +253,7 @@ def process_node(line):
             if port_match:
                 port = int(port_match.group(1)) if port_match.group(1) in CONFIG["filter"]["valid_ports"] else 443
 
-        # 仅保留基础过滤逻辑
+        # 基础过滤逻辑（仅3条，减少误删）
         if is_private_ip(ip):
             print(f"❌ 过滤私有IP节点：{ip}:{port}")
             return None, "", "", 443
@@ -249,16 +261,16 @@ def process_node(line):
             print(f"❌ 过滤域名解析失败节点：{domain}:{port}")
             return None, "", "", 443
         if ip and not test_tcp_connect(ip, port):
-            print(f"❌ 过滤TCP连接失败节点：{ip}:{port}")
+            print(f"❌ 过滤TCP连接失败节点：{ip}:{port}（超时{CONFIG['detection']['tcp_timeout']}秒，重试{CONFIG['detection']['tcp_retry']}次）")
             return None, "", "", 443
         
-        # 移除代理测试，直接返回有效节点
+        # 无过滤则返回有效节点
         return line, domain, ip, port
     except Exception as e:
         print(f"❌ 节点处理异常（{line[:20]}...）: {str(e)[:50]}")
         return None, "", "", 443
 
-# ====================== 主流程（保留去重逻辑） ======================
+# ====================== 主流程（保留去重+优先级筛选） ======================
 def main():
     start_time = time.time()
     # 拉取数据源
@@ -330,6 +342,7 @@ def main():
     print(f"   - 过滤后可用节点：{len(valid_lines)} 条")
     print(f"   - 独特IP：{len(seen_ips)} 个")
     print(f"   - 独特域名：{len(seen_domains)} 个")
+    print(f"   - TCP检测规则：超时{CONFIG['detection']['tcp_timeout']}秒，重试{CONFIG['detection']['tcp_retry']}次")
     print(f"   - 总耗时：{total_cost:.2f} 秒（{total_cost/60:.2f} 分钟）")
     print(f"   - 节点已保存至：s1.txt（Base64编码格式）")
 
