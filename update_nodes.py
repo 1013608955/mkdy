@@ -779,20 +779,47 @@ def main():
             url = future_to_url[future]
             try:
                 lines, weight = future.result()
+                proto_count = count_protocol_nodes(lines)
                 source_records[url] = {
                     "original": lines,
                     "original_count": len(lines),
                     "weight": weight,
-                    "protocol_count": count_protocol_nodes(lines)
+                    "protocol_count": proto_count
                 }
                 # 加入总列表（带权重）
                 for line in lines:
                     all_nodes.append({"line": line, "weight": weight})
             except Exception as e:
                 LOG.info(f"❌ 处理订阅源{url}异常：{str(e)[:50]}")
+                # 异常源也记录，避免统计时KeyError
+                source_records[url] = {
+                    "original": [],
+                    "original_count": 0,
+                    "weight": 0,
+                    "protocol_count": count_protocol_nodes([])
+                }
+    
+    # 新增：输出各数据源详细统计
+    LOG.info(f"\n📋 各数据源详细统计：")
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    for idx, src in enumerate(CONFIG["sources"], 1):
+        url = src["url"]
+        record = source_records.get(url, {
+            "original_count": 0,
+            "protocol_count": count_protocol_nodes([])
+        })
+        original_count = record["original_count"]
+        proto_count = record["protocol_count"]
+        # 输出数据源序号和URL
+        LOG.info(f"{current_time} -    {idx}. {url}")
+        # 输出该源的节点统计
+        stat_line = (f"{current_time} -       - 📝 原始节点数：{original_count} 条 "
+                     f"（VMess：{proto_count['vmess']} | VLESS：{proto_count['vless']} | Trojan：{proto_count['trojan']} | "
+                     f"SS：{proto_count['ss']} | Hysteria：{proto_count['hysteria']} | 其他：{proto_count['other']}）")
+        LOG.info(stat_line)
     
     # 2. 按权重去重
-    LOG.info(f"📊 拉取完成，原始节点总数：{len(all_nodes)} 条")
+    LOG.info(f"\n📊 拉取完成，原始节点总数：{len(all_nodes)} 条")
     unique_lines = deduplicate_nodes(all_nodes)
     LOG.info(f"🔍 去重后节点总数：{len(unique_lines)} 条")
     
