@@ -13,18 +13,30 @@ import platform
 from urllib.parse import unquote
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# ====================== 日志初始化（增强可维护性） ======================
+# ====================== 日志初始化（自定义格式+图标） ======================
 def init_logger():
-    """初始化日志（适配GitHub Actions）"""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(message)s",
-        handlers=[
-            logging.StreamHandler(),  # 控制台输出
-            logging.FileHandler("crawl.log", encoding="utf-8")  # 文件输出
-        ]
+    """初始化日志（自定义时间格式+图标替代级别）"""
+    # 自定义时间格式
+    formatter = logging.Formatter(
+        "%(asctime)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S"  # 时间格式改为指定样式
     )
-    return logging.getLogger(__name__)
+    
+    # 控制台处理器
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+    
+    # 文件处理器
+    file_handler = logging.FileHandler("crawl.log", encoding="utf-8")
+    file_handler.setFormatter(formatter)
+    
+    # 配置logger
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+    logger.addHandler(console_handler)
+    logger.addHandler(file_handler)
+    
+    return logger
 
 LOG = init_logger()
 
@@ -126,10 +138,10 @@ def decode_base64_sub(text):
             if padding != 4:
                 clean_text += '=' * padding
             decoded = base64.b64decode(clean_text).decode('utf-8', errors='ignore')
-            LOG.info(f"Base64解码成功，解析出明文内容（长度：{len(decoded)}）")
+            LOG.info(f"✅ Base64解码成功，解析出明文内容（长度：{len(decoded)}）")
             return decoded
         except Exception as e:
-            LOG.error(f"Base64解码失败: {str(e)[:50]}")
+            LOG.info(f"❌ Base64解码失败: {str(e)[:50]}")
             return text
     else:
         return text
@@ -172,7 +184,7 @@ def test_domain_resolve(domain):
     # 写入DNS缓存
     DNS_CACHE[domain] = (time.time(), resolve_success)
     if not resolve_success:
-        LOG.warning(f"域名{domain}解析失败（所有DNS源均失败），将尝试IP直连检测")
+        LOG.info(f"⚠️ 域名{domain}解析失败（所有DNS源均失败），将尝试IP直连检测")
     return resolve_success
 
 def clean_vmess_json(decoded_str):
@@ -185,7 +197,7 @@ def clean_vmess_json(decoded_str):
             return clean_json
         return decoded_str
     except Exception as e:
-        LOG.warning(f"清理VMess JSON乱码失败：{str(e)[:50]}")
+        LOG.info(f"⚠️ 清理VMess JSON乱码失败：{str(e)[:50]}")
         return decoded_str
 
 def truncate_remark(remark):
@@ -217,10 +229,10 @@ def truncate_remark(remark):
         if len(truncated_remark.encode('utf-8')) + len(ellipsis.encode('utf-8')) <= max_bytes:
             truncated_remark += ellipsis
         
-        LOG.warning(f"备注字节数超限（原{len(remark_bytes)}字节），已截断为{len(truncated_remark.encode('utf-8'))}字节：{truncated_remark[:20]}...")
+        LOG.info(f"⚠️ 备注字节数超限（原{len(remark_bytes)}字节），已截断为{len(truncated_remark.encode('utf-8'))}字节：{truncated_remark[:20]}...")
         return truncated_remark
     except Exception as e:
-        LOG.warning(f"备注截断失败：{str(e)[:30]}，使用默认备注")
+        LOG.info(f"⚠️ 备注截断失败：{str(e)[:30]}，使用默认备注")
         return "默认节点"
 
 def test_tcp_connect(ip, port):
@@ -273,7 +285,7 @@ def ping_delay(ip):
                 delay = float(delay_match.group(1) or delay_match.group(2))
                 return min(int(delay), 9999)
     except Exception as e:
-        LOG.debug(f"检测{ip}延迟失败：{str(e)[:30]}")
+        LOG.info(f"🐞 检测{ip}延迟失败：{str(e)[:30]}")
     
     return 9999
 
@@ -339,7 +351,7 @@ def extract_vmess_config(vmess_line):
             "ps": cfg["ps"]
         }
     except json.JSONDecodeError as e:
-        LOG.warning(f"VMess JSON解析失败（{vmess_line[:20]}...）: {str(e)[:50]}")
+        LOG.info(f"⚠️ VMess JSON解析失败（{vmess_line[:20]}...）: {str(e)[:50]}")
         try:
             decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
             decoded = clean_vmess_json(decoded)
@@ -368,7 +380,7 @@ def extract_vmess_config(vmess_line):
         except:
             raise Exception(f"JSON解析失败且无法提取核心字段: {str(e)}")
     except Exception as e:
-        LOG.warning(f"VMess解析失败（{vmess_line[:20]}...）: {str(e)[:50]}")
+        LOG.info(f"⚠️ VMess解析失败（{vmess_line[:20]}...）: {str(e)[:50]}")
         return None
 
 def extract_vless_config(vless_line):
@@ -416,7 +428,7 @@ def extract_vless_config(vless_line):
             "remarks": params.get('remarks', '')
         }
     except Exception as e:
-        LOG.warning(f"VLESS解析失败（{vless_line[:20]}...）: {str(e)[:50]}")
+        LOG.info(f"⚠️ VLESS解析失败（{vless_line[:20]}...）: {str(e)[:50]}")
         ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', vless_line)
         if ip_port_match:
             return {
@@ -440,10 +452,10 @@ def extract_trojan_config(trojan_line):
             try:
                 label = truncate_remark(label)
             except Exception as e:
-                LOG.warning(f"Trojan备注截断失败：{str(e)[:30]}（{trojan_line[:20]}...）")
+                LOG.info(f"⚠️ Trojan备注截断失败：{str(e)[:30]}（{trojan_line[:20]}...）")
                 label = "Trojan节点"
             if not label:
-                LOG.warning(f"Trojan节点标签为空（{trojan_line[:20]}...）")
+                LOG.info(f"⚠️ Trojan节点标签为空（{trojan_line[:20]}...）")
         else:
             trojan_part = trojan_line
         
@@ -485,7 +497,7 @@ def extract_trojan_config(trojan_line):
         }
     except Exception as e:
         if any(keyword in str(e).lower() for keyword in ["label", "empty", "too long", "truncate"]):
-            LOG.warning(f"Trojan节点标签异常（非核心，保留节点）：{str(e)[:50]}（{trojan_line[:20]}...）")
+            LOG.info(f"⚠️ Trojan节点标签异常（非核心，保留节点）：{str(e)[:50]}（{trojan_line[:20]}...）")
             ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', trojan_line)
             if ip_port_match:
                 return {
@@ -497,7 +509,7 @@ def extract_trojan_config(trojan_line):
                     "label": "Trojan节点"
                 }
         else:
-            LOG.error(f"Trojan核心字段解析失败（{trojan_line[:20]}...）: {str(e)[:50]}")
+            LOG.info(f"❌ Trojan核心字段解析失败（{trojan_line[:20]}...）: {str(e)[:50]}")
         return None
 
 def extract_ss_config(ss_line):
@@ -514,7 +526,7 @@ def extract_ss_config(ss_line):
                 decoded_ss = base64.b64decode(ss_part).decode('utf-8', errors='ignore')
                 ss_part = decoded_ss
             except Exception as e:
-                LOG.warning(f"SS Base64解码失败（{ss_line[:20]}...）: {str(e)[:50]}")
+                LOG.info(f"⚠️ SS Base64解码失败（{ss_line[:20]}...）: {str(e)[:50]}")
         
         remark = ""
         if '#' in ss_part:
@@ -541,7 +553,7 @@ def extract_ss_config(ss_line):
             "remark": remark
         }
     except Exception as e:
-        LOG.warning(f"SS解析失败（{ss_line[:20]}...）: {str(e)[:50]}")
+        LOG.info(f"⚠️ SS解析失败（{ss_line[:20]}...）: {str(e)[:50]}")
         return None
 
 def extract_hysteria_config(hysteria_line):
@@ -600,7 +612,7 @@ def extract_hysteria_config(hysteria_line):
             "label": label
         }
     except Exception as e:
-        LOG.warning(f"Hysteria解析失败（{hysteria_line[:20]}...）: {str(e)[:50]}")
+        LOG.info(f"⚠️ Hysteria解析失败（{hysteria_line[:20]}...）: {str(e)[:50]}")
         return None
 
 # ====================== 节点处理与拉取函数 ======================
@@ -617,7 +629,7 @@ def fetch_source(url, cache_dir=".cache"):
         if time.time() - cache_mtime < CONFIG["github"]["cache_ttl"]:
             with open(cache_path, "r", encoding="utf-8") as f:
                 lines = json.load(f)
-            LOG.info(f"从缓存加载 {url}，有效节点 {len(lines)} 条")
+            LOG.info(f"✅ 从缓存加载 {url}，有效节点 {len(lines)} 条")
             return lines
     
     # 控制请求频率，避免GitHub限流
@@ -631,7 +643,7 @@ def fetch_source(url, cache_dir=".cache"):
             decoded_content = decode_base64_sub(resp.text)
             lines = [l.strip() for l in decoded_content.split('\n') if l.strip() and not l.startswith('#')]
             proto_count = count_protocol_nodes(lines)
-            LOG.info(f"拉取成功 {url}，有效节点 {len(lines)} 条（VMess：{proto_count['vmess']} | VLESS：{proto_count['vless']} | Trojan：{proto_count['trojan']} | SS：{proto_count['ss']} | Hysteria：{proto_count['hysteria']} | 其他：{proto_count['other']}）（重试：{retry}）")
+            LOG.info(f"✅ 拉取成功 {url}，有效节点 {len(lines)} 条（VMess：{proto_count['vmess']} | VLESS：{proto_count['vless']} | Trojan：{proto_count['trojan']} | SS：{proto_count['ss']} | Hysteria：{proto_count['hysteria']} | 其他：{proto_count['other']}）（重试：{retry}）")
             
             # 写入缓存
             with open(cache_path, "w", encoding="utf-8") as f:
@@ -640,10 +652,10 @@ def fetch_source(url, cache_dir=".cache"):
         except Exception as e:
             error_msg = str(e)[:80]
             if retry < CONFIG["request"]["retry_times"] - 1:
-                LOG.warning(f"拉取失败 {url}（重试 {retry+1}）: {error_msg}")
+                LOG.info(f"⚠️ 拉取失败 {url}（重试 {retry+1}）: {error_msg}")
                 time.sleep(CONFIG["request"]["retry_delay"])
             else:
-                LOG.error(f"拉取最终失败 {url}: {error_msg}")
+                LOG.info(f"❌ 拉取最终失败 {url}: {error_msg}")
                 return []
 
 def process_node(line):
@@ -706,33 +718,33 @@ def process_node(line):
         
         # 过滤私有IP
         if is_private_ip(ip):
-            LOG.info(f"过滤私有IP节点：{ip}:{port}（备注：{remark[:20]}...）")
+            LOG.info(f"📝 过滤私有IP节点：{ip}:{port}（备注：{remark[:20]}...）")
             return None, "", "", 443, 9999
         
         # 测试TCP连接
         if ip and not test_tcp_connect(ip, port):
-            LOG.info(f"过滤TCP连接失败节点：{ip}:{port}（备注：{remark[:20]}...）")
+            LOG.info(f"📝 过滤TCP连接失败节点：{ip}:{port}（备注：{remark[:20]}...）")
             return None, "", "", 443, 9999
         
         # DNS解析提醒
         if domain and not test_domain_resolve(domain):
-            LOG.warning(f"域名{domain}解析失败，但IP{ip}连接正常（备注：{remark[:20]}...）")
+            LOG.info(f"⚠️ 域名{domain}解析失败，但IP{ip}连接正常（备注：{remark[:20]}...）")
         
         # 过滤空地址
         if not ip and not domain:
-            LOG.info(f"过滤空地址节点：{line[:20]}...（备注：{remark[:20]}...）")
+            LOG.info(f"📝 过滤空地址节点：{line[:20]}...（备注：{remark[:20]}...）")
             return None, "", "", 443, 9999
         
         # 检测节点延迟
         delay = ping_delay(ip)
         if delay > CONFIG["quality"]["max_delay"]:
-            LOG.info(f"过滤高延迟节点：{ip}:{port}（延迟：{delay}ms，备注：{remark[:20]}...）")
+            LOG.info(f"📝 过滤高延迟节点：{ip}:{port}（延迟：{delay}ms，备注：{remark[:20]}...）")
             return None, "", "", 443, 9999
         
-        LOG.info(f"保留节点: {'IP' if ip else '域名'} - {ip or domain}:{port}（延迟：{delay}ms，备注：{remark[:20]}...）")
+        LOG.info(f"✅ 保留节点: {'IP' if ip else '域名'} - {ip or domain}:{port}（延迟：{delay}ms，备注：{remark[:20]}...）")
         return line, domain, ip, port, delay
     except Exception as e:
-        LOG.error(f"节点处理异常（{line[:20]}...）: {str(e)[:50]}")
+        LOG.info(f"❌ 节点处理异常（{line[:20]}...）: {str(e)[:50]}")
         return None, "", "", 443, 9999
 
 # ====================== 主函数 ======================
@@ -758,10 +770,10 @@ def main():
                     }
                     all_lines_set.update(lines)
                 except Exception as e:
-                    LOG.error(f"处理订阅源{url}异常：{str(e)[:50]}")
+                    LOG.info(f"❌ 处理订阅源{url}异常：{str(e)[:50]}")
         
         unique_lines = list(all_lines_set)
-        LOG.info(f"\n全局去重后总节点：{len(unique_lines)} 条")
+        LOG.info(f"\n📝 全局去重后总节点：{len(unique_lines)} 条")
 
         # 2. 按协议优先级排序
         reality_lines = [l for l in unique_lines if 'reality' in l.lower()]
@@ -771,7 +783,7 @@ def main():
         normal_lines = [l for l in unique_lines if l not in reality_lines + hysteria_lines + tls_lines + ss_lines]
         processing_order = reality_lines + hysteria_lines + tls_lines + ss_lines + normal_lines
         
-        LOG.info(f"优先级拆分 - Reality节点：{len(reality_lines)} 条 | Hysteria节点：{len(hysteria_lines)} 条 | TLS节点：{len(tls_lines)} 条 | SS节点：{len(ss_lines)} 条 | 普通节点：{len(normal_lines)} 条")
+        LOG.info(f"📝 优先级拆分 - Reality节点：{len(reality_lines)} 条 | Hysteria节点：{len(hysteria_lines)} 条 | TLS节点：{len(tls_lines)} 条 | SS节点：{len(ss_lines)} 条 | 普通节点：{len(normal_lines)} 条")
 
         # 3. 多线程处理节点
         valid_nodes = []  # 存储(延迟, 节点链接)
@@ -784,11 +796,11 @@ def main():
             for idx, future in enumerate(as_completed(futures)):
                 if idx % 100 == 0:
                     progress = (idx / total_nodes) * 100
-                    LOG.info(f"\n处理进度：{idx}/{total_nodes} ({progress:.1f}%)")
+                    LOG.info(f"\n📝 处理进度：{idx}/{total_nodes} ({progress:.1f}%)")
                 try:
                     line, domain, ip, port, delay = future.result()
                 except Exception as e:
-                    LOG.warning(f"节点处理异常: {str(e)[:50]}")
+                    LOG.info(f"⚠️ 节点处理异常: {str(e)[:50]}")
                     continue
                 if not line:
                     continue
@@ -816,31 +828,31 @@ def main():
         # 6. 输出统计信息
         total_cost = time.time() - start_time
         valid_proto_count = count_protocol_nodes(valid_lines)
-        LOG.info(f"\n最终处理完成：")
-        LOG.info(f"   - 原始总节点：{len(unique_lines)} 条")
-        LOG.info(f"   - 过滤后可用节点：{len(valid_lines)} 条")
-        LOG.info(f"   - 有效节点协议分布：VMess：{valid_proto_count['vmess']} | VLESS：{valid_proto_count['vless']} | Trojan：{valid_proto_count['trojan']} | SS：{valid_proto_count['ss']} | Hysteria：{valid_proto_count['hysteria']} | 其他：{valid_proto_count['other']}")
-        LOG.info(f"   - 独特IP：{len(seen_ips)} 个")
-        LOG.info(f"   - 独特域名：{len(seen_domains)} 个")
-        LOG.info(f"   - 备注最大字节数：{CONFIG['filter']['max_remark_bytes']}（UTF-8）")
-        LOG.info(f"   - 总耗时：{total_cost:.2f} 秒（{total_cost/60:.2f} 分钟）")
-        LOG.info(f"   - 节点已保存至：s1.txt（Base64编码格式）")
+        LOG.info(f"\n🎉 最终处理完成：")
+        LOG.info(f"   - 📝 原始总节点：{len(unique_lines)} 条")
+        LOG.info(f"   - ✅ 过滤后可用节点：{len(valid_lines)} 条")
+        LOG.info(f"   - 📊 有效节点协议分布：VMess：{valid_proto_count['vmess']} | VLESS：{valid_proto_count['vless']} | Trojan：{valid_proto_count['trojan']} | SS：{valid_proto_count['ss']} | Hysteria：{valid_proto_count['hysteria']} | 其他：{valid_proto_count['other']}")
+        LOG.info(f"   - 🌐 独特IP：{len(seen_ips)} 个")
+        LOG.info(f"   - 📛 独特域名：{len(seen_domains)} 个")
+        LOG.info(f"   - 🔤 备注最大字节数：{CONFIG['filter']['max_remark_bytes']}（UTF-8）")
+        LOG.info(f"   - ⏱️ 总耗时：{total_cost:.2f} 秒（{total_cost/60:.2f} 分钟）")
+        LOG.info(f"   - 📄 节点已保存至：s1.txt（Base64编码格式）")
 
         # 7. 各数据源统计
-        LOG.info("\n各数据源详细统计：")
+        LOG.info("\n📋 各数据源详细统计：")
         for idx, (url, stats) in enumerate(source_records.items(), 1):
             original_count = stats['original_count']
             proto_count = stats['protocol_count']
             retained_count = len([line for line in stats['original'] if line in valid_lines])
             retention_rate = (retained_count / original_count * 100) if original_count > 0 else 0.0
             LOG.info(f"   {idx}. {url}")
-            LOG.info(f"      - 原始节点数：{original_count} 条（VMess：{proto_count['vmess']} | VLESS：{proto_count['vless']} | Trojan：{proto_count['trojan']} | SS：{proto_count['ss']} | Hysteria：{proto_count['hysteria']} | 其他：{proto_count['other']}）")
-            LOG.info(f"      - 最终保留：{retained_count} 条 | 保留率：{retention_rate:.2f}%")
+            LOG.info(f"      - 📝 原始节点数：{original_count} 条（VMess：{proto_count['vmess']} | VLESS：{proto_count['vless']} | Trojan：{proto_count['trojan']} | SS：{proto_count['ss']} | Hysteria：{proto_count['hysteria']} | 其他：{proto_count['other']}）")
+            LOG.info(f"      - ✅ 最终保留：{retained_count} 条 | 📈 保留率：{retention_rate:.2f}%")
     
     except KeyboardInterrupt:
-        LOG.warning("脚本被手动中断")
+        LOG.info("⚠️ 脚本被手动中断")
     except Exception as e:
-        LOG.error(f"脚本运行异常：{str(e)}")
+        LOG.info(f"❌ 脚本运行异常：{str(e)}")
         # 记录错误日志
         with open("error.log", "w", encoding="utf-8") as f:
             f.write(f"Error: {str(e)}\nTime: {time.ctime()}")
@@ -848,7 +860,7 @@ def main():
     finally:
         # 释放资源
         SESSION.close()
-        LOG.info(f"脚本结束，总耗时：{time.time()-start_time:.2f}秒")
+        LOG.info(f"🔚 脚本结束，总耗时：{time.time()-start_time:.2f}秒")
 
 if __name__ == "__main__":
     main()
