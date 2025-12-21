@@ -85,13 +85,16 @@ def validate_port(port: Union[str, int]) -> int:
         return 443
 
 def log_msg(content: str, line: str = "", proto: str = "") -> str:
-    """精简日志格式化：仅在非保留节点日志时显示line前缀（纯ASCII）"""
+    """精简日志格式化：仅在非保留节点日志时显示line（完整/前缀）"""
     if "保留节点" in content:
         line_part = ""
     else:
-        # 仅显示节点前缀（过滤非ASCII字符）
-        safe_line = line[:20].encode('ascii', 'ignore').decode('ascii')
-        line_part = f"（{safe_line}...）" if safe_line else ""
+        # 非保留节点日志：若为解析错误类日志，显示完整line；否则显示前缀
+        if "解析错误" in content or "过滤无效" in content or "空地址节点" in content:
+            line_part = f"（{line}）" if line else ""
+        else:
+            safe_line = line[:20].encode('ascii', 'ignore').decode('ascii')
+            line_part = f"（{safe_line}...）" if safe_line else ""
     proto_part = f"（{proto}）" if proto else ""
     return f"{content}{line_part}{proto_part}"
 
@@ -189,10 +192,10 @@ def process_remark(remark: str, proto: str) -> str:
         return f"{proto}节点"
 
 def validate_fields(fields: Dict, required: List[str], proto: str, line: str) -> bool:
-    """精简字段校验：仅打印日志，不修改line"""
+    """精简字段校验：仅打印日志，不修改line（显示完整节点）"""
     missing = [f for f in required if not fields.get(f)]
     if missing:
-        LOG.info(log_msg(f"📝 过滤无效{proto}节点：缺失{','.join(missing)}", line))
+        LOG.info(log_msg(f"📝 过滤无效{proto}节点：缺失{','.join(missing)}", line, proto))
         return False
     return True
 
@@ -208,9 +211,9 @@ def extract_ip_port(line: str) -> Tuple[Optional[str], str, int]:
     port = validate_port(port_match.group(1)) if port_match else 443
     return ip, domain, port
 
-# ========== 协议解析函数（仅返回结果，不修改原始line） ==========
+# ========== 协议解析函数（VMess解析错误显示完整节点） ==========
 def parse_vmess(line: str) -> Optional[Dict]:
-    """解析VMess：仅返回结果，失败仅打印日志"""
+    """解析VMess：失败时显示完整节点内容"""
     try:
         vmess_part = re.sub(r'[@#]', '', line[8:])[:1024]
         vmess_part = re.sub(r'[^A-Za-z0-9+/=]', '', vmess_part)
@@ -236,7 +239,8 @@ def parse_vmess(line: str) -> Optional[Dict]:
             "serverName": cfg.get('host') or cfg.get('sni', ''), "ps": cfg["ps"]
         }
     except Exception as e:
-        LOG.info(log_msg(f"❌ VMess解析错误: {str(e)[:50]}", line))
+        # 核心修改：VMess解析错误显示完整节点
+        LOG.info(log_msg(f"❌ VMess解析错误: {str(e)}", line, "vmess"))
         return None
 
 def parse_vless(line: str) -> Optional[Dict]:
@@ -272,10 +276,10 @@ def parse_vless(line: str) -> Optional[Dict]:
             return None
         return cfg
     except ValueError as e:
-        LOG.info(log_msg(f"📝 过滤无效VLESS节点：{str(e)}", line))
+        LOG.info(log_msg(f"📝 过滤无效VLESS节点：{str(e)}", line, "vless"))
         return None
     except Exception as e:
-        LOG.info(log_msg(f"❌ VLESS解析错误: {str(e)[:50]}", line))
+        LOG.info(log_msg(f"❌ VLESS解析错误: {str(e)}", line, "vless"))
         return None
 
 def parse_trojan(line: str) -> Optional[Dict]:
@@ -311,10 +315,10 @@ def parse_trojan(line: str) -> Optional[Dict]:
             return None
         return cfg
     except ValueError as e:
-        LOG.info(log_msg(f"📝 过滤无效Trojan节点：{str(e)}", line))
+        LOG.info(log_msg(f"📝 过滤无效Trojan节点：{str(e)}", line, "trojan"))
         return None
     except Exception as e:
-        LOG.info(log_msg(f"❌ Trojan解析错误: {str(e)[:50]}", line))
+        LOG.info(log_msg(f"❌ Trojan解析错误: {str(e)}", line, "trojan"))
         return None
 
 def parse_ss(line: str) -> Optional[Dict]:
@@ -345,10 +349,10 @@ def parse_ss(line: str) -> Optional[Dict]:
             return None
         return cfg
     except ValueError as e:
-        LOG.info(log_msg(f"📝 过滤无效SS节点：{str(e)}", line))
+        LOG.info(log_msg(f"📝 过滤无效SS节点：{str(e)}", line, "ss"))
         return None
     except Exception as e:
-        LOG.info(log_msg(f"❌ SS解析错误: {str(e)[:50]}", line))
+        LOG.info(log_msg(f"❌ SS解析错误: {str(e)}", line, "ss"))
         return None
 
 def parse_hysteria(line: str) -> Optional[Dict]:
@@ -384,15 +388,15 @@ def parse_hysteria(line: str) -> Optional[Dict]:
             return None
         return cfg
     except ValueError as e:
-        LOG.info(log_msg(f"📝 过滤无效Hysteria节点：{str(e)}", line))
+        LOG.info(log_msg(f"📝 过滤无效Hysteria节点：{str(e)}", line, "hysteria"))
         return None
     except Exception as e:
-        LOG.info(log_msg(f"❌ Hysteria解析错误: {str(e)[:50]}", line))
+        LOG.info(log_msg(f"❌ Hysteria解析错误: {str(e)}", line, "hysteria"))
         return None
 
-# ========== 节点检测与处理（日志仅显示IP+端口+协议） ==========
+# ========== 节点检测与处理（修复传参错误+日志简洁） ==========
 def test_node(ip: str, port: int, proto: str) -> bool:
-    """精简节点可用性检测：仅检测，不修改line"""
+    """精简节点可用性检测：修复log_msg传参错误（proto_type→proto）"""
     port = validate_port(port)
     if not ip or is_private_ip(ip):
         return False
@@ -404,7 +408,8 @@ def test_node(ip: str, port: int, proto: str) -> bool:
             if sock.connect_ex((ip, port)) != 0:
                 return False
     except Exception as e:
-        LOG.info(log_msg(f"⚠️ TCP检测失败: {str(e)[:30]}", proto_type=proto))
+        # 修复：将prot/proto_type改为正确的proto
+        LOG.info(log_msg(f"⚠️ TCP检测失败: {str(e)[:30]}", proto=proto))
         return False
     
     try:
@@ -422,7 +427,7 @@ def test_node(ip: str, port: int, proto: str) -> bool:
         return True
 
 def process_single_node(node: Union[str, Dict]) -> Tuple[Optional[str], str, Optional[str], int, str]:
-    """精简单节点处理：保留节点日志仅显示IP+端口+协议"""
+    """精简单节点处理：修复节点处理错误的传参问题"""
     raw_line = node["line"] if isinstance(node, dict) else node
     source_url = node.get("source_url", "") if isinstance(node, dict) else ""
     
@@ -481,7 +486,8 @@ def process_single_node(node: Union[str, Dict]) -> Tuple[Optional[str], str, Opt
         LOG.info(f"✅ 保留节点: {ip or domain}:{port}（{proto}）")
         return clean_line, domain, ip, port, source_url
     except Exception as e:
-        LOG.info(log_msg(f"❌ 节点处理错误: {str(e)[:50]}", raw_line))
+        # 修复：节点处理错误时显示完整节点，且传参正确
+        LOG.info(log_msg(f"❌ 节点处理错误: {str(e)}", raw_line, proto))
         return None, "", None, 443, source_url
 
 def dedup_nodes(nodes: List[Dict]) -> List[Dict]:
@@ -585,7 +591,7 @@ def validate_sources() -> bool:
             invalid.append(f"第{idx}个源：权重无效 {url}（权重{weight}）")
     
     if invalid:
-        LOG.info("❌ 源配置校验失败：")
+        LOG.info("❌ 配置校验失败：")
         for err in invalid:
             LOG.info(f"   - {err}")
         return False
