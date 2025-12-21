@@ -133,7 +133,7 @@ def decode_b64_sub(text: str) -> str:
 
 def split_multi_nodes(line: str) -> List[str]:
     """
-    安全拆分拼接节点（核心优化）：
+    安全拆分拼接节点：
     1. 仅拆分完整的协议节点，过滤残缺片段
     2. 增加最小长度+协议特征校验，避免拆出vmess://e等无效节点
     """
@@ -145,8 +145,8 @@ def split_multi_nodes(line: str) -> List[str]:
         "vmess": {"prefix": "vmess://", "min_len": 50, "required": None},  # VMess至少50字符（Base64包含JSON）
         "vless": {"prefix": "vless://", "min_len": 20, "required": "@"},   # Vless必须包含@（uuid@地址）
         "trojan": {"prefix": "trojan://", "min_len": 20, "required": "@"}, # Trojan必须包含@
-        "ss": {"prefix": "ss://", "min_len": 20, "required": None},        # SS至少20字符
-        "hysteria": {"prefix": "hysteria://", "min_len": 20, "required": "@"}
+        "ss": {"prefix": "ss://", "min_len": 20, "required": None},        # SS至少20字符（兼容无@）
+        "hysteria": {"prefix": "hysteria://", "min_len": 20, "required": None}  # Hysteria兼容无@
     }
     
     # 第一步：匹配所有可能的节点前缀位置
@@ -443,37 +443,56 @@ def parse_trojan(line: str) -> Optional[Dict]:
         return None
 
 def parse_ss(line: str) -> Optional[Dict]:
-    """解析SS节点"""
+    """解析SS节点（兼容缺少@的不规范格式）"""
     try:
         ss_part = line[5:]
+        # 处理Base64编码的SS节点
         if is_base64(ss_part):
-            ss_part = ss_part.rstrip('=')
-            ss_part += '=' * (4 - len(ss_part) % 4) if len(ss_part) % 4 != 0 else ''
-            ss_part = base64.b64decode(ss_part).decode('utf-8', errors='ignore')
+            try:
+                ss_part = ss_part.rstrip('=')
+                ss_part += '=' * (4 - len(ss_part) % 4) if len(ss_part) % 4 != 0 else ''
+                ss_part = base64.b64decode(ss_part).decode('utf-8', errors='ignore')
+            except:
+                LOG.info(log_msg(f"⚠️ SS节点Base64解码失败，尝试直接解析", line[:20]))
         
+        # 拆分备注和核心内容
         ss_parts = ss_part.split('#', 1)
         remark = process_remark(ss_parts[1], "SS") if len(ss_parts) > 1 else ""
         ss_core = ss_parts[0]
         
+        # 兼容缺少@的情况：按最后一个:拆分端口
         if '@' not in ss_core:
-            raise ValueError("缺失@分隔符")
+            LOG.info(log_msg(f"⚠️ SS节点缺少@，尝试兼容解析", ss_core[:20]))
+            # 按最后一个:拆分端口
+            parts = ss_core.rsplit(':', 1)
+            if len(parts) != 2:
+                raise ValueError("缺失@分隔符且端口格式错误")
+            auth_part = parts[0]
+            addr_port = parts[1]
+        else:
+            auth_part, addr_port = ss_core.split('@', 1)
         
-        auth_part, addr_port = ss_core.split('@', 1)
-        if not auth_part or not addr_port or ':' not in addr_port:
-            raise ValueError("认证/地址端口错误")
-        
+        # 拆分地址和端口
+        if ':' not in addr_port:
+            raise ValueError("缺失端口信息")
         address, port_str = addr_port.rsplit(':', 1)
         port = validate_port(port_str)
-        method = auth_part.split(':')[0] if ':' in auth_part else ""
+        
+        # 拆分加密方式和密码
+        if ':' not in auth_part:
+            raise ValueError("缺失加密方式:密码格式")
+        method = auth_part.split(':')[0]
+        password = auth_part.split(':')[1]
         
         cfg = {
             "address": address.strip(),
             "port": port,
             "remark": remark or "SS节点",
-            "method": method
+            "method": method,
+            "password": password
         }
         
-        if not validate_fields(cfg, ["address", "port"], "SS", line):
+        if not validate_fields(cfg, ["address", "port", "method", "password"], "SS", line):
             return None
         return cfg
     except ValueError as e:
@@ -484,7 +503,7 @@ def parse_ss(line: str) -> Optional[Dict]:
         return None
 
 def parse_hysteria(line: str) -> Optional[Dict]:
-    """解析Hysteria节点"""
+    """解析Hysteria节点（兼容缺少@的不规范格式）"""
     try:
         hysteria_parts = line.split('#', 1)
         label = process_remark(hysteria_parts[1], "Hysteria") if len(hysteria_parts) > 1 else ""
@@ -494,15 +513,24 @@ def parse_hysteria(line: str) -> Optional[Dict]:
         core_part = hysteria_core_parts[0]
         param_part = hysteria_core_parts[1] if len(hysteria_core_parts) > 1 else ''
         
+        # 兼容缺少@的情况：按最后一个:拆分端口
         if '@' not in core_part:
-            raise ValueError("缺失认证@地址格式")
+            LOG.info(log_msg(f"⚠️ Hysteria节点缺少@，尝试兼容解析", core_part[:20]))
+            parts = core_part.rsplit(':', 1)
+            if len(parts) != 2:
+                raise ValueError("缺失认证@地址格式且端口错误")
+            auth_part = parts[0]
+            addr_port = parts[1]
+        else:
+            auth_part, addr_port = core_part.split('@', 1)
         
-        auth_part, addr_port = core_part.split('@', 1)
-        if not auth_part or not addr_port or ':' not in addr_port:
-            raise ValueError("认证/地址端口错误")
-        
+        # 拆分地址和端口
+        if ':' not in addr_port:
+            raise ValueError("缺失端口信息")
         address, port_str = addr_port.rsplit(':', 1)
         port = validate_port(port_str)
+        
+        # 解析参数
         params = {}
         for p in param_part.split('&'):
             if '=' in p:
@@ -653,7 +681,7 @@ def process_single_node(node: Union[str, Dict]) -> List[Tuple[Optional[str], str
 
 def dedup_nodes(nodes: List[Dict]) -> List[Dict]:
     """
-    分层去重（核心优化）：
+    分层去重：
     1. 先按原始行特征去重（恢复拆分前的逻辑）
     2. 对拆分后的节点，补充按“IP+端口+唯一标识”精细化去重
     """
@@ -719,6 +747,46 @@ def dedup_nodes(nodes: List[Dict]) -> List[Dict]:
                 except:
                     detail_key = f"{split_node[:50]}:vless"
                     is_valid = True
+            elif split_node.startswith("ss://"):
+                # 解析SS的method+password
+                try:
+                    ss_part = split_node[5:].strip()
+                    if is_base64(ss_part):
+                        ss_part = ss_part.rstrip('=')
+                        ss_part += '=' * (4 - len(ss_part) % 4) if len(ss_part) % 4 != 0 else ''
+                        ss_part = base64.b64decode(ss_part).decode('utf-8', errors='ignore')
+                    ss_core = ss_part.split('#')[0]
+                    if '@' in ss_core:
+                        auth_part = ss_core.split('@')[0]
+                    else:
+                        auth_part = ss_core.rsplit(':', 1)[0] if ':' in ss_core else ""
+                    method = auth_part.split(':')[0] if ':' in auth_part else ""
+                    password = auth_part.split(':')[1] if ':' in auth_part else ""
+                    addr_port = ss_core.split('@')[1] if '@' in ss_core else ss_core.rsplit(':', 1)[1] if ':' in ss_core else ""
+                    ip = addr_port.split(':')[0] if ':' in addr_port else ""
+                    port = addr_port.split(':')[1] if ':' in addr_port else ""
+                    detail_key = f"{ip}:{port}:ss:{method}:{password}"
+                    is_valid = True
+                except:
+                    detail_key = f"{split_node[:50]}:ss"
+                    is_valid = True
+            elif split_node.startswith("hysteria://"):
+                # 解析Hysteria的password
+                try:
+                    hysteria_part = split_node[10:].strip()
+                    core_part = hysteria_part.split('?')[0]
+                    if '@' in core_part:
+                        password = core_part.split('@')[0]
+                    else:
+                        password = core_part.rsplit(':', 1)[0] if ':' in core_part else ""
+                    addr_port = core_part.split('@')[1] if '@' in core_part else core_part.rsplit(':', 1)[1] if ':' in core_part else ""
+                    ip = addr_port.split(':')[0] if ':' in addr_port else ""
+                    port = addr_port.split(':')[1] if ':' in addr_port else ""
+                    detail_key = f"{ip}:{port}:hysteria:{password}"
+                    is_valid = True
+                except:
+                    detail_key = f"{split_node[:50]}:hysteria"
+                    is_valid = True
             else:
                 # 其他协议：按原始行特征
                 detail_key = f"{split_node[:50]}:{proto}"
@@ -737,7 +805,7 @@ def dedup_nodes(nodes: List[Dict]) -> List[Dict]:
 
 # ========== 数据源与主逻辑 ==========
 def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
-    """拉取订阅源数据：先去重原始行，再拆分（核心优化）"""
+    """拉取订阅源数据：先去重原始行，再拆分"""
     cache_dir = ".cache"
     os.makedirs(cache_dir, exist_ok=True)
     cache_key = hashlib.md5(url.encode()).hexdigest()
