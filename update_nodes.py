@@ -6,7 +6,7 @@ import json
 import binascii
 import os
 import time
-from urllib.parse import unquote  # 新增：用于解码URL编码的备注
+from urllib.parse import unquote
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ====================== 配置项 ======================
@@ -165,6 +165,31 @@ def test_tcp_connect(ip, port):
         except (socket.gaierror, socket.timeout, OSError):
             continue
     return False
+
+def count_protocol_nodes(lines):
+    """统计节点列表中各协议的数量（优化日志打印）"""
+    count = {
+        "vmess": 0,
+        "vless": 0,
+        "trojan": 0,
+        "ss": 0,
+        "hysteria": 0,
+        "other": 0
+    }
+    for line in lines:
+        if line.startswith('vmess://'):
+            count["vmess"] += 1
+        elif line.startswith('vless://'):
+            count["vless"] += 1
+        elif line.startswith('trojan://'):
+            count["trojan"] += 1
+        elif line.startswith('ss://'):
+            count["ss"] += 1
+        elif line.startswith('hysteria://'):
+            count["hysteria"] += 1
+        else:
+            count["other"] += 1
+    return count
 
 # ====================== 各协议解析函数 ======================
 def extract_vmess_config(vmess_line):
@@ -388,7 +413,6 @@ def extract_ss_config(ss_line):
         if '#' in ss_part:
             ss_part, remark = ss_part.split('#', 1)
             remark = unquote(remark)
-            remark = unquote(remark)
             remark = truncate_remark(remark)
         
         # 解析核心字段
@@ -415,7 +439,7 @@ def extract_ss_config(ss_line):
         return None
 
 def extract_hysteria_config(hysteria_line):
-    """新增：解析Hysteria协议节点（适配1.x/2.x主流格式）"""
+    """解析Hysteria协议节点（适配1.x/2.x主流格式）"""
     try:
         # 剥离备注（#后面的部分）并URL解码
         label = ""
@@ -494,7 +518,9 @@ def fetch_source(url):
             resp.raise_for_status()
             decoded_content = decode_base64_sub(resp.text)
             lines = [l.strip() for l in decoded_content.split('\n') if l.strip() and not l.startswith('#')]
-            print(f"✅ 拉取成功 {url}，有效节点 {len(lines)} 条（重试：{retry}）")
+            # 统计协议分布
+            proto_count = count_protocol_nodes(lines)
+            print(f"✅ 拉取成功 {url}，有效节点 {len(lines)} 条（VMess：{proto_count['vmess']} | VLESS：{proto_count['vless']} | Trojan：{proto_count['trojan']} | SS：{proto_count['ss']} | Hysteria：{proto_count['hysteria']} | 其他：{proto_count['other']}）（重试：{retry}）")
             return lines
         except Exception as e:
             error_msg = str(e)[:80]
@@ -541,7 +567,7 @@ def process_node(line):
                 domain = ""
                 port = cfg["port"]
                 remark = cfg["remark"]
-        elif line.startswith('hysteria://'):  # 新增：处理Hysteria协议
+        elif line.startswith('hysteria://'):  # 处理Hysteria协议
             cfg = extract_hysteria_config(line)
             if cfg:
                 ip = cfg["address"]
@@ -601,9 +627,12 @@ def main():
         for future in as_completed(future_to_url):
             url = future_to_url[future]
             lines = future.result()
+            # 统计当前源的协议分布
+            proto_count = count_protocol_nodes(lines)
             source_records[url] = {
                 "original": lines,
-                "original_count": len(lines)
+                "original_count": len(lines),
+                "protocol_count": proto_count  # 新增：保存协议统计
             }
             all_lines_set.update(lines)
     
@@ -612,7 +641,7 @@ def main():
 
     # 2. 按协议优先级排序（可根据需求调整）
     reality_lines = [l for l in unique_lines if 'reality' in l.lower()]
-    hysteria_lines = [l for l in unique_lines if l.startswith('hysteria://') and l not in reality_lines]  # 新增：Hysteria优先级
+    hysteria_lines = [l for l in unique_lines if l.startswith('hysteria://') and l not in reality_lines]
     tls_lines = [l for l in unique_lines if 'tls' in l.lower() and l not in reality_lines + hysteria_lines]
     ss_lines = [l for l in unique_lines if l.startswith('ss://') and l not in reality_lines + hysteria_lines + tls_lines]
     normal_lines = [l for l in unique_lines if l not in reality_lines + hysteria_lines + tls_lines + ss_lines]
@@ -668,23 +697,28 @@ def main():
 
     # 5. 输出统计信息
     total_cost = time.time() - start_time
+    # 统计最终有效节点的协议分布
+    valid_proto_count = count_protocol_nodes(valid_lines)
     print(f"\n🎉 最终处理完成：")
     print(f"   - 原始总节点：{len(unique_lines)} 条")
     print(f"   - 过滤后可用节点：{len(valid_lines)} 条")
+    print(f"   - 有效节点协议分布：VMess：{valid_proto_count['vmess']} | VLESS：{valid_proto_count['vless']} | Trojan：{valid_proto_count['trojan']} | SS：{valid_proto_count['ss']} | Hysteria：{valid_proto_count['hysteria']} | 其他：{valid_proto_count['other']}")
     print(f"   - 独特IP：{len(seen_ips)} 个")
     print(f"   - 独特域名：{len(seen_domains)} 个")
     print(f"   - 备注最大字节数：{CONFIG['filter']['max_remark_bytes']}（UTF-8）")
     print(f"   - 总耗时：{total_cost:.2f} 秒（{total_cost/60:.2f} 分钟）")
     print(f"   - 节点已保存至：s1.txt（Base64编码格式）")
 
-    # 6. 各数据源统计
+    # 6. 各数据源统计（优化日志，不再打印乱码）
     print("\n📈 各数据源详细统计：")
     for idx, (url, stats) in enumerate(source_records.items(), 1):
         original_count = stats['original_count']
+        proto_count = stats['protocol_count']
         retained_count = len([line for line in stats['original'] if line in valid_lines])
         retention_rate = (retained_count / original_count * 100) if original_count > 0 else 0.0
         print(f"   {idx}. {url}")
-        print(f"      - 原始获取：{stats['original']} 条 | 最终保留：{retained_count} 条 | 保留率：{retention_rate:.2f}%")
+        print(f"      - 原始节点数：{original_count} 条（VMess：{proto_count['vmess']} | VLESS：{proto_count['vless']} | Trojan：{proto_count['trojan']} | SS：{proto_count['ss']} | Hysteria：{proto_count['hysteria']} | 其他：{proto_count['other']}）")
+        print(f"      - 最终保留：{retained_count} 条 | 保留率：{retention_rate:.2f}%")
 
 if __name__ == "__main__":
     main()
