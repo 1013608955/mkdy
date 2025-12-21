@@ -40,7 +40,8 @@ CONFIG = {
             re.compile(r"^127\.\d+\.\d+\.\d+$"),
             re.compile(r"^0\.0\.0\.0$")
         ],
-        "valid_ports": range(1, 65535)
+        "valid_ports": range(1, 65535),
+        "max_ps_length": 64  # VMess备注最大长度
     }
 }
 
@@ -104,15 +105,30 @@ def test_domain_resolve(domain):
     return False
 
 def extract_vmess_config(vmess_line):
+    """优化版：新增Base64非法字符过滤+备注截断，减少解析失败"""
     try:
         vmess_part = vmess_line[8:].strip()
         vmess_part = vmess_part.encode('ascii', 'ignore').decode('ascii')
+        
+        # 新增1：过滤Base64非法字符（只保留A-Za-z0-9+/=）
+        vmess_part = re.sub(r'[^A-Za-z0-9+/=]', '', vmess_part)
+        if not vmess_part:
+            raise Exception("Base64串过滤后为空")
+        
         padding = 4 - len(vmess_part) % 4
         if padding != 4:
             vmess_part += '=' * padding
+        
         try:
             decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
             cfg = json.loads(decoded)
+            
+            # 新增2：截断过长的VMess备注（ps字段），解决label too long误提示
+            ps = cfg.get('ps', '')
+            if len(ps) > CONFIG["filter"]["max_ps_length"]:
+                cfg['ps'] = ps[:CONFIG["filter"]["max_ps_length"]]
+                print(f"⚠️ VMess节点备注过长，已截断（{vmess_line[:20]}...）")
+            
             return {
                 "address": cfg.get('add'),
                 "port": int(cfg.get('port', 443)),
@@ -121,7 +137,8 @@ def extract_vmess_config(vmess_line):
                 "security": cfg.get('security', 'auto'),
                 "network": cfg.get('net', 'tcp'),
                 "tls": cfg.get('tls', ''),
-                "serverName": cfg.get('host') or cfg.get('sni', '')
+                "serverName": cfg.get('host') or cfg.get('sni', ''),
+                "ps": cfg.get('ps', '')  # 保留截断后的备注
             }
         except json.JSONDecodeError:
             decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
@@ -134,7 +151,8 @@ def extract_vmess_config(vmess_line):
                     "port": int(port_match.group(1)),
                     "id": "", "alterId": 0, "security": "auto",
                     "network": "tcp", "tls": "",
-                    "serverName": host_match.group(1) if host_match else ""
+                    "serverName": host_match.group(1) if host_match else "",
+                    "ps": ""
                 }
             else:
                 raise Exception("核心字段（IP/端口）提取失败")
