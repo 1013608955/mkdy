@@ -206,7 +206,10 @@ def deduplicate_nodes(nodes):
         
         if key not in seen:
             seen.add(key)
-            unique_nodes.append(node["line"])
+            unique_nodes.append({
+                "line": node["line"],
+                "source_url": node["source_url"]  # 保留数据源URL，用于后续统计
+            })
     
     return unique_nodes
 
@@ -370,6 +373,9 @@ def count_protocol_nodes(lines):
         "other": 0
     }
     for line in lines:
+        # 兼容带source_url的节点字典
+        if isinstance(line, dict):
+            line = line["line"]
         if line.startswith('vmess://'):
             count["vmess"] += 1
         elif line.startswith('vless://'):
@@ -684,11 +690,19 @@ def fetch_source(url, weight):
                 LOG.info(f"❌ 拉取最终失败 {url}: {error_msg}")
                 return [], weight
 
-def process_node(line):
+def process_node(node_item):
     """处理单个节点（宽松验证+保留疑似可用节点）"""
+    # 兼容带source_url的节点字典
+    if isinstance(node_item, dict):
+        line = node_item["line"]
+        source_url = node_item["source_url"]
+    else:
+        line = node_item
+        source_url = ""
+    
     try:
         if not line:
-            return None, "", "", 443
+            return None, "", "", 443, source_url
         
         ip, domain, port, remark = None, "", 443, ""
         proto_cfg = None
@@ -730,7 +744,7 @@ def process_node(line):
         # 过滤私有IP
         if is_private_ip(ip):
             LOG.info(f"📝 过滤私有IP节点：{ip}:{port}（备注：{remark[:20]}...）")
-            return None, "", "", 443
+            return None, "", "", 443, source_url
         
         # 宽松版可用性检测（仅过滤明确拒绝的节点）
         availability_result = True
@@ -740,7 +754,7 @@ def process_node(line):
         # 仅当“明确拒绝连接”时过滤，其余情况保留
         if ip and proto_cfg and availability_result is False:
             LOG.info(f"📝 过滤不可用节点：{ip}:{port}（{proto_type}端口拒绝连接）（备注：{remark[:20]}...）")
-            return None, "", "", 443
+            return None, "", "", 443, source_url
         elif ip and proto_cfg and not availability_result:
             # 协议验证异常但端口通，保留并标记
             LOG.info(f"⚠️  节点协议验证异常，但保留：{ip}:{port}（{proto_type}）（备注：{remark[:20]}...）")
@@ -752,16 +766,16 @@ def process_node(line):
         # 空地址过滤
         if not ip and not domain:
             LOG.info(f"📝 过滤空地址节点：{line[:20]}...（备注：{remark[:20]}...）")
-            return None, "", "", 443
+            return None, "", "", 443, source_url
         
         LOG.info(f"✅ 保留节点: {'IP' if ip else '域名'} - {ip or domain}:{port}（{proto_type}）（备注：{remark[:20]}...）")
-        return line, domain, ip, port
+        return line, domain, ip, port, source_url
     except Exception as e:
         if "label too long" in str(e).lower():
             LOG.info(f"⚠️ 节点备注过长（{line[:20]}...）: {str(e)[:50]}")
         else:
             LOG.info(f"❌ 节点处理异常（{line[:20]}...）: {str(e)[:50]}")
-        return None, "", "", 443
+        return None, "", "", 443, source_url
 
 # ====================== 主函数（适配GitHub Actions） ======================
 def main():
@@ -781,62 +795,52 @@ def main():
                 lines, weight = future.result()
                 proto_count = count_protocol_nodes(lines)
                 source_records[url] = {
-                    "original": lines,
+                    "original_lines": lines,
                     "original_count": len(lines),
                     "weight": weight,
-                    "protocol_count": proto_count
+                    "protocol_count": proto_count,
+                    "retained_count": 0,  # 初始化保留节点数
+                    "retained_lines": []   # 初始化保留节点列表
                 }
-                # 加入总列表（带权重）
+                # 加入总列表（带权重和数据源URL）
                 for line in lines:
-                    all_nodes.append({"line": line, "weight": weight})
+                    all_nodes.append({
+                        "line": line,
+                        "weight": weight,
+                        "source_url": url
+                    })
             except Exception as e:
                 LOG.info(f"❌ 处理订阅源{url}异常：{str(e)[:50]}")
                 # 异常源也记录，避免统计时KeyError
                 source_records[url] = {
-                    "original": [],
+                    "original_lines": [],
                     "original_count": 0,
                     "weight": 0,
-                    "protocol_count": count_protocol_nodes([])
+                    "protocol_count": count_protocol_nodes([]),
+                    "retained_count": 0,
+                    "retained_lines": []
                 }
-    
-    # 新增：输出各数据源详细统计
-    LOG.info(f"\n📋 各数据源详细统计：")
-    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    for idx, src in enumerate(CONFIG["sources"], 1):
-        url = src["url"]
-        record = source_records.get(url, {
-            "original_count": 0,
-            "protocol_count": count_protocol_nodes([])
-        })
-        original_count = record["original_count"]
-        proto_count = record["protocol_count"]
-        # 输出数据源序号和URL
-        LOG.info(f"{current_time} -    {idx}. {url}")
-        # 输出该源的节点统计
-        stat_line = (f"{current_time} -       - 📝 原始节点数：{original_count} 条 "
-                     f"（VMess：{proto_count['vmess']} | VLESS：{proto_count['vless']} | Trojan：{proto_count['trojan']} | "
-                     f"SS：{proto_count['ss']} | Hysteria：{proto_count['hysteria']} | 其他：{proto_count['other']}）")
-        LOG.info(stat_line)
     
     # 2. 按权重去重
     LOG.info(f"\n📊 拉取完成，原始节点总数：{len(all_nodes)} 条")
-    unique_lines = deduplicate_nodes(all_nodes)
-    LOG.info(f"🔍 去重后节点总数：{len(unique_lines)} 条")
+    unique_nodes = deduplicate_nodes(all_nodes)
+    LOG.info(f"🔍 去重后节点总数：{len(unique_nodes)} 条")
     
     # 3. 多线程处理节点（宽松验证）
     valid_lines = []
+    valid_nodes_with_source = []  # 保留节点+数据源URL
     seen_ips = set()
     seen_domains = set()
-    total_nodes = len(unique_lines)
+    total_nodes = len(unique_nodes)
     
     with ThreadPoolExecutor(max_workers=CONFIG["detection"]["thread_pool_size"]) as executor:
-        futures = [executor.submit(process_node, line) for line in unique_lines]
+        futures = [executor.submit(process_node, node) for node in unique_nodes]
         for idx, future in enumerate(as_completed(futures)):
             if idx % 10 == 0:  # 每10个节点输出一次进度
                 progress = (idx / total_nodes) * 100
                 LOG.info(f"⏳ 处理进度：{idx}/{total_nodes} ({progress:.1f}%)")
             try:
-                line, domain, ip, port = future.result()
+                line, domain, ip, port, source_url = future.result()
             except Exception as e:
                 LOG.info(f"⚠️ 节点处理异常: {str(e)[:50]}")
                 continue
@@ -852,8 +856,18 @@ def main():
             seen_domains.add(domain)
             seen_ips.add(ip)
             valid_lines.append(line)
+            valid_nodes_with_source.append({
+                "line": line,
+                "source_url": source_url
+            })
     
-    # 4. 按优先级排序（Reality/TLS优先）
+    # 4. 统计各数据源的保留节点数
+    for url in source_records.keys():
+        retained_lines = [node for node in valid_nodes_with_source if node["source_url"] == url]
+        source_records[url]["retained_count"] = len(retained_lines)
+        source_records[url]["retained_lines"] = retained_lines
+    
+    # 5. 按优先级排序（Reality/TLS优先）
     def sort_by_priority(line):
         """排序规则：Reality > TLS > 其他，协议类型优先级：VLESS > Trojan > VMess > SS > Hysteria"""
         score = 0
@@ -878,7 +892,7 @@ def main():
     valid_lines.sort(key=sort_by_priority, reverse=True)
     LOG.info(f"✅ 最终有效节点数：{len(valid_lines)} 条（Reality/TLS优先）")
     
-    # 5. 保存为Base64编码的订阅文件
+    # 6. 保存为Base64编码的订阅文件
     if valid_lines:
         combined = '\n'.join(valid_lines)
         encoded = base64.b64encode(combined.encode('utf-8')).decode('utf-8')
@@ -891,14 +905,44 @@ def main():
             f.write("")
         LOG.info(f"ℹ️  无有效节点，创建空 s1.txt")
     
-    # 6. 输出统计信息
+    # 7. 输出各数据源详细统计（含保留率）
+    LOG.info(f"\n📋 各数据源详细统计：")
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    for idx, src in enumerate(CONFIG["sources"], 1):
+        url = src["url"]
+        record = source_records.get(url, {
+            "original_count": 0,
+            "protocol_count": count_protocol_nodes([]),
+            "retained_count": 0
+        })
+        original_count = record["original_count"]
+        proto_count = record["protocol_count"]
+        retained_count = record["retained_count"]
+        
+        # 计算保留率（处理除零错误）
+        if original_count == 0:
+            retention_rate = "0.00%"
+        else:
+            retention_rate = f"{(retained_count / original_count) * 100:.2f}%"
+        
+        # 输出数据源序号和URL
+        LOG.info(f"{current_time} -    {idx}. {url}")
+        # 输出该源的节点统计（含保留率）
+        stat_line = (f"{current_time} -       - 📝 原始节点数：{original_count} 条 "
+                     f"（VMess：{proto_count['vmess']} | VLESS：{proto_count['vless']} | Trojan：{proto_count['trojan']} | "
+                     f"SS：{proto_count['ss']} | Hysteria：{proto_count['hysteria']} | 其他：{proto_count['other']}） | "
+                     f"保留节点数：{retained_count} 条 | 保留率：{retention_rate}")
+        LOG.info(stat_line)
+    
+    # 8. 输出任务完成统计
     total_cost = time.time() - start_time
     valid_proto_count = count_protocol_nodes(valid_lines)
     LOG.info(f"\n📊 任务完成统计：")
     LOG.info(f"   - 原始节点总数：{len(all_nodes)} 条")
-    LOG.info(f"   - 去重后节点数：{len(unique_lines)} 条")
+    LOG.info(f"   - 去重后节点数：{len(unique_nodes)} 条")
     LOG.info(f"   - 最终有效节点：{len(valid_lines)} 条")
     LOG.info(f"   - 协议分布：VMess({valid_proto_count['vmess']}) | VLESS({valid_proto_count['vless']}) | Trojan({valid_proto_count['trojan']}) | SS({valid_proto_count['ss']}) | Hysteria({valid_proto_count['hysteria']})")
+    LOG.info(f"   - 整体保留率：{(len(valid_lines)/len(all_nodes)*100):.2f}%" if len(all_nodes) > 0 else "   - 整体保留率：0.00%")
     LOG.info(f"   - 耗时：{total_cost:.2f} 秒")
     LOG.info(f"✅ 节点更新任务完成！")
 
