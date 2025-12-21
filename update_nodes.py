@@ -102,15 +102,29 @@ def is_base64(s: str) -> bool:
         return False
 
 def decode_b64_sub(text: str) -> str:
-    """简化Base64解码订阅内容"""
-    clean = re.sub(r'\s+', '', text.strip())
-    if is_base64(clean):
+    """修复核心：保留明文的换行符，仅清理Base64的空白字符，解决拉取数量与手动下载不一致问题"""
+    original_text = text.strip()
+    # 先尝试判断是否是Base64编码（Base64订阅通常无换行，或只有少量空白）
+    clean_for_b64 = re.sub(r'\s+', '', original_text)
+    if is_base64(clean_for_b64):
         try:
-            clean += '=' * (4 - len(clean) % 4) if len(clean) % 4 != 0 else ''
-            return base64.b64decode(clean).decode('utf-8', errors='ignore')
+            # Base64解码：解码后恢复为多行节点
+            clean_for_b64 += '=' * (4 - len(clean_for_b64) % 4) if len(clean_for_b64) % 4 != 0 else ''
+            decoded = base64.b64decode(clean_for_b64).decode('utf-8', errors='ignore')
+            # 新增日志：打印解码后的节点数，方便核对
+            decoded_line_count = len([l for l in decoded.split('\n') if l.strip()])
+            LOG.info(log_msg(f"✅ Base64解码成功，解析出{decoded_line_count}个有效节点"))
+            return decoded
         except Exception as e:
             LOG.info(log_msg(f"❌ Base64解码失败: {str(e)[:50]}"))
-    return clean
+            return original_text  # 解码失败则返回原始内容
+    else:
+        # 明文订阅：仅清理每行的首尾空白，保留换行符（核心修复点）
+        cleaned_lines = [l.strip() for l in original_text.split('\n')]
+        # 新增日志：打印明文订阅的节点数，方便核对
+        plain_line_count = len([l for l in cleaned_lines if l])
+        LOG.info(log_msg(f"✅ 明文订阅处理完成，解析出{plain_line_count}个有效节点"))
+        return '\n'.join(cleaned_lines)
 
 def is_private_ip(ip: str) -> bool:
     """简化私有IP判断（单正则匹配）"""
