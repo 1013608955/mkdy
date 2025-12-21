@@ -75,7 +75,7 @@ def init_session() -> requests.Session:
 
 SESSION = init_session()
 
-# ========== 通用工具函数（极致精简+修复隐患） ==========
+# ========== 通用工具函数（核心：日志与节点内容彻底分离） ==========
 def validate_port(port: Union[str, int]) -> int:
     """校验并返回合法端口，默认443"""
     try:
@@ -85,8 +85,13 @@ def validate_port(port: Union[str, int]) -> int:
         return 443
 
 def log_msg(content: str, line: str = "", proto: str = "") -> str:
-    """精简日志格式化"""
-    line_part = f"（{line[:20]}...）" if line else ""
+    """精简日志格式化：仅在非保留节点日志时显示line前缀（纯ASCII）"""
+    if "保留节点" in content:
+        line_part = ""
+    else:
+        # 仅显示节点前缀（过滤非ASCII字符）
+        safe_line = line[:20].encode('ascii', 'ignore').decode('ascii')
+        line_part = f"（{safe_line}...）" if safe_line else ""
     proto_part = f"（{proto}）" if proto else ""
     return f"{content}{line_part}{proto_part}"
 
@@ -102,40 +107,45 @@ def is_base64(s: str) -> bool:
         return False
 
 def decode_b64_sub(text: str) -> str:
-    """修复核心：保留明文的换行符，仅清理Base64的空白字符，解决拉取数量与手动下载不一致问题"""
+    """仅解码，保留原始节点格式，不添加任何提示"""
     original_text = text.strip()
-    # 先尝试判断是否是Base64编码（Base64订阅通常无换行，或只有少量空白）
     clean_for_b64 = re.sub(r'\s+', '', original_text)
+    
     if is_base64(clean_for_b64):
         try:
-            # Base64解码：解码后恢复为多行节点
             clean_for_b64 += '=' * (4 - len(clean_for_b64) % 4) if len(clean_for_b64) % 4 != 0 else ''
             decoded = base64.b64decode(clean_for_b64).decode('utf-8', errors='ignore')
-            # 新增日志：打印解码后的节点数，方便核对
             decoded_line_count = len([l for l in decoded.split('\n') if l.strip()])
             LOG.info(log_msg(f"✅ Base64解码成功，解析出{decoded_line_count}个有效节点"))
             return decoded
         except Exception as e:
             LOG.info(log_msg(f"❌ Base64解码失败: {str(e)[:50]}"))
-            return original_text  # 解码失败则返回原始内容
+            return original_text
     else:
-        # 明文订阅：仅清理每行的首尾空白，保留换行符（核心修复点）
         cleaned_lines = [l.strip() for l in original_text.split('\n')]
-        # 新增日志：打印明文订阅的节点数，方便核对
         plain_line_count = len([l for l in cleaned_lines if l])
         LOG.info(log_msg(f"✅ 明文订阅处理完成，解析出{plain_line_count}个有效节点"))
         return '\n'.join(cleaned_lines)
+
+def clean_node_content(line: str) -> str:
+    """清洗节点内容：移除中文字符、错误提示"""
+    if not line:
+        return ""
+    line = re.sub(r'[\u4e00-\u9fa5]', '', line)  # 移除所有中文
+    error_keywords = ["订阅内容解析错误", "解析失败", "无效节点", "缺失字段"]
+    for keyword in error_keywords:
+        line = line.replace(keyword, "")
+    return line.strip()
 
 def is_private_ip(ip: str) -> bool:
     """简化私有IP判断（单正则匹配）"""
     return bool(ip and CONFIG["filter"]["private_ip"].match(ip))
 
-@lru_cache(maxsize=DNS_CACHE_MAXSIZE)  # 使用常量修复动态参数隐患
+@lru_cache(maxsize=DNS_CACHE_MAXSIZE)
 def dns_resolve(domain: str) -> bool:
     """精简DNS解析（修复全局socket超时修改隐患）"""
     if not domain or domain == "未知":
         return False
-    # 保存原有超时，执行后还原
     original_timeout = socket.getdefaulttimeout()
     socket.setdefaulttimeout(CONFIG["detection"]["dns"]["timeout"])
     try:
@@ -148,11 +158,10 @@ def dns_resolve(domain: str) -> bool:
         LOG.info(log_msg(f"⚠️ 域名{domain}解析失败"))
         return False
     finally:
-        # 还原全局socket超时
         socket.setdefaulttimeout(original_timeout)
 
 def process_remark(remark: str, proto: str) -> str:
-    """精简备注处理逻辑"""
+    """精简备注处理逻辑：仅处理备注，不污染主节点"""
     if not remark:
         return f"{proto}节点"
     try:
@@ -162,7 +171,6 @@ def process_remark(remark: str, proto: str) -> str:
         if len(b_remark) <= max_len:
             return decoded
         
-        # 精简截断逻辑
         for step in range(0, 6):
             try:
                 trunc = b_remark[:max_len-step].decode('utf-8')
@@ -172,7 +180,6 @@ def process_remark(remark: str, proto: str) -> str:
         else:
             trunc = b_remark[:max_len-5].decode('utf-8', errors='ignore')
         
-        # 精简省略号处理
         if len(trunc.encode('utf-8')) + 3 <= max_len:
             trunc += "..."
         LOG.info(log_msg(f"⚠️ {proto}备注超限，截断为{len(trunc.encode('utf-8'))}字节", remark))
@@ -182,7 +189,7 @@ def process_remark(remark: str, proto: str) -> str:
         return f"{proto}节点"
 
 def validate_fields(fields: Dict, required: List[str], proto: str, line: str) -> bool:
-    """精简字段校验"""
+    """精简字段校验：仅打印日志，不修改line"""
     missing = [f for f in required if not fields.get(f)]
     if missing:
         LOG.info(log_msg(f"📝 过滤无效{proto}节点：缺失{','.join(missing)}", line))
@@ -190,7 +197,7 @@ def validate_fields(fields: Dict, required: List[str], proto: str, line: str) ->
     return True
 
 def extract_ip_port(line: str) -> Tuple[Optional[str], str, int]:
-    """精简IP/端口/域名提取"""
+    """精简IP/端口/域名提取：仅读取，不修改line"""
     ip_match = re.search(r'@([\d\.a-zA-Z-]+):', line)
     ip = ip_match.group(1) if ip_match else None
     
@@ -201,11 +208,10 @@ def extract_ip_port(line: str) -> Tuple[Optional[str], str, int]:
     port = validate_port(port_match.group(1)) if port_match else 443
     return ip, domain, port
 
-# ========== 协议解析函数（统一精简+修复索引越界隐患） ==========
+# ========== 协议解析函数（仅返回结果，不修改原始line） ==========
 def parse_vmess(line: str) -> Optional[Dict]:
-    """解析VMess（精简逻辑+修复截断隐患）"""
+    """解析VMess：仅返回结果，失败仅打印日志"""
     try:
-        # 限制长度但保留合理范围（修复硬编码500可能截断有效内容）
         vmess_part = re.sub(r'[@#]', '', line[8:])[:1024]
         vmess_part = re.sub(r'[^A-Za-z0-9+/=]', '', vmess_part)
         if not is_base64(vmess_part):
@@ -234,10 +240,9 @@ def parse_vmess(line: str) -> Optional[Dict]:
         return None
 
 def parse_vless(line: str) -> Optional[Dict]:
-    """解析VLESS（修复索引越界隐患）"""
+    """解析VLESS：仅返回结果，失败仅打印日志"""
     try:
         vless_core = line[8:]
-        # 安全拆分参数（避免无?时索引越界）
         vless_parts = vless_core.split('?', 1)
         base_part = vless_parts[0]
         param_part = vless_parts[1] if len(vless_parts) > 1 else ''
@@ -251,7 +256,6 @@ def parse_vless(line: str) -> Optional[Dict]:
         
         address, port_str = addr_port.split(':', 1)
         port = validate_port(port_str)
-        # 安全解析参数
         params = {}
         for p in param_part.split('&'):
             if '=' in p:
@@ -275,14 +279,12 @@ def parse_vless(line: str) -> Optional[Dict]:
         return None
 
 def parse_trojan(line: str) -> Optional[Dict]:
-    """解析Trojan（修复语法+索引越界隐患）"""
+    """解析Trojan：仅返回结果，失败仅打印日志"""
     try:
-        # 安全处理备注
         trojan_parts = line.split('#', 1)
         label = process_remark(trojan_parts[1], "Trojan") if len(trojan_parts) > 1 else ""
         trojan_core = trojan_parts[0]
         
-        # 安全拆分参数和核心部分
         trojan_core_parts = trojan_core[8:].split('?', 1)
         trojan_part = trojan_core_parts[0]
         param_part = trojan_core_parts[1] if len(trojan_core_parts) > 1 else ''
@@ -296,7 +298,6 @@ def parse_trojan(line: str) -> Optional[Dict]:
         
         address, port_str = addr_port.rsplit(':', 1)
         port = validate_port(port_str)
-        # 安全解析参数
         params = {}
         for p in param_part.split('&'):
             if '=' in p:
@@ -317,14 +318,13 @@ def parse_trojan(line: str) -> Optional[Dict]:
         return None
 
 def parse_ss(line: str) -> Optional[Dict]:
-    """解析SS（精简逻辑）"""
+    """解析SS：仅返回结果，失败仅打印日志"""
     try:
         ss_part = line[5:]
         if is_base64(ss_part):
             ss_part += '=' * (4 - len(ss_part) % 4) if len(ss_part) % 4 != 0 else ''
             ss_part = base64.b64decode(ss_part).decode('utf-8', errors='ignore')
         
-        # 安全处理备注
         ss_parts = ss_part.split('#', 1)
         remark = process_remark(ss_parts[1], "SS") if len(ss_parts) > 1 else ""
         ss_core = ss_parts[0]
@@ -352,14 +352,12 @@ def parse_ss(line: str) -> Optional[Dict]:
         return None
 
 def parse_hysteria(line: str) -> Optional[Dict]:
-    """解析Hysteria（修复索引越界隐患）"""
+    """解析Hysteria：仅返回结果，失败仅打印日志"""
     try:
-        # 安全处理备注
         hysteria_parts = line.split('#', 1)
         label = process_remark(hysteria_parts[1], "Hysteria") if len(hysteria_parts) > 1 else ""
         hysteria_core = hysteria_parts[0]
         
-        # 安全拆分参数和核心部分
         hysteria_core_parts = hysteria_core[10:].split('?', 1)
         core_part = hysteria_core_parts[0]
         param_part = hysteria_core_parts[1] if len(hysteria_core_parts) > 1 else ''
@@ -373,7 +371,6 @@ def parse_hysteria(line: str) -> Optional[Dict]:
         
         address, port_str = addr_port.rsplit(':', 1)
         port = validate_port(port_str)
-        # 安全解析参数
         params = {}
         for p in param_part.split('&'):
             if '=' in p:
@@ -393,14 +390,13 @@ def parse_hysteria(line: str) -> Optional[Dict]:
         LOG.info(log_msg(f"❌ Hysteria解析错误: {str(e)[:50]}", line))
         return None
 
-# ========== 节点检测与处理（修复cfg为None的隐患） ==========
+# ========== 节点检测与处理（日志仅显示IP+端口+协议） ==========
 def test_node(ip: str, port: int, proto: str) -> bool:
-    """精简节点可用性检测"""
+    """精简节点可用性检测：仅检测，不修改line"""
     port = validate_port(port)
     if not ip or is_private_ip(ip):
         return False
     
-    # TCP握手检测
     try:
         timeout = CONFIG["detection"]["tcp_timeout"].get(proto, 3)
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -411,7 +407,6 @@ def test_node(ip: str, port: int, proto: str) -> bool:
         LOG.info(log_msg(f"⚠️ TCP检测失败: {str(e)[:30]}", proto_type=proto))
         return False
     
-    # 简易协议验证
     try:
         if proto in ["vmess", "vless", "trojan"]:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -424,15 +419,21 @@ def test_node(ip: str, port: int, proto: str) -> bool:
                 udp_sock.sendto(b"\x00", (ip, port))
         return True
     except:
-        return True  # 宽松验证，超时/重置均视为可用
+        return True
 
 def process_single_node(node: Union[str, Dict]) -> Tuple[Optional[str], str, Optional[str], int, str]:
-    """精简单节点处理（修复cfg为None的隐患）"""
-    line = node["line"] if isinstance(node, dict) else node
+    """精简单节点处理：保留节点日志仅显示IP+端口+协议"""
+    raw_line = node["line"] if isinstance(node, dict) else node
     source_url = node.get("source_url", "") if isinstance(node, dict) else ""
     
     try:
-        if not line:
+        if not raw_line:
+            return None, "", None, 443, source_url
+        
+        # 清洗节点内容
+        clean_line = clean_node_content(raw_line)
+        if not clean_line:
+            LOG.info(log_msg(f"📝 过滤空节点", raw_line))
             return None, "", None, 443, source_url
         
         ip, domain, port = None, "", 443
@@ -440,21 +441,21 @@ def process_single_node(node: Union[str, Dict]) -> Tuple[Optional[str], str, Opt
         proto = ""
         
         # 协议解析路由
-        if line.startswith('vmess://'):
-            proto, cfg = "vmess", parse_vmess(line)
-        elif line.startswith('vless://'):
-            proto, cfg = "vless", parse_vless(line)
-        elif line.startswith('trojan://'):
-            proto, cfg = "trojan", parse_trojan(line)
-        elif line.startswith('ss://'):
-            proto, cfg = "ss", parse_ss(line)
-        elif line.startswith('hysteria://'):
-            proto, cfg = "hysteria", parse_hysteria(line)
+        if clean_line.startswith('vmess://'):
+            proto, cfg = "vmess", parse_vmess(clean_line)
+        elif clean_line.startswith('vless://'):
+            proto, cfg = "vless", parse_vless(clean_line)
+        elif clean_line.startswith('trojan://'):
+            proto, cfg = "trojan", parse_trojan(clean_line)
+        elif clean_line.startswith('ss://'):
+            proto, cfg = "ss", parse_ss(clean_line)
+        elif clean_line.startswith('hysteria://'):
+            proto, cfg = "hysteria", parse_hysteria(clean_line)
         else:
             proto = "other"
-            ip, domain, port = extract_ip_port(line)
+            ip, domain, port = extract_ip_port(clean_line)
         
-        # 解析结果提取（修复cfg为None的隐患）
+        # 提取解析结果
         if cfg and isinstance(cfg, dict):
             ip = cfg.get("address", ip)
             domain = cfg.get("serverName") or cfg.get("sni") or domain
@@ -462,63 +463,60 @@ def process_single_node(node: Union[str, Dict]) -> Tuple[Optional[str], str, Opt
         
         # 过滤逻辑
         if is_private_ip(ip):
-            LOG.info(log_msg(f"📝 过滤私有IP：{ip}:{port}", line, proto))
+            LOG.info(log_msg(f"📝 过滤私有IP：{ip}:{port}", clean_line, proto))
             return None, "", None, 443, source_url
         
-        # 仅当ip和cfg都存在时才检测
-        if ip and cfg:
-            if not test_node(ip, port, proto):
-                LOG.info(log_msg(f"📝 过滤不可用节点：{ip}:{port}", line, proto))
-                return None, "", None, 443, source_url
+        if ip and cfg and not test_node(ip, port, proto):
+            LOG.info(log_msg(f"📝 过滤不可用节点：{ip}:{port}", clean_line, proto))
+            return None, "", None, 443, source_url
         
         if domain and not dns_resolve(domain):
-            LOG.info(log_msg(f"⚠️ 域名{domain}解析失败，但IP{ip}有效", line, proto))
+            LOG.info(log_msg(f"⚠️ 域名{domain}解析失败，但IP{ip}有效", clean_line, proto))
         
         if not ip and not domain:
-            LOG.info(log_msg(f"📝 过滤空地址节点", line, proto))
+            LOG.info(log_msg(f"📝 过滤空地址节点", clean_line, proto))
             return None, "", None, 443, source_url
         
-        LOG.info(log_msg(f"✅ 保留节点: {ip or domain}:{port}", line, proto))
-        return line, domain, ip, port, source_url
+        # 保留节点日志：仅显示【IP:端口（协议）】，无任何节点内容
+        LOG.info(f"✅ 保留节点: {ip or domain}:{port}（{proto}）")
+        return clean_line, domain, ip, port, source_url
     except Exception as e:
-        LOG.info(log_msg(f"❌ 节点处理错误: {str(e)[:50]}", line))
+        LOG.info(log_msg(f"❌ 节点处理错误: {str(e)[:50]}", raw_line))
         return None, "", None, 443, source_url
 
 def dedup_nodes(nodes: List[Dict]) -> List[Dict]:
-    """精简去重逻辑（修复next()无默认值隐患）"""
+    """精简去重逻辑：基于清洗后的line去重"""
     seen = set()
     unique = []
     nodes.sort(key=lambda x: x["weight"], reverse=True)
     
     for node in nodes:
-        line = node["line"]
+        raw_line = node["line"]
+        clean_line = clean_node_content(raw_line)
         ip = node.get("ip", "")
         port = node.get("port", 443)
-        # 安全获取协议类型（添加默认值）
-        proto_list = ["vmess", "vless", "trojan", "ss", "hysteria"]
+        
         proto = "other"
+        proto_list = ["vmess", "vless", "trojan", "ss", "hysteria"]
         for p in proto_list:
-            if line.startswith(f"{p}://"):
+            if clean_line.startswith(f"{p}://"):
                 proto = p
                 break
-        # 生成去重键
-        key = f"{ip}:{port}:{proto}" if ip else f"{line[:50]}:{proto}"
         
+        key = f"{ip}:{port}:{proto}" if ip else f"{clean_line[:50]}:{proto}"
         if key not in seen:
             seen.add(key)
-            unique.append({"line": line, "source_url": node["source_url"]})
+            unique.append({"line": raw_line, "source_url": node["source_url"]})
     return unique
 
-# ========== 数据源处理（修复缓存读写异常处理隐患） ==========
+# ========== 数据源处理（仅拉取原始内容） ==========
 def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
-    """精简源数据拉取（增强缓存异常处理）"""
-    # 缓存处理
+    """精简源数据拉取：仅拉取原始内容"""
     cache_dir = ".cache"
     os.makedirs(cache_dir, exist_ok=True)
     cache_key = hashlib.md5(url.encode()).hexdigest()
     cache_path = os.path.join(cache_dir, cache_key)
     
-    # 读取缓存（增强异常处理）
     if os.path.exists(cache_path):
         try:
             cache_mtime = os.path.getmtime(cache_path)
@@ -527,13 +525,11 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
                     lines = json.load(f)
                 LOG.info(f"✅ 缓存加载 {url}（权重{weight}），节点 {len(lines)} 条")
                 return lines, weight
-        except (json.JSONDecodeError, OSError, PermissionError) as e:
-            LOG.info(f"⚠️ 缓存读取失败 {url}: {str(e)[:50]}，重新拉取")
+        except (json.JSONDecodeError, OSError) as e:
+            LOG.info(f"⚠️ 缓存读取失败 {url}: {str(e)[:50]}")
     
-    # 限流
     time.sleep(CONFIG["github"]["interval"])
     
-    # 重试拉取
     for retry in range(CONFIG["request"]["retry"]):
         try:
             resp = SESSION.get(url, timeout=CONFIG["request"]["timeout"], verify=False)
@@ -541,11 +537,10 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
             content = decode_b64_sub(resp.text)
             lines = [l.strip() for l in content.split('\n') if l.strip() and not l.startswith('#')]
             
-            # 写入缓存（增强异常处理）
             try:
                 with open(cache_path, "w", encoding="utf-8") as f:
                     json.dump(lines, f, ensure_ascii=False)
-            except (OSError, PermissionError) as e:
+            except OSError as e:
                 LOG.info(f"⚠️ 缓存写入失败 {url}: {str(e)[:50]}")
             
             LOG.info(f"✅ 拉取成功 {url}（权重{weight}），节点 {len(lines)} 条")
@@ -560,7 +555,7 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
     return [], weight
 
 def clean_expired_cache() -> None:
-    """精简缓存清理（增强异常处理）"""
+    """精简缓存清理"""
     cache_dir = ".cache"
     if not os.path.exists(cache_dir):
         return
@@ -572,8 +567,8 @@ def clean_expired_cache() -> None:
             if os.path.isfile(file_path) and time.time() - os.path.getmtime(file_path) > expire_seconds:
                 os.remove(file_path)
                 deleted += 1
-        except (OSError, PermissionError) as e:
-            LOG.info(f"⚠️ 缓存文件删除失败 {file_name}: {str(e)[:50]}")
+        except OSError as e:
+            LOG.info(f"⚠️ 缓存删除失败 {file_name}: {str(e)[:50]}")
     if deleted:
         LOG.info(f"🗑️ 清理过期缓存 {deleted} 个")
 
@@ -601,21 +596,22 @@ def count_proto(lines: List[Union[str, Dict]]) -> Dict[str, int]:
     count = {"vmess":0, "vless":0, "trojan":0, "ss":0, "hysteria":0, "other":0}
     for line in lines:
         line_str = line["line"] if isinstance(line, dict) else line
-        if line_str.startswith('vmess://'):
+        clean_line = clean_node_content(line_str)
+        if clean_line.startswith('vmess://'):
             count["vmess"] +=1
-        elif line_str.startswith('vless://'):
+        elif clean_line.startswith('vless://'):
             count["vless"] +=1
-        elif line_str.startswith('trojan://'):
+        elif clean_line.startswith('trojan://'):
             count["trojan"] +=1
-        elif line_str.startswith('ss://'):
+        elif clean_line.startswith('ss://'):
             count["ss"] +=1
-        elif line_str.startswith('hysteria://'):
+        elif clean_line.startswith('hysteria://'):
             count["hysteria"] +=1
         else:
             count["other"] +=1
     return count
 
-# ========== 主函数拆分（修复global变量隐患） ==========
+# ========== 主函数拆分（保存纯净节点） ==========
 def fetch_all_sources() -> Tuple[List[Dict], Dict[str, Dict]]:
     """拉取所有源数据"""
     all_nodes = []
@@ -634,7 +630,7 @@ def fetch_all_sources() -> Tuple[List[Dict], Dict[str, Dict]]:
                 }
                 all_nodes.extend([{"line": l, "weight": weight, "source_url": url} for l in lines])
             except Exception as e:
-                LOG.info(f"❌ 处理源{url}异常：{str(e)[:50]}", exc_info=True)
+                LOG.info(f"❌ 处理源{url}异常：{str(e)[:50]}")
                 source_records[url] = {"original": [], "original_count":0, "weight":0, "proto_count":count_proto([]), "retained_count":0}
     return all_nodes, source_records
 
@@ -655,12 +651,11 @@ def process_nodes(unique_nodes: List[Dict]) -> Tuple[List[str], List[Dict]]:
             try:
                 line, domain, ip, port, source_url = future.result()
             except Exception as e:
-                LOG.info(f"⚠️ 节点处理异常: {str(e)[:50]}", exc_info=True)
+                LOG.info(f"⚠️ 节点处理异常: {str(e)[:50]}")
                 continue
             if not line:
                 continue
             
-            # 最终去重
             if domain in seen_domains or ip in seen_ips:
                 continue
             if domain:
@@ -674,88 +669,70 @@ def process_nodes(unique_nodes: List[Dict]) -> Tuple[List[str], List[Dict]]:
 
 def generate_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_lines: List[str], 
                    source_records: Dict, valid_nodes: List[Dict], start_time: float) -> None:
-    """生成统计信息"""
-    # 更新源保留统计
+    """生成统计信息+保存纯净节点"""
     for url in source_records:
         retained = [n for n in valid_nodes if n["source_url"] == url]
         source_records[url]["retained_count"] = len(retained)
         source_records[url]["retained_lines"] = retained
     
-    # 排序（Reality/TLS优先）
+    # 排序
     def sort_key(line: str) -> int:
         score = 0
-        if "reality" in line.lower(): 
-            score += 100
-        elif "tls" in line.lower(): 
-            score += 50
-        if line.startswith('vless://'): 
-            score += 40
-        elif line.startswith('trojan://'): 
-            score += 30
-        elif line.startswith('vmess://'): 
-            score += 20
-        elif line.startswith('hysteria://'): 
-            score += 10
-        elif line.startswith('ss://'): 
-            score += 5
+        if "reality" in line.lower(): score += 100
+        elif "tls" in line.lower(): score += 50
+        if line.startswith('vless://'): score += 40
+        elif line.startswith('trojan://'): score += 30
+        elif line.startswith('vmess://'): score += 20
+        elif line.startswith('hysteria://'): score += 10
+        elif line.startswith('ss://'): score += 5
         return score
     
     valid_lines.sort(key=sort_key, reverse=True)
     LOG.info(f"✅ 最终有效节点：{len(valid_lines)} 条（Reality/TLS优先）")
     
-    # 保存文件（修复空字符串编码隐患）
-    if valid_lines:
-        content = '\n'.join(valid_lines)
-        encoded = base64.b64encode(content.encode('utf-8')).decode('utf-8')
-    else:
-        encoded = ""
+    # 保存纯净节点
+    clean_valid_lines = [clean_node_content(line) for line in valid_lines if clean_node_content(line)]
+    encoded = base64.b64encode('\n'.join(clean_valid_lines).encode('utf-8')).decode('utf-8') if clean_valid_lines else ""
+    
     try:
         with open('s1.txt', 'w', encoding='utf-8') as f:
             f.write(encoded)
-        LOG.info(f"📄 订阅文件保存至 s1.txt（{len(valid_lines)} 节点）")
-    except (OSError, PermissionError) as e:
+        LOG.info(f"📄 订阅文件保存至 s1.txt（{len(clean_valid_lines)} 纯净节点）")
+    except OSError as e:
         LOG.error(f"❌ 订阅文件保存失败: {str(e)[:50]}")
     
-    # 输出详细统计
+    # 输出统计
     LOG.info(f"\n📋 数据源统计：")
     for idx, src in enumerate(CONFIG["sources"], 1):
         url = src["url"]
         rec = source_records.get(url, {"original_count":0, "proto_count":count_proto([]), "retained_count":0})
-        original_count = rec["original_count"]
-        rate = f"{(rec['retained_count']/original_count*100):.2f}%" if original_count > 0 else "0.00%"
+        rate = f"{(rec['retained_count']/rec['original_count']*100):.2f}%" if rec['original_count']>0 else "0.00%"
         proto = rec["proto_count"]
         LOG.info(f"    {idx}. {url}")
-        stat_line = (f"       - 📝 原始：{original_count} 条（VMess：{proto['vmess']} | VLESS：{proto['vless']} | "
-                     f"Trojan：{proto['trojan']} | SS：{proto['ss']} | Hysteria：{proto['hysteria']}） | "
-                     f"保留：{rec['retained_count']} 条 | 保留率：{rate}")
-        LOG.info(stat_line)
+        LOG.info(f"       - 📝 原始：{rec['original_count']} 条（VMess：{proto['vmess']} | VLESS：{proto['vless']} | Trojan：{proto['trojan']} | SS：{proto['ss']} | Hysteria：{proto['hysteria']}） | 保留：{rec['retained_count']} 条 | 保留率：{rate}")
     
-    # 总统计
-    valid_proto = count_proto(valid_lines)
+    valid_proto = count_proto(clean_valid_lines)
     total_cost = time.time() - start_time
     total_original = len(all_nodes)
-    retention_rate = f"{(len(valid_lines)/total_original*100):.2f}%" if total_original > 0 else "0.00%"
+    retention_rate = f"{(len(clean_valid_lines)/total_original*100):.2f}%" if total_original>0 else "0.00%"
     
     LOG.info(f"\n📊 任务总结：")
-    LOG.info(f"   - 原始节点：{total_original} 条 | 去重后：{len(unique_nodes)} 条 | 有效节点：{len(valid_lines)} 条")
+    LOG.info(f"   - 原始节点：{total_original} 条 | 去重后：{len(unique_nodes)} 条 | 有效纯净节点：{len(clean_valid_lines)} 条")
     LOG.info(f"   - 协议分布：VMess({valid_proto['vmess']}) | VLESS({valid_proto['vless']}) | Trojan({valid_proto['trojan']}) | SS({valid_proto['ss']}) | Hysteria({valid_proto['hysteria']})")
     LOG.info(f"   - 整体保留率：{retention_rate}")
     LOG.info(f"   - 耗时：{total_cost:.2f} 秒")
 
 def main() -> None:
-    """主函数（修复所有隐患，无global变量）"""
+    """主函数：全程保证日志简洁+节点纯净"""
     start_time = time.time()
     
-    # 前置检查
     if not validate_sources():
         LOG.info("❌ 配置校验失败，退出")
         return
     
-    # 初始化
     clean_expired_cache()
     LOG.info(f"🚀 开始节点更新（{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}）")
     
-    # 核心流程
     all_nodes, source_records = fetch_all_sources()
     LOG.info(f"\n📊 拉取完成，原始节点：{len(all_nodes)} 条")
     
@@ -765,10 +742,9 @@ def main() -> None:
     valid_lines, valid_nodes = process_nodes(unique_nodes)
     generate_stats(all_nodes, unique_nodes, valid_lines, source_records, valid_nodes, start_time)
     
-    # 资源释放
     try:
         SESSION.close()
-        LOG.info("🔌 关闭请求会话，释放资源")
+        LOG.info("🔌 关闭请求会话")
     except Exception as e:
         LOG.info(f"⚠️ 会话关闭异常: {str(e)[:50]}")
     
