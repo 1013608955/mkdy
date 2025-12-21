@@ -218,7 +218,7 @@ def extract_ip_port(line: str) -> Tuple[Optional[str], str, int]:
     port = validate_port(port_match.group(1)) if port_match else 443
     return ip, domain, port
 
-# ========== 协议解析函数（核心修改：精准提取VMess的Base64串） ==========
+# ========== 协议解析函数（核心修改：精准提取VMess的Base64串 + 修复SS解析逻辑） ==========
 def parse_vmess(line: str) -> Optional[Dict]:
     """解析VMess节点：
     1. 仅校验add/port/id三个核心字段
@@ -376,39 +376,65 @@ def parse_trojan(line: str) -> Optional[Dict]:
         LOG.info(log_msg(f"❌ Trojan解析错误: {str(e)}", line, "trojan"))
         return None
 
+# ========== 核心修改：修复SS节点解析逻辑 ==========
 def parse_ss(line: str) -> Optional[Dict]:
-    """解析SS节点"""
+    """解析SS节点（修复逻辑：先拆分备注，再解码Base64）"""
     try:
-        ss_part = line[5:]
-        if is_base64(ss_part):
-            ss_part = ss_part.rstrip('=')
-            ss_part += '=' * (4 - len(ss_part) % 4) if len(ss_part) % 4 != 0 else ''
-            ss_part = base64.b64decode(ss_part).decode('utf-8', errors='ignore')
+        # 步骤1：拆分备注（#后面的部分）
+        if '#' in line:
+            ss_main, remark = line.split('#', 1)
+            remark = process_remark(remark, "SS")
+        else:
+            ss_main = line
+            remark = "SS节点"
         
-        ss_parts = ss_part.split('#', 1)
-        remark = process_remark(ss_parts[1], "SS") if len(ss_parts) > 1 else ""
-        ss_core = ss_parts[0]
+        # 步骤2：提取ss://后的核心部分（Base64编码）
+        if not ss_main.startswith('ss://'):
+            raise ValueError("非SS节点格式")
+        ss_base64 = ss_main[5:].strip()  # 只取ss://后、#前的部分
         
-        if '@' not in ss_core:
-            raise ValueError("缺失@分隔符")
+        # 步骤3：解码Base64（核心修复：无论是否"纯Base64"，先尝试解码）
+        try:
+            # 补全Base64填充符
+            ss_base64 = ss_base64.rstrip('=')
+            ss_base64 += '=' * (4 - len(ss_base64) % 4) if len(ss_base64) % 4 != 0 else ''
+            ss_decoded = base64.b64decode(ss_base64).decode('utf-8', errors='ignore')
+        except Exception:
+            # 解码失败则视为明文格式（兼容非主流写法）
+            ss_decoded = ss_base64
         
-        auth_part, addr_port = ss_core.split('@', 1)
+        # 步骤4：解析解码后的内容（加密方式:密码@地址:端口）
+        if '@' not in ss_decoded:
+            raise ValueError("缺失@分隔符（加密方式:密码@地址:端口）")
+        
+        auth_part, addr_port = ss_decoded.split('@', 1)
         if not auth_part or not addr_port or ':' not in addr_port:
-            raise ValueError("认证/地址端口错误")
+            raise ValueError("认证部分/地址端口格式错误")
         
+        # 解析加密方式和密码
+        if ':' not in auth_part:
+            method = "aes-256-gcm"  # 默认加密方式
+            password = auth_part
+        else:
+            method, password = auth_part.split(':', 1)
+        
+        # 解析地址和端口
         address, port_str = addr_port.rsplit(':', 1)
         port = validate_port(port_str)
-        method = auth_part.split(':')[0] if ':' in auth_part else ""
         
+        # 组装配置
         cfg = {
             "address": address.strip(),
             "port": port,
-            "remark": remark or "SS节点",
-            "method": method
+            "remark": remark,
+            "method": method.strip(),
+            "password": password.strip()
         }
         
+        # 校验核心字段
         if not validate_fields(cfg, ["address", "port"], "SS", line):
             return None
+        
         return cfg
     except ValueError as e:
         LOG.info(log_msg(f"📝 过滤无效SS节点：{str(e)}", line, "ss"))
