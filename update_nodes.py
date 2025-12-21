@@ -11,6 +11,10 @@ import logging
 from urllib.parse import unquote
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+# ========== 方案1：禁用urllib3的InsecureRequestWarning警告 ==========
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 # ====================== 日志初始化（自定义格式+图标） ======================
 def init_logger():
     """初始化日志（自定义时间格式+图标替代级别）"""
