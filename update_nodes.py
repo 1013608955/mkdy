@@ -285,6 +285,52 @@ def extract_trojan_config(trojan_line):
                 }
         else:
             print(f"❌ Trojan核心字段解析失败（{trojan_line[:20]}...）: {str(e)[:50]}")
+            print(f"❌ Trojan核心字段解析失败（{trojan_line[:20]}...）: {str(e)[:50]}")
+        return None
+
+def extract_ss_config(ss_line):
+    """新增：SS(Shadowsocks)节点专用解析函数"""
+    try:
+        ss_part = ss_line[5:].strip()  # 去掉ss://前缀
+        
+        # 第一步：处理Base64编码的SS串
+        if is_base64(ss_part):
+            padding = 4 - len(ss_part) % 4
+            if padding != 4:
+                ss_part += '=' * padding
+            try:
+                decoded = base64.b64decode(ss_part).decode('utf-8', errors='ignore')
+                ss_part = decoded
+            except Exception as e:
+                print(f"⚠️ SS Base64解码失败（{ss_line[:20]}...）: {str(e)[:50]}")
+        
+        # 第二步：提取IP/域名/端口（兼容带#备注的情况）
+        if '@' in ss_part:
+            # 拆分认证部分和地址部分
+            auth_part, addr_port_part = ss_part.split('@', 1)
+            # 剥离#后的备注
+            if '#' in addr_port_part:
+                addr_port_part = addr_port_part.split('#')[0]
+            # 拆分地址和端口（从后往前切，避免端口前的:干扰）
+            if ':' in addr_port_part:
+                address, port_str = addr_port_part.rsplit(':', 1)
+                port = int(port_str) if port_str.isdigit() else 443
+            else:
+                address = addr_port_part
+                port = 443
+            
+            # 验证地址有效性（排除空地址）
+            if not address or address.strip() == "":
+                raise Exception("SS节点地址为空")
+            
+            return {
+                "address": address.strip(),
+                "port": port if port in CONFIG["filter"]["valid_ports"] else 443
+            }
+        else:
+            raise Exception("SS节点格式错误（无@分隔符）")
+    except Exception as e:
+        print(f"⚠️ SS解析失败（{ss_line[:20]}...）: {str(e)[:50]}")
         return None
 
 def test_tcp_connect(ip, port):
@@ -326,6 +372,8 @@ def process_node(line):
         if not line:
             return None, "", "", 443
         ip, domain, port = None, "", 443
+        
+        # 按节点类型解析
         if line.startswith('vmess://'):
             cfg = extract_vmess_config(line)
             if cfg:
@@ -344,7 +392,14 @@ def process_node(line):
                 ip = cfg["address"]
                 domain = cfg["sni"]
                 port = cfg["port"]
+        elif line.startswith('ss://'):  # 新增：处理SS节点
+            cfg = extract_ss_config(line)
+            if cfg:
+                ip = cfg["address"]  # SS的address可能是IP或域名
+                domain = ""  # SS无SNI字段，直接用address作为检测目标
+                port = cfg["port"]
         else:
+            # 兼容其他未知节点类型
             ip_match = re.search(r'@([\d\.]+):', line)
             if ip_match:
                 ip = ip_match.group(1)
@@ -367,7 +422,7 @@ def process_node(line):
         if domain and not test_domain_resolve(domain):
             print(f"⚠️ 域名{domain}解析失败，但IP{ip}连接正常，保留节点")
         
-        # 新增：过滤IP/域名都为空的节点（解决:443无效节点问题）
+        # 过滤IP/域名都为空的节点（解决:443无效节点问题）
         if not ip and not domain:
             print(f"❌ 过滤空地址节点：{line[:20]}...")
             return None, "", "", 443
@@ -395,11 +450,13 @@ def main():
     unique_lines = list(all_lines_set)
     print(f"\n📊 全局去重后总节点：{len(unique_lines)} 条")
 
+    # 按优先级排序处理节点
     reality_lines = [l for l in unique_lines if 'reality' in l.lower()]
     tls_lines = [l for l in unique_lines if 'tls' in l.lower() and l not in reality_lines]
-    normal_lines = [l for l in unique_lines if l not in reality_lines + tls_lines]
-    processing_order = reality_lines + tls_lines + normal_lines
-    print(f"📌 优先级拆分 - Reality节点：{len(reality_lines)} 条 | TLS节点：{len(tls_lines)} 条 | 普通节点：{len(normal_lines)} 条")
+    ss_lines = [l for l in unique_lines if l.startswith('ss://') and l not in reality_lines + tls_lines]  # 新增SS节点分类
+    normal_lines = [l for l in unique_lines if l not in reality_lines + tls_lines + ss_lines]
+    processing_order = reality_lines + tls_lines + ss_lines + normal_lines
+    print(f"📌 优先级拆分 - Reality节点：{len(reality_lines)} 条 | TLS节点：{len(tls_lines)} 条 | SS节点：{len(ss_lines)} 条 | 普通节点：{len(normal_lines)} 条")
 
     valid_lines = []
     seen_ips = set()
@@ -421,6 +478,7 @@ def main():
             line, domain, ip, port = result
             if not line:
                 continue
+            # 去重：同一IP/域名只保留一个节点
             if domain and domain in seen_domains:
                 continue
             if ip and ip in seen_ips:
@@ -430,11 +488,13 @@ def main():
             valid_lines.append(line)
             print(f"✅ 保留节点: {'IP' if ip else '域名'} - {ip or domain}:{port}")
 
+    # 保存有效节点（Base64编码）
     combined = '\n'.join(valid_lines)
     encoded = base64.b64encode(combined.encode('utf-8')).decode('utf-8')
     with open('s1.txt', 'w', encoding='utf-8') as f:
         f.write(encoded)
 
+    # 统计各数据源保留情况
     source_stats = {}
     for url, record in source_records.items():
         original_count = record["original_count"]
@@ -446,6 +506,7 @@ def main():
             "retention_rate": round(retention_rate, 2)
         }
 
+    # 输出最终统计
     total_cost = time.time() - start_time
     print(f"\n🎉 最终处理完成：")
     print(f"   - 原始总节点：{len(unique_lines)} 条")
