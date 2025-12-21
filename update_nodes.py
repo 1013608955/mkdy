@@ -133,38 +133,71 @@ def decode_b64_sub(text: str) -> str:
 
 def split_multi_nodes(line: str) -> List[str]:
     """
-    拆分拼接的多个节点（核心修改）
-    处理格式：vmess://xxxvmess://yyyvmess://zzz 或 vless://xxxvless://yyy 等
-    返回独立的节点列表
+    安全拆分拼接节点（核心优化）：
+    1. 仅拆分完整的协议节点，过滤残缺片段
+    2. 增加最小长度+协议特征校验，避免拆出vmess://e等无效节点
     """
     if not line:
         return []
     
-    # 匹配所有协议的节点前缀
-    proto_patterns = [
-        r'(vmess://[^\s]+?)',
-        r'(vless://[^\s]+?)',
-        r'(trojan://[^\s]+?)',
-        r'(ss://[^\s]+?)',
-        r'(hysteria://[^\s]+?)'
-    ]
+    # 定义各协议的最小长度和必要特征（避免拆出残缺节点）
+    proto_rules = {
+        "vmess": {"prefix": "vmess://", "min_len": 50, "required": None},  # VMess至少50字符（Base64包含JSON）
+        "vless": {"prefix": "vless://", "min_len": 20, "required": "@"},   # Vless必须包含@（uuid@地址）
+        "trojan": {"prefix": "trojan://", "min_len": 20, "required": "@"}, # Trojan必须包含@
+        "ss": {"prefix": "ss://", "min_len": 20, "required": None},        # SS至少20字符
+        "hysteria": {"prefix": "hysteria://", "min_len": 20, "required": "@"}
+    }
     
-    # 合并正则，匹配所有独立节点
-    combined_pattern = re.compile('|'.join(proto_patterns))
-    matches = combined_pattern.findall(line)
+    # 第一步：匹配所有可能的节点前缀位置
+    node_positions = []
+    for proto, rule in proto_rules.items():
+        prefix = rule["prefix"]
+        start = 0
+        while True:
+            pos = line.find(prefix, start)
+            if pos == -1:
+                break
+            # 记录前缀位置和协议规则
+            node_positions.append({"pos": pos, "proto": proto, "rule": rule})
+            start = pos + len(prefix)
     
-    # 扁平化匹配结果（因为多个分组会返回元组）
-    nodes = []
-    for match_tuple in matches:
-        for node in match_tuple:
-            if node:  # 过滤空字符串
-                nodes.append(node.strip())
-    
-    # 如果没有匹配到，返回原行（单节点情况）
-    if not nodes:
+    # 第二步：按位置排序，拆分节点
+    if not node_positions:
         return [line.strip()]
     
-    return nodes
+    # 按前缀位置升序排列
+    node_positions.sort(key=lambda x: x["pos"])
+    nodes = []
+    total_len = len(line)
+    
+    for i, node_info in enumerate(node_positions):
+        pos = node_info["pos"]
+        proto = node_info["proto"]
+        rule = node_info["rule"]
+        prefix_len = len(rule["prefix"])
+        
+        # 确定当前节点的结束位置（下一个节点的起始位置）
+        if i < len(node_positions) - 1:
+            end_pos = node_positions[i+1]["pos"]
+        else:
+            end_pos = total_len
+        
+        # 提取节点内容
+        node_str = line[pos:end_pos].strip()
+        
+        # 过滤校验：最小长度 + 必要特征
+        if len(node_str) < rule["min_len"]:
+            LOG.debug(f"🚫 过滤残缺节点（长度不足）：{node_str[:20]}...")
+            continue
+        if rule["required"] and rule["required"] not in node_str:
+            LOG.debug(f"🚫 过滤残缺节点（缺少必要特征{rule['required']}）：{node_str[:20]}...")
+            continue
+        
+        nodes.append(node_str)
+    
+    # 如果没有有效拆分结果，返回原行
+    return nodes if nodes else [line.strip()]
 
 def clean_node_content(line: str) -> str:
     """清洗节点内容"""
@@ -541,10 +574,10 @@ def process_single_node_raw(raw_line: str, source_url: str = "") -> List[Tuple[O
     """
     results = []
     
-    # 第一步：拆分拼接的多个节点
+    # 第一步：安全拆分拼接的多个节点（过滤残缺）
     split_nodes = split_multi_nodes(raw_line)
     if len(split_nodes) > 1:
-        LOG.info(log_msg(f"🔍 检测到{len(split_nodes)}个拼接节点，开始拆分处理", raw_line))
+        LOG.info(log_msg(f"🔍 检测到{len(split_nodes)}个拼接节点，开始拆分处理", raw_line[:50]))
     
     # 第二步：逐个处理拆分后的节点
     for node_line in split_nodes:
@@ -555,7 +588,7 @@ def process_single_node_raw(raw_line: str, source_url: str = "") -> List[Tuple[O
             
             clean_line = clean_node_content(node_line)
             if not clean_line:
-                LOG.info(log_msg(f"📝 过滤空节点（拆分后）", node_line))
+                LOG.info(log_msg(f"📝 过滤空节点（拆分后）", node_line[:20]))
                 results.append((None, "", None, 443, source_url))
                 continue
             
@@ -586,20 +619,20 @@ def process_single_node_raw(raw_line: str, source_url: str = "") -> List[Tuple[O
             
             # 过滤逻辑
             if is_private_ip(ip):
-                LOG.info(log_msg(f"📝 过滤私有IP：{ip}:{port}", clean_line, proto))
+                LOG.info(log_msg(f"📝 过滤私有IP：{ip}:{port}", clean_line[:20], proto))
                 results.append((None, "", None, 443, source_url))
                 continue
             
             if ip and cfg and not test_node(ip, port, proto):
-                LOG.info(log_msg(f"📝 过滤不可用节点：{ip}:{port}", clean_line, proto))
+                LOG.info(log_msg(f"📝 过滤不可用节点：{ip}:{port}", clean_line[:20], proto))
                 results.append((None, "", None, 443, source_url))
                 continue
             
             if domain and not dns_resolve(domain):
-                LOG.info(log_msg(f"⚠️ 域名{domain}解析失败，但IP{ip}有效", clean_line, proto))
+                LOG.info(log_msg(f"⚠️ 域名{domain}解析失败，但IP{ip}有效", clean_line[:20], proto))
             
             if not ip and not domain:
-                LOG.info(log_msg(f"📝 过滤空地址节点", clean_line, proto))
+                LOG.info(log_msg(f"📝 过滤空地址节点", clean_line[:20], proto))
                 results.append((None, "", None, 443, source_url))
                 continue
             
@@ -607,7 +640,7 @@ def process_single_node_raw(raw_line: str, source_url: str = "") -> List[Tuple[O
             results.append((clean_line, domain, ip, port, source_url))
         
         except Exception as e:
-            LOG.info(log_msg(f"❌ 节点处理错误: {str(e)}", node_line, proto))
+            LOG.info(log_msg(f"❌ 节点处理错误: {str(e)}", node_line[:20], proto))
             results.append((None, "", None, 443, source_url))
     
     return results
@@ -619,33 +652,92 @@ def process_single_node(node: Union[str, Dict]) -> List[Tuple[Optional[str], str
     return process_single_node_raw(raw_line, source_url)
 
 def dedup_nodes(nodes: List[Dict]) -> List[Dict]:
-    """节点去重"""
-    seen = set()
-    unique = []
-    nodes.sort(key=lambda x: x["weight"], reverse=True)
-    
+    """
+    分层去重（核心优化）：
+    1. 先按原始行特征去重（恢复拆分前的逻辑）
+    2. 对拆分后的节点，补充按“IP+端口+唯一标识”精细化去重
+    """
+    # 第一阶段：按原始行去重（拆分前的正常逻辑）
+    seen_raw = set()
+    raw_unique = []
     for node in nodes:
         raw_line = node["line"]
-        clean_line = clean_node_content(raw_line)
-        ip = node.get("ip", "")
-        port = node.get("port", 443)
-        
         proto = "other"
-        proto_list = ["vmess", "vless", "trojan", "ss", "hysteria"]
-        for p in proto_list:
-            if clean_line.startswith(f"{p}://"):
+        # 识别协议
+        for p in ["vmess", "vless", "trojan", "ss", "hysteria"]:
+            if raw_line.startswith(f"{p}://"):
                 proto = p
                 break
+        # 去重key：原始行前50字符 + 协议（拆分前的核心逻辑）
+        key_raw = f"{raw_line[:50]}:{proto}"
+        if key_raw not in seen_raw:
+            seen_raw.add(key_raw)
+            raw_unique.append(node)
+    
+    # 第二阶段：对拆分后的有效节点，做精细化去重（避免IP+端口误去重）
+    seen_detail = set()
+    final_unique = []
+    for node in raw_unique:
+        raw_line = node["line"]
+        # 拆分节点（仅用于提取特征，不改变原始行）
+        split_nodes = split_multi_nodes(raw_line)
+        is_valid = False
+        detail_key = ""
+        for split_node in split_nodes:
+            # 提取节点的唯一特征（IP+端口+身份标识）
+            if split_node.startswith("vmess://"):
+                # 解析VMess的id（UUID）
+                try:
+                    vmess_part = split_node[8:].strip()
+                    base64_match = re.match(r'^[A-Za-z0-9+/=]+', vmess_part)
+                    if base64_match:
+                        b64 = base64_match.group(0).rstrip('=')
+                        b64 += '=' * (4 - len(b64) % 4) if len(b64) % 4 != 0 else ''
+                        decoded = base64.b64decode(b64).decode('utf-8', errors='ignore')
+                        cfg = json.loads(decoded)
+                        ip = cfg.get("add", "")
+                        port = cfg.get("port", "")
+                        uuid = cfg.get("id", "")
+                        detail_key = f"{ip}:{port}:vmess:{uuid}"
+                        is_valid = True
+                    else:
+                        detail_key = f"{split_node[:50]}:vmess"
+                        is_valid = True
+                except:
+                    detail_key = f"{split_node[:50]}:vmess"
+                    is_valid = True
+            elif split_node.startswith("vless://"):
+                # 解析Vless的uuid
+                try:
+                    vless_part = split_node[8:].split('?')[0]
+                    uuid = vless_part.split('@')[0] if '@' in vless_part else ""
+                    addr_port = vless_part.split('@')[1] if '@' in vless_part else ""
+                    ip = addr_port.split(':')[0] if ':' in addr_port else ""
+                    port = addr_port.split(':')[1] if ':' in addr_port else ""
+                    detail_key = f"{ip}:{port}:vless:{uuid}"
+                    is_valid = True
+                except:
+                    detail_key = f"{split_node[:50]}:vless"
+                    is_valid = True
+            else:
+                # 其他协议：按原始行特征
+                detail_key = f"{split_node[:50]}:{proto}"
+                is_valid = True
         
-        key = f"{ip}:{port}:{proto}" if ip else f"{clean_line[:50]}:{proto}"
-        if key not in seen:
-            seen.add(key)
-            unique.append({"line": raw_line, "source_url": node["source_url"]})
-    return unique
+        # 精细化去重
+        if not detail_key:
+            detail_key = f"{raw_line[:50]}:other"
+        
+        if detail_key not in seen_detail:
+            seen_detail.add(detail_key)
+            final_unique.append(node)
+    
+    LOG.info(f"📌 去重统计：原始{len(nodes)}条 → 按行去重{len(raw_unique)}条 → 精细化去重{len(final_unique)}条")
+    return final_unique
 
 # ========== 数据源与主逻辑 ==========
 def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
-    """拉取订阅源数据"""
+    """拉取订阅源数据：先去重原始行，再拆分（核心优化）"""
     cache_dir = ".cache"
     os.makedirs(cache_dir, exist_ok=True)
     cache_key = hashlib.md5(url.encode()).hexdigest()
@@ -669,11 +761,25 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
             resp = SESSION.get(url, timeout=CONFIG["request"]["timeout"], verify=False)
             resp.raise_for_status()
             content = decode_b64_sub(resp.text)
-            lines = [l.strip() for l in content.split('\n') if l.strip() and not l.startswith('#')]
+            # 第一步：提取原始行并去重（恢复拆分前的逻辑）
+            raw_lines = [l.strip() for l in content.split('\n') if l.strip() and not l.startswith('#')]
+            # 原始行去重（按前50字符+协议）
+            seen_raw = set()
+            raw_unique = []
+            for line in raw_lines:
+                proto = "other"
+                for p in ["vmess", "vless", "trojan", "ss", "hysteria"]:
+                    if line.startswith(f"{p}://"):
+                        proto = p
+                        break
+                key = f"{line[:50]}:{proto}"
+                if key not in seen_raw:
+                    seen_raw.add(key)
+                    raw_unique.append(line)
             
-            # 对拉取到的每行数据，先拆分拼接节点，再展开
+            # 第二步：对去重后的原始行做安全拆分（过滤残缺节点）
             expanded_lines = []
-            for line in lines:
+            for line in raw_unique:
                 split_nodes = split_multi_nodes(line)
                 expanded_lines.extend(split_nodes)
             
@@ -683,7 +789,7 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
             except OSError as e:
                 LOG.info(f"⚠️ 缓存写入失败 {url}: {str(e)[:50]}")
             
-            LOG.info(f"✅ 拉取成功 {url}（权重{weight}），原始节点 {len(lines)} 条，拆分后 {len(expanded_lines)} 条")
+            LOG.info(f"✅ 拉取成功 {url}：原始{len(raw_lines)}条 → 行去重{len(raw_unique)}条 → 拆分后{len(expanded_lines)}条")
             return expanded_lines, weight
         except Exception as e:
             if retry < CONFIG["request"]["retry"] - 1:
@@ -892,7 +998,7 @@ def main() -> None:
     all_nodes, source_records = fetch_all_sources()
     LOG.info(f"\n📊 拉取完成，原始节点：{len(all_nodes)} 条")
     
-    # 去重
+    # 去重（分层去重，恢复拆分前逻辑）
     unique_nodes = dedup_nodes(all_nodes)
     LOG.info(f"🔍 去重后节点：{len(unique_nodes)} 条")
     
