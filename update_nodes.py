@@ -119,31 +119,43 @@ def clean_vmess_json(decoded_str):
         return decoded_str
 
 def truncate_remark(remark):
-    """按UTF-8字节数截断备注，避免label too long"""
+    """按UTF-8字节数截断备注，避免label too long（强化容错：循环回退确保解码成功）"""
     if not remark:
         return ""
     
-    # 计算备注的UTF-8字节数
-    remark_bytes = remark.encode('utf-8')
-    max_bytes = CONFIG["filter"]["max_remark_bytes"]
-    
-    if len(remark_bytes) <= max_bytes:
-        return remark
-    
-    # 按字节数截断，避免截断到中文/emoji的中间（导致乱码）
-    truncated_bytes = remark_bytes[:max_bytes]
-    # 尝试解码，若解码失败（截断到字符中间），再往前退1-2字节
     try:
-        truncated_remark = truncated_bytes.decode('utf-8')
-    except UnicodeDecodeError:
-        truncated_bytes = remark_bytes[:max_bytes-2]  # 退2字节，兼容中文/emoji
-        truncated_remark = truncated_bytes.decode('utf-8', errors='ignore')
-    
-    # 加省略号（确保总字节数仍不超）
-    if len(truncated_remark.encode('utf-8')) + 3 <= max_bytes:
-        truncated_remark += "..."
-    print(f"⚠️ 备注字节数超限（原{len(remark_bytes)}字节），已截断为{len(truncated_remark.encode('utf-8'))}字节：{truncated_remark[:20]}...")
-    return truncated_remark
+        # 计算备注的UTF-8字节数
+        remark_bytes = remark.encode('utf-8')
+        max_bytes = CONFIG["filter"]["max_remark_bytes"]
+        
+        if len(remark_bytes) <= max_bytes:
+            return remark
+        
+        # 按字节数截断，兼容中文/emoji（多次回退，确保解码成功）
+        truncated_bytes = remark_bytes[:max_bytes]
+        # 循环回退，直到能正常解码（最多回退5字节，覆盖大部分多字节字符）
+        truncated_remark = ""
+        for back_step in range(0, 6):
+            try:
+                truncated_remark = truncated_bytes[:len(truncated_bytes)-back_step].decode('utf-8')
+                break  # 解码成功则退出循环
+            except UnicodeDecodeError:
+                continue
+        else:
+            # 极端情况：直接取前max_bytes-5字节，强制忽略错误
+            truncated_remark = remark_bytes[:max_bytes-5].decode('utf-8', errors='ignore')
+        
+        # 加省略号（确保总字节数仍不超）
+        ellipsis = "..."
+        if len(truncated_remark.encode('utf-8')) + len(ellipsis.encode('utf-8')) <= max_bytes:
+            truncated_remark += ellipsis
+        
+        print(f"⚠️ 备注字节数超限（原{len(remark_bytes)}字节），已截断为{len(truncated_remark.encode('utf-8'))}字节：{truncated_remark[:20]}...")
+        return truncated_remark
+    except Exception as e:
+        # 所有异常都捕获，返回简短默认备注，避免节点处理失败
+        print(f"⚠️ 备注截断失败：{str(e)[:30]}，使用默认备注")
+        return "默认节点"
 
 def test_tcp_connect(ip, port):
     """测试TCP连接是否可用"""
@@ -193,10 +205,10 @@ def count_protocol_nodes(lines):
 
 # ====================== 各协议解析函数 ======================
 def extract_vmess_config(vmess_line):
-    """解析VMess协议节点"""
+    """解析VMess协议节点（修复：剥离@/#后缀）"""
     try:
         vmess_part = vmess_line[8:].strip()
-        # ========== 核心修改：剥离链接末尾的@/#等额外内容 ==========
+        # ========== 核心修改1：剥离链接末尾的@/#等额外内容 ==========
         # 分割@或#，只保留第一个部分（纯Base64编码内容），解决@vpn_443这类后缀导致的解析失败
         vmess_part = re.split(r'[@#]', vmess_part)[0].strip()
         # =============================================================
@@ -326,15 +338,21 @@ def extract_vless_config(vless_line):
         return None
 
 def extract_trojan_config(trojan_line):
-    """解析Trojan协议节点"""
+    """解析Trojan协议节点（强化容错：提前处理备注截断异常）"""
     try:
-        # 剥离标签 + 截断
+        # 剥离标签 + 截断（提前捕获截断异常，避免后续报错）
         label = ""
         if '#' in trojan_line:
             trojan_part, label = trojan_line.split('#', 1)
             # URL解码备注
             label = unquote(label)
-            label = truncate_remark(label)
+            # ========== 核心修改2：提前捕获备注截断异常 ==========
+            try:
+                label = truncate_remark(label)
+            except Exception as e:
+                print(f"⚠️ Trojan备注截断失败：{str(e)[:30]}（{trojan_line[:20]}...）")
+                label = "Trojan节点"
+            # =====================================================
             if not label:
                 print(f"⚠️ Trojan节点标签为空，已忽略（{trojan_line[:20]}...）")
         else:
@@ -379,7 +397,8 @@ def extract_trojan_config(trojan_line):
             "label": label
         }
     except Exception as e:
-        if "label" in str(e).lower() or "empty" in str(e).lower() or "too long" in str(e).lower():
+        # 扩大异常捕获范围，包含所有label/truncate相关异常
+        if any(keyword in str(e).lower() for keyword in ["label", "empty", "too long", "truncate"]):
             print(f"⚠️ Trojan节点标签异常（非核心，保留节点）：{str(e)[:50]}（{trojan_line[:20]}...）")
             ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', trojan_line)
             if ip_port_match:
@@ -389,7 +408,7 @@ def extract_trojan_config(trojan_line):
                     "password": "",
                     "sni": "",
                     "security": "tls",
-                    "label": ""
+                    "label": "Trojan节点"
                 }
         else:
             print(f"❌ Trojan核心字段解析失败（{trojan_line[:20]}...）: {str(e)[:50]}")
