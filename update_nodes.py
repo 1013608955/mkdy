@@ -196,6 +196,10 @@ def extract_vmess_config(vmess_line):
     """解析VMess协议节点"""
     try:
         vmess_part = vmess_line[8:].strip()
+        # ========== 核心修改：剥离链接末尾的@/#等额外内容 ==========
+        # 分割@或#，只保留第一个部分（纯Base64编码内容），解决@vpn_443这类后缀导致的解析失败
+        vmess_part = re.split(r'[@#]', vmess_part)[0].strip()
+        # =============================================================
         vmess_part = vmess_part.encode('ascii', 'ignore').decode('ascii')
         vmess_part = re.sub(r'[^A-Za-z0-9+/=]', '', vmess_part)
         if not vmess_part:
