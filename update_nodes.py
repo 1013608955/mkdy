@@ -8,7 +8,7 @@ import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# ====================== 配置项 ======================
+# ====================== 配置项（新增全局备注长度限制） ======================
 CONFIG = {
     "sources": [
         "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/Splitted-By-Protocol/vmess.txt",
@@ -41,7 +41,7 @@ CONFIG = {
             re.compile(r"^0\.0\.0\.0$")
         ],
         "valid_ports": range(1, 65535),
-        "max_ps_length": 64  # VMess备注最大长度
+        "max_remark_length": 64  # 新增：所有节点备注的最大长度（统一限制）
     }
 }
 
@@ -105,13 +105,11 @@ def test_domain_resolve(domain):
     return False
 
 def clean_vmess_json(decoded_str):
-    """核心新增：清理VMess JSON中的乱码/非JSON字符，只保留{}之间的有效内容"""
+    """清理VMess JSON中的乱码/非JSON字符"""
     try:
-        # 匹配第一个{到最后一个}之间的内容（核心JSON部分），忽略换行/制表符
         json_match = re.search(r'\{.*\}', decoded_str, re.DOTALL)
         if json_match:
             clean_json = json_match.group(0)
-            # 移除不可见控制字符（如\x0c、\t、\n、全角空格等）
             clean_json = re.sub(r'[\x00-\x1f\x7f-\x9f\u3000]', '', clean_json)
             return clean_json
         return decoded_str
@@ -119,55 +117,51 @@ def clean_vmess_json(decoded_str):
         print(f"⚠️ 清理VMess JSON乱码失败：{str(e)[:50]}")
         return decoded_str
 
+def truncate_remark(remark):
+    """通用函数：截断过长的备注到max_remark_length"""
+    if len(remark) > CONFIG["filter"]["max_remark_length"]:
+        truncated = remark[:CONFIG["filter"]["max_remark_length"]] + "..."  # 加省略号标识截断
+        print(f"⚠️ 备注过长，已截断为{CONFIG['filter']['max_remark_length']}字符：{truncated[:20]}...")
+        return truncated
+    return remark
+
+# ====================== 节点提取函数（新增备注截断） ======================
 def extract_vmess_config(vmess_line):
-    """优化版：仅修复JSON乱码 + Base64过滤 + 备注截断（不强制Port为数字）"""
+    """VMess解析：乱码清理 + 备注截断"""
     try:
         vmess_part = vmess_line[8:].strip()
         vmess_part = vmess_part.encode('ascii', 'ignore').decode('ascii')
-        
-        # 1. 过滤Base64非法字符（只保留A-Za-z0-9+/=）
         vmess_part = re.sub(r'[^A-Za-z0-9+/=]', '', vmess_part)
         if not vmess_part:
             raise Exception("Base64串过滤后为空")
         
-        # 补全Base64 padding
         padding = 4 - len(vmess_part) % 4
         if padding != 4:
             vmess_part += '=' * padding
         
-        # 解码Base64并清理乱码（核心修复点）
         decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
-        decoded = clean_vmess_json(decoded)  # 仅保留这步乱码清理
-        
-        # 解析JSON
+        decoded = clean_vmess_json(decoded)
         cfg = json.loads(decoded)
         
-        # 2. 截断过长的VMess备注（ps字段）
-        ps = cfg.get('ps', '')
-        if len(ps) > CONFIG["filter"]["max_ps_length"]:
-            cfg['ps'] = ps[:CONFIG["filter"]["max_ps_length"]]
-            print(f"⚠️ VMess节点备注过长，已截断（{vmess_line[:20]}...）")
+        # 备注截断（VMess的ps字段）
+        cfg["ps"] = truncate_remark(cfg.get('ps', ''))
         
-        # 3. 还原Port原始处理逻辑（不强制转数字）
         port = cfg.get('port', 443)
-        # 仅做基础的空格清理，不改变类型
         if isinstance(port, str):
             port = port.strip()
         
-        # 4. 整理返回结果
         return {
             "address": cfg.get('add'),
-            "port": port,  # 保留原始类型（字符串/数字）
+            "port": port,
             "id": cfg.get('id', ''),
             "alterId": cfg.get('aid', 0),
             "security": cfg.get('scy', 'auto'),
             "network": cfg.get('net', 'tcp'),
             "tls": cfg.get('tls', ''),
             "serverName": cfg.get('host') or cfg.get('sni', ''),
-            "ps": cfg.get('ps', '')
+            "ps": cfg["ps"]
         }
     except json.JSONDecodeError as e:
-        # JSON解析失败时，尝试正则提取核心字段
         print(f"⚠️ VMess JSON解析失败（{vmess_line[:20]}...）: {str(e)[:50]}")
         decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
         decoded = clean_vmess_json(decoded)
@@ -175,7 +169,6 @@ def extract_vmess_config(vmess_line):
         port_match = re.search(r'"port":"?(\d+)"?', decoded)
         host_match = re.search(r'"host":"([^"]+)"|\"sni\":\"([^"]+)"', decoded)
         
-        # 正则提取port，保留原始字符串类型
         port = "443"
         if port_match:
             port = port_match.group(1).strip()
@@ -183,7 +176,7 @@ def extract_vmess_config(vmess_line):
         if ip_match and port_match:
             return {
                 "address": ip_match.group(1),
-                "port": port,  # 保留字符串类型
+                "port": port,
                 "id": "", 
                 "alterId": 0, 
                 "security": "auto",
@@ -194,16 +187,19 @@ def extract_vmess_config(vmess_line):
             }
         else:
             raise Exception("核心字段（IP/端口）提取失败")
-    except Exception as e:
+    except Exception as as e:
         print(f"⚠️ VMess解析失败（{vmess_line[:20]}...）: {str(e)[:50]}")
         return None
 
 def extract_vless_config(vless_line):
+    """VLESS解析：备注截断（remarks参数）"""
     try:
         vless_part = vless_line[8:].strip()
         vless_part = vless_part.encode('ascii', 'ignore').decode('ascii')
         base_part, param_part = (vless_part.split('?') + [''])[:2]
         uuid_addr_port = base_part.split('@')
+        
+        # 解析核心字段
         if len(uuid_addr_port) != 2:
             ip_match = re.search(r'@([\d\.a-zA-Z-]+)', base_part)
             port_match = re.search(r':(\d+)', base_part)
@@ -222,21 +218,27 @@ def extract_vless_config(vless_line):
             except:
                 address = addr_port
                 port = 443
+        
+        # 解析参数 + 备注截断（VLESS的remarks参数）
         params = {}
         for param in param_part.split('&'):
             if '=' in param:
                 k, v = param.split('=', 1)
+                if k.lower() == "remarks":
+                    v = truncate_remark(v)  # 截断remarks
                 params[k.lower()] = v
+        
         return {
             "uuid": uuid,
             "address": address,
             "port": port if port in CONFIG["filter"]["valid_ports"] else 443,
             "security": params.get('security', 'tls'),
             "sni": params.get('sni') or params.get('SNI'),
-            "network": params.get('type', 'tcp') or params.get('Type')
+            "network": params.get('type', 'tcp') or params.get('Type'),
+            "remarks": params.get('remarks', '')
         }
     except Exception as e:
-        print(f"⚠️ VLESS解析失败（{vmess_line[:20]}...）: {str(e)[:50]}")
+        print(f"⚠️ VLESS解析失败（{vless_line[:20]}...）: {str(e)[:50]}")
         ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', vless_line)
         if ip_port_match:
             return {
@@ -245,35 +247,31 @@ def extract_vless_config(vless_line):
                 "port": int(ip_port_match.group(2)),
                 "security": "tls",
                 "sni": "",
-                "network": "tcp"
+                "network": "tcp",
+                "remarks": ""
             }
         return None
 
 def extract_trojan_config(trojan_line):
-    """优化版：容错处理标签异常，仅核心字段无效时剔除"""
+    """Trojan解析：标签（备注）截断"""
     try:
-        # 第一步：剥离#后的标签部分，避免标签干扰核心解析
+        # 剥离标签 + 备注截断
         if '#' in trojan_line:
-            trojan_part = trojan_line.split('#')[0]  # 只保留#前的核心链接
+            trojan_part = trojan_line.split('#')[0]
             label = trojan_line.split('#')[1] if len(trojan_line.split('#'))>1 else ""
-            # 容错：空标签/过长标签处理
+            label = truncate_remark(label)  # 截断Trojan的label（备注）
             if not label:
                 print(f"⚠️ Trojan节点标签为空，已忽略（{trojan_line[:20]}...）")
-            elif len(label) > 64:  # 截断过长标签（64字符限制）
-                label = label[:64]
-                print(f"⚠️ Trojan节点标签过长，已截断（{trojan_line[:20]}...）")
         else:
             trojan_part = trojan_line
             label = ""
         
-        # 继续解析核心字段（密码/地址/端口）
         trojan_part = trojan_part[8:].strip()
         trojan_part = trojan_part.encode('ascii', 'ignore').decode('ascii')
         password_addr = trojan_part.split('?')[0]
         
-        # 兼容密码/地址分割异常
+        # 解析核心字段
         if '@' not in password_addr:
-            # 正则提取核心字段
             ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', trojan_part)
             if not ip_port_match:
                 raise Exception("核心字段（IP/端口）提取失败")
@@ -289,7 +287,7 @@ def extract_trojan_config(trojan_line):
                 address = addr_port
                 port = 443
         
-        # 解析参数（兼容大小写）
+        # 解析参数
         params = {}
         if '?' in trojan_part:
             param_str = trojan_part.split('?')[1]
@@ -304,13 +302,11 @@ def extract_trojan_config(trojan_line):
             "password": password,
             "sni": params.get('sni') or params.get('SNI'),
             "security": params.get('security', 'tls'),
-            "label": label  # 即使标签为空/过长，仍保留
+            "label": label
         }
     except Exception as e:
-        # 区分异常类型：仅核心字段失败才提示，标签异常忽略
         if "label" in str(e).lower() or "empty" in str(e).lower() or "too long" in str(e).lower():
             print(f"⚠️ Trojan节点标签异常（非核心，保留节点）：{str(e)[:50]}（{trojan_line[:20]}...）")
-            # 尝试最后一次提取核心字段
             ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', trojan_line)
             if ip_port_match:
                 return {
@@ -326,11 +322,11 @@ def extract_trojan_config(trojan_line):
         return None
 
 def extract_ss_config(ss_line):
-    """SS(Shadowsocks)节点专用解析函数"""
+    """SS解析：备注截断（#后面的内容）"""
     try:
-        ss_part = ss_line[5:].strip()  # 去掉ss://前缀
+        ss_part = ss_line[5:].strip()
         
-        # 第一步：处理Base64编码的SS串
+        # 处理Base64编码
         if is_base64(ss_part):
             padding = 4 - len(ss_part) % 4
             if padding != 4:
@@ -341,14 +337,15 @@ def extract_ss_config(ss_line):
             except Exception as e:
                 print(f"⚠️ SS Base64解码失败（{ss_line[:20]}...）: {str(e)[:50]}")
         
-        # 第二步：提取IP/域名/端口（兼容带#备注的情况）
+        # 剥离备注 + 截断
+        remark = ""
+        if '#' in ss_part:
+            ss_part, remark = ss_part.split('#', 1)
+            remark = truncate_remark(remark)  # 截断SS的备注
+        
+        # 解析核心字段
         if '@' in ss_part:
-            # 拆分认证部分和地址部分
             auth_part, addr_port_part = ss_part.split('@', 1)
-            # 剥离#后的备注
-            if '#' in addr_port_part:
-                addr_port_part = addr_port_part.split('#')[0]
-            # 拆分地址和端口（从后往前切，避免端口前的:干扰）
             if ':' in addr_port_part:
                 address, port_str = addr_port_part.rsplit(':', 1)
                 port = int(port_str) if port_str.isdigit() else 443
@@ -356,13 +353,13 @@ def extract_ss_config(ss_line):
                 address = addr_port_part
                 port = 443
             
-            # 验证地址有效性（排除空地址）
             if not address or address.strip() == "":
                 raise Exception("SS节点地址为空")
             
             return {
                 "address": address.strip(),
-                "port": port if port in CONFIG["filter"]["valid_ports"] else 443
+                "port": port if port in CONFIG["filter"]["valid_ports"] else 443,
+                "remark": remark
             }
         else:
             raise Exception("SS节点格式错误（无@分隔符）")
@@ -370,8 +367,8 @@ def extract_ss_config(ss_line):
         print(f"⚠️ SS解析失败（{ss_line[:20]}...）: {str(e)[:50]}")
         return None
 
+# ====================== 其他工具函数（兼容备注截断） ======================
 def test_tcp_connect(ip, port):
-    # 兼容port为字符串的情况（转数字后检测）
     if isinstance(port, str):
         try:
             port = int(port)
@@ -414,35 +411,37 @@ def process_node(line):
     try:
         if not line:
             return None, "", "", 443
-        ip, domain, port = None, "", 443
+        ip, domain, port, remark = None, "", 443, ""
         
-        # 按节点类型解析
         if line.startswith('vmess://'):
             cfg = extract_vmess_config(line)
             if cfg:
                 ip = cfg["address"]
                 domain = cfg["serverName"]
                 port = cfg["port"]
+                remark = cfg["ps"]
         elif line.startswith('vless://'):
             cfg = extract_vless_config(line)
             if cfg:
                 ip = cfg["address"]
                 domain = cfg["sni"]
                 port = cfg["port"]
+                remark = cfg["remarks"]
         elif line.startswith('trojan://'):
             cfg = extract_trojan_config(line)
             if cfg:
                 ip = cfg["address"]
                 domain = cfg["sni"]
                 port = cfg["port"]
+                remark = cfg["label"]
         elif line.startswith('ss://'):
             cfg = extract_ss_config(line)
             if cfg:
                 ip = cfg["address"]
                 domain = ""
                 port = cfg["port"]
+                remark = cfg["remark"]
         else:
-            # 兼容其他未知节点类型
             ip_match = re.search(r'@([\d\.]+):', line)
             if ip_match:
                 ip = ip_match.group(1)
@@ -452,22 +451,24 @@ def process_node(line):
             port_match = re.search(r':(\d+)', line)
             if port_match:
                 port = int(port_match.group(1)) if port_match.group(1) in CONFIG["filter"]["valid_ports"] else 443
+            if '#' in line:
+                remark = line.split('#')[1]
+                remark = truncate_remark(remark)
         
-        # 核心过滤逻辑
+        # 过滤逻辑
         if is_private_ip(ip):
-            print(f"❌ 过滤私有IP节点：{ip}:{port}")
+            print(f"❌ 过滤私有IP节点：{ip}:{port}（备注：{remark[:20]}...）")
             return None, "", "", 443
         
         if ip and not test_tcp_connect(ip, port):
-            print(f"❌ 过滤TCP连接失败节点：{ip}:{port}（超时{CONFIG['detection']['tcp_timeout']}秒，重试{CONFIG['detection']['tcp_retry']}次）")
+            print(f"❌ 过滤TCP连接失败节点：{ip}:{port}（备注：{remark[:20]}...）")
             return None, "", "", 443
         
         if domain and not test_domain_resolve(domain):
-            print(f"⚠️ 域名{domain}解析失败，但IP{ip}连接正常，保留节点")
+            print(f"⚠️ 域名{domain}解析失败，但IP{ip}连接正常（备注：{remark[:20]}...）")
         
-        # 过滤IP/域名都为空的节点
         if not ip and not domain:
-            print(f"❌ 过滤空地址节点：{line[:20]}...")
+            print(f"❌ 过滤空地址节点：{line[:20]}...（备注：{remark[:20]}...）")
             return None, "", "", 443
         
         return line, domain, ip, port
@@ -493,7 +494,7 @@ def main():
     unique_lines = list(all_lines_set)
     print(f"\n📊 全局去重后总节点：{len(unique_lines)} 条")
 
-    # 按优先级排序处理节点
+    # 优先级排序
     reality_lines = [l for l in unique_lines if 'reality' in l.lower()]
     tls_lines = [l for l in unique_lines if 'tls' in l.lower() and l not in reality_lines]
     ss_lines = [l for l in unique_lines if l.startswith('ss://') and l not in reality_lines + tls_lines]
@@ -521,7 +522,6 @@ def main():
             line, domain, ip, port = result
             if not line:
                 continue
-            # 去重：同一IP/域名只保留一个节点
             if domain and domain in seen_domains:
                 continue
             if ip and ip in seen_ips:
@@ -529,15 +529,20 @@ def main():
             seen_domains.add(domain)
             seen_ips.add(ip)
             valid_lines.append(line)
-            print(f"✅ 保留节点: {'IP' if ip else '域名'} - {ip or domain}:{port}")
+            # 输出截断后的备注
+            if '#' in line:
+                remark = line.split('#')[1][:20] + "..."
+            else:
+                remark = "无备注"
+            print(f"✅ 保留节点: {'IP' if ip else '域名'} - {ip or domain}:{port}（备注：{remark}）")
 
-    # 保存有效节点（Base64编码）
+    # 保存节点
     combined = '\n'.join(valid_lines)
     encoded = base64.b64encode(combined.encode('utf-8')).decode('utf-8')
     with open('s1.txt', 'w', encoding='utf-8') as f:
         f.write(encoded)
 
-    # 统计各数据源保留情况
+    # 统计
     source_stats = {}
     for url, record in source_records.items():
         original_count = record["original_count"]
@@ -549,14 +554,13 @@ def main():
             "retention_rate": round(retention_rate, 2)
         }
 
-    # 输出最终统计
     total_cost = time.time() - start_time
     print(f"\n🎉 最终处理完成：")
     print(f"   - 原始总节点：{len(unique_lines)} 条")
     print(f"   - 过滤后可用节点：{len(valid_lines)} 条")
     print(f"   - 独特IP：{len(seen_ips)} 个")
     print(f"   - 独特域名：{len(seen_domains)} 个")
-    print(f"   - TCP检测规则：超时{CONFIG['detection']['tcp_timeout']}秒，重试{CONFIG['detection']['tcp_retry']}次")
+    print(f"   - 备注最大长度：{CONFIG['filter']['max_remark_length']}字符")
     print(f"   - 总耗时：{total_cost:.2f} 秒（{total_cost/60:.2f} 分钟）")
     print(f"   - 节点已保存至：s1.txt（Base64编码格式）")
 
