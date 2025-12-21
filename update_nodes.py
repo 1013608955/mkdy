@@ -75,7 +75,7 @@ def init_session() -> requests.Session:
 
 SESSION = init_session()
 
-# ========== 通用工具函数（核心：日志与节点内容彻底分离） ==========
+# ========== 通用工具函数（核心修复） ==========
 def validate_port(port: Union[str, int]) -> int:
     """校验并返回合法端口，默认443"""
     try:
@@ -99,14 +99,16 @@ def log_msg(content: str, line: str = "", proto: str = "") -> str:
     return f"{content}{line_part}{proto_part}"
 
 def is_base64(s: str) -> bool:
-    """简化Base64校验"""
+    """简化Base64校验：放宽填充符要求，优先尝试解码内容"""
     if not s or len(s) < 4:
         return False
     try:
+        # 补全填充符，不使用validate=True，优先解码内容
+        s = s.rstrip('=')  # 先去掉多余的填充符
         s += '=' * (4 - len(s) % 4) if len(s) % 4 != 0 else ''
-        base64.b64decode(s, validate=True)
+        base64.b64decode(s)  # 去掉validate=True，放宽校验
         return True
-    except (binascii.Error, ValueError):
+    except (binascii.Error, ValueError, UnicodeDecodeError):
         return False
 
 def decode_b64_sub(text: str) -> str:
@@ -116,6 +118,7 @@ def decode_b64_sub(text: str) -> str:
     
     if is_base64(clean_for_b64):
         try:
+            clean_for_b64 = clean_for_b64.rstrip('=')
             clean_for_b64 += '=' * (4 - len(clean_for_b64) % 4) if len(clean_for_b64) % 4 != 0 else ''
             decoded = base64.b64decode(clean_for_b64).decode('utf-8', errors='ignore')
             decoded_line_count = len([l for l in decoded.split('\n') if l.strip()])
@@ -212,37 +215,41 @@ def extract_ip_port(line: str) -> Tuple[Optional[str], str, int]:
     port = validate_port(port_match.group(1)) if port_match else 443
     return ip, domain, port
 
-# ========== 协议解析函数（核心修复：VMess自动清理末尾无效字符） ==========
+# ========== 协议解析函数（核心修复：VMess处理逻辑） ==========
 def parse_vmess(line: str) -> Optional[Dict]:
-    """解析VMess：自动过滤Base64部分无效字符，兼容末尾混入非Base64字符的节点"""
+    """解析VMess：修复Base64处理顺序，兼容不规范的填充符和末尾无效字符"""
     try:
-        # 提取vmess://后的部分，先去掉@#等符号，再过滤仅保留Base64合法字符（A-Za-z0-9+/=）
-        vmess_part = line[8:]  # 提取vmess://后的全部内容
-        vmess_part = re.sub(r'[@#]', '', vmess_part)[:1024]  # 去掉特殊符号，限制长度
-        # 核心修复：仅保留Base64允许的字符，自动去掉末尾的"vmess"等无效字符
+        # 步骤1：提取vmess://后的部分并去除首尾空白
+        vmess_part = line[8:].strip()
+        # 步骤2：过滤所有非Base64字符（核心修复：先过滤，再处理）
         vmess_part = re.sub(r'[^A-Za-z0-9+/=]', '', vmess_part)
+        # 步骤3：限制长度（防止超长串）
+        vmess_part = vmess_part[:1024]
         
-        # 校验Base64格式
+        # 步骤4：校验Base64（已放宽校验）
         if not is_base64(vmess_part):
             raise ValueError("非Base64格式")
         
-        # 补全Base64填充符，确保长度是4的倍数
+        # 步骤5：补全填充符并解码
+        vmess_part = vmess_part.rstrip('=')  # 去掉多余的填充符
         vmess_part += '=' * (4 - len(vmess_part) % 4) if len(vmess_part) % 4 != 0 else ''
-        # Base64解码
         decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
-        # 提取JSON部分（防止解码后有多余字符）
+        
+        # 步骤6：提取JSON部分并清理（防止解码后有多余字符）
         json_match = re.search(r'\{.*\}', decoded, re.DOTALL)
-        decoded = json_match.group(0) if json_match else decoded
-        # 清理不可见字符
+        if not json_match:
+            raise ValueError("未提取到有效JSON配置")
+        decoded = json_match.group(0)
         decoded = re.sub(r'[\x00-\x1f\x7f-\x9f\u3000]', '', decoded)
-        # 解析JSON配置
+        
+        # 步骤7：解析JSON配置
         cfg = json.loads(decoded)
         
-        # 校验核心字段（修复后不会误判aid=0）
+        # 步骤8：校验核心字段（修复aid=0误判）
         if not validate_fields(cfg, ["add", "port", "id", "aid"], "VMess", line):
             return None
         
-        # 处理备注和端口
+        # 步骤9：处理备注和端口
         cfg["ps"] = process_remark(cfg.get('ps', ''), "VMess")
         cfg["port"] = validate_port(cfg.get('port', 443))
         
@@ -341,6 +348,7 @@ def parse_ss(line: str) -> Optional[Dict]:
     try:
         ss_part = line[5:]
         if is_base64(ss_part):
+            ss_part = ss_part.rstrip('=')
             ss_part += '=' * (4 - len(ss_part) % 4) if len(ss_part) % 4 != 0 else ''
             ss_part = base64.b64decode(ss_part).decode('utf-8', errors='ignore')
         
@@ -409,9 +417,9 @@ def parse_hysteria(line: str) -> Optional[Dict]:
         LOG.info(log_msg(f"❌ Hysteria解析错误: {str(e)}", line, "hysteria"))
         return None
 
-# ========== 节点检测与处理（修复传参错误+日志简洁） ==========
+# ========== 节点检测与处理 ==========
 def test_node(ip: str, port: int, proto: str) -> bool:
-    """精简节点可用性检测：修复log_msg传参错误（proto_type→proto）"""
+    """精简节点可用性检测：修复log_msg传参错误"""
     port = validate_port(port)
     if not ip or is_private_ip(ip):
         return False
@@ -423,7 +431,6 @@ def test_node(ip: str, port: int, proto: str) -> bool:
             if sock.connect_ex((ip, port)) != 0:
                 return False
     except Exception as e:
-        # 修复：将prot/proto_type改为正确的proto
         LOG.info(log_msg(f"⚠️ TCP检测失败: {str(e)[:30]}", proto=proto))
         return False
     
@@ -530,7 +537,7 @@ def dedup_nodes(nodes: List[Dict]) -> List[Dict]:
             unique.append({"line": raw_line, "source_url": node["source_url"]})
     return unique
 
-# ========== 数据源处理（仅拉取原始内容） ==========
+# ========== 数据源处理 ==========
 def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
     """精简源数据拉取：仅拉取原始内容"""
     cache_dir = ".cache"
@@ -632,7 +639,7 @@ def count_proto(lines: List[Union[str, Dict]]) -> Dict[str, int]:
             count["other"] +=1
     return count
 
-# ========== 主函数拆分（保存纯净节点） ==========
+# ========== 主函数 ==========
 def fetch_all_sources() -> Tuple[List[Dict], Dict[str, Dict]]:
     """拉取所有源数据"""
     all_nodes = []
