@@ -35,7 +35,7 @@ def init_logger():
 
 LOG = init_logger()
 
-# ====================== 核心配置（适配GitHub Actions，订阅源加权重） ======================
+# ====================== 核心配置（宽松验证+延长超时） ======================
 CONFIG = {
     "sources": [
         # 格式：{"url": 订阅源地址, "weight": 权重（越高越优先）}
@@ -60,12 +60,12 @@ CONFIG = {
     },
     "detection": {
         "tcp_timeout": {
-            "vmess/vless/trojan": 3,  # 通用协议超时（GitHub Actions海外环境适配）
+            "vmess/vless/trojan": 4,  # 延长至4秒，适配海外慢节点
             "ss": 2,
             "hysteria": 4
         },
         "tcp_retry": 1,
-        "thread_pool_size": 5,  # 降低并发，避免被屏蔽
+        "thread_pool_size": 8,  # 并发从5→8，加快检测
         "dns_servers": ["223.5.5.5", "119.29.29.29", "8.8.8.8", "1.1.1.1"],
         "dns_timeout": 5,
         "dns_cache_ttl": 300
@@ -107,7 +107,7 @@ def init_request_session():
 SESSION = init_request_session()
 DNS_CACHE = {}
 
-# ====================== 通用工具函数（核心优化） ======================
+# ====================== 通用工具函数 ======================
 def validate_port(port):
     """通用端口校验"""
     try:
@@ -174,7 +174,7 @@ def log_parse_error(proto_type, line, e):
     LOG.info(f"⚠️ {proto_type}解析失败（{line[:20]}...）: {str(e)[:50]}")
 
 def deduplicate_nodes(nodes):
-    """按 IP+端口+协议 去重，保留高权重源节点（核心优化）"""
+    """按 IP+端口+协议 去重，保留高权重源节点"""
     seen = set()
     unique_nodes = []
     
@@ -210,11 +210,11 @@ def deduplicate_nodes(nodes):
     
     return unique_nodes
 
-# ====================== 增强型节点可用性检测（核心优化） ======================
+# ====================== 宽松版增强型节点可用性检测（核心优化） ======================
 def test_node_availability(ip, port, proto_type, proto_cfg=None):
     """
-    增强型节点检测：TCP握手 + 协议轻量验证
-    适配GitHub Actions海外环境，提升可用率
+    宽松版节点检测：仅过滤“明确拒绝连接”的节点，减少误判
+    核心：端口通+不明确拒绝 → 保留；仅端口拒绝连接 → 过滤
     """
     port = validate_port(port)
     if not ip or is_private_ip(ip):
@@ -223,18 +223,18 @@ def test_node_availability(ip, port, proto_type, proto_cfg=None):
     # 第一步：快速TCP握手检测
     tcp_available = False
     try:
+        # 动态获取超时时间
+        timeout_map = CONFIG["detection"]["tcp_timeout"]
+        if proto_type in ["vmess", "vless", "trojan"]:
+            tcp_timeout = timeout_map["vmess/vless/trojan"]
+        elif proto_type == "ss":
+            tcp_timeout = timeout_map["ss"]
+        elif proto_type == "hysteria":
+            tcp_timeout = timeout_map["hysteria"]
+        else:
+            tcp_timeout = 3
+        
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            # 动态获取超时时间
-            timeout_map = CONFIG["detection"]["tcp_timeout"]
-            if proto_type in ["vmess", "vless", "trojan"]:
-                tcp_timeout = timeout_map["vmess/vless/trojan"]
-            elif proto_type == "ss":
-                tcp_timeout = timeout_map["ss"]
-            elif proto_type == "hysteria":
-                tcp_timeout = timeout_map["hysteria"]
-            else:
-                tcp_timeout = 3
-            
             sock.settimeout(tcp_timeout)
             if sock.connect_ex((ip, port)) == 0:
                 tcp_available = True
@@ -244,34 +244,37 @@ def test_node_availability(ip, port, proto_type, proto_cfg=None):
     if not tcp_available:
         return False
 
-    # 第二步：协议层轻量验证（避免端口通但服务不可用）
+    # 第二步：宽松版协议验证（仅过滤明确拒绝的节点）
     try:
         if proto_type in ["vmess", "vless", "trojan"]:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                sock.settimeout(2)
+                sock.settimeout(4)  # 延长超时至4秒
                 sock.connect((ip, port))
-                sock.send(b"\x00")  # 发送空包检测服务存活
-                sock.recv(1)  # 只要不报错即认为服务存活
+                sock.send(b"\x00")  # 发送空包，不强制接收
                 return True
         elif proto_type == "ss":
-            # SS：配置完整即认为可用（简化版，避免复杂加密验证）
+            # SS：配置完整即认为可用
             if proto_cfg and proto_cfg.get("address") and proto_cfg.get("port"):
                 return True
         elif proto_type == "hysteria":
-            # Hysteria：补充UDP检测
+            # Hysteria：UDP检测宽松处理
             try:
                 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as udp_sock:
-                    udp_sock.settimeout(2)
+                    udp_sock.settimeout(4)
                     udp_sock.sendto(b"\x00", (ip, port))
-                    udp_sock.recvfrom(1024)
                 return True
-            except (socket.timeout, socket.error):
-                return True  # UDP无响应也正常，TCP通则通过
+            except:
+                return True
         return True
-    except (socket.timeout, socket.error):
-        return False  # 应用层无响应，判定不可用
+    except (ConnectionRefusedError, OSError):
+        # 仅“明确拒绝连接”才返回False（过滤）
+        return False
+    except (socket.timeout, ConnectionResetError):
+        # 超时/连接重置 → 保留（反探测节点常见行为）
+        return True
     except Exception:
-        return True  # 未知错误，降级为TCP结果
+        # 未知错误 → 保留
+        return True
 
 # ====================== 基础过滤工具函数 ======================
 def is_base64(s):
@@ -400,7 +403,7 @@ def extract_vmess_config(vmess_line):
         decoded = clean_vmess_json(decoded)
         cfg = json.loads(decoded)
         
-        # 校验VMess必填字段（核心优化）
+        # 校验VMess必填字段
         required_fields = ["add", "port", "id", "aid"]
         missing_fields = [f for f in required_fields if f not in cfg or not cfg[f]]
         if missing_fields:
@@ -682,7 +685,7 @@ def fetch_source(url, weight):
                 return [], weight
 
 def process_node(line):
-    """处理单个节点（增强检测+优先级过滤）"""
+    """处理单个节点（宽松验证+保留疑似可用节点）"""
     try:
         if not line:
             return None, "", "", 443
@@ -729,10 +732,18 @@ def process_node(line):
             LOG.info(f"📝 过滤私有IP节点：{ip}:{port}（备注：{remark[:20]}...）")
             return None, "", "", 443
         
-        # 增强型可用性检测（核心优化）
-        if ip and proto_cfg and not test_node_availability(ip, port, proto_type, proto_cfg):
-            LOG.info(f"📝 过滤不可用节点：{ip}:{port}（{proto_type}协议验证失败）（备注：{remark[:20]}...）")
+        # 宽松版可用性检测（仅过滤明确拒绝的节点）
+        availability_result = True
+        if ip and proto_cfg:
+            availability_result = test_node_availability(ip, port, proto_type, proto_cfg)
+        
+        # 仅当“明确拒绝连接”时过滤，其余情况保留
+        if ip and proto_cfg and availability_result is False:
+            LOG.info(f"📝 过滤不可用节点：{ip}:{port}（{proto_type}端口拒绝连接）（备注：{remark[:20]}...）")
             return None, "", "", 443
+        elif ip and proto_cfg and not availability_result:
+            # 协议验证异常但端口通，保留并标记
+            LOG.info(f"⚠️  节点协议验证异常，但保留：{ip}:{port}（{proto_type}）（备注：{remark[:20]}...）")
         
         # DNS解析失败警告（不过滤，仅提示）
         if domain and not test_domain_resolve(domain):
@@ -780,12 +791,12 @@ def main():
             except Exception as e:
                 LOG.info(f"❌ 处理订阅源{url}异常：{str(e)[:50]}")
     
-    # 2. 按权重去重（核心优化）
+    # 2. 按权重去重
     LOG.info(f"📊 拉取完成，原始节点总数：{len(all_nodes)} 条")
     unique_lines = deduplicate_nodes(all_nodes)
     LOG.info(f"🔍 去重后节点总数：{len(unique_lines)} 条")
     
-    # 3. 多线程处理节点（增强检测）
+    # 3. 多线程处理节点（宽松验证）
     valid_lines = []
     seen_ips = set()
     seen_domains = set()
@@ -840,7 +851,7 @@ def main():
     valid_lines.sort(key=sort_by_priority, reverse=True)
     LOG.info(f"✅ 最终有效节点数：{len(valid_lines)} 条（Reality/TLS优先）")
     
-    # 5. 保存为Base64编码的订阅文件（适配通用客户端）
+    # 5. 保存为Base64编码的订阅文件
     if valid_lines:
         combined = '\n'.join(valid_lines)
         encoded = base64.b64encode(combined.encode('utf-8')).decode('utf-8')
@@ -848,7 +859,7 @@ def main():
             f.write(encoded)
         LOG.info(f"📄 订阅文件已保存至 s1.txt（Base64编码，{len(valid_lines)} 个节点）")
     else:
-        # 无有效节点时创建空文件，避免GitHub Actions提交报错
+        # 无有效节点时创建空文件
         with open('s1.txt', 'w', encoding='utf-8') as f:
             f.write("")
         LOG.info(f"ℹ️  无有效节点，创建空 s1.txt")
