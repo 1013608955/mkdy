@@ -8,7 +8,7 @@ import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# ====================== 配置项（新增全局备注长度限制） ======================
+# ====================== 配置项（调整为字节数限制） ======================
 CONFIG = {
     "sources": [
         "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/Splitted-By-Protocol/vmess.txt",
@@ -41,11 +41,11 @@ CONFIG = {
             re.compile(r"^0\.0\.0\.0$")
         ],
         "valid_ports": range(1, 65535),
-        "max_remark_length": 64  # 新增：所有节点备注的最大长度（统一限制）
+        "max_remark_bytes": 120  # 关键修改：按字节数限制（留8字节余量，避免超128）
     }
 }
 
-# ====================== 工具函数 ======================
+# ====================== 工具函数（核心修改：按字节数截断） ======================
 def is_base64(s):
     if not s or len(s) < 4:
         return False
@@ -118,16 +118,35 @@ def clean_vmess_json(decoded_str):
         return decoded_str
 
 def truncate_remark(remark):
-    """通用函数：截断过长的备注到max_remark_length"""
-    if len(remark) > CONFIG["filter"]["max_remark_length"]:
-        truncated = remark[:CONFIG["filter"]["max_remark_length"]] + "..."  # 加省略号标识截断
-        print(f"⚠️ 备注过长，已截断为{CONFIG['filter']['max_remark_length']}字符：{truncated[:20]}...")
-        return truncated
-    return remark
+    """核心修改：按UTF-8字节数截断备注，避免label too long"""
+    if not remark:
+        return ""
+    
+    # 计算备注的UTF-8字节数
+    remark_bytes = remark.encode('utf-8')
+    max_bytes = CONFIG["filter"]["max_remark_bytes"]
+    
+    if len(remark_bytes) <= max_bytes:
+        return remark
+    
+    # 按字节数截断，避免截断到中文/emoji的中间（导致乱码）
+    truncated_bytes = remark_bytes[:max_bytes]
+    # 尝试解码，若解码失败（截断到字符中间），再往前退1-2字节
+    try:
+        truncated_remark = truncated_bytes.decode('utf-8')
+    except UnicodeDecodeError:
+        truncated_bytes = remark_bytes[:max_bytes-2]  # 退2字节，兼容中文/emoji
+        truncated_remark = truncated_bytes.decode('utf-8', errors='ignore')
+    
+    # 加省略号（确保总字节数仍不超）
+    if len(truncated_remark.encode('utf-8')) + 3 <= max_bytes:
+        truncated_remark += "..."
+    print(f"⚠️ 备注字节数超限（原{len(remark_bytes)}字节），已截断为{len(truncated_remark.encode('utf-8'))}字节：{truncated_remark[:20]}...")
+    return truncated_remark
 
-# ====================== 节点提取函数（新增备注截断） ======================
+# ====================== 节点提取函数（逻辑不变，复用新的truncate_remark） ======================
 def extract_vmess_config(vmess_line):
-    """VMess解析：乱码清理 + 备注截断"""
+    """VMess解析：乱码清理 + 按字节数截断备注"""
     try:
         vmess_part = vmess_line[8:].strip()
         vmess_part = vmess_part.encode('ascii', 'ignore').decode('ascii')
@@ -143,7 +162,7 @@ def extract_vmess_config(vmess_line):
         decoded = clean_vmess_json(decoded)
         cfg = json.loads(decoded)
         
-        # 备注截断（VMess的ps字段）
+        # 用新的truncate_remark截断ps字段
         cfg["ps"] = truncate_remark(cfg.get('ps', ''))
         
         port = cfg.get('port', 443)
@@ -192,7 +211,7 @@ def extract_vmess_config(vmess_line):
         return None
 
 def extract_vless_config(vless_line):
-    """VLESS解析：备注截断（remarks参数）"""
+    """VLESS解析：按字节数截断remarks"""
     try:
         vless_part = vless_line[8:].strip()
         vless_part = vless_part.encode('ascii', 'ignore').decode('ascii')
@@ -219,13 +238,13 @@ def extract_vless_config(vless_line):
                 address = addr_port
                 port = 443
         
-        # 解析参数 + 备注截断（VLESS的remarks参数）
+        # 解析参数 + 截断remarks
         params = {}
         for param in param_part.split('&'):
             if '=' in param:
                 k, v = param.split('=', 1)
                 if k.lower() == "remarks":
-                    v = truncate_remark(v)  # 截断remarks
+                    v = truncate_remark(v)  # 用新的截断函数
                 params[k.lower()] = v
         
         return {
@@ -237,7 +256,6 @@ def extract_vless_config(vless_line):
             "network": params.get('type', 'tcp') or params.get('Type'),
             "remarks": params.get('remarks', '')
         }
-    # 修复语法错误：去掉多余的"an"
     except Exception as e:
         print(f"⚠️ VLESS解析失败（{vless_line[:20]}...）: {str(e)[:50]}")
         ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', vless_line)
@@ -254,13 +272,13 @@ def extract_vless_config(vless_line):
         return None
 
 def extract_trojan_config(trojan_line):
-    """Trojan解析：标签（备注）截断"""
+    """Trojan解析：按字节数截断label"""
     try:
-        # 剥离标签 + 备注截断
+        # 剥离标签 + 截断
         if '#' in trojan_line:
             trojan_part = trojan_line.split('#')[0]
             label = trojan_line.split('#')[1] if len(trojan_line.split('#'))>1 else ""
-            label = truncate_remark(label)  # 截断Trojan的label（备注）
+            label = truncate_remark(label)  # 用新的截断函数
             if not label:
                 print(f"⚠️ Trojan节点标签为空，已忽略（{trojan_line[:20]}...）")
         else:
@@ -323,7 +341,7 @@ def extract_trojan_config(trojan_line):
         return None
 
 def extract_ss_config(ss_line):
-    """SS解析：备注截断（#后面的内容）"""
+    """SS解析：按字节数截断备注"""
     try:
         ss_part = ss_line[5:].strip()
         
@@ -342,7 +360,7 @@ def extract_ss_config(ss_line):
         remark = ""
         if '#' in ss_part:
             ss_part, remark = ss_part.split('#', 1)
-            remark = truncate_remark(remark)  # 截断SS的备注
+            remark = truncate_remark(remark)  # 用新的截断函数
         
         # 解析核心字段
         if '@' in ss_part:
@@ -368,7 +386,7 @@ def extract_ss_config(ss_line):
         print(f"⚠️ SS解析失败（{ss_line[:20]}...）: {str(e)[:50]}")
         return None
 
-# ====================== 其他工具函数（兼容备注截断） ======================
+# ====================== 其他工具函数 + 主流程（逻辑不变） ======================
 def test_tcp_connect(ip, port):
     if isinstance(port, str):
         try:
@@ -477,7 +495,6 @@ def process_node(line):
         print(f"❌ 节点处理异常（{line[:20]}...）: {str(e)[:50]}")
         return None, "", "", 443
 
-# ====================== 主流程 ======================
 def main():
     start_time = time.time()
     source_records = {}
@@ -561,7 +578,7 @@ def main():
     print(f"   - 过滤后可用节点：{len(valid_lines)} 条")
     print(f"   - 独特IP：{len(seen_ips)} 个")
     print(f"   - 独特域名：{len(seen_domains)} 个")
-    print(f"   - 备注最大长度：{CONFIG['filter']['max_remark_length']}字符")
+    print(f"   - 备注最大字节数：{CONFIG['filter']['max_remark_bytes']}（UTF-8）")
     print(f"   - 总耗时：{total_cost:.2f} 秒（{total_cost/60:.2f} 分钟）")
     print(f"   - 节点已保存至：s1.txt（Base64编码格式）")
 
