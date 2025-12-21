@@ -8,8 +8,6 @@ import os
 import time
 import hashlib
 import logging
-import subprocess
-import platform
 from urllib.parse import unquote
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -80,10 +78,6 @@ CONFIG = {
         ],
         "valid_ports": range(1, 65535),
         "max_remark_bytes": 120
-    },
-    "quality": {
-        "ping_count": 3,  # 延迟检测ping次数
-        "max_delay": 500  # 最大可接受延迟（ms），超过则过滤
     }
 }
 
@@ -256,38 +250,6 @@ def test_tcp_connect(ip, port):
         except (socket.gaierror, socket.timeout, OSError):
             continue
     return False
-
-def ping_delay(ip):
-    """检测节点延迟（跨平台兼容）"""
-    if not ip or is_private_ip(ip):
-        return 9999  # 私有IP返回高延迟
-    
-    try:
-        # 适配Windows/Linux/macOS的ping命令
-        param = "-n" if platform.system().lower() == "windows" else "-c"
-        count = CONFIG["quality"]["ping_count"]
-        timeout = CONFIG["detection"]["tcp_timeout"]
-        
-        # 执行ping命令
-        result = subprocess.run(
-            ["ping", param, str(count), "-w", str(timeout * 1000), ip],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            timeout=10
-        )
-        
-        # 解析延迟（适配不同系统输出）
-        if result.returncode == 0:
-            # 提取延迟数值
-            delay_match = re.search(r'平均 = (\d+)ms|avg = (\d+\.?\d*) ms', result.stdout)
-            if delay_match:
-                delay = float(delay_match.group(1) or delay_match.group(2))
-                return min(int(delay), 9999)
-    except Exception as e:
-        LOG.info(f"🐞 检测{ip}延迟失败：{str(e)[:30]}")
-    
-    return 9999
 
 def count_protocol_nodes(lines):
     """统计节点列表中各协议的数量"""
@@ -662,8 +624,8 @@ def process_node(line):
     """处理单个节点，提取核心信息并过滤无效节点"""
     try:
         if not line:
-            return None, "", "", 443, 9999  # 新增延迟字段
-        ip, domain, port, remark, delay = None, "", 443, "", 9999
+            return None, "", "", 443  # 移除delay字段
+        ip, domain, port, remark = None, "", 443, ""
         
         # 按协议解析
         if line.startswith('vmess://'):
@@ -719,12 +681,12 @@ def process_node(line):
         # 过滤私有IP
         if is_private_ip(ip):
             LOG.info(f"📝 过滤私有IP节点：{ip}:{port}（备注：{remark[:20]}...）")
-            return None, "", "", 443, 9999
+            return None, "", "", 443
         
         # 测试TCP连接
         if ip and not test_tcp_connect(ip, port):
             LOG.info(f"📝 过滤TCP连接失败节点：{ip}:{port}（备注：{remark[:20]}...）")
-            return None, "", "", 443, 9999
+            return None, "", "", 443
         
         # DNS解析提醒
         if domain and not test_domain_resolve(domain):
@@ -733,23 +695,17 @@ def process_node(line):
         # 过滤空地址
         if not ip and not domain:
             LOG.info(f"📝 过滤空地址节点：{line[:20]}...（备注：{remark[:20]}...）")
-            return None, "", "", 443, 9999
+            return None, "", "", 443
         
-        # 检测节点延迟
-        delay = ping_delay(ip)
-        if delay > CONFIG["quality"]["max_delay"]:
-            LOG.info(f"📝 过滤高延迟节点：{ip}:{port}（延迟：{delay}ms，备注：{remark[:20]}...）")
-            return None, "", "", 443, 9999
-        
-        LOG.info(f"✅ 保留节点: {'IP' if ip else '域名'} - {ip or domain}:{port}（延迟：{delay}ms，备注：{remark[:20]}...）")
-        return line, domain, ip, port, delay
+        LOG.info(f"✅ 保留节点: {'IP' if ip else '域名'} - {ip or domain}:{port}（备注：{remark[:20]}...）")
+        return line, domain, ip, port
     except Exception as e:
         LOG.info(f"❌ 节点处理异常（{line[:20]}...）: {str(e)[:50]}")
-        return None, "", "", 443, 9999
+        return None, "", "", 443
 
 # ====================== 主函数 ======================
 def main():
-    """主流程：拉取→处理→质量分级→保存"""
+    """主流程：拉取→处理→协议优先级排序→保存"""
     start_time = time.time()
     source_records = {}
     all_lines_set = set()
@@ -775,7 +731,7 @@ def main():
         unique_lines = list(all_lines_set)
         LOG.info(f"\n📝 全局去重后总节点：{len(unique_lines)} 条")
 
-        # 2. 按协议优先级排序
+        # 2. 按协议优先级排序（仅协议优先级，无延迟排序）
         reality_lines = [l for l in unique_lines if 'reality' in l.lower()]
         hysteria_lines = [l for l in unique_lines if l.startswith('hysteria://') and l not in reality_lines]
         tls_lines = [l for l in unique_lines if 'tls' in l.lower() and l not in reality_lines + hysteria_lines]
@@ -786,7 +742,7 @@ def main():
         LOG.info(f"📝 优先级拆分 - Reality节点：{len(reality_lines)} 条 | Hysteria节点：{len(hysteria_lines)} 条 | TLS节点：{len(tls_lines)} 条 | SS节点：{len(ss_lines)} 条 | 普通节点：{len(normal_lines)} 条")
 
         # 3. 多线程处理节点
-        valid_nodes = []  # 存储(延迟, 节点链接)
+        valid_lines = []  # 直接存储节点链接，无delay
         seen_ips = set()
         seen_domains = set()
         total_nodes = len(processing_order)
@@ -798,7 +754,7 @@ def main():
                     progress = (idx / total_nodes) * 100
                     LOG.info(f"\n📝 处理进度：{idx}/{total_nodes} ({progress:.1f}%)")
                 try:
-                    line, domain, ip, port, delay = future.result()
+                    line, domain, ip, port = future.result()  # 移除delay字段
                 except Exception as e:
                     LOG.info(f"⚠️ 节点处理异常: {str(e)[:50]}")
                     continue
@@ -813,19 +769,15 @@ def main():
                 
                 seen_domains.add(domain)
                 seen_ips.add(ip)
-                valid_nodes.append((delay, line))
-        
-        # 4. 按延迟排序（升序）
-        valid_nodes.sort(key=lambda x: x[0])
-        valid_lines = [node[1] for node in valid_nodes]
+                valid_lines.append(line)  # 直接添加节点，无延迟排序
 
-        # 5. 保存结果
+        # 4. 保存结果
         combined = '\n'.join(valid_lines)
         encoded = base64.b64encode(combined.encode('utf-8')).decode('utf-8')
         with open('s1.txt', 'w', encoding='utf-8') as f:
             f.write(encoded)
 
-        # 6. 输出统计信息
+        # 5. 输出统计信息
         total_cost = time.time() - start_time
         valid_proto_count = count_protocol_nodes(valid_lines)
         LOG.info(f"\n🎉 最终处理完成：")
@@ -838,7 +790,7 @@ def main():
         LOG.info(f"   - ⏱️ 总耗时：{total_cost:.2f} 秒（{total_cost/60:.2f} 分钟）")
         LOG.info(f"   - 📄 节点已保存至：s1.txt（Base64编码格式）")
 
-        # 7. 各数据源统计
+        # 6. 各数据源统计
         LOG.info("\n📋 各数据源详细统计：")
         for idx, (url, stats) in enumerate(source_records.items(), 1):
             original_count = stats['original_count']
