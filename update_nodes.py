@@ -346,7 +346,7 @@ def extract_vmess_config(vmess_line):
         return None
 
 def extract_vless_config(vless_line):
-    """解析VLESS协议节点"""
+    """解析VLESS协议节点（优化备注截断兜底逻辑）"""
     try:
         vless_part = vless_line[8:].strip()
         vless_part = vless_part.encode('ascii', 'ignore').decode('ascii')
@@ -358,7 +358,7 @@ def extract_vless_config(vless_line):
             port_match = re.search(r':(\d+)', base_part)
             uuid_match = re.search(r'^([0-9a-fA-F\-]+)', base_part)
             if not (ip_match and port_match):
-                raise Exception("核心字段提取失败")
+                raise Exception("核心字段（IP/端口）提取失败")
             uuid = uuid_match.group(1) if uuid_match else ""
             address = ip_match.group(1)
             port = int(port_match.group(1)) if port_match else 443
@@ -376,31 +376,45 @@ def extract_vless_config(vless_line):
         for param in param_part.split('&'):
             if '=' in param:
                 k, v = param.split('=', 1)
+                # 重点优化：VLESS备注先解码，再截断，失败则用默认值
                 if k.lower() == "remarks":
-                    v = truncate_remark(v)
+                    try:
+                        # 步骤1：URL解码（VLESS备注通常是URL编码的，之前遗漏）
+                        v = unquote(v)
+                        # 步骤2：调用截断函数，超限则自动截断
+                        v = truncate_remark(v)
+                    except Exception as e:
+                        # 兜底：截断失败时输出警告，并用默认备注替代
+                        LOG.info(f"⚠️ VLESS备注处理失败（{vless_line[:20]}...）: {str(e)[:30]}，使用默认备注")
+                        v = "VLESS节点"
                 params[k.lower()] = v
+        
+        # 端口合法性校验
+        port = port if port in CONFIG["filter"]["valid_ports"] else 443
         
         return {
             "uuid": uuid,
             "address": address,
-            "port": port if port in CONFIG["filter"]["valid_ports"] else 443,
+            "port": port,
             "security": params.get('security', 'tls'),
             "sni": params.get('sni') or params.get('SNI'),
             "network": params.get('type', 'tcp') or params.get('Type'),
-            "remarks": params.get('remarks', '')
+            "remarks": params.get('remarks', 'VLESS节点')  # 最终兜底：无备注则用默认值
         }
     except Exception as e:
+        # 解析失败仅输出警告，而非错误，避免误判节点异常
         LOG.info(f"⚠️ VLESS解析失败（{vless_line[:20]}...）: {str(e)[:50]}")
+        # 核心字段提取失败时，尝试兜底返回基础信息
         ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', vless_line)
         if ip_port_match:
             return {
                 "uuid": "",
                 "address": ip_port_match.group(1),
-                "port": int(ip_port_match.group(2)),
+                "port": int(ip_port_match.group(2)) if ip_port_match.group(2).isdigit() else 443,
                 "security": "tls",
                 "sni": "",
                 "network": "tcp",
-                "remarks": ""
+                "remarks": "VLESS节点"  # 兜底默认备注
             }
         return None
 
@@ -700,7 +714,11 @@ def process_node(line):
         LOG.info(f"✅ 保留节点: {'IP' if ip else '域名'} - {ip or domain}:{port}（备注：{remark[:20]}...）")
         return line, domain, ip, port
     except Exception as e:
-        LOG.info(f"❌ 节点处理异常（{line[:20]}...）: {str(e)[:50]}")
+        # 优化：label too long仅输出警告，而非错误
+        if "label too long" in str(e).lower():
+            LOG.info(f"⚠️ 节点备注过长（{line[:20]}...）: {str(e)[:50]}")
+        else:
+            LOG.info(f"❌ 节点处理异常（{line[:20]}...）: {str(e)[:50]}")
         return None, "", "", 443
 
 # ====================== 主函数 ======================
