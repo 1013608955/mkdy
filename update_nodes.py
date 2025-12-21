@@ -272,18 +272,25 @@ def process_node(line):
         print(f"❌ 节点处理异常（{line[:20]}...）: {str(e)[:50]}")
         return None, "", "", 443
 
-# ====================== 主流程（保留去重+优先级筛选） ======================
+# ====================== 主流程（保留去重+优先级筛选+来源统计） ======================
 def main():
     start_time = time.time()
-    # 拉取数据源
-    all_lines = set()
+    # 拉取数据源（新增：记录每个来源的原始数据）
+    source_records = {}  # 存储每个来源的原始数据 {url: {"original": 原始列表, "original_count": 数量}}
+    all_lines_set = set()
+    
     with ThreadPoolExecutor(max_workers=5) as executor:
         future_to_url = {executor.submit(fetch_source, url): url for url in CONFIG["sources"]}
         for future in as_completed(future_to_url):
+            url = future_to_url[future]
             lines = future.result()
-            all_lines.update(lines)
+            source_records[url] = {
+                "original": lines,
+                "original_count": len(lines)
+            }
+            all_lines_set.update(lines)
     
-    unique_lines = list(all_lines)
+    unique_lines = list(all_lines_set)
     print(f"\n📊 全局去重后总节点：{len(unique_lines)} 条")
 
     # 优先级筛选（Reality > TLS > 普通）
@@ -337,7 +344,20 @@ def main():
     with open('s1.txt', 'w', encoding='utf-8') as f:
         f.write(encoded)
 
-    # 统计输出
+    # 新增：统计每个来源的保留数据
+    source_stats = {}
+    for url, record in source_records.items():
+        original_count = record["original_count"]
+        # 统计该来源中最终保留的节点数（去重后）
+        retained_count = len([line for line in record["original"] if line in valid_lines])
+        retention_rate = (retained_count / original_count * 100) if original_count > 0 else 0.0
+        source_stats[url] = {
+            "original": original_count,
+            "retained": retained_count,
+            "retention_rate": round(retention_rate, 2)
+        }
+
+    # 统计输出（新增：打印各来源统计）
     total_cost = time.time() - start_time
     print(f"\n🎉 最终处理完成：")
     print(f"   - 原始总节点：{len(unique_lines)} 条")
@@ -347,6 +367,14 @@ def main():
     print(f"   - TCP检测规则：超时{CONFIG['detection']['tcp_timeout']}秒，重试{CONFIG['detection']['tcp_retry']}次")
     print(f"   - 总耗时：{total_cost:.2f} 秒（{total_cost/60:.2f} 分钟）")
     print(f"   - 节点已保存至：s1.txt（Base64编码格式）")
+
+    # 打印每个来源的详细统计
+    print("\n📈 各数据源详细统计：")
+    for idx, (url, stats) in enumerate(source_stats.items(), 1):
+        print(f"   {idx}. {url}")
+        print(f"      - 原始获取：{stats['original']} 条")
+        print(f"      - 最终保留：{stats['retained']} 条")
+        print(f"      - 保留率：{stats['retention_rate']}%")
 
 if __name__ == "__main__":
     main()
