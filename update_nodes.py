@@ -354,14 +354,24 @@ def process_node(line):
             port_match = re.search(r':(\d+)', line)
             if port_match:
                 port = int(port_match.group(1)) if port_match.group(1) in CONFIG["filter"]["valid_ports"] else 443
+        
+        # 核心过滤逻辑
         if is_private_ip(ip):
             print(f"❌ 过滤私有IP节点：{ip}:{port}")
             return None, "", "", 443
+        
         if ip and not test_tcp_connect(ip, port):
             print(f"❌ 过滤TCP连接失败节点：{ip}:{port}（超时{CONFIG['detection']['tcp_timeout']}秒，重试{CONFIG['detection']['tcp_retry']}次）")
             return None, "", "", 443
+        
         if domain and not test_domain_resolve(domain):
             print(f"⚠️ 域名{domain}解析失败，但IP{ip}连接正常，保留节点")
+        
+        # 新增：过滤IP/域名都为空的节点（解决:443无效节点问题）
+        if not ip and not domain:
+            print(f"❌ 过滤空地址节点：{line[:20]}...")
+            return None, "", "", 443
+        
         return line, domain, ip, port
     except Exception as e:
         print(f"❌ 节点处理异常（{line[:20]}...）: {str(e)[:50]}")
