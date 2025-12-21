@@ -905,9 +905,8 @@ def main():
             f.write("")
         LOG.info(f"ℹ️  无有效节点，创建空 s1.txt")
     
-    # 7. 输出各数据源详细统计（含保留率）
+    # 7. 输出各数据源详细统计（含保留率，修复重复时间）
     LOG.info(f"\n📋 各数据源详细统计：")
-    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     for idx, src in enumerate(CONFIG["sources"], 1):
         url = src["url"]
         record = source_records.get(url, {
@@ -925,10 +924,10 @@ def main():
         else:
             retention_rate = f"{(retained_count / original_count) * 100:.2f}%"
         
-        # 输出数据源序号和URL
-        LOG.info(f"{current_time} -    {idx}. {url}")
+        # 输出数据源序号和URL（日志自动加时间，无需手动拼接）
+        LOG.info(f"    {idx}. {url}")
         # 输出该源的节点统计（含保留率）
-        stat_line = (f"{current_time} -       - 📝 原始节点数：{original_count} 条 "
+        stat_line = (f"       - 📝 原始节点数：{original_count} 条 "
                      f"（VMess：{proto_count['vmess']} | VLESS：{proto_count['vless']} | Trojan：{proto_count['trojan']} | "
                      f"SS：{proto_count['ss']} | Hysteria：{proto_count['hysteria']} | 其他：{proto_count['other']}） | "
                      f"保留节点数：{retained_count} 条 | 保留率：{retention_rate}")
