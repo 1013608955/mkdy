@@ -47,13 +47,13 @@ CONFIG: Dict = {
 # 定义常量
 DNS_CACHE_MAXSIZE = CONFIG["detection"]["dns"]["cache_size"]
 
-# 日志初始化
+# 日志初始化（调整日志级别为DEBUG，便于追踪@）
 def init_logger() -> logging.Logger:
     logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)  # 改为DEBUG级别，打印更多细节
     logger.propagate = False
     if not logger.handlers:
-        fmt = logging.Formatter("%(asctime)s - %(message)s", "%Y-%m-%d %H:%M:%S")
+        fmt = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", "%Y-%m-%d %H:%M:%S")
         handler = logging.StreamHandler()
         handler.setFormatter(fmt)
         logger.addHandler(handler)
@@ -90,7 +90,7 @@ def log_msg(content: str, line: str = "", proto: str = "") -> str:
         line_part = ""
     else:
         if "解析错误" in content or "过滤无效" in content or "空地址节点" in content:
-            line_part = f"（{line}）" if line else ""
+            line_part = f"（{line[:50]}...）" if line else ""
         else:
             safe_line = line[:20].encode('ascii', 'ignore').decode('ascii')
             line_part = f"（{safe_line}...）" if safe_line else ""
@@ -110,15 +110,16 @@ def is_base64(s: str) -> bool:
         return False
 
 def decode_b64_sub(text: str) -> str:
-    """解码订阅内容"""
+    """解码订阅内容（加固：不删除任何符号，仅删空白）"""
     original_text = text.strip()
-    clean_for_b64 = re.sub(r'\s+', '', original_text)
+    clean_for_b64 = re.sub(r'\s+', ' ', original_text)  # 仅替换空白为单个空格，不删除
     
-    if is_base64(clean_for_b64):
+    if is_base64(clean_for_b64.replace(' ', '')):
         try:
-            clean_for_b64 = clean_for_b64.rstrip('=')
-            clean_for_b64 += '=' * (4 - len(clean_for_b64) % 4) if len(clean_for_b64) % 4 != 0 else ''
-            decoded = base64.b64decode(clean_for_b64).decode('utf-8', errors='ignore')
+            clean_b64 = clean_for_b64.replace(' ', '')
+            clean_b64 = clean_b64.rstrip('=')
+            clean_b64 += '=' * (4 - len(clean_b64) % 4) if len(clean_b64) % 4 != 0 else ''
+            decoded = base64.b64decode(clean_b64).decode('utf-8', errors='ignore')
             decoded_line_count = len([l for l in decoded.split('\n') if l.strip()])
             LOG.info(log_msg(f"✅ Base64解码成功，解析出{decoded_line_count}个有效节点"))
             return decoded
@@ -133,20 +134,26 @@ def decode_b64_sub(text: str) -> str:
 
 def split_multi_nodes(line: str) -> List[str]:
     """
-    安全拆分拼接节点：
-    1. 仅拆分完整的协议节点，过滤残缺片段
-    2. 增加最小长度+协议特征校验，避免拆出vmess://e等无效节点
+    安全拆分拼接节点（核心修复：修复边界计算 + 增加@校验）：
+    1. 修复节点边界计算，确保@被完整包含
+    2. 增加拆分前后@的日志追踪
+    3. 仅拆分完整的协议节点，过滤残缺片段
     """
     if not line:
+        LOG.debug("📌 拆分空节点，直接返回空列表")
         return []
+    
+    # 打印原始节点内容和@的存在性（关键追踪）
+    at_count = line.count('@')
+    LOG.debug(f"📌 待拆分节点原始内容：{line[:100]}... | @数量：{at_count}")
     
     # 定义各协议的最小长度和必要特征（避免拆出残缺节点）
     proto_rules = {
-        "vmess": {"prefix": "vmess://", "min_len": 50, "required": None},  # VMess至少50字符（Base64包含JSON）
-        "vless": {"prefix": "vless://", "min_len": 20, "required": "@"},   # Vless必须包含@（uuid@地址）
-        "trojan": {"prefix": "trojan://", "min_len": 20, "required": "@"}, # Trojan必须包含@
-        "ss": {"prefix": "ss://", "min_len": 20, "required": None},        # SS至少20字符（兼容无@）
-        "hysteria": {"prefix": "hysteria://", "min_len": 20, "required": None}  # Hysteria兼容无@
+        "vmess": {"prefix": "vmess://", "min_len": 50, "required": None},
+        "vless": {"prefix": "vless://", "min_len": 20, "required": "@"},
+        "trojan": {"prefix": "trojan://", "min_len": 20, "required": "@"},
+        "ss": {"prefix": "ss://", "min_len": 20, "required": None},
+        "hysteria": {"prefix": "hysteria://", "min_len": 20, "required": None}
     }
     
     # 第一步：匹配所有可能的节点前缀位置
@@ -162,8 +169,9 @@ def split_multi_nodes(line: str) -> List[str]:
             node_positions.append({"pos": pos, "proto": proto, "rule": rule})
             start = pos + len(prefix)
     
-    # 第二步：按位置排序，拆分节点
+    # 第二步：按位置排序，拆分节点（修复边界计算）
     if not node_positions:
+        LOG.debug(f"📌 未匹配到协议前缀，返回原节点：{line[:50]}...")
         return [line.strip()]
     
     # 按前缀位置升序排列
@@ -177,36 +185,62 @@ def split_multi_nodes(line: str) -> List[str]:
         rule = node_info["rule"]
         prefix_len = len(rule["prefix"])
         
-        # 确定当前节点的结束位置（下一个节点的起始位置）
+        # 修复边界计算：结束位置 = 下一个节点的起始位置（若存在），否则到末尾
         if i < len(node_positions) - 1:
-            end_pos = node_positions[i+1]["pos"]
+            next_pos = node_positions[i+1]["pos"]
+            # 后向校验：如果当前节点需要@，且@在当前节点和下一个节点之间，扩展结束位置到@之后
+            if rule["required"] == "@":
+                # 查找当前节点范围内的最后一个@
+                at_pos = line.find('@', pos, next_pos)
+                if at_pos != -1:
+                    # 扩展结束位置到@之后的第一个非数字/字母/符号位置（确保@被包含）
+                    end_pos = line.find(' ', at_pos, next_pos)
+                    if end_pos == -1:
+                        end_pos = next_pos
+                else:
+                    end_pos = next_pos
+            else:
+                end_pos = next_pos
         else:
             end_pos = total_len
         
-        # 提取节点内容
+        # 提取节点内容（保留完整的@）
         node_str = line[pos:end_pos].strip()
+        
+        # 打印拆分后的节点和@的存在性
+        node_at_count = node_str.count('@')
+        LOG.debug(f"📌 拆分出{proto}节点：{node_str[:100]}... | @数量：{node_at_count}")
         
         # 过滤校验：最小长度 + 必要特征
         if len(node_str) < rule["min_len"]:
-            LOG.debug(f"🚫 过滤残缺节点（长度不足）：{node_str[:20]}...")
+            LOG.debug(f"🚫 过滤残缺节点（长度不足）：{node_str[:20]}... | 协议：{proto}")
             continue
         if rule["required"] and rule["required"] not in node_str:
-            LOG.debug(f"🚫 过滤残缺节点（缺少必要特征{rule['required']}）：{node_str[:20]}...")
+            LOG.debug(f"🚫 过滤残缺节点（缺少{rule['required']}）：{node_str[:20]}... | 协议：{proto}")
             continue
         
         nodes.append(node_str)
     
     # 如果没有有效拆分结果，返回原行
-    return nodes if nodes else [line.strip()]
+    if not nodes:
+        LOG.debug(f"📌 拆分无有效节点，返回原节点：{line[:50]}...")
+        return [line.strip()]
+    
+    LOG.debug(f"📌 拆分完成，共拆分出{len(nodes)}个有效节点")
+    return nodes
 
 def clean_node_content(line: str) -> str:
-    """清洗节点内容"""
+    """清洗节点内容（加固：仅删中文，绝对不碰@等符号）"""
     if not line:
         return ""
-    line = re.sub(r'[\u4e00-\u9fa5]', '', line)
+    # 仅删除中文，保留所有ASCII符号（包括@）
+    line = re.sub(r'[\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef]', '', line)
     error_keywords = ["订阅内容解析错误", "解析失败", "无效节点", "缺失字段"]
     for keyword in error_keywords:
         line = line.replace(keyword, "")
+    # 打印清洗后的@存在性
+    at_count = line.count('@')
+    LOG.debug(f"📌 清洗后节点：{line[:100]}... | @数量：{at_count}")
     return line.strip()
 
 def is_private_ip(ip: str) -> bool:
@@ -239,8 +273,8 @@ def process_remark(remark: str, proto: str) -> str:
         return f"{proto}节点"
     try:
         decoded = unquote(remark)
-        # 先过滤不可打印字符和特殊emoji，减少字节数
-        decoded = re.sub(r'[^\x20-\x7E\u4e00-\u9fa5]', '', decoded)
+        # 先过滤不可打印字符和特殊emoji，减少字节数（保留@）
+        decoded = re.sub(r'[^\x20-\x7E\u4e00-\u9fa5@]', '', decoded)
         b_remark = decoded.encode('utf-8')
         max_len = CONFIG["filter"]["max_remark_bytes"]
         if len(b_remark) <= max_len:
@@ -292,6 +326,10 @@ def parse_vmess(line: str) -> Optional[Dict]:
     2. 精准提取Base64串，截断后面所有非Base64字符
     """
     try:
+        # 打印解析前的@存在性
+        at_count = line.count('@')
+        LOG.debug(f"📌 解析VMess节点：{line[:100]}... | @数量：{at_count}")
+        
         # 步骤1：提取vmess://后的所有内容
         vmess_raw = line[8:].strip()
         
@@ -313,12 +351,13 @@ def parse_vmess(line: str) -> Optional[Dict]:
         vmess_part += '=' * (4 - len(vmess_part) % 4) if len(vmess_part) % 4 != 0 else ''
         decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
         
-        # 步骤5：提取JSON配置
+        # 步骤5：提取JSON配置（保留所有符号）
         json_match = re.search(r'\{.*\}', decoded, re.DOTALL)
         if not json_match:
             raise ValueError("未提取到有效JSON配置")
         decoded = json_match.group(0)
-        decoded = re.sub(r'[\x00-\x1f\x7f-\x9f\u3000]', '', decoded)
+        # 仅过滤控制字符，保留@等符号
+        decoded = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', decoded)
         cfg = json.loads(decoded)
         
         # 步骤6：仅校验add/port/id三个真正必填字段
@@ -352,15 +391,19 @@ def parse_vmess(line: str) -> Optional[Dict]:
         return None
 
 def parse_vless(line: str) -> Optional[Dict]:
-    """解析VLESS节点"""
+    """解析VLESS节点（增加@追踪）"""
     try:
+        # 打印解析前的@存在性
+        at_count = line.count('@')
+        LOG.debug(f"📌 解析VLESS节点：{line[:100]}... | @数量：{at_count}")
+        
         vless_core = line[8:]
         vless_parts = vless_core.split('?', 1)
         base_part = vless_parts[0]
         param_part = vless_parts[1] if len(vless_parts) > 1 else ''
         
         if '@' not in base_part:
-            raise ValueError("缺失UUID@地址格式")
+            raise ValueError(f"缺失UUID@地址格式（当前@数量：{base_part.count('@')}）")
         
         uuid, addr_port = base_part.split('@', 1)
         if not uuid or not addr_port or ':' not in addr_port:
@@ -398,8 +441,12 @@ def parse_vless(line: str) -> Optional[Dict]:
         return None
 
 def parse_trojan(line: str) -> Optional[Dict]:
-    """解析Trojan节点"""
+    """解析Trojan节点（增加@追踪）"""
     try:
+        # 打印解析前的@存在性
+        at_count = line.count('@')
+        LOG.debug(f"📌 解析Trojan节点：{line[:100]}... | @数量：{at_count}")
+        
         trojan_parts = line.split('#', 1)
         label = process_remark(trojan_parts[1], "Trojan") if len(trojan_parts) > 1 else ""
         trojan_core = trojan_parts[0]
@@ -409,7 +456,7 @@ def parse_trojan(line: str) -> Optional[Dict]:
         param_part = trojan_core_parts[1] if len(trojan_core_parts) > 1 else ''
         
         if '@' not in trojan_part:
-            raise ValueError("缺失密码@地址格式")
+            raise ValueError(f"缺失密码@地址格式（当前@数量：{trojan_part.count('@')}）")
         
         password, addr_port = trojan_part.split('@', 1)
         if not password or not addr_port or ':' not in addr_port:
@@ -443,15 +490,21 @@ def parse_trojan(line: str) -> Optional[Dict]:
         return None
 
 def parse_ss(line: str) -> Optional[Dict]:
-    """解析SS节点（兼容缺少@的不规范格式）"""
+    """解析SS节点（兼容缺少@的不规范格式 + 增加@追踪）"""
     try:
+        # 打印解析前的@存在性
+        at_count = line.count('@')
+        LOG.debug(f"📌 解析SS节点：{line[:100]}... | @数量：{at_count}")
+        
         ss_part = line[5:]
         # 处理Base64编码的SS节点
-        if is_base64(ss_part):
+        if is_base64(ss_part.replace(' ', '')):
             try:
+                ss_part = ss_part.replace(' ', '')
                 ss_part = ss_part.rstrip('=')
                 ss_part += '=' * (4 - len(ss_part) % 4) if len(ss_part) % 4 != 0 else ''
                 ss_part = base64.b64decode(ss_part).decode('utf-8', errors='ignore')
+                LOG.debug(f"📌 SS节点Base64解码后：{ss_part[:100]}... | @数量：{ss_part.count('@')}")
             except:
                 LOG.info(log_msg(f"⚠️ SS节点Base64解码失败，尝试直接解析", line[:20]))
         
@@ -462,25 +515,26 @@ def parse_ss(line: str) -> Optional[Dict]:
         
         # 兼容缺少@的情况：按最后一个:拆分端口
         if '@' not in ss_core:
-            LOG.info(log_msg(f"⚠️ SS节点缺少@，尝试兼容解析", ss_core[:20]))
+            LOG.warning(log_msg(f"⚠️ SS节点缺少@，尝试兼容解析", ss_core[:20]))
             # 按最后一个:拆分端口
             parts = ss_core.rsplit(':', 1)
             if len(parts) != 2:
-                raise ValueError("缺失@分隔符且端口格式错误")
+                raise ValueError(f"缺失@分隔符且端口格式错误（当前内容：{ss_core[:50]}）")
             auth_part = parts[0]
             addr_port = parts[1]
         else:
             auth_part, addr_port = ss_core.split('@', 1)
+            LOG.debug(f"📌 SS节点拆分@后：认证部分={auth_part[:50]} | 地址端口={addr_port[:50]}")
         
         # 拆分地址和端口
         if ':' not in addr_port:
-            raise ValueError("缺失端口信息")
+            raise ValueError(f"缺失端口信息（地址端口部分：{addr_port}）")
         address, port_str = addr_port.rsplit(':', 1)
         port = validate_port(port_str)
         
         # 拆分加密方式和密码
         if ':' not in auth_part:
-            raise ValueError("缺失加密方式:密码格式")
+            raise ValueError(f"缺失加密方式:密码格式（认证部分：{auth_part}）")
         method = auth_part.split(':')[0]
         password = auth_part.split(':')[1]
         
@@ -503,8 +557,12 @@ def parse_ss(line: str) -> Optional[Dict]:
         return None
 
 def parse_hysteria(line: str) -> Optional[Dict]:
-    """解析Hysteria节点（兼容缺少@的不规范格式）"""
+    """解析Hysteria节点（兼容缺少@的不规范格式 + 增加@追踪）"""
     try:
+        # 打印解析前的@存在性
+        at_count = line.count('@')
+        LOG.debug(f"📌 解析Hysteria节点：{line[:100]}... | @数量：{at_count}")
+        
         hysteria_parts = line.split('#', 1)
         label = process_remark(hysteria_parts[1], "Hysteria") if len(hysteria_parts) > 1 else ""
         hysteria_core = hysteria_parts[0]
@@ -515,18 +573,19 @@ def parse_hysteria(line: str) -> Optional[Dict]:
         
         # 兼容缺少@的情况：按最后一个:拆分端口
         if '@' not in core_part:
-            LOG.info(log_msg(f"⚠️ Hysteria节点缺少@，尝试兼容解析", core_part[:20]))
+            LOG.warning(log_msg(f"⚠️ Hysteria节点缺少@，尝试兼容解析", core_part[:20]))
             parts = core_part.rsplit(':', 1)
             if len(parts) != 2:
-                raise ValueError("缺失认证@地址格式且端口错误")
+                raise ValueError(f"缺失认证@地址格式且端口错误（当前内容：{core_part[:50]}）")
             auth_part = parts[0]
             addr_port = parts[1]
         else:
             auth_part, addr_port = core_part.split('@', 1)
+            LOG.debug(f"📌 Hysteria节点拆分@后：认证部分={auth_part[:50]} | 地址端口={addr_port[:50]}")
         
         # 拆分地址和端口
         if ':' not in addr_port:
-            raise ValueError("缺失端口信息")
+            raise ValueError(f"缺失端口信息（地址端口部分：{addr_port}）")
         address, port_str = addr_port.rsplit(':', 1)
         port = validate_port(port_str)
         
@@ -601,6 +660,9 @@ def process_single_node_raw(raw_line: str, source_url: str = "") -> List[Tuple[O
     返回处理后的节点列表
     """
     results = []
+    
+    # 打印原始节点行的@存在性
+    LOG.debug(f"📌 开始处理原始节点行：{raw_line[:100]}... | @数量：{raw_line.count('@')}")
     
     # 第一步：安全拆分拼接的多个节点（过滤残缺）
     split_nodes = split_multi_nodes(raw_line)
@@ -751,7 +813,8 @@ def dedup_nodes(nodes: List[Dict]) -> List[Dict]:
                 # 解析SS的method+password
                 try:
                     ss_part = split_node[5:].strip()
-                    if is_base64(ss_part):
+                    if is_base64(ss_part.replace(' ', '')):
+                        ss_part = ss_part.replace(' ', '')
                         ss_part = ss_part.rstrip('=')
                         ss_part += '=' * (4 - len(ss_part) % 4) if len(ss_part) % 4 != 0 else ''
                         ss_part = base64.b64decode(ss_part).decode('utf-8', errors='ignore')
