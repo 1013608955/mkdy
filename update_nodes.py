@@ -131,6 +131,41 @@ def decode_b64_sub(text: str) -> str:
         LOG.info(log_msg(f"✅ 明文订阅处理完成，解析出{plain_line_count}个有效节点"))
         return '\n'.join(cleaned_lines)
 
+def split_multi_nodes(line: str) -> List[str]:
+    """
+    拆分拼接的多个节点（核心修改）
+    处理格式：vmess://xxxvmess://yyyvmess://zzz 或 vless://xxxvless://yyy 等
+    返回独立的节点列表
+    """
+    if not line:
+        return []
+    
+    # 匹配所有协议的节点前缀
+    proto_patterns = [
+        r'(vmess://[^\s]+?)',
+        r'(vless://[^\s]+?)',
+        r'(trojan://[^\s]+?)',
+        r'(ss://[^\s]+?)',
+        r'(hysteria://[^\s]+?)'
+    ]
+    
+    # 合并正则，匹配所有独立节点
+    combined_pattern = re.compile('|'.join(proto_patterns))
+    matches = combined_pattern.findall(line)
+    
+    # 扁平化匹配结果（因为多个分组会返回元组）
+    nodes = []
+    for match_tuple in matches:
+        for node in match_tuple:
+            if node:  # 过滤空字符串
+                nodes.append(node.strip())
+    
+    # 如果没有匹配到，返回原行（单节点情况）
+    if not nodes:
+        return [line.strip()]
+    
+    return nodes
+
 def clean_node_content(line: str) -> str:
     """清洗节点内容"""
     if not line:
@@ -156,7 +191,6 @@ def dns_resolve(domain: str) -> bool:
         # 遍历多个DNS服务器重试
         for dns in CONFIG["detection"]["dns"]["servers"]:
             try:
-                # 临时指定DNS服务器（简化版，实际可通过socket配置，这里优先重试）
                 socket.gethostbyname_ex(domain)
                 return True
             except (socket.gaierror, socket.timeout):
@@ -218,18 +252,17 @@ def extract_ip_port(line: str) -> Tuple[Optional[str], str, int]:
     port = validate_port(port_match.group(1)) if port_match else 443
     return ip, domain, port
 
-# ========== 协议解析函数（核心修改：精准提取VMess的Base64串） ==========
+# ========== 协议解析函数 ==========
 def parse_vmess(line: str) -> Optional[Dict]:
     """解析VMess节点：
     1. 仅校验add/port/id三个核心字段
-    2. 精准提取Base64串，截断后面所有非Base64字符（emoji/特殊符号等）
+    2. 精准提取Base64串，截断后面所有非Base64字符
     """
     try:
         # 步骤1：提取vmess://后的所有内容
         vmess_raw = line[8:].strip()
         
-        # 核心修改：匹配最长的连续Base64字符段（只保留A-Za-z0-9+/=）
-        # 正则说明：^[A-Za-z0-9+/=]+ 匹配开头连续的Base64字符，后面的全部截断
+        # 精准匹配最长的连续Base64字符段（只保留A-Za-z0-9+/=）
         base64_match = re.match(r'^[A-Za-z0-9+/=]+', vmess_raw)
         if not base64_match:
             raise ValueError("未提取到有效Base64字符段")
@@ -501,66 +534,89 @@ def test_node(ip: str, port: int, proto: str) -> bool:
     except:
         return False
 
-def process_single_node(node: Union[str, Dict]) -> Tuple[Optional[str], str, Optional[str], int, str]:
-    """处理单个节点"""
+def process_single_node_raw(raw_line: str, source_url: str = "") -> List[Tuple[Optional[str], str, Optional[str], int, str]]:
+    """
+    处理单个原始节点行（支持拆分多个拼接节点）
+    返回处理后的节点列表
+    """
+    results = []
+    
+    # 第一步：拆分拼接的多个节点
+    split_nodes = split_multi_nodes(raw_line)
+    if len(split_nodes) > 1:
+        LOG.info(log_msg(f"🔍 检测到{len(split_nodes)}个拼接节点，开始拆分处理", raw_line))
+    
+    # 第二步：逐个处理拆分后的节点
+    for node_line in split_nodes:
+        try:
+            if not node_line:
+                results.append((None, "", None, 443, ""))
+                continue
+            
+            clean_line = clean_node_content(node_line)
+            if not clean_line:
+                LOG.info(log_msg(f"📝 过滤空节点（拆分后）", node_line))
+                results.append((None, "", None, 443, source_url))
+                continue
+            
+            ip, domain, port = None, "", 443
+            cfg = None
+            proto = ""
+            
+            # 协议路由
+            if clean_line.startswith('vmess://'):
+                proto, cfg = "vmess", parse_vmess(clean_line)
+            elif clean_line.startswith('vless://'):
+                proto, cfg = "vless", parse_vless(clean_line)
+            elif clean_line.startswith('trojan://'):
+                proto, cfg = "trojan", parse_trojan(clean_line)
+            elif clean_line.startswith('ss://'):
+                proto, cfg = "ss", parse_ss(clean_line)
+            elif clean_line.startswith('hysteria://'):
+                proto, cfg = "hysteria", parse_hysteria(clean_line)
+            else:
+                proto = "other"
+                ip, domain, port = extract_ip_port(clean_line)
+            
+            # 提取节点信息
+            if cfg and isinstance(cfg, dict):
+                ip = cfg.get("address", ip)
+                domain = cfg.get("serverName") or cfg.get("sni") or domain
+                port = cfg.get("port", port)
+            
+            # 过滤逻辑
+            if is_private_ip(ip):
+                LOG.info(log_msg(f"📝 过滤私有IP：{ip}:{port}", clean_line, proto))
+                results.append((None, "", None, 443, source_url))
+                continue
+            
+            if ip and cfg and not test_node(ip, port, proto):
+                LOG.info(log_msg(f"📝 过滤不可用节点：{ip}:{port}", clean_line, proto))
+                results.append((None, "", None, 443, source_url))
+                continue
+            
+            if domain and not dns_resolve(domain):
+                LOG.info(log_msg(f"⚠️ 域名{domain}解析失败，但IP{ip}有效", clean_line, proto))
+            
+            if not ip and not domain:
+                LOG.info(log_msg(f"📝 过滤空地址节点", clean_line, proto))
+                results.append((None, "", None, 443, source_url))
+                continue
+            
+            LOG.info(f"✅ 保留节点: {ip or domain}:{port}（{proto}）")
+            results.append((clean_line, domain, ip, port, source_url))
+        
+        except Exception as e:
+            LOG.info(log_msg(f"❌ 节点处理错误: {str(e)}", node_line, proto))
+            results.append((None, "", None, 443, source_url))
+    
+    return results
+
+def process_single_node(node: Union[str, Dict]) -> List[Tuple[Optional[str], str, Optional[str], int, str]]:
+    """兼容原有接口的节点处理函数"""
     raw_line = node["line"] if isinstance(node, dict) else node
     source_url = node.get("source_url", "") if isinstance(node, dict) else ""
-    
-    try:
-        if not raw_line:
-            return None, "", None, 443, source_url
-        
-        clean_line = clean_node_content(raw_line)
-        if not clean_line:
-            LOG.info(log_msg(f"📝 过滤空节点", raw_line))
-            return None, "", None, 443, source_url
-        
-        ip, domain, port = None, "", 443
-        cfg = None
-        proto = ""
-        
-        # 协议路由
-        if clean_line.startswith('vmess://'):
-            proto, cfg = "vmess", parse_vmess(clean_line)
-        elif clean_line.startswith('vless://'):
-            proto, cfg = "vless", parse_vless(clean_line)
-        elif clean_line.startswith('trojan://'):
-            proto, cfg = "trojan", parse_trojan(clean_line)
-        elif clean_line.startswith('ss://'):
-            proto, cfg = "ss", parse_ss(clean_line)
-        elif clean_line.startswith('hysteria://'):
-            proto, cfg = "hysteria", parse_hysteria(clean_line)
-        else:
-            proto = "other"
-            ip, domain, port = extract_ip_port(clean_line)
-        
-        # 提取节点信息
-        if cfg and isinstance(cfg, dict):
-            ip = cfg.get("address", ip)
-            domain = cfg.get("serverName") or cfg.get("sni") or domain
-            port = cfg.get("port", port)
-        
-        # 过滤逻辑
-        if is_private_ip(ip):
-            LOG.info(log_msg(f"📝 过滤私有IP：{ip}:{port}", clean_line, proto))
-            return None, "", None, 443, source_url
-        
-        if ip and cfg and not test_node(ip, port, proto):
-            LOG.info(log_msg(f"📝 过滤不可用节点：{ip}:{port}", clean_line, proto))
-            return None, "", None, 443, source_url
-        
-        if domain and not dns_resolve(domain):
-            LOG.info(log_msg(f"⚠️ 域名{domain}解析失败，但IP{ip}有效", clean_line, proto))
-        
-        if not ip and not domain:
-            LOG.info(log_msg(f"📝 过滤空地址节点", clean_line, proto))
-            return None, "", None, 443, source_url
-        
-        LOG.info(f"✅ 保留节点: {ip or domain}:{port}（{proto}）")
-        return clean_line, domain, ip, port, source_url
-    except Exception as e:
-        LOG.info(log_msg(f"❌ 节点处理错误: {str(e)}", raw_line, proto))
-        return None, "", None, 443, source_url
+    return process_single_node_raw(raw_line, source_url)
 
 def dedup_nodes(nodes: List[Dict]) -> List[Dict]:
     """节点去重"""
@@ -615,14 +671,20 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
             content = decode_b64_sub(resp.text)
             lines = [l.strip() for l in content.split('\n') if l.strip() and not l.startswith('#')]
             
+            # 对拉取到的每行数据，先拆分拼接节点，再展开
+            expanded_lines = []
+            for line in lines:
+                split_nodes = split_multi_nodes(line)
+                expanded_lines.extend(split_nodes)
+            
             try:
                 with open(cache_path, "w", encoding="utf-8") as f:
-                    json.dump(lines, f, ensure_ascii=False)
+                    json.dump(expanded_lines, f, ensure_ascii=False)
             except OSError as e:
                 LOG.info(f"⚠️ 缓存写入失败 {url}: {str(e)[:50]}")
             
-            LOG.info(f"✅ 拉取成功 {url}（权重{weight}），节点 {len(lines)} 条")
-            return lines, weight
+            LOG.info(f"✅ 拉取成功 {url}（权重{weight}），原始节点 {len(lines)} 条，拆分后 {len(expanded_lines)} 条")
+            return expanded_lines, weight
         except Exception as e:
             if retry < CONFIG["request"]["retry"] - 1:
                 LOG.info(f"⚠️ 拉取失败 {url}（重试 {retry+1}）: {str(e)[:80]}")
@@ -722,7 +784,7 @@ def fetch_all_sources() -> Tuple[List[Dict], Dict[str, Dict]]:
     return all_nodes, source_records
 
 def process_nodes(unique_nodes: List[Dict]) -> Tuple[List[str], List[Dict]]:
-    """批量处理节点"""
+    """批量处理节点（适配拆分后的节点）"""
     valid_lines = []
     valid_nodes = []
     seen_ips = set()
@@ -736,22 +798,25 @@ def process_nodes(unique_nodes: List[Dict]) -> Tuple[List[str], List[Dict]]:
                 progress = (idx / total) * 100 if total > 0 else 0
                 LOG.info(f"⏳ 处理进度：{idx}/{total} ({progress:.1f}%)")
             try:
-                line, domain, ip, port, source_url = future.result()
+                # 每个节点可能返回多个结果（拆分后的）
+                node_results = future.result()
+                for line, domain, ip, port, source_url in node_results:
+                    if not line:
+                        continue
+                    
+                    if domain in seen_domains or ip in seen_ips:
+                        continue
+                    if domain:
+                        seen_domains.add(domain)
+                    if ip:
+                        seen_ips.add(ip)
+                    
+                    valid_lines.append(line)
+                    valid_nodes.append({"line": line, "source_url": source_url})
             except Exception as e:
                 LOG.info(f"⚠️ 节点处理异常: {str(e)[:50]}")
                 continue
-            if not line:
-                continue
-            
-            if domain in seen_domains or ip in seen_ips:
-                continue
-            if domain:
-                seen_domains.add(domain)
-            if ip:
-                seen_ips.add(ip)
-            
-            valid_lines.append(line)
-            valid_nodes.append({"line": line, "source_url": source_url})
+    
     return valid_lines, valid_nodes
 
 def generate_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_lines: List[str], 
