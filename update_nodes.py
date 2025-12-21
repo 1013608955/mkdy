@@ -104,60 +104,98 @@ def test_domain_resolve(domain):
     print(f"⚠️ 域名{domain}解析失败（所有DNS源均失败），将尝试IP直连检测")
     return False
 
+def clean_vmess_json(decoded_str):
+    """核心新增：清理VMess JSON中的乱码/非JSON字符，只保留{}之间的有效内容"""
+    try:
+        # 匹配第一个{到最后一个}之间的内容（核心JSON部分），忽略换行/制表符
+        json_match = re.search(r'\{.*\}', decoded_str, re.DOTALL)
+        if json_match:
+            clean_json = json_match.group(0)
+            # 移除不可见控制字符（如\x0c、\t、\n、全角空格等）
+            clean_json = re.sub(r'[\x00-\x1f\x7f-\x9f\u3000]', '', clean_json)
+            return clean_json
+        return decoded_str
+    except Exception as e:
+        print(f"⚠️ 清理VMess JSON乱码失败：{str(e)[:50]}")
+        return decoded_str
+
 def extract_vmess_config(vmess_line):
-    """优化版：新增Base64非法字符过滤+备注截断，减少解析失败"""
+    """优化版：仅修复JSON乱码 + Base64过滤 + 备注截断（不强制Port为数字）"""
     try:
         vmess_part = vmess_line[8:].strip()
         vmess_part = vmess_part.encode('ascii', 'ignore').decode('ascii')
         
-        # 新增1：过滤Base64非法字符（只保留A-Za-z0-9+/=）
+        # 1. 过滤Base64非法字符（只保留A-Za-z0-9+/=）
         vmess_part = re.sub(r'[^A-Za-z0-9+/=]', '', vmess_part)
         if not vmess_part:
             raise Exception("Base64串过滤后为空")
         
+        # 补全Base64 padding
         padding = 4 - len(vmess_part) % 4
         if padding != 4:
             vmess_part += '=' * padding
         
-        try:
-            decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
-            cfg = json.loads(decoded)
-            
-            # 新增2：截断过长的VMess备注（ps字段），解决label too long误提示
-            ps = cfg.get('ps', '')
-            if len(ps) > CONFIG["filter"]["max_ps_length"]:
-                cfg['ps'] = ps[:CONFIG["filter"]["max_ps_length"]]
-                print(f"⚠️ VMess节点备注过长，已截断（{vmess_line[:20]}...）")
-            
+        # 解码Base64并清理乱码（核心修复点）
+        decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
+        decoded = clean_vmess_json(decoded)  # 仅保留这步乱码清理
+        
+        # 解析JSON
+        cfg = json.loads(decoded)
+        
+        # 2. 截断过长的VMess备注（ps字段）
+        ps = cfg.get('ps', '')
+        if len(ps) > CONFIG["filter"]["max_ps_length"]:
+            cfg['ps'] = ps[:CONFIG["filter"]["max_ps_length"]]
+            print(f"⚠️ VMess节点备注过长，已截断（{vmess_line[:20]}...）")
+        
+        # 3. 还原Port原始处理逻辑（不强制转数字）
+        port = cfg.get('port', 443)
+        # 仅做基础的空格清理，不改变类型
+        if isinstance(port, str):
+            port = port.strip()
+        
+        # 4. 整理返回结果
+        return {
+            "address": cfg.get('add'),
+            "port": port,  # 保留原始类型（字符串/数字）
+            "id": cfg.get('id', ''),
+            "alterId": cfg.get('aid', 0),
+            "security": cfg.get('scy', 'auto'),
+            "network": cfg.get('net', 'tcp'),
+            "tls": cfg.get('tls', ''),
+            "serverName": cfg.get('host') or cfg.get('sni', ''),
+            "ps": cfg.get('ps', '')
+        }
+    except json.JSONDecodeError as e:
+        # JSON解析失败时，尝试正则提取核心字段
+        print(f"⚠️ VMess JSON解析失败（{vmess_line[:20]}...）: {str(e)[:50]}")
+        decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
+        decoded = clean_vmess_json(decoded)
+        ip_match = re.search(r'"add":"([\d\.a-zA-Z-]+)"', decoded)
+        port_match = re.search(r'"port":"?(\d+)"?', decoded)
+        host_match = re.search(r'"host":"([^"]+)"|\"sni\":\"([^"]+)"', decoded)
+        
+        # 正则提取port，保留原始字符串类型
+        port = "443"
+        if port_match:
+            port = port_match.group(1).strip()
+        
+        if ip_match and port_match:
             return {
-                "address": cfg.get('add'),
-                "port": int(cfg.get('port', 443)),
-                "id": cfg.get('id', ''),
-                "alterId": cfg.get('aid', 0),
-                "security": cfg.get('security', 'auto'),
-                "network": cfg.get('net', 'tcp'),
-                "tls": cfg.get('tls', ''),
-                "serverName": cfg.get('host') or cfg.get('sni', ''),
-                "ps": cfg.get('ps', '')  # 保留截断后的备注
+                "address": ip_match.group(1),
+                "port": port,  # 保留字符串类型
+                "id": "", 
+                "alterId": 0, 
+                "security": "auto",
+                "network": "tcp", 
+                "tls": "",
+                "serverName": host_match.group(1) if host_match else "",
+                "ps": ""
             }
-        except json.JSONDecodeError:
-            decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
-            ip_match = re.search(r'"add":"([\d\.a-zA-Z-]+)"', decoded)
-            port_match = re.search(r'"port":"?(\d+)"?', decoded)
-            host_match = re.search(r'"host":"([^"]+)"|\"sni\":\"([^"]+)"', decoded)
-            if ip_match and port_match:
-                return {
-                    "address": ip_match.group(1),
-                    "port": int(port_match.group(1)),
-                    "id": "", "alterId": 0, "security": "auto",
-                    "network": "tcp", "tls": "",
-                    "serverName": host_match.group(1) if host_match else "",
-                    "ps": ""
-                }
-            else:
-                raise Exception("核心字段（IP/端口）提取失败")
+        else:
+            raise Exception("核心字段（IP/端口）提取失败")
     except Exception as e:
-        print(f"⚠️ VMess解析部分失败（{vmess_line[:20]}...）: {str(e)[:50]}")
+        print(f"⚠️ VMess解析失败（{vmess_line[:20]}...）: {str(e)[:50]}")
         return None
 
 def extract_vless_config(vless_line):
@@ -198,7 +236,7 @@ def extract_vless_config(vless_line):
             "network": params.get('type', 'tcp') or params.get('Type')
         }
     except Exception as e:
-        print(f"⚠️ VLESS解析部分失败（{vless_line[:20]}...）: {str(e)[:50]}")
+        print(f"⚠️ VLESS解析失败（{vmess_line[:20]}...）: {str(e)[:50]}")
         ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', vless_line)
         if ip_port_match:
             return {
@@ -221,9 +259,9 @@ def extract_trojan_config(trojan_line):
             # 容错：空标签/过长标签处理
             if not label:
                 print(f"⚠️ Trojan节点标签为空，已忽略（{trojan_line[:20]}...）")
-            elif len(label) > 64:  # 截断过长标签（64字符为常见限制）
+            elif len(label) > 64:  # 截断过长标签（64字符限制）
                 label = label[:64]
-                print(f"⚠️ Trojan节点标签过长，已截断为64字符（{trojan_line[:20]}...）")
+                print(f"⚠️ Trojan节点标签过长，已截断（{trojan_line[:20]}...）")
         else:
             trojan_part = trojan_line
             label = ""
@@ -266,7 +304,7 @@ def extract_trojan_config(trojan_line):
             "password": password,
             "sni": params.get('sni') or params.get('SNI'),
             "security": params.get('security', 'tls'),
-            "label": label  # 即使标签为空/过长，仍保留（不影响节点有效性）
+            "label": label  # 即使标签为空/过长，仍保留
         }
     except Exception as e:
         # 区分异常类型：仅核心字段失败才提示，标签异常忽略
@@ -285,11 +323,10 @@ def extract_trojan_config(trojan_line):
                 }
         else:
             print(f"❌ Trojan核心字段解析失败（{trojan_line[:20]}...）: {str(e)[:50]}")
-            print(f"❌ Trojan核心字段解析失败（{trojan_line[:20]}...）: {str(e)[:50]}")
         return None
 
 def extract_ss_config(ss_line):
-    """新增：SS(Shadowsocks)节点专用解析函数"""
+    """SS(Shadowsocks)节点专用解析函数"""
     try:
         ss_part = ss_line[5:].strip()  # 去掉ss://前缀
         
@@ -334,6 +371,12 @@ def extract_ss_config(ss_line):
         return None
 
 def test_tcp_connect(ip, port):
+    # 兼容port为字符串的情况（转数字后检测）
+    if isinstance(port, str):
+        try:
+            port = int(port)
+        except:
+            return False
     if not ip or port not in CONFIG["filter"]["valid_ports"]:
         return False
     for retry_num in range(CONFIG["detection"]["tcp_retry"] + 1):
@@ -392,11 +435,11 @@ def process_node(line):
                 ip = cfg["address"]
                 domain = cfg["sni"]
                 port = cfg["port"]
-        elif line.startswith('ss://'):  # 新增：处理SS节点
+        elif line.startswith('ss://'):
             cfg = extract_ss_config(line)
             if cfg:
-                ip = cfg["address"]  # SS的address可能是IP或域名
-                domain = ""  # SS无SNI字段，直接用address作为检测目标
+                ip = cfg["address"]
+                domain = ""
                 port = cfg["port"]
         else:
             # 兼容其他未知节点类型
@@ -422,7 +465,7 @@ def process_node(line):
         if domain and not test_domain_resolve(domain):
             print(f"⚠️ 域名{domain}解析失败，但IP{ip}连接正常，保留节点")
         
-        # 过滤IP/域名都为空的节点（解决:443无效节点问题）
+        # 过滤IP/域名都为空的节点
         if not ip and not domain:
             print(f"❌ 过滤空地址节点：{line[:20]}...")
             return None, "", "", 443
@@ -453,7 +496,7 @@ def main():
     # 按优先级排序处理节点
     reality_lines = [l for l in unique_lines if 'reality' in l.lower()]
     tls_lines = [l for l in unique_lines if 'tls' in l.lower() and l not in reality_lines]
-    ss_lines = [l for l in unique_lines if l.startswith('ss://') and l not in reality_lines + tls_lines]  # 新增SS节点分类
+    ss_lines = [l for l in unique_lines if l.startswith('ss://') and l not in reality_lines + tls_lines]
     normal_lines = [l for l in unique_lines if l not in reality_lines + tls_lines + ss_lines]
     processing_order = reality_lines + tls_lines + ss_lines + normal_lines
     print(f"📌 优先级拆分 - Reality节点：{len(reality_lines)} 条 | TLS节点：{len(tls_lines)} 条 | SS节点：{len(ss_lines)} 条 | 普通节点：{len(normal_lines)} 条")
