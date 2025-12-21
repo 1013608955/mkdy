@@ -192,8 +192,9 @@ def process_remark(remark: str, proto: str) -> str:
         return f"{proto}节点"
 
 def validate_fields(fields: Dict, required: List[str], proto: str, line: str) -> bool:
-    """精简字段校验：仅打印日志，不修改line（显示完整节点）"""
-    missing = [f for f in required if not fields.get(f)]
+    """精简字段校验：修复aid=0被误判为缺失的问题"""
+    # 核心修改：判断字段是否存在（而非值是否为真）
+    missing = [f for f in required if f not in fields]
     if missing:
         LOG.info(log_msg(f"📝 过滤无效{proto}节点：缺失{','.join(missing)}", line, proto))
         return False
@@ -211,27 +212,41 @@ def extract_ip_port(line: str) -> Tuple[Optional[str], str, int]:
     port = validate_port(port_match.group(1)) if port_match else 443
     return ip, domain, port
 
-# ========== 协议解析函数（VMess解析错误显示完整节点） ==========
+# ========== 协议解析函数（核心修复：VMess自动清理末尾无效字符） ==========
 def parse_vmess(line: str) -> Optional[Dict]:
-    """解析VMess：失败时显示完整节点内容"""
+    """解析VMess：自动过滤Base64部分无效字符，兼容末尾混入非Base64字符的节点"""
     try:
-        vmess_part = re.sub(r'[@#]', '', line[8:])[:1024]
+        # 提取vmess://后的部分，先去掉@#等符号，再过滤仅保留Base64合法字符（A-Za-z0-9+/=）
+        vmess_part = line[8:]  # 提取vmess://后的全部内容
+        vmess_part = re.sub(r'[@#]', '', vmess_part)[:1024]  # 去掉特殊符号，限制长度
+        # 核心修复：仅保留Base64允许的字符，自动去掉末尾的"vmess"等无效字符
         vmess_part = re.sub(r'[^A-Za-z0-9+/=]', '', vmess_part)
+        
+        # 校验Base64格式
         if not is_base64(vmess_part):
             raise ValueError("非Base64格式")
         
+        # 补全Base64填充符，确保长度是4的倍数
         vmess_part += '=' * (4 - len(vmess_part) % 4) if len(vmess_part) % 4 != 0 else ''
+        # Base64解码
         decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
+        # 提取JSON部分（防止解码后有多余字符）
         json_match = re.search(r'\{.*\}', decoded, re.DOTALL)
         decoded = json_match.group(0) if json_match else decoded
+        # 清理不可见字符
         decoded = re.sub(r'[\x00-\x1f\x7f-\x9f\u3000]', '', decoded)
+        # 解析JSON配置
         cfg = json.loads(decoded)
         
+        # 校验核心字段（修复后不会误判aid=0）
         if not validate_fields(cfg, ["add", "port", "id", "aid"], "VMess", line):
             return None
         
+        # 处理备注和端口
         cfg["ps"] = process_remark(cfg.get('ps', ''), "VMess")
         cfg["port"] = validate_port(cfg.get('port', 443))
+        
+        # 返回解析后的配置
         return {
             "address": cfg.get('add'), "port": cfg["port"], "id": cfg.get('id'),
             "alterId": cfg.get('aid', 0), "security": cfg.get('scy', 'auto'),
@@ -239,7 +254,7 @@ def parse_vmess(line: str) -> Optional[Dict]:
             "serverName": cfg.get('host') or cfg.get('sni', ''), "ps": cfg["ps"]
         }
     except Exception as e:
-        # 核心修改：VMess解析错误显示完整节点
+        # 解析错误时显示完整节点
         LOG.info(log_msg(f"❌ VMess解析错误: {str(e)}", line, "vmess"))
         return None
 
