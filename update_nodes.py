@@ -10,57 +10,62 @@ import hashlib
 import logging
 from urllib.parse import unquote
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime
 
-# ========== 方案1：禁用urllib3的InsecureRequestWarning警告 ==========
+# ========== 禁用urllib3的InsecureRequestWarning警告（适配GitHub Actions） ==========
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# ====================== 日志初始化（自定义格式+图标） ======================
+# ====================== 日志初始化（适配GitHub Actions实时输出） ======================
 def init_logger():
-    """初始化日志（自定义时间格式+图标替代级别）"""
+    """初始化日志（实时输出，适配GitHub Actions）"""
     formatter = logging.Formatter(
         "%(asctime)s - %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S"
     )
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(formatter)
-    file_handler = logging.FileHandler("crawl.log", encoding="utf-8")
-    file_handler.setFormatter(formatter)
     
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
     logger.addHandler(console_handler)
-    logger.addHandler(file_handler)
+    # 移除重复日志处理器
+    logger.propagate = False
     return logger
 
 LOG = init_logger()
 
-# ====================== 配置项（解耦+GitHub适配） ======================
+# ====================== 核心配置（适配GitHub Actions，订阅源加权重） ======================
 CONFIG = {
     "sources": [
-        "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/Splitted-By-Protocol/vmess.txt",
-        "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt",
-        "https://raw.githubusercontent.com/mfuu/v2ray/master/v2ray",
-        "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt",
-        "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt",
-        "https://raw.githubusercontent.com/HakurouKen/free-node/main/public", 
-        "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub"    
+        # 格式：{"url": 订阅源地址, "weight": 权重（越高越优先）}
+        {"url": "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/Splitted-By-Protocol/vmess.txt", "weight": 5},
+        {"url": "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt", "weight": 5},
+        {"url": "https://raw.githubusercontent.com/mfuu/v2ray/master/v2ray", "weight": 4},
+        {"url": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt", "weight": 4},
+        {"url": "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt", "weight": 3},
+        {"url": "https://raw.githubusercontent.com/HakurouKen/free-node/main/public", "weight": 3},
+        {"url": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub", "weight": 2}
     ],
     "request": {
         "timeout": 120,
-        "retry_times": 5,
-        "retry_delay": 3,
+        "retry_times": 3,  # GitHub Actions环境减少重试次数，加快运行
+        "retry_delay": 2,
         "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     },
     "github": {
-        "token": os.getenv("GITHUB_TOKEN", ""),
-        "request_interval": 1,
+        "token": os.getenv("GITHUB_TOKEN", ""),  # 适配GitHub Actions环境变量
+        "request_interval": 0.5,  # 缩短间隔，适配1小时调度
         "cache_ttl": 3600
     },
     "detection": {
-        "tcp_timeout": 3,
+        "tcp_timeout": {
+            "vmess/vless/trojan": 3,  # 通用协议超时（GitHub Actions海外环境适配）
+            "ss": 2,
+            "hysteria": 4
+        },
         "tcp_retry": 1,
-        "thread_pool_size": 10,
+        "thread_pool_size": 5,  # 降低并发，避免被屏蔽
         "dns_servers": ["223.5.5.5", "119.29.29.29", "8.8.8.8", "1.1.1.1"],
         "dns_timeout": 5,
         "dns_cache_ttl": 300
@@ -80,7 +85,7 @@ CONFIG = {
 
 # ====================== 全局资源初始化 ======================
 def init_request_session():
-    """初始化请求会话（复用连接池）"""
+    """初始化请求会话（复用连接池，适配GitHub Actions）"""
     session = requests.Session()
     headers = {
         "User-Agent": CONFIG["request"]["user_agent"],
@@ -102,9 +107,9 @@ def init_request_session():
 SESSION = init_request_session()
 DNS_CACHE = {}
 
-# ====================== 通用工具函数（消除重复核心） ======================
+# ====================== 通用工具函数（核心优化） ======================
 def validate_port(port):
-    """通用端口校验：统一处理端口合法性，返回有效端口"""
+    """通用端口校验"""
     try:
         port_int = int(port)
         return port_int if port_int in CONFIG["filter"]["valid_ports"] else 443
@@ -112,21 +117,18 @@ def validate_port(port):
         return 443
 
 def process_remark(remark, proto_type):
-    """通用备注处理：URL解码→截断→兜底，统一所有协议的备注逻辑"""
+    """通用备注处理：URL解码→截断→兜底"""
     if not remark:
         return f"{proto_type}节点"
     
     try:
-        # 第一步：URL解码（所有协议备注通用）
         decoded_remark = unquote(remark)
-        # 第二步：截断超限备注
         remark_bytes = decoded_remark.encode('utf-8')
         max_bytes = CONFIG["filter"]["max_remark_bytes"]
         
         if len(remark_bytes) <= max_bytes:
             return decoded_remark
         
-        # 截断并保证UTF-8解码有效
         truncated_bytes = remark_bytes[:max_bytes]
         for back_step in range(0, 6):
             try:
@@ -137,7 +139,6 @@ def process_remark(remark, proto_type):
         else:
             truncated_remark = remark_bytes[:max_bytes-5].decode('utf-8', errors='ignore')
         
-        # 添加省略号（不超限的情况下）
         ellipsis = "..."
         if len(truncated_remark.encode('utf-8')) + len(ellipsis.encode('utf-8')) <= max_bytes:
             truncated_remark += ellipsis
@@ -149,22 +150,19 @@ def process_remark(remark, proto_type):
         return f"{proto_type}节点"
 
 def extract_ip_port_from_line(line):
-    """通用IP/端口提取：统一正则提取逻辑，减少重复"""
+    """通用IP/端口提取"""
     ip = None
     port = 443
     domain = ""
     
-    # 提取IP
     ip_match = re.search(r'@([\d\.a-zA-Z-]+):', line)
     if ip_match:
         ip = ip_match.group(1)
     
-    # 提取域名（SNI/Host）
     domain_match = re.search(r'sni=([^&]+)|host=([^&]+)', line, re.IGNORECASE)
     if domain_match:
         domain = next((g for g in domain_match.groups() if g), "")
     
-    # 提取端口并校验
     port_match = re.search(r':(\d+)', line)
     if port_match:
         port = validate_port(port_match.group(1))
@@ -172,8 +170,108 @@ def extract_ip_port_from_line(line):
     return ip, domain, port
 
 def log_parse_error(proto_type, line, e):
-    """通用解析失败日志：统一格式，减少重复"""
+    """通用解析失败日志"""
     LOG.info(f"⚠️ {proto_type}解析失败（{line[:20]}...）: {str(e)[:50]}")
+
+def deduplicate_nodes(nodes):
+    """按 IP+端口+协议 去重，保留高权重源节点（核心优化）"""
+    seen = set()
+    unique_nodes = []
+    
+    # 先按权重排序（高权重在前）
+    nodes.sort(key=lambda x: x["weight"], reverse=True)
+    
+    for node in nodes:
+        line = node["line"]
+        ip = node.get("ip", "")
+        port = node.get("port", 443)
+        proto = ""
+        
+        if line.startswith('vmess://'):
+            proto = "vmess"
+        elif line.startswith('vless://'):
+            proto = "vless"
+        elif line.startswith('trojan://'):
+            proto = "trojan"
+        elif line.startswith('ss://'):
+            proto = "ss"
+        elif line.startswith('hysteria://'):
+            proto = "hysteria"
+        
+        # 去重键：IP+端口+协议（空IP跳过去重）
+        if ip:
+            key = f"{ip}:{port}:{proto}"
+        else:
+            key = f"{line[:50]}:{proto}"  # 无IP时按行内容去重
+        
+        if key not in seen:
+            seen.add(key)
+            unique_nodes.append(node["line"])
+    
+    return unique_nodes
+
+# ====================== 增强型节点可用性检测（核心优化） ======================
+def test_node_availability(ip, port, proto_type, proto_cfg=None):
+    """
+    增强型节点检测：TCP握手 + 协议轻量验证
+    适配GitHub Actions海外环境，提升可用率
+    """
+    port = validate_port(port)
+    if not ip or is_private_ip(ip):
+        return False
+
+    # 第一步：快速TCP握手检测
+    tcp_available = False
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            # 动态获取超时时间
+            timeout_map = CONFIG["detection"]["tcp_timeout"]
+            if proto_type in ["vmess", "vless", "trojan"]:
+                tcp_timeout = timeout_map["vmess/vless/trojan"]
+            elif proto_type == "ss":
+                tcp_timeout = timeout_map["ss"]
+            elif proto_type == "hysteria":
+                tcp_timeout = timeout_map["hysteria"]
+            else:
+                tcp_timeout = 3
+            
+            sock.settimeout(tcp_timeout)
+            if sock.connect_ex((ip, port)) == 0:
+                tcp_available = True
+    except Exception:
+        return False
+
+    if not tcp_available:
+        return False
+
+    # 第二步：协议层轻量验证（避免端口通但服务不可用）
+    try:
+        if proto_type in ["vmess", "vless", "trojan"]:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+                sock.settimeout(2)
+                sock.connect((ip, port))
+                sock.send(b"\x00")  # 发送空包检测服务存活
+                sock.recv(1)  # 只要不报错即认为服务存活
+                return True
+        elif proto_type == "ss":
+            # SS：配置完整即认为可用（简化版，避免复杂加密验证）
+            if proto_cfg and proto_cfg.get("address") and proto_cfg.get("port"):
+                return True
+        elif proto_type == "hysteria":
+            # Hysteria：补充UDP检测
+            try:
+                with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as udp_sock:
+                    udp_sock.settimeout(2)
+                    udp_sock.sendto(b"\x00", (ip, port))
+                    udp_sock.recvfrom(1024)
+                return True
+            except (socket.timeout, socket.error):
+                return True  # UDP无响应也正常，TCP通则通过
+        return True
+    except (socket.timeout, socket.error):
+        return False  # 应用层无响应，判定不可用
+    except Exception:
+        return True  # 未知错误，降级为TCP结果
 
 # ====================== 基础过滤工具函数 ======================
 def is_base64(s):
@@ -258,24 +356,6 @@ def clean_vmess_json(decoded_str):
         log_parse_error("VMess JSON", decoded_str[:20], e)
         return decoded_str
 
-def test_tcp_connect(ip, port):
-    """测试TCP连接是否可用"""
-    port = validate_port(port)
-    if not ip:
-        return False
-    
-    for retry_num in range(CONFIG["detection"]["tcp_retry"] + 1):
-        try:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                sock.settimeout(CONFIG["detection"]["tcp_timeout"])
-                if sock.connect_ex((ip, port)) == 0:
-                    return True
-            if retry_num < CONFIG["detection"]["tcp_retry"]:
-                time.sleep(0.5)
-        except (socket.gaierror, socket.timeout, OSError):
-            continue
-    return False
-
 def count_protocol_nodes(lines):
     """统计节点列表中各协议的数量"""
     count = {
@@ -301,9 +381,9 @@ def count_protocol_nodes(lines):
             count["other"] += 1
     return count
 
-# ====================== 协议解析函数（精简重复逻辑） ======================
+# ====================== 协议解析函数（必填字段校验） ======================
 def extract_vmess_config(vmess_line):
-    """解析VMess协议节点"""
+    """解析VMess协议节点（校验必填字段）"""
     try:
         vmess_part = vmess_line[8:].strip()
         vmess_part = re.split(r'[@#]', vmess_part)[0].strip()
@@ -320,9 +400,13 @@ def extract_vmess_config(vmess_line):
         decoded = clean_vmess_json(decoded)
         cfg = json.loads(decoded)
         
-        # 通用备注处理
+        # 校验VMess必填字段（核心优化）
+        required_fields = ["add", "port", "id", "aid"]
+        missing_fields = [f for f in required_fields if f not in cfg or not cfg[f]]
+        if missing_fields:
+            raise Exception(f"缺失必填字段：{','.join(missing_fields)}")
+        
         cfg["ps"] = process_remark(cfg.get('ps', ''), "VMess")
-        # 通用端口校验
         cfg["port"] = validate_port(cfg.get('port', 443))
         
         return {
@@ -336,62 +420,37 @@ def extract_vmess_config(vmess_line):
             "serverName": cfg.get('host') or cfg.get('sni', ''),
             "ps": cfg["ps"]
         }
-    except json.JSONDecodeError as e:
-        log_parse_error("VMess JSON", vmess_line, e)
-        try:
-            decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
-            decoded = clean_vmess_json(decoded)
-            ip_match = re.search(r'"add":"([\d\.a-zA-Z-]+)"', decoded)
-            port_match = re.search(r'"port":"?(\d+)"?', decoded)
-            host_match = re.search(r'"host":"([^"]+)"|\"sni\":\"([^"]+)"', decoded)
-            
-            port = validate_port(port_match.group(1) if port_match else 443)
-            if ip_match and port_match:
-                return {
-                    "address": ip_match.group(1),
-                    "port": port,
-                    "id": "", 
-                    "alterId": 0, 
-                    "security": "auto",
-                    "network": "tcp", 
-                    "tls": "",
-                    "serverName": next((g for g in host_match.groups() if g), "") if host_match else "",
-                    "ps": "VMess节点"
-                }
-            else:
-                raise Exception("核心字段（IP/端口）提取失败")
-        except Exception as inner_e:
-            raise Exception(f"JSON解析失败且无法提取核心字段: {inner_e}")
     except Exception as e:
+        if "缺失必填字段" in str(e):
+            LOG.info(f"📝 过滤无效VMess节点：{vmess_line[:20]}...（{str(e)}）")
+            return None
         log_parse_error("VMess", vmess_line, e)
         return None
 
 def extract_vless_config(vless_line):
-    """解析VLESS协议节点（精简重复逻辑）"""
+    """解析VLESS协议节点（校验必填字段）"""
     try:
         vless_part = vless_line[8:].strip()
         vless_part = vless_part.encode('ascii', 'ignore').decode('ascii')
         base_part, param_part = (vless_part.split('?') + [''])[:2]
         uuid_addr_port = base_part.split('@')
         
-        if len(uuid_addr_port) != 2:
-            ip_match = re.search(r'@([\d\.a-zA-Z-]+)', base_part)
-            port_match = re.search(r':(\d+)', base_part)
-            uuid_match = re.search(r'^([0-9a-fA-F\-]+)', base_part)
-            if not (ip_match and port_match):
-                raise Exception("核心字段（IP/端口）提取失败")
-            uuid = uuid_match.group(1) if uuid_match else ""
-            address = ip_match.group(1)
-            port = validate_port(port_match.group(1))
-        else:
-            uuid = uuid_addr_port[0].strip()
-            addr_port = uuid_addr_port[1].strip()
-            try:
-                address, port_str = addr_port.split(':')
-                port = validate_port(port_str)
-            except:
-                address = addr_port
-                port = 443
+        # 校验VLESS必填字段
+        if len(uuid_addr_port) < 2:
+            raise Exception("缺失UUID/地址/端口")
+        
+        uuid = uuid_addr_port[0].strip()
+        addr_port = uuid_addr_port[1].strip()
+        if not uuid or not addr_port:
+            raise Exception("UUID或地址端口为空")
+        
+        if ':' not in addr_port:
+            raise Exception("地址端口格式错误")
+        
+        address, port_str = addr_port.split(':')
+        port = validate_port(port_str)
+        if not address:
+            raise Exception("地址为空")
         
         # 解析参数+通用备注处理
         params = {}
@@ -399,7 +458,7 @@ def extract_vless_config(vless_line):
             if '=' in param:
                 k, v = param.split('=', 1)
                 if k.lower() == "remarks":
-                    v = process_remark(v, "VLESS")  # 通用备注处理
+                    v = process_remark(v, "VLESS")
                 params[k.lower()] = v
         
         return {
@@ -412,28 +471,19 @@ def extract_vless_config(vless_line):
             "remarks": params.get('remarks', 'VLESS节点')
         }
     except Exception as e:
+        if any(msg in str(e) for msg in ["缺失UUID", "地址为空", "格式错误"]):
+            LOG.info(f"📝 过滤无效VLESS节点：{vless_line[:20]}...（{str(e)}）")
+            return None
         log_parse_error("VLESS", vless_line, e)
-        # 核心字段兜底
-        ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', vless_line)
-        if ip_port_match:
-            return {
-                "uuid": "",
-                "address": ip_port_match.group(1),
-                "port": validate_port(ip_port_match.group(2)),
-                "security": "tls",
-                "sni": "",
-                "network": "tcp",
-                "remarks": "VLESS节点"
-            }
         return None
 
 def extract_trojan_config(trojan_line):
-    """解析Trojan协议节点（精简重复逻辑）"""
+    """解析Trojan协议节点（校验必填字段）"""
     try:
         label = ""
         if '#' in trojan_line:
             trojan_part, label = trojan_line.split('#', 1)
-            label = process_remark(label, "Trojan")  # 通用备注处理
+            label = process_remark(label, "Trojan")
         else:
             trojan_part = trojan_line
         
@@ -441,21 +491,21 @@ def extract_trojan_config(trojan_line):
         trojan_part = trojan_part.encode('ascii', 'ignore').decode('ascii')
         password_addr = trojan_part.split('?')[0]
         
-        password = ""
-        address = ""
-        port = 443
-        if '@' in password_addr:
-            password, addr_port = password_addr.split('@')
-            if ':' in addr_port:
-                address, port_str = addr_port.rsplit(':', 1)
-                port = validate_port(port_str)
-            else:
-                address = addr_port
-        else:
-            ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', trojan_part)
-            if ip_port_match:
-                address = ip_port_match.group(1)
-                port = validate_port(ip_port_match.group(2))
+        # 校验Trojan必填字段
+        if '@' not in password_addr:
+            raise Exception("缺失密码@地址格式")
+        
+        password, addr_port = password_addr.split('@')
+        if not password or not addr_port:
+            raise Exception("密码或地址端口为空")
+        
+        if ':' not in addr_port:
+            raise Exception("地址端口格式错误")
+        
+        address, port_str = addr_port.rsplit(':', 1)
+        port = validate_port(port_str)
+        if not address:
+            raise Exception("地址为空")
         
         # 解析参数
         params = {}
@@ -475,24 +525,14 @@ def extract_trojan_config(trojan_line):
             "label": label
         }
     except Exception as e:
-        if any(keyword in str(e).lower() for keyword in ["label", "empty", "too long", "truncate"]):
-            LOG.info(f"⚠️ Trojan节点标签异常（非核心，保留节点）：{str(e)[:50]}（{trojan_line[:20]}...）")
-            ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', trojan_line)
-            if ip_port_match:
-                return {
-                    "address": ip_port_match.group(1),
-                    "port": validate_port(ip_port_match.group(2)),
-                    "password": "",
-                    "sni": "",
-                    "security": "tls",
-                    "label": "Trojan节点"
-                }
-        else:
-            LOG.info(f"❌ Trojan核心字段解析失败（{trojan_line[:20]}...）: {str(e)[:50]}")
+        if any(msg in str(e) for msg in ["缺失密码", "格式错误", "地址为空"]):
+            LOG.info(f"📝 过滤无效Trojan节点：{trojan_line[:20]}...（{str(e)}）")
+            return None
+        log_parse_error("Trojan", trojan_line, e)
         return None
 
 def extract_ss_config(ss_line):
-    """解析SS协议节点（精简重复逻辑）"""
+    """解析SS协议节点（校验必填字段）"""
     try:
         ss_part = ss_line[5:].strip()
         
@@ -506,6 +546,10 @@ def extract_ss_config(ss_line):
             except Exception as e:
                 log_parse_error("SS Base64", ss_line, e)
         
+        # 校验SS必填字段
+        if '@' not in ss_part:
+            raise Exception("缺失@分隔符（密码@地址格式）")
+        
         # 通用备注处理
         remark = ""
         if '#' in ss_part:
@@ -513,30 +557,33 @@ def extract_ss_config(ss_line):
             remark = process_remark(remark, "SS")
         
         # 提取地址和端口
-        address = ""
-        port = 443
-        if '@' in ss_part:
-            _, addr_port_part = ss_part.split('@', 1)
-            if ':' in addr_port_part:
-                address, port_str = addr_port_part.rsplit(':', 1)
-                port = validate_port(port_str)
-            else:
-                address = addr_port_part
-            
-            if not address or address.strip() == "":
-                raise Exception("SS节点地址为空")
+        auth_part, addr_port_part = ss_part.split('@', 1)
+        if not auth_part or not addr_port_part:
+            raise Exception("SS认证信息或地址端口为空")
+        
+        if ':' not in addr_port_part:
+            raise Exception("地址端口格式错误")
+        
+        address, port_str = addr_port_part.rsplit(':', 1)
+        port = validate_port(port_str)
+        if not address:
+            raise Exception("地址为空")
         
         return {
             "address": address.strip(),
             "port": port,
-            "remark": remark
+            "remark": remark,
+            "method": auth_part.split(':')[0] if ':' in auth_part else ""  # 加密方式
         }
     except Exception as e:
+        if any(msg in str(e) for msg in ["缺失@分隔符", "格式错误", "地址为空"]):
+            LOG.info(f"📝 过滤无效SS节点：{ss_line[:20]}...（{str(e)}）")
+            return None
         log_parse_error("SS", ss_line, e)
         return None
 
 def extract_hysteria_config(hysteria_line):
-    """解析Hysteria协议节点（精简重复逻辑）"""
+    """解析Hysteria协议节点（校验必填字段）"""
     try:
         # 通用备注处理
         label = ""
@@ -549,6 +596,10 @@ def extract_hysteria_config(hysteria_line):
         hysteria_core = hysteria_part[10:].strip()
         hysteria_core = hysteria_core.encode('ascii', 'ignore').decode('ascii')
         
+        # 校验Hysteria必填字段
+        if '@' not in hysteria_core:
+            raise Exception("缺失@分隔符（认证@地址格式）")
+        
         # 解析参数
         params = {}
         if '?' in hysteria_core:
@@ -559,44 +610,38 @@ def extract_hysteria_config(hysteria_line):
                     params[k.lower()] = v
         
         # 提取地址和端口
-        address = ""
-        port = 443
-        password = ""
-        if '@' in hysteria_core:
-            password, addr_port = hysteria_core.split('@', 1)
-            if ':' in addr_port:
-                address, port_str = addr_port.rsplit(':', 1)
-                port = validate_port(port_str)
-            else:
-                address = addr_port
-        else:
-            if ':' in hysteria_core:
-                address, port_str = hysteria_core.rsplit(':', 1)
-                port = validate_port(port_str)
-            else:
-                ip_port_match = re.search(r'([\d\.a-zA-Z\-]+):(\d+)', hysteria_core)
-                if ip_port_match:
-                    address = ip_port_match.group(1)
-                    port = validate_port(ip_port_match.group(2))
-                else:
-                    address = hysteria_core
+        auth_part, addr_port = hysteria_core.split('@', 1)
+        if not auth_part or not addr_port:
+            raise Exception("认证信息或地址端口为空")
+        
+        if ':' not in addr_port:
+            raise Exception("地址端口格式错误")
+        
+        address, port_str = addr_port.rsplit(':', 1)
+        port = validate_port(port_str)
+        if not address:
+            raise Exception("地址为空")
         
         return {
             "address": address,
             "port": port,
-            "password": password,
+            "password": auth_part,
             "obfs": params.get('obfs', ''),
             "auth": params.get('auth', ''),
             "alpn": params.get('alpn', ''),
             "label": label
         }
     except Exception as e:
+        if any(msg in str(e) for msg in ["缺失@分隔符", "格式错误", "地址为空"]):
+            LOG.info(f"📝 过滤无效Hysteria节点：{hysteria_line[:20]}...（{str(e)}）")
+            return None
         log_parse_error("Hysteria", hysteria_line, e)
         return None
 
 # ====================== 节点处理与拉取函数 ======================
-def fetch_source(url, cache_dir=".cache"):
-    """拉取订阅源数据（带缓存+GitHub限流防护）"""
+def fetch_source(url, weight):
+    """拉取订阅源数据（带权重，适配GitHub Actions）"""
+    cache_dir = ".cache"
     os.makedirs(cache_dir, exist_ok=True)
     cache_key = hashlib.md5(url.encode()).hexdigest()
     cache_path = os.path.join(cache_dir, cache_key)
@@ -607,8 +652,8 @@ def fetch_source(url, cache_dir=".cache"):
         if time.time() - cache_mtime < CONFIG["github"]["cache_ttl"]:
             with open(cache_path, "r", encoding="utf-8") as f:
                 lines = json.load(f)
-            LOG.info(f"✅ 从缓存加载 {url}，有效节点 {len(lines)} 条")
-            return lines
+            LOG.info(f"✅ 从缓存加载 {url}（权重{weight}），有效节点 {len(lines)} 条")
+            return lines, weight
     
     # 控制请求频率
     time.sleep(CONFIG["github"]["request_interval"])
@@ -620,13 +665,13 @@ def fetch_source(url, cache_dir=".cache"):
             resp.raise_for_status()
             decoded_content = decode_base64_sub(resp.text)
             lines = [l.strip() for l in decoded_content.split('\n') if l.strip() and not l.startswith('#')]
-            proto_count = count_protocol_nodes(lines)
-            LOG.info(f"✅ 拉取成功 {url}，有效节点 {len(lines)} 条（VMess：{proto_count['vmess']} | VLESS：{proto_count['vless']} | Trojan：{proto_count['trojan']} | SS：{proto_count['ss']} | Hysteria：{proto_count['hysteria']} | 其他：{proto_count['other']}）（重试：{retry}）")
             
             # 写入缓存
             with open(cache_path, "w", encoding="utf-8") as f:
-                json.dump(lines, f)
-            return lines
+                json.dump(lines, f, ensure_ascii=False)
+            
+            LOG.info(f"✅ 拉取成功 {url}（权重{weight}），有效节点 {len(lines)} 条")
+            return lines, weight
         except Exception as e:
             error_msg = str(e)[:80]
             if retry < CONFIG["request"]["retry_times"] - 1:
@@ -634,61 +679,71 @@ def fetch_source(url, cache_dir=".cache"):
                 time.sleep(CONFIG["request"]["retry_delay"])
             else:
                 LOG.info(f"❌ 拉取最终失败 {url}: {error_msg}")
-                return []
+                return [], weight
 
 def process_node(line):
-    """处理单个节点（精简重复的协议分支逻辑）"""
+    """处理单个节点（增强检测+优先级过滤）"""
     try:
         if not line:
             return None, "", "", 443
         
         ip, domain, port, remark = None, "", 443, ""
         proto_cfg = None
+        proto_type = ""
         
-        # 按协议解析（精简分支逻辑）
+        # 按协议解析
         if line.startswith('vmess://'):
+            proto_type = "vmess"
             proto_cfg = extract_vmess_config(line)
             if proto_cfg:
                 ip, domain, port, remark = proto_cfg["address"], proto_cfg["serverName"], proto_cfg["port"], proto_cfg["ps"]
         elif line.startswith('vless://'):
+            proto_type = "vless"
             proto_cfg = extract_vless_config(line)
             if proto_cfg:
                 ip, domain, port, remark = proto_cfg["address"], proto_cfg["sni"], proto_cfg["port"], proto_cfg["remarks"]
         elif line.startswith('trojan://'):
+            proto_type = "trojan"
             proto_cfg = extract_trojan_config(line)
             if proto_cfg:
                 ip, domain, port, remark = proto_cfg["address"], proto_cfg["sni"], proto_cfg["port"], proto_cfg["label"]
         elif line.startswith('ss://'):
+            proto_type = "ss"
             proto_cfg = extract_ss_config(line)
             if proto_cfg:
                 ip, domain, port, remark = proto_cfg["address"], "", proto_cfg["port"], proto_cfg["remark"]
         elif line.startswith('hysteria://'):
+            proto_type = "hysteria"
             proto_cfg = extract_hysteria_config(line)
             if proto_cfg:
                 ip, domain, port, remark = proto_cfg["address"], "", proto_cfg["port"], proto_cfg["label"]
         else:
-            # 通用IP/端口提取
+            # 其他协议：通用提取
             ip, domain, port = extract_ip_port_from_line(line)
             if '#' in line:
                 remark = process_remark(line.split('#')[1], "其他")
+            proto_type = "other"
         
-        # 过滤逻辑（无重复）
+        # 过滤私有IP
         if is_private_ip(ip):
             LOG.info(f"📝 过滤私有IP节点：{ip}:{port}（备注：{remark[:20]}...）")
             return None, "", "", 443
         
-        if ip and not test_tcp_connect(ip, port):
-            LOG.info(f"📝 过滤TCP连接失败节点：{ip}:{port}（备注：{remark[:20]}...）")
+        # 增强型可用性检测（核心优化）
+        if ip and proto_cfg and not test_node_availability(ip, port, proto_type, proto_cfg):
+            LOG.info(f"📝 过滤不可用节点：{ip}:{port}（{proto_type}协议验证失败）（备注：{remark[:20]}...）")
             return None, "", "", 443
         
+        # DNS解析失败警告（不过滤，仅提示）
         if domain and not test_domain_resolve(domain):
-            LOG.info(f"⚠️ 域名{domain}解析失败，但IP{ip}连接正常（备注：{remark[:20]}...）")
+            LOG.info(f"⚠️ 域名{domain}解析失败，但IP{ip}检测通过（备注：{remark[:20]}...）")
         
+        # 空地址过滤
         if not ip and not domain:
             LOG.info(f"📝 过滤空地址节点：{line[:20]}...（备注：{remark[:20]}...）")
             return None, "", "", 443
         
-        LOG.info(f"✅ 保留节点: {'IP' if ip else '域名'} - {ip or domain}:{port}（备注：{remark[:20]}...）")
+        LOG.info(f"✅ 保留节点: {'IP' if ip else '域名'} - {ip or domain}:{port}（{proto_type}）（备注：{remark[:20]}...）")
         return line, domain, ip, port
     except Exception as e:
         if "label too long" in str(e).lower():
@@ -697,114 +752,117 @@ def process_node(line):
             LOG.info(f"❌ 节点处理异常（{line[:20]}...）: {str(e)[:50]}")
         return None, "", "", 443
 
-# ====================== 主函数 ======================
+# ====================== 主函数（适配GitHub Actions） ======================
 def main():
-    """主流程：拉取→处理→协议优先级排序→保存"""
+    """主流程：拉取→去重→检测→排序→保存"""
     start_time = time.time()
+    all_nodes = []
     source_records = {}
-    all_lines_set = set()
     
-    try:
-        # 1. 多线程拉取订阅源
-        with ThreadPoolExecutor(max_workers=5) as executor:
-            future_to_url = {executor.submit(fetch_source, url): url for url in CONFIG["sources"]}
-            for future in as_completed(future_to_url):
-                url = future_to_url[future]
-                try:
-                    lines = future.result()
-                    proto_count = count_protocol_nodes(lines)
-                    source_records[url] = {
-                        "original": lines,
-                        "original_count": len(lines),
-                        "protocol_count": proto_count
-                    }
-                    all_lines_set.update(lines)
-                except Exception as e:
-                    LOG.info(f"❌ 处理订阅源{url}异常：{str(e)[:50]}")
-        
-        unique_lines = list(all_lines_set)
-        LOG.info(f"\n📝 全局去重后总节点：{len(unique_lines)} 条")
-
-        # 2. 按协议优先级排序
-        reality_lines = [l for l in unique_lines if 'reality' in l.lower()]
-        hysteria_lines = [l for l in unique_lines if l.startswith('hysteria://') and l not in reality_lines]
-        tls_lines = [l for l in unique_lines if 'tls' in l.lower() and l not in reality_lines + hysteria_lines]
-        ss_lines = [l for l in unique_lines if l.startswith('ss://') and l not in reality_lines + hysteria_lines + tls_lines]
-        normal_lines = [l for l in unique_lines if l not in reality_lines + hysteria_lines + tls_lines + ss_lines]
-        processing_order = reality_lines + hysteria_lines + tls_lines + ss_lines + normal_lines
-        
-        LOG.info(f"📝 优先级拆分 - Reality节点：{len(reality_lines)} 条 | Hysteria节点：{len(hysteria_lines)} 条 | TLS节点：{len(tls_lines)} 条 | SS节点：{len(ss_lines)} 条 | 普通节点：{len(normal_lines)} 条")
-
-        # 3. 多线程处理节点
-        valid_lines = []
-        seen_ips = set()
-        seen_domains = set()
-        total_nodes = len(processing_order)
-        
-        with ThreadPoolExecutor(max_workers=CONFIG["detection"]["thread_pool_size"]) as executor:
-            futures = [executor.submit(process_node, line) for line in processing_order]
-            for idx, future in enumerate(as_completed(futures)):
-                if idx % 100 == 0:
-                    progress = (idx / total_nodes) * 100
-                    LOG.info(f"\n📝 处理进度：{idx}/{total_nodes} ({progress:.1f}%)")
-                try:
-                    line, domain, ip, port = future.result()
-                except Exception as e:
-                    LOG.info(f"⚠️ 节点处理异常: {str(e)[:50]}")
-                    continue
-                if not line:
-                    continue
-                
-                # 去重
-                if domain and domain in seen_domains:
-                    continue
-                if ip and ip in seen_ips:
-                    continue
-                
-                seen_domains.add(domain)
-                seen_ips.add(ip)
-                valid_lines.append(line)
-
-        # 4. 保存结果
+    LOG.info(f"🚀 开始节点更新任务（{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}）")
+    
+    # 1. 多线程拉取所有订阅源（带权重）
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        future_to_url = {executor.submit(fetch_source, src["url"], src["weight"]): src["url"] for src in CONFIG["sources"]}
+        for future in as_completed(future_to_url):
+            url = future_to_url[future]
+            try:
+                lines, weight = future.result()
+                source_records[url] = {
+                    "original": lines,
+                    "original_count": len(lines),
+                    "weight": weight,
+                    "protocol_count": count_protocol_nodes(lines)
+                }
+                # 加入总列表（带权重）
+                for line in lines:
+                    all_nodes.append({"line": line, "weight": weight})
+            except Exception as e:
+                LOG.info(f"❌ 处理订阅源{url}异常：{str(e)[:50]}")
+    
+    # 2. 按权重去重（核心优化）
+    LOG.info(f"📊 拉取完成，原始节点总数：{len(all_nodes)} 条")
+    unique_lines = deduplicate_nodes(all_nodes)
+    LOG.info(f"🔍 去重后节点总数：{len(unique_lines)} 条")
+    
+    # 3. 多线程处理节点（增强检测）
+    valid_lines = []
+    seen_ips = set()
+    seen_domains = set()
+    total_nodes = len(unique_lines)
+    
+    with ThreadPoolExecutor(max_workers=CONFIG["detection"]["thread_pool_size"]) as executor:
+        futures = [executor.submit(process_node, line) for line in unique_lines]
+        for idx, future in enumerate(as_completed(futures)):
+            if idx % 10 == 0:  # 每10个节点输出一次进度
+                progress = (idx / total_nodes) * 100
+                LOG.info(f"⏳ 处理进度：{idx}/{total_nodes} ({progress:.1f}%)")
+            try:
+                line, domain, ip, port = future.result()
+            except Exception as e:
+                LOG.info(f"⚠️ 节点处理异常: {str(e)[:50]}")
+                continue
+            if not line:
+                continue
+            
+            # 最终去重（IP+域名）
+            if domain and domain in seen_domains:
+                continue
+            if ip and ip in seen_ips:
+                continue
+            
+            seen_domains.add(domain)
+            seen_ips.add(ip)
+            valid_lines.append(line)
+    
+    # 4. 按优先级排序（Reality/TLS优先）
+    def sort_by_priority(line):
+        """排序规则：Reality > TLS > 其他，协议类型优先级：VLESS > Trojan > VMess > SS > Hysteria"""
+        score = 0
+        # Reality/TLS优先
+        if "reality" in line.lower():
+            score += 100
+        elif "tls" in line.lower():
+            score += 50
+        # 协议优先级
+        if line.startswith('vless://'):
+            score += 40
+        elif line.startswith('trojan://'):
+            score += 30
+        elif line.startswith('vmess://'):
+            score += 20
+        elif line.startswith('hysteria://'):
+            score += 10
+        elif line.startswith('ss://'):
+            score += 5
+        return score
+    
+    valid_lines.sort(key=sort_by_priority, reverse=True)
+    LOG.info(f"✅ 最终有效节点数：{len(valid_lines)} 条（Reality/TLS优先）")
+    
+    # 5. 保存为Base64编码的订阅文件（适配通用客户端）
+    if valid_lines:
         combined = '\n'.join(valid_lines)
         encoded = base64.b64encode(combined.encode('utf-8')).decode('utf-8')
         with open('s1.txt', 'w', encoding='utf-8') as f:
             f.write(encoded)
-
-        # 5. 输出统计信息
-        total_cost = time.time() - start_time
-        valid_proto_count = count_protocol_nodes(valid_lines)
-        LOG.info(f"\n🎉 最终处理完成：")
-        LOG.info(f"   - 📝 原始总节点：{len(unique_lines)} 条")
-        LOG.info(f"   - ✅ 过滤后可用节点：{len(valid_lines)} 条")
-        LOG.info(f"   - 📊 有效节点协议分布：VMess：{valid_proto_count['vmess']} | VLESS：{valid_proto_count['vless']} | Trojan：{valid_proto_count['trojan']} | SS：{valid_proto_count['ss']} | Hysteria：{valid_proto_count['hysteria']} | 其他：{valid_proto_count['other']}")
-        LOG.info(f"   - 🌐 独特IP：{len(seen_ips)} 个")
-        LOG.info(f"   - 📛 独特域名：{len(seen_domains)} 个")
-        LOG.info(f"   - 🔤 备注最大字节数：{CONFIG['filter']['max_remark_bytes']}（UTF-8）")
-        LOG.info(f"   - ⏱️ 总耗时：{total_cost:.2f} 秒（{total_cost/60:.2f} 分钟）")
-        LOG.info(f"   - 📄 节点已保存至：s1.txt（Base64编码格式）")
-
-        # 6. 各数据源统计
-        LOG.info("\n📋 各数据源详细统计：")
-        for idx, (url, stats) in enumerate(source_records.items(), 1):
-            original_count = stats['original_count']
-            proto_count = stats['protocol_count']
-            retained_count = len([line for line in stats['original'] if line in valid_lines])
-            retention_rate = (retained_count / original_count * 100) if original_count > 0 else 0.0
-            LOG.info(f"   {idx}. {url}")
-            LOG.info(f"      - 📝 原始节点数：{original_count} 条（VMess：{proto_count['vmess']} | VLESS：{proto_count['vless']} | Trojan：{proto_count['trojan']} | SS：{proto_count['ss']} | Hysteria：{proto_count['hysteria']} | 其他：{proto_count['other']}）")
-            LOG.info(f"      - ✅ 最终保留：{retained_count} 条 | 📈 保留率：{retention_rate:.2f}%")
+        LOG.info(f"📄 订阅文件已保存至 s1.txt（Base64编码，{len(valid_lines)} 个节点）")
+    else:
+        # 无有效节点时创建空文件，避免GitHub Actions提交报错
+        with open('s1.txt', 'w', encoding='utf-8') as f:
+            f.write("")
+        LOG.info(f"ℹ️  无有效节点，创建空 s1.txt")
     
-    except KeyboardInterrupt:
-        LOG.info("⚠️ 脚本被手动中断")
-    except Exception as e:
-        LOG.info(f"❌ 脚本运行异常：{str(e)}")
-        with open("error.log", "w", encoding="utf-8") as f:
-            f.write(f"Error: {str(e)}\nTime: {time.ctime()}")
-        raise
-    finally:
-        SESSION.close()
-        LOG.info(f"🔚 脚本结束，总耗时：{time.time()-start_time:.2f}秒")
+    # 6. 输出统计信息
+    total_cost = time.time() - start_time
+    valid_proto_count = count_protocol_nodes(valid_lines)
+    LOG.info(f"\n📊 任务完成统计：")
+    LOG.info(f"   - 原始节点总数：{len(all_nodes)} 条")
+    LOG.info(f"   - 去重后节点数：{len(unique_lines)} 条")
+    LOG.info(f"   - 最终有效节点：{len(valid_lines)} 条")
+    LOG.info(f"   - 协议分布：VMess({valid_proto_count['vmess']}) | VLESS({valid_proto_count['vless']}) | Trojan({valid_proto_count['trojan']}) | SS({valid_proto_count['ss']}) | Hysteria({valid_proto_count['hysteria']})")
+    LOG.info(f"   - 耗时：{total_cost:.2f} 秒")
+    LOG.info(f"✅ 节点更新任务完成！")
 
 if __name__ == "__main__":
     main()
