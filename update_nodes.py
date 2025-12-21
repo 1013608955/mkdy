@@ -8,7 +8,7 @@ import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# ====================== 配置项（轻度优化TCP检测，减少误删） ======================
+# ====================== 配置项（新增DNS服务器配置） ======================
 CONFIG = {
     "sources": [
         "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/Splitted-By-Protocol/vmess.txt",
@@ -26,9 +26,11 @@ CONFIG = {
         "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     },
     "detection": {
-        "tcp_timeout": 3,  # 延长到3秒，适配海外慢节点
-        "tcp_retry": 1,    # 新增：TCP连接失败后重试1次
+        "tcp_timeout": 3,
+        "tcp_retry": 1,
         "thread_pool_size": 15,
+        "dns_servers": ["8.8.8.8", "1.1.1.1", "223.5.5.5"],  # Google/Cloudflare/阿里DNS
+        "dns_timeout": 5  # DNS解析超时时间
     },
     "filter": {
         "private_ips": [
@@ -42,7 +44,7 @@ CONFIG = {
     }
 }
 
-# ====================== 工具函数（优化TCP连接检测，增加重试） ======================
+# ====================== 优化后的工具函数（减少误判） ======================
 def is_base64(s):
     if not s or len(s) < 4:
         return False
@@ -82,82 +84,163 @@ def is_private_ip(ip):
     return False
 
 def test_domain_resolve(domain):
-    """检测域名是否能解析"""
+    """优化版：多DNS源+超时+宽松判定，减少域名解析误判"""
     if not domain or domain == "未知":
         return False
-    try:
-        socket.gethostbyname_ex(domain)
-        return True
-    except socket.gaierror:
-        return False
+    
+    # 设置全局DNS解析超时
+    socket.setdefaulttimeout(CONFIG["detection"]["dns_timeout"])
+    
+    # 尝试多个公共DNS服务器解析
+    for dns_server in CONFIG["detection"]["dns_servers"]:
+        try:
+            # 临时修改本地DNS（仅测试用）
+            original_dns = socket.getaddrinfo
+            def custom_getaddrinfo(host, port, family=0, type=0, proto=0, flags=0):
+                return socket._socket.getaddrinfo(host, port, family, type, proto, flags)
+            
+            socket.getaddrinfo = custom_getaddrinfo
+            # 尝试解析域名
+            socket.gethostbyname_ex(domain)
+            socket.getaddrinfo = original_dns  # 恢复原DNS
+            return True
+        except (socket.gaierror, socket.timeout):
+            continue
+        finally:
+            socket.getaddrinfo = original_dns  # 确保恢复
+    
+    # 所有DNS都解析失败，返回False（但不直接过滤，仅作为参考）
+    print(f"⚠️ 域名{domain}解析失败（所有DNS源均失败），将尝试IP直连检测")
+    return False
 
 def extract_vmess_config(vmess_line):
-    """解析VMess节点配置"""
+    """优化版：宽松解析+降级提取核心字段，减少解析异常误判"""
     try:
         vmess_part = vmess_line[8:].strip()
         vmess_part = vmess_part.encode('ascii', 'ignore').decode('ascii')
         padding = 4 - len(vmess_part) % 4
         if padding != 4:
             vmess_part += '=' * padding
-        decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
-        cfg = json.loads(decoded)
-        return {
-            "address": cfg.get('add'),
-            "port": cfg.get('port', 443),
-            "id": cfg.get('id'),
-            "alterId": cfg.get('aid', 0),
-            "security": cfg.get('security', 'auto'),
-            "network": cfg.get('net', 'tcp'),
-            "tls": cfg.get('tls', ''),
-            "serverName": cfg.get('host') or cfg.get('sni')
-        }
+        
+        # 第一步：尝试正常解码JSON
+        try:
+            decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
+            cfg = json.loads(decoded)
+            return {
+                "address": cfg.get('add'),
+                "port": int(cfg.get('port', 443)),  # 兼容数字/字符串端口
+                "id": cfg.get('id', ''),
+                "alterId": cfg.get('aid', 0),
+                "security": cfg.get('security', 'auto'),
+                "network": cfg.get('net', 'tcp'),
+                "tls": cfg.get('tls', ''),
+                "serverName": cfg.get('host') or cfg.get('sni', '')
+            }
+        except json.JSONDecodeError:
+            # 第二步：JSON解析失败，用正则提取核心字段（降级处理）
+            decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
+            ip_match = re.search(r'"add":"([\d\.a-zA-Z-]+)"', decoded)
+            port_match = re.search(r'"port":"?(\d+)"?', decoded)
+            host_match = re.search(r'"host":"([^"]+)"|'"sni":"([^"]+)"', decoded)
+            
+            if ip_match and port_match:
+                return {
+                    "address": ip_match.group(1),
+                    "port": int(port_match.group(1)),
+                    "id": "", "alterId": 0, "security": "auto",
+                    "network": "tcp", "tls": "",
+                    "serverName": host_match.group(1) if host_match else ""
+                }
+            else:
+                raise Exception("核心字段（IP/端口）提取失败")
     except Exception as e:
-        print(f"❌ VMess解析失败: {str(e)[:50]}")
-        return None
+        print(f"⚠️ VMess解析部分失败（{vmess_line[:20]}...）: {str(e)[:50]}")
+        return None  # 仅核心字段提取失败时才返回None
 
 def extract_vless_config(vless_line):
-    """解析VLESS节点配置"""
+    """优化版：宽松解析VLESS，兼容格式差异"""
     try:
         vless_part = vless_line[8:].strip()
         vless_part = vless_part.encode('ascii', 'ignore').decode('ascii')
         base_part, param_part = (vless_part.split('?') + [''])[:2]
         uuid_addr_port = base_part.split('@')
+        
+        # 兼容格式差异：即使分割异常，尝试正则提取核心字段
         if len(uuid_addr_port) != 2:
-            return None
-        uuid = uuid_addr_port[0].strip()
-        addr_port = uuid_addr_port[1].strip()
-        try:
-            address, port = addr_port.split(':')
-            port = int(port)
-        except:
-            address = addr_port
-            port = 443
+            ip_match = re.search(r'@([\d\.a-zA-Z-]+)', base_part)
+            port_match = re.search(r':(\d+)', base_part)
+            uuid_match = re.search(r'^([0-9a-fA-F\-]+)', base_part)
+            if not (ip_match and port_match):
+                raise Exception("核心字段提取失败")
+            uuid = uuid_match.group(1) if uuid_match else ""
+            address = ip_match.group(1)
+            port = int(port_match.group(1)) if port_match else 443
+        else:
+            uuid = uuid_addr_port[0].strip()
+            addr_port = uuid_addr_port[1].strip()
+            try:
+                address, port = addr_port.split(':')
+                port = int(port)
+            except:
+                address = addr_port
+                port = 443
+        
+        # 解析参数（兼容大小写）
         params = {}
         for param in param_part.split('&'):
             if '=' in param:
                 k, v = param.split('=', 1)
                 params[k.lower()] = v
+        
         return {
             "uuid": uuid,
             "address": address,
-            "port": port,
+            "port": port if port in CONFIG["filter"]["valid_ports"] else 443,
             "security": params.get('security', 'tls'),
-            "sni": params.get('sni'),
-            "network": params.get('type', 'tcp')
+            "sni": params.get('sni') or params.get('SNI'),  # 兼容大小写
+            "network": params.get('type', 'tcp') or params.get('Type')
         }
     except Exception as e:
-        print(f"❌ VLESS解析失败: {str(e)[:50]}")
+        print(f"⚠️ VLESS解析部分失败（{vless_line[:20]}...）: {str(e)[:50]}")
+        # 尝试最后一次正则提取IP+端口
+        ip_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', vless_line)
+        if ip_match:
+            return {
+                "uuid": "",
+                "address": ip_match.group(1),
+                "port": int(ip_match.group(2)),
+                "security": "tls",
+                "sni": "",
+                "network": "tcp"
+            }
         return None
 
 def extract_trojan_config(trojan_line):
-    """解析Trojan节点配置"""
+    """优化版：宽松解析Trojan，兼容格式差异"""
     try:
         trojan_part = trojan_line[8:].strip()
         trojan_part = trojan_part.encode('ascii', 'ignore').decode('ascii')
         password_addr = trojan_part.split('?')[0]
-        password, addr_port = password_addr.split('@')
-        address, port = addr_port.split(':')
-        port = int(port)
+        
+        # 兼容密码/地址分割异常
+        if '@' not in password_addr:
+            # 正则提取核心字段
+            ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', trojan_part)
+            if not ip_port_match:
+                raise Exception("核心字段提取失败")
+            password = ""
+            address = ip_port_match.group(1)
+            port = int(ip_port_match.group(2))
+        else:
+            password, addr_port = password_addr.split('@')
+            try:
+                address, port = addr_port.split(':')
+                port = int(port)
+            except:
+                address = addr_port
+                port = 443
+        
+        # 解析参数（兼容大小写）
         params = {}
         if '?' in trojan_part:
             param_str = trojan_part.split('?')[1]
@@ -165,15 +248,26 @@ def extract_trojan_config(trojan_line):
                 if '=' in param:
                     k, v = param.split('=', 1)
                     params[k.lower()] = v
+        
         return {
             "address": address,
-            "port": port,
+            "port": port if port in CONFIG["filter"]["valid_ports"] else 443,
             "password": password,
-            "sni": params.get('sni'),
+            "sni": params.get('sni') or params.get('SNI'),
             "security": params.get('security', 'tls')
         }
     except Exception as e:
-        print(f"❌ Trojan解析失败: {str(e)[:50]}")
+        print(f"⚠️ Trojan解析部分失败（{trojan_line[:20]}...）: {str(e)[:50]}")
+        # 最后尝试正则提取IP+端口
+        ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', trojan_line)
+        if ip_port_match:
+            return {
+                "address": ip_port_match.group(1),
+                "port": int(ip_port_match.group(2)),
+                "password": "",
+                "sni": "",
+                "security": "tls"
+            }
         return None
 
 def test_tcp_connect(ip, port):
@@ -181,21 +275,16 @@ def test_tcp_connect(ip, port):
     if not ip or port not in CONFIG["filter"]["valid_ports"]:
         return False
     
-    # 循环重试（基础1次 + 配置的重试次数）
     for retry_num in range(CONFIG["detection"]["tcp_retry"] + 1):
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                 sock.settimeout(CONFIG["detection"]["tcp_timeout"])
-                # connect_ex返回0表示连接成功，非0失败
                 if sock.connect_ex((ip, port)) == 0:
                     return True
-            # 重试间隔0.5秒，避免频繁检测被屏蔽
             if retry_num < CONFIG["detection"]["tcp_retry"]:
                 time.sleep(0.5)
         except (socket.gaierror, socket.timeout, OSError):
             continue
-    
-    # 所有重试都失败，判定为连接失败
     return False
 
 def fetch_source(url):
@@ -219,12 +308,12 @@ def fetch_source(url):
                 return []
 
 def process_node(line):
-    """处理单个节点：仅保留基础过滤（减少误删）"""
+    """优化版：宽松过滤逻辑，仅核心无效才剔除"""
     try:
         if not line:
             return None, "", "", 443
         
-        # 提取节点信息
+        # 提取节点信息（优先保留核心字段）
         ip, domain, port = None, "", 443
         if line.startswith('vmess://'):
             cfg = extract_vmess_config(line)
@@ -245,6 +334,7 @@ def process_node(line):
                 domain = cfg["sni"]
                 port = cfg["port"]
         else:
+            # 通用正则提取（保底）
             ip_match = re.search(r'@([\d\.]+):', line)
             if ip_match:
                 ip = ip_match.group(1)
@@ -255,28 +345,32 @@ def process_node(line):
             if port_match:
                 port = int(port_match.group(1)) if port_match.group(1) in CONFIG["filter"]["valid_ports"] else 443
 
-        # 基础过滤逻辑（仅3条，减少误删）
+        # 核心过滤逻辑（仅2类必过滤，减少误删）
+        # 1. 私有IP必过滤（无公网访问价值）
         if is_private_ip(ip):
             print(f"❌ 过滤私有IP节点：{ip}:{port}")
             return None, "", "", 443
-        if domain and not test_domain_resolve(domain):
-            print(f"❌ 过滤域名解析失败节点：{domain}:{port}")
-            return None, "", "", 443
+        
+        # 2. IP+端口TCP连接失败才过滤（域名解析失败不再直接过滤）
         if ip and not test_tcp_connect(ip, port):
             print(f"❌ 过滤TCP连接失败节点：{ip}:{port}（超时{CONFIG['detection']['tcp_timeout']}秒，重试{CONFIG['detection']['tcp_retry']}次）")
             return None, "", "", 443
         
-        # 无过滤则返回有效节点
+        # 域名解析失败仅警告，不过滤（给IP直连机会）
+        if domain and not test_domain_resolve(domain):
+            print(f"⚠️ 域名{domain}解析失败，但IP{ip}连接正常，保留节点")
+        
+        # 无核心无效则返回有效节点
         return line, domain, ip, port
     except Exception as e:
         print(f"❌ 节点处理异常（{line[:20]}...）: {str(e)[:50]}")
         return None, "", "", 443
 
-# ====================== 主流程（保留去重+优先级筛选+来源统计） ======================
+# ====================== 主流程（保留原有功能+来源统计） ======================
 def main():
     start_time = time.time()
-    # 拉取数据源（新增：记录每个来源的原始数据）
-    source_records = {}  # 存储每个来源的原始数据 {url: {"original": 原始列表, "original_count": 数量}}
+    # 拉取数据源（记录每个来源的原始数据）
+    source_records = {}
     all_lines_set = set()
     
     with ThreadPoolExecutor(max_workers=5) as executor:
@@ -309,7 +403,6 @@ def main():
     with ThreadPoolExecutor(max_workers=CONFIG["detection"]["thread_pool_size"]) as executor:
         futures = [executor.submit(process_node, line) for line in processing_order]
         for idx, future in enumerate(as_completed(futures)):
-            # 进度可视化
             if idx % 100 == 0:
                 progress = (idx / total_nodes) * 100
                 print(f"\n🔄 处理进度：{idx}/{total_nodes} ({progress:.1f}%)")
@@ -344,11 +437,10 @@ def main():
     with open('s1.txt', 'w', encoding='utf-8') as f:
         f.write(encoded)
 
-    # 新增：统计每个来源的保留数据
+    # 统计每个来源的保留数据
     source_stats = {}
     for url, record in source_records.items():
         original_count = record["original_count"]
-        # 统计该来源中最终保留的节点数（去重后）
         retained_count = len([line for line in record["original"] if line in valid_lines])
         retention_rate = (retained_count / original_count * 100) if original_count > 0 else 0.0
         source_stats[url] = {
@@ -357,7 +449,7 @@ def main():
             "retention_rate": round(retention_rate, 2)
         }
 
-    # 统计输出（新增：打印各来源统计）
+    # 最终统计输出
     total_cost = time.time() - start_time
     print(f"\n🎉 最终处理完成：")
     print(f"   - 原始总节点：{len(unique_lines)} 条")
