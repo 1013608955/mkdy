@@ -132,12 +132,27 @@ def decode_b64_sub(text: str) -> str:
         LOG.info(log_msg(f"✅ 明文订阅处理完成，解析出{plain_line_count}个有效节点"))
         return '\n'.join(cleaned_lines)
 
+# ========== 核心新增：VMess内容特征检测（不依赖前缀） ==========
+def is_vmess_content(content: str) -> bool:
+    """检测内容是否是VMess的Base64编码JSON（核心特征：解码后包含vmess的关键键名）"""
+    try:
+        # 尝试Base64解码
+        content_clean = content.replace(' ', '').rstrip('=')
+        content_clean += '=' * (4 - len(content_clean) % 4) if len(content_clean) % 4 != 0 else ''
+        decoded = base64.b64decode(content_clean).decode('utf-8', errors='ignore')
+        # 检查是否是JSON，且包含VMess的关键键名（add/port/id/net等）
+        cfg = json.loads(decoded)
+        vmess_keys = ["add", "port", "id", "net", "type", "host", "path", "tls"]
+        return any(key in cfg for key in vmess_keys)
+    except:
+        return False
+
 def split_multi_nodes(line: str) -> List[str]:
     """
-    安全拆分拼接节点（核心修复：
-    1. 调整协议优先级：VMess/VLESS优先于SS，避免被覆盖
-    2. 调高VMess/VLESS最小长度，过滤残缺片段
-    3. 增加VMess/VLESS特征校验，避免误拆
+    安全拆分拼接节点（核心强化：
+    1. 强制保留VMess节点的完整边界（基于内容特征）
+    2. 优先识别VMess内容，再匹配其他协议
+    3. 避免VMess被拆分为SS片段
     """
     if not line:
         LOG.debug("📌 拆分空节点，直接返回空列表")
@@ -147,100 +162,75 @@ def split_multi_nodes(line: str) -> List[str]:
     at_count = line.count('@')
     LOG.debug(f"📌 待拆分节点原始内容：{line[:100]}... | @数量：{at_count}")
     
-    # ========== 关键修改1：调整协议优先级 + 调高最小长度 + 增加特征校验 ==========
+    # ========== 核心修改1：先提取所有VMess节点（基于内容特征） ==========
+    vmess_fragments = []
+    # 按可能的VMess长度（80-500字符）截取片段，检测是否是VMess
+    start_idx = 0
+    line_len = len(line)
+    while start_idx < line_len:
+        # VMess的Base64编码长度通常在80-500字符之间
+        end_idx = min(start_idx + 500, line_len)
+        fragment = line[start_idx:end_idx]
+        # 优先匹配`vmess://`前缀，再匹配内容特征
+        if fragment.startswith("vmess://") or is_vmess_content(fragment):
+            # 找到该VMess节点的结束位置（下一个协议前缀或行尾）
+            next_proto_pos = min(
+                line.find("vless://", end_idx) if line.find("vless://", end_idx) != -1 else line_len,
+                line.find("trojan://", end_idx) if line.find("trojan://", end_idx) != -1 else line_len,
+                line.find("ss://", end_idx) if line.find("ss://", end_idx) != -1 else line_len,
+                line.find("hysteria://", end_idx) if line.find("hysteria://", end_idx) != -1 else line_len
+            )
+            vmess_node = line[start_idx:next_proto_pos].strip()
+            vmess_fragments.append(("vmess", vmess_node))
+            LOG.debug(f"📌 强制识别VMess节点：{vmess_node[:100]}...")
+            start_idx = next_proto_pos
+        else:
+            start_idx += 100  # 非VMess片段，按100字符步长跳过
+    
+    # ========== 提取其他协议节点 ==========
+    other_nodes = []
     proto_rules = {
-        "vmess": {"prefix": "vmess://", "min_len": 80, "required": None},  # VMess最小长度调高（Base64至少80字符）
-        "vless": {"prefix": "vless://", "min_len": 50, "required": "@"},    # VLESS必须有@
+        "vless": {"prefix": "vless://", "min_len": 50, "required": "@"},
         "trojan": {"prefix": "trojan://", "min_len": 50, "required": "@"},
         "hysteria": {"prefix": "hysteria://", "min_len": 50, "required": None},
-        "ss": {"prefix": "ss://", "min_len": 40, "required": None}          # SS优先级调低，最小长度调高
+        "ss": {"prefix": "ss://", "min_len": 40, "required": None}
     }
-    
-    # 第一步：匹配所有可能的节点前缀位置（优先VMess/VLESS）
-    node_positions = []
     for proto, rule in proto_rules.items():
         prefix = rule["prefix"]
-        start = 0
-        while True:
-            pos = line.find(prefix, start)
-            if pos == -1:
-                break
-            
-            # ========== 关键修改2：增加VMess/VLESS特征校验 ==========
-            # VMess必须有足够长度（Base64编码特征）
-            if proto == "vmess" and len(line[pos:]) < rule["min_len"]:
-                LOG.debug(f"🚫 过滤残缺VMess节点（长度不足）：{line[pos:pos+50]}...")
-                start = pos + len(prefix)
-                continue
-            # VLESS必须包含@（核心特征）
-            if proto == "vless" and "@" not in line[pos:pos+rule["min_len"]]:
-                LOG.debug(f"🚫 过滤残缺VLESS节点（缺少@）：{line[pos:pos+50]}...")
-                start = pos + len(prefix)
-                continue
-            
-            # 记录前缀位置和协议规则
-            node_positions.append({"pos": pos, "proto": proto, "rule": rule})
-            start = pos + len(prefix)
+        pos = line.find(prefix)
+        while pos != -1:
+            # 找到该节点的结束位置
+            next_pos = min(
+                line.find("vless://", pos+len(prefix)) if line.find("vless://", pos+len(prefix)) != -1 else line_len,
+                line.find("trojan://", pos+len(prefix)) if line.find("trojan://", pos+len(prefix)) != -1 else line_len,
+                line.find("ss://", pos+len(prefix)) if line.find("ss://", pos+len(prefix)) != -1 else line_len,
+                line.find("hysteria://", pos+len(prefix)) if line.find("hysteria://", pos+len(prefix)) != -1 else line_len
+            )
+            node_str = line[pos:next_pos].strip()
+            # 过滤残缺节点
+            if len(node_str) >= rule["min_len"] and (not rule["required"] or rule["required"] in node_str):
+                other_nodes.append((proto, node_str))
+                LOG.debug(f"📌 识别{proto}节点：{node_str[:100]}...")
+            pos = line.find(prefix, next_pos)
     
-    # 第二步：按位置排序，拆分节点（修复边界计算）
-    if not node_positions:
-        LOG.debug(f"📌 未匹配到协议前缀，返回原节点：{line[:50]}...")
-        return [line.strip()]
+    # ========== 合并VMess和其他节点，去重 ==========
+    all_nodes = vmess_fragments + other_nodes
+    # 去重（避免重复识别）
+    unique_nodes = []
+    seen = set()
+    for proto, node in all_nodes:
+        if node not in seen:
+            seen.add(node)
+            unique_nodes.append((proto, node))
     
-    # 按前缀位置升序排列
-    node_positions.sort(key=lambda x: x["pos"])
-    nodes = []
-    total_len = len(line)
-    
-    for i, node_info in enumerate(node_positions):
-        pos = node_info["pos"]
-        proto = node_info["proto"]
-        rule = node_info["rule"]
-        prefix_len = len(rule["prefix"])
-        
-        # 修复边界计算：结束位置 = 下一个节点的起始位置（若存在），否则到末尾
-        if i < len(node_positions) - 1:
-            next_pos = node_positions[i+1]["pos"]
-            # 后向校验：如果当前节点需要@，且@在当前节点和下一个节点之间，扩展结束位置到@之后
-            if rule["required"] == "@":
-                # 查找当前节点范围内的最后一个@
-                at_pos = line.find('@', pos, next_pos)
-                if at_pos != -1:
-                    # 扩展结束位置到@之后的第一个非数字/字母/符号位置（确保@被包含）
-                    end_pos = line.find(' ', at_pos, next_pos)
-                    if end_pos == -1:
-                        end_pos = next_pos
-                else:
-                    end_pos = next_pos
-            else:
-                end_pos = next_pos
-        else:
-            end_pos = total_len
-        
-        # 提取节点内容（保留完整的@）
-        node_str = line[pos:end_pos].strip()
-        
-        # 打印拆分后的节点和@的存在性
-        node_at_count = node_str.count('@')
-        LOG.debug(f"📌 拆分出{proto}节点：{node_str[:100]}... | @数量：{node_at_count}")
-        
-        # 过滤校验：最小长度 + 必要特征
-        if len(node_str) < rule["min_len"]:
-            LOG.debug(f"🚫 过滤残缺节点（长度不足）：{node_str[:20]}... | 协议：{proto}")
-            continue
-        if rule["required"] and rule["required"] not in node_str:
-            LOG.debug(f"🚫 过滤残缺节点（缺少{rule['required']}）：{node_str[:20]}... | 协议：{proto}")
-            continue
-        
-        nodes.append(node_str)
-    
-    # 如果没有有效拆分结果，返回原行
-    if not nodes:
+    # 转换为仅节点内容的列表（保留协议信息在后续识别）
+    final_nodes = [node for (proto, node) in unique_nodes]
+    if not final_nodes:
         LOG.debug(f"📌 拆分无有效节点，返回原节点：{line[:50]}...")
-        return [line.strip()]
+        final_nodes = [line.strip()]
     
-    LOG.debug(f"📌 拆分完成，共拆分出{len(nodes)}个有效节点")
-    return nodes
+    LOG.debug(f"📌 拆分完成，共拆分出{len(final_nodes)}个有效节点（含VMess）")
+    return final_nodes
 
 def clean_node_content(line: str) -> str:
     """清洗节点内容（加固：仅删中文，绝对不碰@等符号）"""
@@ -343,8 +333,11 @@ def parse_vmess(line: str) -> Optional[Dict]:
         at_count = line.count('@')
         LOG.debug(f"📌 解析VMess节点：{line[:100]}... | @数量：{at_count}")
         
-        # 步骤1：提取vmess://后的所有内容
-        vmess_raw = line[8:].strip()
+        # 步骤1：提取vmess://后的内容（若无前缀则直接用原内容）
+        if line.startswith("vmess://"):
+            vmess_raw = line[8:].strip()
+        else:
+            vmess_raw = line.strip()
         
         # 精准匹配最长的连续Base64字符段（只保留A-Za-z0-9+/=）
         base64_match = re.match(r'^[A-Za-z0-9+/=]+', vmess_raw)
@@ -503,11 +496,11 @@ def parse_trojan(line: str) -> Optional[Dict]:
         return None
 
 def parse_ss(line: str) -> Optional[Dict]:
-    """解析SS节点（兼容缺少@的不规范格式 + 增加@追踪 + 关键修改：回检是否是VMess/VLESS残缺片段）"""
+    """解析SS节点（兼容缺少@的不规范格式 + 增加@追踪 + 严格VMess过滤）"""
     try:
-        # ========== 关键修改3：回检是否是VMess/VLESS的残缺片段，避免误判 ==========
-        if "vmess" in line.lower() or "vless" in line.lower():
-            LOG.warning(log_msg(f"⚠️ 疑似VMess/VLESS残缺片段被误判为SS，跳过解析", line[:20]))
+        # ========== 核心修改2：先强制检测是否是VMess内容，避免误判 ==========
+        if is_vmess_content(line):
+            LOG.warning(log_msg(f"⚠️ 该内容是VMess，跳过SS解析", line[:20]))
             return None
         
         # 打印解析前的@存在性
@@ -704,17 +697,25 @@ def process_single_node_raw(raw_line: str, source_url: str = "") -> List[Tuple[O
             cfg = None
             proto = ""
             
-            # 协议路由
-            if clean_line.startswith('vmess://'):
-                proto, cfg = "vmess", parse_vmess(clean_line)
+            # ========== 核心修改3：先检测是否是VMess内容，再匹配前缀 ==========
+            if is_vmess_content(clean_line):
+                proto = "vmess"
+                cfg = parse_vmess(clean_line)
+            elif clean_line.startswith('vmess://'):
+                proto = "vmess"
+                cfg = parse_vmess(clean_line)
             elif clean_line.startswith('vless://'):
-                proto, cfg = "vless", parse_vless(clean_line)
+                proto = "vless"
+                cfg = parse_vless(clean_line)
             elif clean_line.startswith('trojan://'):
-                proto, cfg = "trojan", parse_trojan(clean_line)
+                proto = "trojan"
+                cfg = parse_trojan(clean_line)
             elif clean_line.startswith('ss://'):
-                proto, cfg = "ss", parse_ss(clean_line)
+                proto = "ss"
+                cfg = parse_ss(clean_line)
             elif clean_line.startswith('hysteria://'):
-                proto, cfg = "hysteria", parse_hysteria(clean_line)
+                proto = "hysteria"
+                cfg = parse_hysteria(clean_line)
             else:
                 proto = "other"
                 ip, domain, port = extract_ip_port(clean_line)
@@ -772,10 +773,16 @@ def dedup_nodes(nodes: List[Dict]) -> List[Dict]:
         raw_line = node["line"]
         proto = "other"
         # 识别协议
-        for p in ["vmess", "vless", "trojan", "ss", "hysteria"]:
-            if raw_line.startswith(f"{p}://"):
-                proto = p
-                break
+        if is_vmess_content(raw_line) or raw_line.startswith('vmess://'):
+            proto = "vmess"
+        elif raw_line.startswith('vless://'):
+            proto = "vless"
+        elif raw_line.startswith('trojan://'):
+            proto = "trojan"
+        elif raw_line.startswith('ss://'):
+            proto = "ss"
+        elif raw_line.startswith('hysteria://'):
+            proto = "hysteria"
         # 去重key：原始行前50字符 + 协议（拆分前的核心逻辑）
         key_raw = f"{raw_line[:50]}:{proto}"
         if key_raw not in seen_raw:
@@ -793,10 +800,13 @@ def dedup_nodes(nodes: List[Dict]) -> List[Dict]:
         detail_key = ""
         for split_node in split_nodes:
             # 提取节点的唯一特征（IP+端口+身份标识）
-            if split_node.startswith("vmess://"):
+            if is_vmess_content(split_node) or split_node.startswith('vmess://'):
                 # 解析VMess的id（UUID）
                 try:
-                    vmess_part = split_node[8:].strip()
+                    if split_node.startswith('vmess://'):
+                        vmess_part = split_node[8:].strip()
+                    else:
+                        vmess_part = split_node.strip()
                     base64_match = re.match(r'^[A-Za-z0-9+/=]+', vmess_part)
                     if base64_match:
                         b64 = base64_match.group(0).rstrip('=')
@@ -917,10 +927,16 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
             raw_unique = []
             for line in raw_lines:
                 proto = "other"
-                for p in ["vmess", "vless", "trojan", "ss", "hysteria"]:
-                    if line.startswith(f"{p}://"):
-                        proto = p
-                        break
+                if is_vmess_content(line) or line.startswith('vmess://'):
+                    proto = "vmess"
+                elif line.startswith('vless://'):
+                    proto = "vless"
+                elif line.startswith('trojan://'):
+                    proto = "trojan"
+                elif line.startswith('ss://'):
+                    proto = "ss"
+                elif line.startswith('hysteria://'):
+                    proto = "hysteria"
                 key = f"{line[:50]}:{proto}"
                 if key not in seen_raw:
                     seen_raw.add(key)
@@ -987,12 +1003,12 @@ def validate_sources() -> bool:
     return True
 
 def count_proto(lines: List[Union[str, Dict]]) -> Dict[str, int]:
-    """统计协议类型"""
+    """统计协议类型（核心修改：优先按内容特征统计VMess）"""
     count = {"vmess":0, "vless":0, "trojan":0, "ss":0, "hysteria":0, "other":0}
     for line in lines:
         line_str = line["line"] if isinstance(line, dict) else line
         clean_line = clean_node_content(line_str)
-        if clean_line.startswith('vmess://'):
+        if is_vmess_content(clean_line) or clean_line.startswith('vmess://'):
             count["vmess"] +=1
         elif clean_line.startswith('vless://'):
             count["vless"] +=1
@@ -1088,11 +1104,16 @@ def generate_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_lines:
         score = 0
         if "reality" in line.lower(): score += 100
         elif "tls" in line.lower(): score += 50
-        if line.startswith('vless://'): score += 40
-        elif line.startswith('trojan://'): score += 30
-        elif line.startswith('vmess://'): score += 20
-        elif line.startswith('hysteria://'): score += 10
-        elif line.startswith('ss://'): score += 5
+        if is_vmess_content(line) or line.startswith('vmess://'):
+            score += 20
+        elif line.startswith('vless://'):
+            score += 40
+        elif line.startswith('trojan://'):
+            score += 30
+        elif line.startswith('hysteria://'):
+            score += 10
+        elif line.startswith('ss://'):
+            score += 5
         return score
     
     valid_lines.sort(key=sort_key, reverse=True)
