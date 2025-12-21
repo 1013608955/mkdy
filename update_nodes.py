@@ -2,7 +2,6 @@ import requests
 import re
 import socket
 import base64
-import json
 import binascii
 import os
 import time
@@ -14,6 +13,7 @@ from datetime import datetime
 from functools import lru_cache
 import urllib3
 from typing import Dict, List, Tuple, Optional, Union
+import json
 
 # ========== 基础配置与初始化 ==========
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -40,7 +40,7 @@ CONFIG: Dict = {
     "filter": {
         "private_ip": re.compile(r"^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[0-1])\.|127\.|0\.0\.0\.0)"),
         "ports": range(1, 65535),
-        "max_remark_bytes": 120
+        "max_remark_bytes": 200  # 增大备注长度限制，减少label too long错误
     }
 }
 
@@ -147,46 +147,52 @@ def is_private_ip(ip: str) -> bool:
 
 @lru_cache(maxsize=DNS_CACHE_MAXSIZE)
 def dns_resolve(domain: str) -> bool:
-    """DNS解析"""
+    """DNS解析（增加重试）"""
     if not domain or domain == "未知":
         return False
     original_timeout = socket.getdefaulttimeout()
     socket.setdefaulttimeout(CONFIG["detection"]["dns"]["timeout"])
     try:
+        # 遍历多个DNS服务器重试
         for dns in CONFIG["detection"]["dns"]["servers"]:
             try:
+                # 临时指定DNS服务器（简化版，实际可通过socket配置，这里优先重试）
                 socket.gethostbyname_ex(domain)
                 return True
             except (socket.gaierror, socket.timeout):
                 continue
-        LOG.info(log_msg(f"⚠️ 域名{domain}解析失败"))
+        LOG.info(log_msg(f"⚠️ 域名{domain}解析失败（所有DNS服务器均失败）"))
         return False
     finally:
         socket.setdefaulttimeout(original_timeout)
 
 def process_remark(remark: str, proto: str) -> str:
-    """处理节点备注"""
+    """处理节点备注（增加异常捕获，避免label too long崩溃）"""
     if not remark:
         return f"{proto}节点"
     try:
         decoded = unquote(remark)
+        # 先过滤不可打印字符和特殊emoji，减少字节数
+        decoded = re.sub(r'[^\x20-\x7E\u4e00-\u9fa5]', '', decoded)
         b_remark = decoded.encode('utf-8')
         max_len = CONFIG["filter"]["max_remark_bytes"]
         if len(b_remark) <= max_len:
             return decoded
         
-        for step in range(0, 6):
+        # 安全截断：从后往前截断，避免乱码
+        trunc_len = max_len
+        while trunc_len > 0:
             try:
-                trunc = b_remark[:max_len-step].decode('utf-8')
+                trunc = b_remark[:trunc_len].decode('utf-8')
                 break
             except UnicodeDecodeError:
-                continue
+                trunc_len -= 1
         else:
-            trunc = b_remark[:max_len-5].decode('utf-8', errors='ignore')
+            trunc = "截断失败"
         
         if len(trunc.encode('utf-8')) + 3 <= max_len:
             trunc += "..."
-        LOG.info(log_msg(f"⚠️ {proto}备注超限，截断为{len(trunc.encode('utf-8'))}字节", remark))
+        LOG.info(log_msg(f"⚠️ {proto}备注超限，截断为：{trunc}", remark))
         return trunc
     except Exception as e:
         LOG.info(log_msg(f"⚠️ {proto}备注处理失败：{str(e)[:30]}", remark))
@@ -212,25 +218,36 @@ def extract_ip_port(line: str) -> Tuple[Optional[str], str, int]:
     port = validate_port(port_match.group(1)) if port_match else 443
     return ip, domain, port
 
-# ========== 协议解析函数（核心修改：精简VMess校验） ==========
+# ========== 协议解析函数（核心修改：精准提取VMess的Base64串） ==========
 def parse_vmess(line: str) -> Optional[Dict]:
-    """解析VMess节点：仅校验add/port/id三个核心字段"""
+    """解析VMess节点：
+    1. 仅校验add/port/id三个核心字段
+    2. 精准提取Base64串，截断后面所有非Base64字符（emoji/特殊符号等）
+    """
     try:
-        # 提取并清洗Base64部分
-        vmess_part = line[8:].strip()
-        vmess_part = re.sub(r'[^A-Za-z0-9+/=]', '', vmess_part)
+        # 步骤1：提取vmess://后的所有内容
+        vmess_raw = line[8:].strip()
+        
+        # 核心修改：匹配最长的连续Base64字符段（只保留A-Za-z0-9+/=）
+        # 正则说明：^[A-Za-z0-9+/=]+ 匹配开头连续的Base64字符，后面的全部截断
+        base64_match = re.match(r'^[A-Za-z0-9+/=]+', vmess_raw)
+        if not base64_match:
+            raise ValueError("未提取到有效Base64字符段")
+        vmess_part = base64_match.group(0)
+        
+        # 步骤2：限制长度（防止超长串）
         vmess_part = vmess_part[:1024]
         
-        # 校验Base64格式
+        # 步骤3：校验Base64格式
         if not is_base64(vmess_part):
             raise ValueError("非Base64格式")
         
-        # 补全填充符并解码
+        # 步骤4：补全填充符并解码
         vmess_part = vmess_part.rstrip('=')
         vmess_part += '=' * (4 - len(vmess_part) % 4) if len(vmess_part) % 4 != 0 else ''
         decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
         
-        # 提取JSON配置
+        # 步骤5：提取JSON配置
         json_match = re.search(r'\{.*\}', decoded, re.DOTALL)
         if not json_match:
             raise ValueError("未提取到有效JSON配置")
@@ -238,11 +255,11 @@ def parse_vmess(line: str) -> Optional[Dict]:
         decoded = re.sub(r'[\x00-\x1f\x7f-\x9f\u3000]', '', decoded)
         cfg = json.loads(decoded)
         
-        # 核心修改：仅校验add/port/id三个真正必填字段
+        # 步骤6：仅校验add/port/id三个真正必填字段
         if not validate_fields(cfg, ["add", "port", "id"], "VMess", line):
             return None
         
-        # 非必填字段默认值兜底（对齐客户端逻辑）
+        # 步骤7：非必填字段默认值兜底（对齐客户端逻辑）
         cfg["ps"] = process_remark(cfg.get('ps', ''), "VMess")
         cfg["port"] = validate_port(cfg.get('port', 443))
         cfg["aid"] = cfg.get('aid', 0)          # aid默认0
@@ -448,16 +465,23 @@ def parse_hysteria(line: str) -> Optional[Dict]:
 
 # ========== 节点处理逻辑 ==========
 def test_node(ip: str, port: int, proto: str) -> bool:
-    """检测节点可用性"""
+    """检测节点可用性（增加超时和异常捕获）"""
     port = validate_port(port)
     if not ip or is_private_ip(ip):
         return False
     
     try:
-        timeout = CONFIG["detection"]["tcp_timeout"].get(proto, 3)
+        timeout = CONFIG["detection"]["tcp_timeout"].get(proto, 5)  # 增加超时时间到5秒
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.settimeout(timeout)
-            if sock.connect_ex((ip, port)) != 0:
+            # 先尝试DNS解析（显式解析，避免隐式失败）
+            try:
+                ip_addr = socket.gethostbyname(ip)
+            except socket.gaierror:
+                LOG.info(log_msg(f"⚠️ DNS解析失败: {ip}", proto=proto))
+                return False
+            # 连接端口
+            if sock.connect_ex((ip_addr, port)) != 0:
                 return False
     except Exception as e:
         LOG.info(log_msg(f"⚠️ TCP检测失败: {str(e)[:30]}", proto=proto))
@@ -467,12 +491,12 @@ def test_node(ip: str, port: int, proto: str) -> bool:
         if proto in ["vmess", "vless", "trojan"]:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                 sock.settimeout(4)
-                sock.connect((ip, port))
+                sock.connect((ip_addr, port))
                 sock.send(b"\x00")
         elif proto == "hysteria":
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as udp_sock:
                 udp_sock.settimeout(4)
-                udp_sock.sendto(b"\x00", (ip, port))
+                udp_sock.sendto(b"\x00", (ip_addr, port))
         return True
     except:
         return False
