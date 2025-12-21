@@ -127,7 +127,6 @@ def extract_vmess_config(vmess_line):
             decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
             ip_match = re.search(r'"add":"([\d\.a-zA-Z-]+)"', decoded)
             port_match = re.search(r'"port":"?(\d+)"?', decoded)
-            # 修复：正则字符串合并为一个原始字符串，解决括号/引号不匹配
             host_match = re.search(r'"host":"([^"]+)"|\"sni\":\"([^"]+)"', decoded)
             if ip_match and port_match:
                 return {
@@ -195,14 +194,33 @@ def extract_vless_config(vless_line):
         return None
 
 def extract_trojan_config(trojan_line):
+    """优化版：容错处理标签异常，仅核心字段无效时剔除"""
     try:
-        trojan_part = trojan_line[8:].strip()
+        # 第一步：剥离#后的标签部分，避免标签干扰核心解析
+        if '#' in trojan_line:
+            trojan_part = trojan_line.split('#')[0]  # 只保留#前的核心链接
+            label = trojan_line.split('#')[1] if len(trojan_line.split('#'))>1 else ""
+            # 容错：空标签/过长标签处理
+            if not label:
+                print(f"⚠️ Trojan节点标签为空，已忽略（{trojan_line[:20]}...）")
+            elif len(label) > 64:  # 截断过长标签（64字符为常见限制）
+                label = label[:64]
+                print(f"⚠️ Trojan节点标签过长，已截断为64字符（{trojan_line[:20]}...）")
+        else:
+            trojan_part = trojan_line
+            label = ""
+        
+        # 继续解析核心字段（密码/地址/端口）
+        trojan_part = trojan_part[8:].strip()
         trojan_part = trojan_part.encode('ascii', 'ignore').decode('ascii')
         password_addr = trojan_part.split('?')[0]
+        
+        # 兼容密码/地址分割异常
         if '@' not in password_addr:
+            # 正则提取核心字段
             ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', trojan_part)
             if not ip_port_match:
-                raise Exception("核心字段提取失败")
+                raise Exception("核心字段（IP/端口）提取失败")
             password = ""
             address = ip_port_match.group(1)
             port = int(ip_port_match.group(2))
@@ -214,6 +232,8 @@ def extract_trojan_config(trojan_line):
             except:
                 address = addr_port
                 port = 443
+        
+        # 解析参数（兼容大小写）
         params = {}
         if '?' in trojan_part:
             param_str = trojan_part.split('?')[1]
@@ -221,24 +241,32 @@ def extract_trojan_config(trojan_line):
                 if '=' in param:
                     k, v = param.split('=', 1)
                     params[k.lower()] = v
+        
         return {
             "address": address,
             "port": port if port in CONFIG["filter"]["valid_ports"] else 443,
             "password": password,
             "sni": params.get('sni') or params.get('SNI'),
-            "security": params.get('security', 'tls')
+            "security": params.get('security', 'tls'),
+            "label": label  # 即使标签为空/过长，仍保留（不影响节点有效性）
         }
     except Exception as e:
-        print(f"⚠️ Trojan解析部分失败（{trojan_line[:20]}...）: {str(e)[:50]}")
-        ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', trojan_line)
-        if ip_port_match:
-            return {
-                "address": ip_port_match.group(1),
-                "port": int(ip_port_match.group(2)),
-                "password": "",
-                "sni": "",
-                "security": "tls"
-            }
+        # 区分异常类型：仅核心字段失败才提示，标签异常忽略
+        if "label" in str(e).lower() or "empty" in str(e).lower() or "too long" in str(e).lower():
+            print(f"⚠️ Trojan节点标签异常（非核心，保留节点）：{str(e)[:50]}（{trojan_line[:20]}...）")
+            # 尝试最后一次提取核心字段
+            ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', trojan_line)
+            if ip_port_match:
+                return {
+                    "address": ip_port_match.group(1),
+                    "port": int(ip_port_match.group(2)),
+                    "password": "",
+                    "sni": "",
+                    "security": "tls",
+                    "label": ""
+                }
+        else:
+            print(f"❌ Trojan核心字段解析失败（{trojan_line[:20]}...）: {str(e)[:50]}")
         return None
 
 def test_tcp_connect(ip, port):
@@ -403,7 +431,6 @@ def main():
     print("\n📈 各数据源详细统计：")
     for idx, (url, stats) in enumerate(source_stats.items(), 1):
         print(f"   {idx}. {url}")
-        # 调整：将原始获取、最终保留、保留率合并为一行输出
         print(f"      - 原始获取：{stats['original']} 条 | 最终保留：{stats['retained']} 条 | 保留率：{stats['retention_rate']}%")
 
 if __name__ == "__main__":
