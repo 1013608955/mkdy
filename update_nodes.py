@@ -134,10 +134,10 @@ def decode_b64_sub(text: str) -> str:
 
 def split_multi_nodes(line: str) -> List[str]:
     """
-    安全拆分拼接节点（核心修复：修复边界计算 + 增加@校验）：
-    1. 修复节点边界计算，确保@被完整包含
-    2. 增加拆分前后@的日志追踪
-    3. 仅拆分完整的协议节点，过滤残缺片段
+    安全拆分拼接节点（核心修复：
+    1. 调整协议优先级：VMess/VLESS优先于SS，避免被覆盖
+    2. 调高VMess/VLESS最小长度，过滤残缺片段
+    3. 增加VMess/VLESS特征校验，避免误拆
     """
     if not line:
         LOG.debug("📌 拆分空节点，直接返回空列表")
@@ -147,16 +147,16 @@ def split_multi_nodes(line: str) -> List[str]:
     at_count = line.count('@')
     LOG.debug(f"📌 待拆分节点原始内容：{line[:100]}... | @数量：{at_count}")
     
-    # 定义各协议的最小长度和必要特征（避免拆出残缺节点）
+    # ========== 关键修改1：调整协议优先级 + 调高最小长度 + 增加特征校验 ==========
     proto_rules = {
-        "vmess": {"prefix": "vmess://", "min_len": 50, "required": None},
-        "vless": {"prefix": "vless://", "min_len": 20, "required": "@"},
-        "trojan": {"prefix": "trojan://", "min_len": 20, "required": "@"},
-        "ss": {"prefix": "ss://", "min_len": 20, "required": None},
-        "hysteria": {"prefix": "hysteria://", "min_len": 20, "required": None}
+        "vmess": {"prefix": "vmess://", "min_len": 80, "required": None},  # VMess最小长度调高（Base64至少80字符）
+        "vless": {"prefix": "vless://", "min_len": 50, "required": "@"},    # VLESS必须有@
+        "trojan": {"prefix": "trojan://", "min_len": 50, "required": "@"},
+        "hysteria": {"prefix": "hysteria://", "min_len": 50, "required": None},
+        "ss": {"prefix": "ss://", "min_len": 40, "required": None}          # SS优先级调低，最小长度调高
     }
     
-    # 第一步：匹配所有可能的节点前缀位置
+    # 第一步：匹配所有可能的节点前缀位置（优先VMess/VLESS）
     node_positions = []
     for proto, rule in proto_rules.items():
         prefix = rule["prefix"]
@@ -165,6 +165,19 @@ def split_multi_nodes(line: str) -> List[str]:
             pos = line.find(prefix, start)
             if pos == -1:
                 break
+            
+            # ========== 关键修改2：增加VMess/VLESS特征校验 ==========
+            # VMess必须有足够长度（Base64编码特征）
+            if proto == "vmess" and len(line[pos:]) < rule["min_len"]:
+                LOG.debug(f"🚫 过滤残缺VMess节点（长度不足）：{line[pos:pos+50]}...")
+                start = pos + len(prefix)
+                continue
+            # VLESS必须包含@（核心特征）
+            if proto == "vless" and "@" not in line[pos:pos+rule["min_len"]]:
+                LOG.debug(f"🚫 过滤残缺VLESS节点（缺少@）：{line[pos:pos+50]}...")
+                start = pos + len(prefix)
+                continue
+            
             # 记录前缀位置和协议规则
             node_positions.append({"pos": pos, "proto": proto, "rule": rule})
             start = pos + len(prefix)
@@ -490,8 +503,13 @@ def parse_trojan(line: str) -> Optional[Dict]:
         return None
 
 def parse_ss(line: str) -> Optional[Dict]:
-    """解析SS节点（兼容缺少@的不规范格式 + 增加@追踪）"""
+    """解析SS节点（兼容缺少@的不规范格式 + 增加@追踪 + 关键修改：回检是否是VMess/VLESS残缺片段）"""
     try:
+        # ========== 关键修改3：回检是否是VMess/VLESS的残缺片段，避免误判 ==========
+        if "vmess" in line.lower() or "vless" in line.lower():
+            LOG.warning(log_msg(f"⚠️ 疑似VMess/VLESS残缺片段被误判为SS，跳过解析", line[:20]))
+            return None
+        
         # 打印解析前的@存在性
         at_count = line.count('@')
         LOG.debug(f"📌 解析SS节点：{line[:100]}... | @数量：{at_count}")
