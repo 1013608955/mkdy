@@ -187,7 +187,7 @@ def extract_vmess_config(vmess_line):
             }
         else:
             raise Exception("核心字段（IP/端口）提取失败")
-    except Exception as as e:
+    except Exception as e:
         print(f"⚠️ VMess解析失败（{vmess_line[:20]}...）: {str(e)[:50]}")
         return None
 
@@ -237,6 +237,7 @@ def extract_vless_config(vless_line):
             "network": params.get('type', 'tcp') or params.get('Type'),
             "remarks": params.get('remarks', '')
         }
+    # 修复语法错误：去掉多余的"an"
     except Exception as e:
         print(f"⚠️ VLESS解析失败（{vless_line[:20]}...）: {str(e)[:50]}")
         ip_port_match = re.search(r'@([\d\.a-zA-Z-]+):(\d+)', vless_line)
