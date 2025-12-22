@@ -426,41 +426,61 @@ def parse_ss(line: str) -> Optional[Dict]:
         return None
 
 def parse_hysteria(line: str) -> Optional[Dict]:
-    """解析Hysteria节点"""
+    """解析Hysteria节点（适配标准格式：无@分隔符，从参数提取auth）"""
     try:
+        # 复用通用前置处理：清洗字符+拆分备注+提取核心内容
         core_content, remark = proto_preprocess(line, "hysteria://")
-        hysteria_parts = core_content.split('?', 1)
-        core_part = hysteria_parts[0]
-        param_part = hysteria_parts[1] if len(hysteria_parts) > 1 else ''
         
-        if '@' not in core_part:
-            raise ValueError("缺失认证@地址格式")
+        # 步骤1：拆分参数部分（?后面的参数）和地址端口部分
+        if '?' in core_content:
+            addr_port_part, param_part = core_content.split('?', 1)
+            # 清洗参数中的空格（如"55 Mbps"→"55Mbps"，避免解析异常）
+            param_part = param_part.replace(' ', '')
+        else:
+            addr_port_part = core_content
+            param_part = ''
         
-        auth_part, addr_port = core_part.split('@', 1)
-        if not auth_part or not addr_port or ':' not in addr_port:
-            raise ValueError("认证/地址端口错误")
-        
-        address, port_str = addr_port.rsplit(':', 1)
+        # 步骤2：提取地址和端口（核心修复：无需拆分@，直接从addr_port_part提取）
+        if not addr_port_part or ':' not in addr_port_part:
+            raise ValueError("地址端口格式错误（需为IP:端口/域名:端口）")
+        # 从后往前拆分端口（避免地址含冒号的极端情况）
+        address, port_str = addr_port_part.rsplit(':', 1)
+        address = address.strip()
         port = validate_port(port_str)
+        
+        # 步骤3：解析参数（从param_part提取auth/peer/alpn等）
         params = {}
+        if param_part:
+            for p in param_part.split('&'):
+                if '=' in p:
+                    k, v = p.split('=', 1)
+                    k_lower = k.lower()  # 统一小写，兼容大小写参数名
+                    params[k_lower] = v.strip()
         
-        for p in param_part.split('&'):
-            if '=' in p:
-                k, v = p.split('=', 1)
-                params[k.lower()] = v
+        # 步骤4：提取核心配置（auth从参数中取，而非@前面的内容）
+        auth = params.get('auth', params.get('auth_str', ''))
+        if not auth:
+            raise ValueError("缺失认证信息（auth/auth_str参数）")
         
+        # 其他参数默认值兜底
         cfg = {
             "address": address,
             "port": port,
-            "password": auth_part,
+            "password": auth,  # 保持和原逻辑一致，用password字段存储auth
             "obfs": params.get('obfs', ''),
-            "auth": params.get('auth', ''),
-            "alpn": params.get('alpn', ''),
+            "alpn": params.get('alpn', 'h3'),  # 默认h3
+            "peer": params.get('peer', address),  # sni/peer默认同地址
+            "protocol": params.get('protocol', 'udp'),  # 默认udp
+            "insecure": params.get('insecure', '1'),  # 默认忽略证书
+            "downmbps": params.get('downmbps', ''),
+            "upmbps": params.get('upmbps', ''),
             "label": remark
         }
         
+        # 校验核心字段（地址+端口+认证信息）
         if not validate_fields(cfg, ["address", "port", "password"], "Hysteria", line):
             return None
+        
         return cfg
     except ValueError as e:
         LOG.info(log_msg(f"📝 过滤无效Hysteria节点：{str(e)}", line, "hysteria"))
