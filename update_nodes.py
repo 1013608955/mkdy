@@ -218,7 +218,7 @@ def extract_ip_port(line: str) -> Tuple[Optional[str], str, int]:
     port = validate_port(port_match.group(1)) if port_match else 443
     return ip, domain, port
 
-# ========== 协议解析函数（核心修改：精准提取VMess的Base64串 + 修复SS解析逻辑） ==========
+# ========== 协议解析函数（核心修改：精准提取VMess的Base64串 + 最终版SS解析逻辑） ==========
 def parse_vmess(line: str) -> Optional[Dict]:
     """解析VMess节点：
     1. 仅校验add/port/id三个核心字段
@@ -376,62 +376,85 @@ def parse_trojan(line: str) -> Optional[Dict]:
         LOG.info(log_msg(f"❌ Trojan解析错误: {str(e)}", line, "trojan"))
         return None
 
-# ========== 核心修改：修复SS节点解析逻辑 ==========
+# ========== 最终版：兼容标准/非主流SS格式的解析函数 ==========
 def parse_ss(line: str) -> Optional[Dict]:
-    """解析SS节点（修复逻辑：先拆分备注，再解码Base64）"""
+    """解析SS节点（最终版：兼容标准/非主流格式，处理不可见字符）"""
     try:
-        # 步骤1：拆分备注（#后面的部分）
-        if '#' in line:
-            ss_main, remark = line.split('#', 1)
+        # 步骤1：清洗原始行，移除不可见字符（解决空格/全角/转义问题）
+        clean_line = re.sub(r'[\u200b\u3000\s]+', '', line)  # 移除零宽空格、全角空格、普通空格
+        clean_line = clean_line.replace('＠', '@')  # 全角@转半角
+        
+        # 步骤2：拆分备注（#后面的部分）
+        if '#' in clean_line:
+            ss_main, remark = clean_line.split('#', 1)
             remark = process_remark(remark, "SS")
         else:
-            ss_main = line
+            ss_main = clean_line
             remark = "SS节点"
         
-        # 步骤2：提取ss://后的核心部分（Base64编码）
+        # 步骤3：提取ss://后的核心部分
         if not ss_main.startswith('ss://'):
             raise ValueError("非SS节点格式")
-        ss_base64 = ss_main[5:].strip()  # 只取ss://后、#前的部分
+        ss_core = ss_main[5:].strip()
+        if not ss_core:
+            raise ValueError("SS核心内容为空")
         
-        # 步骤3：解码Base64（核心修复：无论是否"纯Base64"，先尝试解码）
-        try:
-            # 补全Base64填充符
-            ss_base64 = ss_base64.rstrip('=')
-            ss_base64 += '=' * (4 - len(ss_base64) % 4) if len(ss_base64) % 4 != 0 else ''
-            ss_decoded = base64.b64decode(ss_base64).decode('utf-8', errors='ignore')
-        except Exception:
-            # 解码失败则视为明文格式（兼容非主流写法）
-            ss_decoded = ss_base64
+        # 步骤4：兼容两种格式
+        auth_part = ""
+        addr_port = ""
+        decoded_auth = ""
         
-        # 步骤4：解析解码后的内容（加密方式:密码@地址:端口）
-        if '@' not in ss_decoded:
-            raise ValueError("缺失@分隔符（加密方式:密码@地址:端口）")
-        
-        auth_part, addr_port = ss_decoded.split('@', 1)
-        if not auth_part or not addr_port or ':' not in addr_port:
-            raise ValueError("认证部分/地址端口格式错误")
-        
-        # 解析加密方式和密码
-        if ':' not in auth_part:
-            method = "aes-256-gcm"  # 默认加密方式
-            password = auth_part
+        # 场景1：非主流格式（@在Base64外）
+        if '@' in ss_core:
+            base64_part, addr_port = ss_core.split('@', 1)
+            # 解码Base64部分（加密方式:密码）
+            try:
+                base64_part = base64_part.rstrip('=')
+                base64_part += '=' * (4 - len(base64_part) % 4) if len(base64_part) % 4 != 0 else ''
+                decoded_auth = base64.b64decode(base64_part).decode('utf-8', errors='ignore')
+            except Exception:
+                decoded_auth = base64_part  # 解码失败则用明文
+        # 场景2：标准格式（@在Base64内）
         else:
-            method, password = auth_part.split(':', 1)
+            try:
+                # 解码整个核心部分
+                ss_core_fixed = ss_core.rstrip('=')
+                ss_core_fixed += '=' * (4 - len(ss_core_fixed) % 4) if len(ss_core_fixed) % 4 != 0 else ''
+                decoded_auth = base64.b64decode(ss_core_fixed).decode('utf-8', errors='ignore')
+                if '@' not in decoded_auth:
+                    raise ValueError("标准格式但Base64内无@分隔符")
+                decoded_auth, addr_port = decoded_auth.split('@', 1)
+            except Exception as e:
+                raise ValueError(f"标准格式解析失败：{str(e)}")
         
-        # 解析地址和端口
+        # 步骤5：校验地址端口
+        if not addr_port or ':' not in addr_port:
+            raise ValueError("地址端口格式错误（需为IP:端口/域名:端口）")
         address, port_str = addr_port.rsplit(':', 1)
         port = validate_port(port_str)
         
-        # 组装配置
+        # 步骤6：解析加密方式和密码
+        if not decoded_auth:
+            raise ValueError("加密方式/密码为空")
+        if ':' not in decoded_auth:
+            method = "aes-256-gcm"  # 默认加密方式
+            password = decoded_auth.strip()
+        else:
+            method, password = decoded_auth.split(':', 1)
+            method = method.strip()
+            password = password.strip()
+            if not method or not password:
+                raise ValueError("加密方式或密码为空")
+        
+        # 步骤7：组装配置并校验
         cfg = {
             "address": address.strip(),
             "port": port,
             "remark": remark,
-            "method": method.strip(),
-            "password": password.strip()
+            "method": method,
+            "password": password
         }
         
-        # 校验核心字段
         if not validate_fields(cfg, ["address", "port"], "SS", line):
             return None
         
