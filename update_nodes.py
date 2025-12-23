@@ -24,7 +24,6 @@ CONFIG: Dict = {
     "sources": [
         {"url": "https://raw.githubusercontent.com/1013608955/mkdy/main/s2.txt", "weight": 10},
         {"url": "https://raw.githubusercontent.com/ripaojiedian/freenode/main/sub", "weight": 7},
-        {"url": "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/Splitted-By-Protocol/vmess.txt", "weight": 1},
         {"url": "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt", "weight": 5},
         {"url": "https://raw.githubusercontent.com/mfuu/v2ray/master/v2ray", "weight": 6},
         {"url": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt", "weight": 4},
