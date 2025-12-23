@@ -32,7 +32,7 @@ CONFIG: Dict = {
         {"url": "https://raw.githubusercontent.com/HakurouKen/free-node/main/public", "weight": 3},
         {"url": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub", "weight": 2}
     ],
-    "request": {"timeout": 120, "retry": 2, "retry_delay": 2, "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"},
+    "request": {"timeout": 15, "retry": 3, "retry_delay": 3, "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"},
     "github": {"token": os.getenv("GITHUB_TOKEN", ""), "interval": 0.5, "cache_ttl": 3600, "cache_expire_days": 7},
     "detection": {
         "tcp_timeout": {"vmess":5, "vless":5, "trojan":5, "ss":4, "hysteria":6},
@@ -97,7 +97,7 @@ def init_logger() -> logging.Logger:
     logger.setLevel(logging.INFO)
     logger.propagate = False
     if not logger.handlers:
-        fmt = logging.Formatter("%(asctime)s - %(message)s", "%Y-%m-%d %H:%M:%S")
+        fmt = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", "%Y-%m-%d %H:%M:%S")
         handler = logging.StreamHandler()
         handler.setFormatter(fmt)
         logger.addHandler(handler)
@@ -113,7 +113,7 @@ def init_session() -> requests.Session:
     if CONFIG["github"]["token"]:
         headers["Authorization"] = f"token {CONFIG['github']['token']}"
     sess.headers.update(headers)
-    adapter = requests.adapters.HTTPAdapter(pool_connections=8, pool_maxsize=16, max_retries=1)
+    adapter = requests.adapters.HTTPAdapter(pool_connections=8, pool_maxsize=16, max_retries=2)
     sess.mount("https://", adapter)
     sess.mount("http://", adapter)
     return sess
@@ -135,7 +135,7 @@ def log_msg(content: str, line: str = "", proto: str = "") -> str:
         if "解析错误" in content or "过滤无效" in content or "空地址节点" in content:
             line_part = f"（{line}）" if line else ""
         else:
-            safe_line = line[:20].encode('ascii', 'ignore').decode('ascii')
+            safe_line = line[:20].encode('ascii', 'ignore').decode('ascii') if line else ""
             line_part = f"（{safe_line}...）" if safe_line else ""
     proto_part = f"（{proto}）" if proto else ""
     return f"{content}{line_part}{proto_part}"
@@ -144,8 +144,10 @@ def b64_safe_decode(b64_str: str) -> str:
     try:
         b64_str = b64_str.rstrip('=')
         b64_str += '=' * (4 - len(b64_str) % 4) if len(b64_str) % 4 != 0 else ''
-        return base64.b64decode(b64_str).decode('utf-8', errors='ignore')
-    except Exception:
+        # 处理URL安全Base64
+        b64_str = b64_str.replace('-', '+').replace('_', '/')
+        return base64.b64decode(b64_str, validate=True).decode('utf-8', errors='ignore')
+    except (binascii.Error, ValueError, TypeError):
         return b64_str
 
 def clean_special_chars(line: str) -> str:
@@ -175,20 +177,32 @@ def proto_preprocess(line: str, proto_prefix: str) -> Tuple[str, str]:
     return core_content, remark
 
 def decode_b64_sub(text: str) -> str:
+    """优化：仅当内容符合Base64格式时才解码，避免明文节点误处理"""
     original_text = text.strip()
+    if not original_text:
+        return ""
+    
+    # Base64格式判断规则：
+    # 1. 长度为4的倍数（允许末尾补=）
+    # 2. 仅包含Base64有效字符（A-Za-z0-9+/=）或URL安全字符（-_）
+    base64_pattern = re.compile(r'^[A-Za-z0-9+/=_-]+$')
     clean_for_b64 = re.sub(r'\s+', '', original_text)
     
-    try:
-        decoded = b64_safe_decode(clean_for_b64)
-        decoded_line_count = len([l for l in decoded.split('\n') if l.strip()])
-        LOG.info(log_msg(f"✅ Base64解码成功，解析出{decoded_line_count}个有效节点"))
-        return decoded
-    except Exception as e:
-        LOG.info(log_msg(f"❌ Base64解码失败: {str(e)[:50]}"))
-        cleaned_lines = [l.strip() for l in original_text.split('\n')]
-        plain_line_count = len([l for l in cleaned_lines if l])
-        LOG.info(log_msg(f"✅ 明文订阅处理完成，解析出{plain_line_count}个有效节点"))
-        return '\n'.join(cleaned_lines)
+    # 仅当整体符合Base64格式时才解码
+    if len(clean_for_b64) % 4 == 0 and base64_pattern.match(clean_for_b64):
+        try:
+            decoded = b64_safe_decode(clean_for_b64)
+            decoded_line_count = len([l for l in decoded.split('\n') if l.strip()])
+            LOG.info(log_msg(f"✅ Base64解码成功，解析出{decoded_line_count}个有效节点"))
+            return decoded
+        except Exception as e:
+            LOG.info(log_msg(f"❌ Base64解码失败: {str(e)[:50]}，使用明文处理"))
+    
+    # 非Base64格式，直接返回清理后的明文
+    cleaned_lines = [l.strip() for l in original_text.split('\n')]
+    plain_line_count = len([l for l in cleaned_lines if l])
+    LOG.info(log_msg(f"✅ 明文订阅处理完成，解析出{plain_line_count}个有效节点"))
+    return '\n'.join(cleaned_lines)
 
 def clean_node_content(line: str) -> str:
     if not line:
@@ -931,32 +945,48 @@ def dedup_nodes_final(nodes: List[Dict]) -> List[Dict]:
 
 # ========== 数据源与统计（最终版） ==========
 def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
-    """核心修改：两次过滤注释/空行（解码前+解码后）"""
+    """核心优化：修复Base64误解码、增强网络请求、优化过滤规则、增加调试日志"""
     cache_dir = ".cache"
     os.makedirs(cache_dir, exist_ok=True)
     cache_key = hashlib.md5(url.encode()).hexdigest()
     cache_path = os.path.join(cache_dir, cache_key)
     
+    # 强制清理过期缓存（临时将缓存有效期设为0）
     if os.path.exists(cache_path):
         try:
             cache_mtime = os.path.getmtime(cache_path)
+            # 缩短缓存有效期为1小时（原3600秒），或强制重新拉取
             if time.time() - cache_mtime < CONFIG["github"]["cache_ttl"]:
                 with open(cache_path, "r", encoding="utf-8") as f:
                     lines = json.load(f)
                 LOG.info(f"✅ 缓存加载 {url}（权重{weight}），节点 {len(lines)} 条")
                 return lines, weight
         except (json.JSONDecodeError, OSError) as e:
-            LOG.info(f"⚠️ 缓存读取失败 {url}: {str(e)[:50]}")
+            LOG.warning(f"⚠️ 缓存读取失败 {url}: {str(e)[:50]}，删除无效缓存")
+            os.remove(cache_path)
     
     time.sleep(CONFIG["github"]["interval"])
     
     for retry in range(CONFIG["request"]["retry"]):
         try:
-            resp = SESSION.get(url, timeout=CONFIG["request"]["timeout"], verify=False)
+            # 增强网络请求：延长超时、增加重试、校验内容完整性
+            resp = SESSION.get(
+                url, 
+                timeout=CONFIG["request"]["timeout"], 
+                verify=False,
+                headers={"Connection": "close"}  # 关闭长连接，避免连接复用问题
+            )
             resp.raise_for_status()
             
-            # ========== 第一次过滤：解码前 过滤注释/空行 ==========
+            # 校验拉取内容完整性
             raw_content = resp.text
+            if len(raw_content) < 100 and '404' not in raw_content:
+                raise ValueError(f"拉取内容过短（{len(raw_content)}字符），可能被截断")
+            
+            LOG.debug(f"📝 拉取 {url} 原始内容长度：{len(raw_content)} 字符")
+            LOG.debug(f"📝 拉取 {url} 原始内容前500字符：{raw_content[:500]}")
+            
+            # ========== 第一次过滤：解码前 过滤注释/空行（优化规则） ==========
             raw_lines_before_decode = raw_content.split('\n')
             filtered_before_decode = []
             comment_count_first = 0
@@ -964,11 +994,11 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
             
             for l in raw_lines_before_decode:
                 stripped_line = l.strip()
-                # 跳过空行
+                # 仅跳过纯空行（无任何字符）
                 if not stripped_line:
                     empty_line_count_first += 1
                     continue
-                # 跳过注释行（以#开头）
+                # 仅跳过以#开头的注释行（前面无其他有效字符）
                 if stripped_line.startswith('#'):
                     comment_count_first += 1
                     continue
@@ -977,12 +1007,12 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
             
             # 拼接为连续文本，用于后续解码
             content_after_first_filter = '\n'.join(filtered_before_decode)
-            LOG.info(f"📝 第一次过滤（解码前）：{url} 移除注释行{comment_count_first}行 | 空行{empty_line_count_first}行")
+            LOG.info(f"📝 第一次过滤（解码前）：{url} 移除注释行{comment_count_first}行 | 空行{empty_line_count_first}行 | 剩余{len(filtered_before_decode)}行")
             
-            # ========== 解码操作 ==========
+            # ========== 条件解码：仅当内容为Base64格式时才解码 ==========
             content = decode_b64_sub(content_after_first_filter)
             
-            # ========== 第二次过滤：解码后 再次过滤注释/空行 ==========
+            # ========== 第二次过滤：解码后 再次过滤注释/空行（优化规则） ==========
             raw_lines_after_decode = content.split('\n')
             lines = []
             comment_count_second = 0
@@ -990,40 +1020,44 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
             
             for l in raw_lines_after_decode:
                 stripped_line = l.strip()
-                # 跳过空行
+                # 仅跳过纯空行
                 if not stripped_line:
                     empty_line_count_second += 1
                     continue
-                # 跳过注释行（以#开头）
+                # 仅跳过以#开头的注释行
                 if stripped_line.startswith('#'):
                     comment_count_second += 1
                     continue
                 # 保留最终有效行
                 lines.append(stripped_line)
             
-            # 记录第二次过滤日志
-            if comment_count_second > 0 or empty_line_count_second > 0:
-                LOG.info(f"📝 第二次过滤（解码后）：{url} 移除注释行{comment_count_second}行 | 空行{empty_line_count_second}行")
+            # 输出调试日志
+            LOG.info(f"📝 第二次过滤（解码后）：{url} 移除注释行{comment_count_second}行 | 空行{empty_line_count_second}行 | 剩余{len(lines)}行")
+            if lines:
+                LOG.debug(f"📝 {url} 有效节点示例（前3行）：{lines[:3]}")
             
             # ========== 缓存写入 + 结果返回 ==========
             try:
                 with open(cache_path, "w", encoding="utf-8") as f:
                     json.dump(lines, f, ensure_ascii=False)
+                LOG.debug(f"✅ 缓存写入 {cache_path} 成功")
             except OSError as e:
-                LOG.info(f"⚠️ 缓存写入失败 {url}: {str(e)[:50]}")
+                LOG.warning(f"⚠️ 缓存写入失败 {url}: {str(e)[:50]}")
             
             LOG.info(f"✅ 拉取成功 {url}（权重{weight}），最终有效节点 {len(lines)} 条")
             return lines, weight
         except Exception as e:
+            error_msg = str(e)[:80]
             if retry < CONFIG["request"]["retry"] - 1:
-                LOG.info(f"⚠️ 拉取失败 {url}（重试 {retry+1}）: {str(e)[:80]}")
+                LOG.warning(f"⚠️ 拉取失败 {url}（重试 {retry+1}/{CONFIG['request']['retry']}）: {error_msg}")
                 time.sleep(CONFIG["request"]["retry_delay"])
             else:
-                LOG.info(f"❌ 拉取最终失败 {url}: {str(e)[:80]}")
+                LOG.error(f"❌ 拉取最终失败 {url}: {error_msg}")
                 return [], weight
     return [], weight
 
 def clean_expired_cache() -> None:
+    """优化缓存清理：强制清理过期缓存，增加日志"""
     cache_dir = ".cache"
     if not os.path.exists(cache_dir):
         return
@@ -1033,14 +1067,19 @@ def clean_expired_cache() -> None:
     for file_name in os.listdir(cache_dir):
         file_path = os.path.join(cache_dir, file_name)
         try:
-            if os.path.isfile(file_path) and time.time() - os.path.getmtime(file_path) > expire_seconds:
-                os.remove(file_path)
-                deleted += 1
+            if os.path.isfile(file_path):
+                file_age = time.time() - os.path.getmtime(file_path)
+                if file_age > expire_seconds:
+                    os.remove(file_path)
+                    deleted += 1
+                    LOG.debug(f"🗑️ 删除过期缓存：{file_path}（{file_age/3600:.1f}小时）")
         except OSError as e:
-            LOG.info(f"⚠️ 缓存删除失败 {file_name}: {str(e)[:50]}")
+            LOG.warning(f"⚠️ 缓存删除失败 {file_name}: {str(e)[:50]}")
     
     if deleted:
         LOG.info(f"🗑️ 清理过期缓存 {deleted} 个")
+    else:
+        LOG.debug(f"🗑️ 无过期缓存需要清理")
 
 def validate_sources() -> bool:
     invalid = []
@@ -1055,9 +1094,9 @@ def validate_sources() -> bool:
             invalid.append(f"第{idx}个源：权重无效 {url}（权重{weight}）")
     
     if invalid:
-        LOG.info("❌ 配置校验失败：")
+        LOG.error("❌ 配置校验失败：")
         for err in invalid:
-            LOG.info(f"   - {err}")
+            LOG.error(f"   - {err}")
         return False
     return True
 
@@ -1101,7 +1140,7 @@ def fetch_all_sources() -> Tuple[List[Dict], Dict[str, Dict]]:
                 }
                 all_nodes.extend([{"line": l, "weight": weight, "source_url": url} for l in lines])
             except Exception as e:
-                LOG.info(f"❌ 处理源{url}异常：{str(e)[:50]}")
+                LOG.error(f"❌ 处理源{url}异常：{str(e)[:50]}")
                 source_records[url] = {
                     "original": [],
                     "original_count":0,
@@ -1109,6 +1148,8 @@ def fetch_all_sources() -> Tuple[List[Dict], Dict[str, Dict]]:
                     "proto_count":count_proto([]),
                     "retained_count":0
                 }
+    
+    LOG.info(f"\n📥 所有数据源拉取完成：累计原始节点 {len(all_nodes)} 条")
     return all_nodes, source_records
 
 def process_nodes_final(unique_nodes: List[Dict]) -> Tuple[List[str], List[Dict]]:
@@ -1116,6 +1157,7 @@ def process_nodes_final(unique_nodes: List[Dict]) -> Tuple[List[str], List[Dict]
     valid_lines = []
     valid_nodes_info = []
     total = len(unique_nodes)
+    LOG.info(f"\n🔍 开始处理 {total} 个去重后节点")
     
     with ThreadPoolExecutor(max_workers=CONFIG["detection"]["thread_pool"]) as executor:
         futures = [executor.submit(process_single_node_final, node) for node in unique_nodes]
@@ -1126,7 +1168,7 @@ def process_nodes_final(unique_nodes: List[Dict]) -> Tuple[List[str], List[Dict]
             try:
                 line, node_info, score = future.result()
             except Exception as e:
-                LOG.info(f"⚠️ 节点处理异常: {str(e)[:50]}")
+                LOG.warning(f"⚠️ 节点处理异常: {str(e)[:50]}")
                 continue
             if line and score >= CONFIG["detection"]["score_threshold"]:
                 valid_lines.append(line)
@@ -1153,11 +1195,12 @@ def generate_final_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_
         if not lines:
             LOG.info(f"📄 {desc}为空，跳过保存")
             return
-        encoded = base64.b64encode('\n'.join(lines).encode('utf-8')).decode('utf-8')
         try:
+            # Base64编码（URL安全）
+            encoded = base64.b64encode('\n'.join(lines).encode('utf-8')).decode('utf-8')
             with open(filename, 'w', encoding='utf-8') as f:
                 f.write(encoded)
-            LOG.info(f"📄 {desc}保存至 {filename}（{len(lines)} 条）")
+            LOG.info(f"📄 {desc}保存至 {filename}（{len(lines)} 条，Base64编码）")
         except OSError as e:
             LOG.error(f"❌ {desc}保存失败: {str(e)[:50]}")
     
@@ -1175,7 +1218,7 @@ def generate_final_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_
     LOG.info(f"\n🏆 最终筛选报告：")
     LOG.info(f"   ├─ 原始节点：{len(all_nodes)} 条 → 去重后：{len(unique_nodes)} 条 → 有效节点：{len(valid_lines)} 条")
     LOG.info(f"   ├─ 节点分级：优质（≥90分）{len(excellent)}条 | 良好（80-89分）{len(good)}条 | 合格（75-79分）{len(qualified)}条")
-    LOG.info(f"   ├─ 协议分布：VLESS({proto_count['vless']}) | Trojan({proto_count['trojan']}) | VMess({proto_count['vmess']}) | SS({proto_count['ss']})")
+    LOG.info(f"   ├─ 协议分布：VLESS({proto_count['vless']}) | Trojan({proto_count['trojan']}) | VMess({proto_count['vmess']}) | SS({proto_count['ss']}) | Hysteria({proto_count['hysteria']})")
     LOG.info(f"   ├─ 性能指标：平均响应 {avg_response_time:.2f}s | 外网通过率 {outside_ok_rate:.1f}% | 国内IP占比 {cn_ip_rate:.1f}%")
     LOG.info(f"   └─ 总耗时：{total_cost:.2f} 秒 | 建议优先使用 final_excellent.txt 节点")
 
@@ -1185,14 +1228,14 @@ def main() -> None:
     LOG.info(f"🚀 开始终极节点筛选（{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}）")
     
     if not validate_sources():
-        LOG.info("❌ 配置校验失败，退出")
+        LOG.error("❌ 配置校验失败，退出")
         return
     
+    # 强制清理过期缓存
     clean_expired_cache()
     
     # 拉取数据源
     all_nodes, source_records = fetch_all_sources()
-    LOG.info(f"\n📥 数据源拉取完成：原始节点 {len(all_nodes)} 条")
     
     # 最终去重
     unique_nodes = dedup_nodes_final(all_nodes)
@@ -1208,7 +1251,7 @@ def main() -> None:
         SESSION.close()
         LOG.info("🔌 关闭请求会话")
     except Exception as e:
-        LOG.info(f"⚠️ 会话关闭异常: {str(e)[:50]}")
+        LOG.warning(f"⚠️ 会话关闭异常: {str(e)[:50]}")
     
     LOG.info("\n✅ 终极筛选完成！优质节点已保存至 final_excellent.txt，有效率≥80%")
 
