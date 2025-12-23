@@ -35,7 +35,7 @@ CONFIG: Dict = {
     "github": {"token": os.getenv("GITHUB_TOKEN", ""), "interval": 0.5, "cache_ttl": 3600, "cache_expire_days": 7},
     "detection": {
         "tcp_timeout": {"vmess": 5, "vless": 5, "trojan": 5, "ss": 4, "hysteria": 6},
-        "tcp_retry": 2,  # 优化：从 3 → 2
+        "tcp_retry": 1,  # 优化：从 3 → 2
         "thread_pool": 8,
         "dns": {"servers": ["223.5.5.5", "119.29.29.29", "8.8.8.8", "1.1.1.1"], "timeout": 4, "cache_size": 1000},
         "http_test": {
@@ -48,13 +48,13 @@ CONFIG: Dict = {
             ],
             "fallback": "http://baidu.com"
         },
-        "score_threshold": 55,
+        "score_threshold": 45,
         "rt_thresholds": {  # 优化：所有协议 max 统一提升到 9s
-            "vmess": {"min": 0.05, "max": 9},
-            "vless": {"min": 0.05, "max": 9},
-            "trojan": {"min": 0.05, "max": 9},
-            "ss": {"min": 0.05, "max": 9},
-            "hysteria": {"min": 0.01, "max": 9}
+            "vmess": {"min": 0.05, "max": 12},
+            "vless": {"min": 0.05, "max": 12},
+            "trojan": {"min": 0.05, "max": 12},
+            "ss": {"min": 0.05, "max": 12},
+            "hysteria": {"min": 0.01, "max": 12}
         }
     },
     "filter": {
@@ -78,7 +78,7 @@ CONFIG: Dict = {
         "SS_VALID_CIPHERS": ["aes-256-gcm", "aes-128-gcm", "chacha20-ietf-poly1305", "aes-256-cfb", "aes-128-cfb"],
         "score_rules": {
             "protocol": {"vless": 20, "trojan": 18, "vmess": 18, "hysteria": 15, "ss": 12, "other": 0},
-            "security": {"reality": 15, "tls": 20, "aead": 15, "none": 0},
+            "security": {"reality": 10, "tls": 15, "aead": 10, "none": 5},
             "port": {443: 10, 8443: 8, 80: 7, 465: 7, 9443: 7, "other": 5},
             "response_speed": {
                 "vmess": {"fast": 8, "normal": 4, "slow": 0},
@@ -90,8 +90,8 @@ CONFIG: Dict = {
             "dns_valid": 8,
             "http_valid": 8,   # 优化：22 → 10
             "cn_ip": 0,       # 优化：-40 → -10
-            "response_time_abnormal": -40,
-            "stability": 10,
+            "response_time_abnormal": -20,
+            "stability": 5,
             "ip_type": {"residential": 15, "dc": 10, "unknown": 5}
         }
     }
