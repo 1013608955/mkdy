@@ -9,13 +9,13 @@ import logging
 import json
 import asyncio
 import aiohttp
-from urllib.parse import urlparse  # 移除未使用的unquote
+from urllib.parse import urlparse
 import urllib3
 
 # 禁用不安全请求警告
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# ========== 核心配置（清理无效token配置） ==========
+# ========== 核心配置（GitHub Actions优化版） ==========
 CONFIG = {
     "sources": [
         {"url": "https://raw.githubusercontent.com/ripaojiedian/freenode/main/sub", "weight": 5},
@@ -145,9 +145,9 @@ def init_logger() -> logging.Logger:
 
 LOG = init_logger()
 
-# ========== 核心工具函数（清理未使用的domain变量） ==========
+# ========== 核心工具函数 ==========
 @lru_cache(maxsize=5000)
-def extract_ip_port(line: str) -> tuple[str, int]:  # 移除domain返回值
+def extract_ip_port(line: str) -> tuple[str, int]:
     ip = ""
     port = CONFIG["filter"]["DEFAULT_PORT"]
     
@@ -166,7 +166,7 @@ def extract_ip_port(line: str) -> tuple[str, int]:  # 移除domain返回值
     except Exception as e:
         LOG.debug(f"解析IP/端口失败: {line[:50]}... 错误: {str(e)}")
     
-    return ip, port  # 仅返回使用到的ip和port
+    return ip, port
 
 def clean_node_lines(raw_lines: list[str]) -> list[str]:
     cleaned = []
@@ -183,6 +183,8 @@ def clean_node_lines(raw_lines: list[str]) -> list[str]:
 
 def pre_deduplicate_nodes(lines: list[str], sources: list[dict]) -> list[str]:
     node_map = {}
+    duplicate_count = 0
+    protocol_filter_count = 0
     
     for line in lines:
         proto = ""
@@ -197,9 +199,10 @@ def pre_deduplicate_nodes(lines: list[str], sources: list[dict]) -> list[str]:
         elif line.startswith("hysteria://"):
             proto = "hysteria"
         else:
+            protocol_filter_count += 1
             continue
         
-        ip, port = extract_ip_port(line)  # 适配返回值变更
+        ip, port = extract_ip_port(line)
         if not ip or not port:
             continue
         
@@ -210,17 +213,20 @@ def pre_deduplicate_nodes(lines: list[str], sources: list[dict]) -> list[str]:
                 break
         
         key = f"{proto}_{ip}_{port}"
+        if key in node_map:
+            duplicate_count += 1
         if key not in node_map or weight > node_map[key][1]:
             node_map[key] = (line, weight)
     
     deduped = [v[0] for v in node_map.values()]
+    LOG.info(f"预去重统计 - 协议过滤数: {protocol_filter_count} | 同IP+端口+协议重复数: {duplicate_count}")
     LOG.info(f"节点预去重完成：原{len(lines)}行 → 去重后{len(deduped)}行")
     return deduped
 
 def filter_private_ip_and_invalid_port(lines: list[str]) -> list[str]:
     filtered = []
     for line in lines:
-        ip, port = extract_ip_port(line)  # 适配返回值变更
+        ip, port = extract_ip_port(line)
         
         if is_private_ip(ip):
             LOG.debug(f"过滤私有IP节点：{line[:50]}...")
@@ -243,8 +249,9 @@ def judge_cn_ip(ip: str, is_available: bool) -> str:
         return "cn_relay" if is_available else "pure_cn"
     return "non_cn"
 
+# 修复：引用CONFIG["detection"]下的min/max_response_time
 def get_response_speed_score(response_time: float) -> int:
-    if response_time < CONFIG["filter"]["min_response_time"] or response_time > CONFIG["filter"]["max_response_time"]:
+    if response_time < CONFIG["detection"]["min_response_time"] or response_time > CONFIG["detection"]["max_response_time"]:
         return CONFIG["filter"]["score_weights"]["response_speed"]["<0.05|>10.0"]
     elif 0.05 <= response_time < 0.5:
         return CONFIG["filter"]["score_weights"]["response_speed"]["0.05-0.5"]
@@ -257,8 +264,9 @@ def get_response_speed_score(response_time: float) -> int:
     else:
         return CONFIG["filter"]["score_weights"]["response_speed"]["3.0-10.0"]
 
+# 修复：引用CONFIG["detection"]下的min/max_response_time
 def get_response_time_penalty(response_time: float) -> int:
-    if response_time < CONFIG["filter"]["min_response_time"] or response_time > CONFIG["filter"]["max_response_time"]:
+    if response_time < CONFIG["detection"]["min_response_time"] or response_time > CONFIG["detection"]["max_response_time"]:
         return CONFIG["filter"]["score_weights"]["response_time"]["<0.05|>10.0"]
     elif 3.0 <= response_time < 10.0:
         return CONFIG["filter"]["score_weights"]["response_time"]["3.0-10.0"]
@@ -348,7 +356,7 @@ class ProtocolParser:
                 vmess_part = line.replace("vmess://", "")
                 decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
                 cfg = json.loads(decoded)
-                security_type = "tls" if cfg.get("security") == "tls" else "none"  # 优化VMess字段解析
+                security_type = "tls" if cfg.get("security") == "tls" else "none"
                 return {"protocol": "vmess", "security_type": security_type}
             except Exception:
                 return {"protocol": "vmess", "security_type": "none"}
@@ -547,7 +555,7 @@ async def async_process_single_node(line: str):
     if not node_info:
         return 0, score_detail, line
     
-    ip, port = extract_ip_port(line)  # 适配返回值变更
+    ip, port = extract_ip_port(line)
     
     if is_private_ip(ip):
         return 0, score_detail, line
