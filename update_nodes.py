@@ -954,7 +954,29 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
             resp = SESSION.get(url, timeout=CONFIG["request"]["timeout"], verify=False)
             resp.raise_for_status()
             content = decode_b64_sub(resp.text)
-            lines = [l.strip() for l in content.split('\n') if l.strip() and not l.startswith('#')]
+            
+            # ========== 核心修改：彻底删除注释行 ==========
+            # 1. 按行分割内容
+            raw_lines = content.split('\n')
+            # 2. 过滤：空行、注释行（包括开头有空格的#注释）
+            lines = []
+            comment_count = 0
+            for l in raw_lines:
+                stripped_line = l.strip()
+                # 跳过空行
+                if not stripped_line:
+                    continue
+                # 跳过注释行（以#开头）
+                if stripped_line.startswith('#'):
+                    comment_count += 1
+                    continue
+                # 保留有效行
+                lines.append(stripped_line)
+            # =============================================
+            
+            # 记录删除的注释行数
+            if comment_count > 0:
+                LOG.info(f"📝 从 {url} 中删除了 {comment_count} 行注释")
             
             try:
                 with open(cache_path, "w", encoding="utf-8") as f:
