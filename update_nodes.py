@@ -15,6 +15,7 @@ from datetime import datetime
 from functools import lru_cache
 import urllib3
 import json
+from typing import Dict
 
 # 禁用不安全请求警告
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
