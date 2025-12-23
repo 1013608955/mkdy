@@ -779,7 +779,77 @@ def generate_final_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_
     LOG.info(f" ├─ 协议分布：VLESS({proto_count['vless']}) | Trojan({proto_count['trojan']}) | VMess({proto_count['vmess']}) | SS({proto_count['ss']}) | Hysteria({proto_count['hysteria']})")
     LOG.info(f" ├─ 性能指标：平均响应 {avg_response_time:.2f}s | 平均稳定性 {avg_stability:.1%} | 外网通过率 {outside_ok_rate:.1f}% | 国内IP占比 {cn_ip_rate:.1f}%")
     LOG.info(f" └─ 总耗时：{total_cost:.2f} 秒 | 输出文件：s1.txt")
-
+    # 新增来源统计
+    generate_source_stats(source_records, valid_nodes_info)
+# ========== 新增：各来源节点等级统计 ==========
+def generate_source_stats(source_records: Dict[str, Dict], valid_nodes_info: List[Dict]) -> None:
+    LOG.info("\n🏅 各数据源节点等级统计报告")
+    
+    # 统计每个来源的等级分布
+    source_stats: Dict[str, Dict] = {}
+    for node in valid_nodes_info:
+        url = node.get("source_url", "未知来源")
+        score = node["score"]
+        if score >= 90:
+            level = "优质 (≥90分)"
+        elif score >= 80:
+            level = "良好 (80-89分)"
+        elif score >= 65:
+            level = "合格 (65-79分)"
+        else:
+            level = "低分 (<65分)"  # 理论上不会出现，已过滤
+        
+        if url not in source_stats:
+            original = source_records.get(url, {}).get("original_count", 0)
+            source_stats[url] = {
+                "original": original,
+                "retained": 0,
+                "优质": 0,
+                "良好": 0,
+                "合格": 0
+            }
+        
+        source_stats[url]["retained"] += 1
+        if level == "优质 (≥90分)":
+            source_stats[url]["优质"] += 1
+        elif level == "良好 (80-89分)":
+            source_stats[url]["良好"] += 1
+        elif level == "合格 (65-79分)":
+            source_stats[url]["合格"] += 1
+    
+    # 输出每个来源
+    total_original = 0
+    total_retained = 0
+    total_excellent = 0
+    total_good = 0
+    total_qualified = 0
+    
+    for url, stats in source_stats.items():
+        original = stats["original"]
+        retained = stats["retained"]
+        retain_rate = (retained / original * 100) if original > 0 else 0.0
+        
+        total_original += original
+        total_retained += retained
+        total_excellent += stats["优质"]
+        total_good += stats["良好"]
+        total_qualified += stats["合格"]
+        
+        short_url = url.split('://')[1] if '://' in url else url  # 缩短显示
+        LOG.info(f"来源: {short_url}")
+        LOG.info(f"  原始节点: {original} 条 → 保留: {retained} 条 (保留率: {retain_rate:.2f}%)")
+        LOG.info(f"  ├─ 优质 (≥90分): {stats['优质']} 条")
+        LOG.info(f"  ├─ 良好 (80-89分): {stats['良好']} 条")
+        LOG.info(f"  └─ 合格 (65-79分): {stats['合格']} 条")
+        LOG.info("")
+    
+    # 总体保留率
+    total_rate = (total_retained / total_original * 100) if total_original > 0 else 0.0
+    LOG.info("总体总结：")
+    LOG.info(f"  所有来源原始总节点: {total_original} 条 → 总保留: {total_retained} 条 (总体保留率: {total_rate:.2f}%)")
+    LOG.info(f"  ├─ 优质: {total_excellent} 条")
+    LOG.info(f"  ├─ 良好: {total_good} 条")
+    LOG.info(f"  └─ 合格: {total_qualified} 条")
 def main() -> None:
     start_time = time.time()
     LOG.info(f"🚀 开始终极节点筛选（{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}）")
