@@ -22,14 +22,15 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # 核心配置（已应用所有优化）
 CONFIG: Dict = {
     "sources": [
-        {"url": "https://raw.githubusercontent.com/ripaojiedian/freenode/main/sub", "weight": 5},
-        {"url": "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/Splitted-By-Protocol/vmess.txt", "weight": 5},
+        {"url": "https://raw.githubusercontent.com/1013608955/mkdy/main/s2.txt", "weight": 10},
+        {"url": "https://raw.githubusercontent.com/ripaojiedian/freenode/main/sub", "weight": 7},
+        {"url": "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/Splitted-By-Protocol/vmess.txt", "weight": 1},
         {"url": "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt", "weight": 5},
-        {"url": "https://raw.githubusercontent.com/mfuu/v2ray/master/v2ray", "weight": 4},
+        {"url": "https://raw.githubusercontent.com/mfuu/v2ray/master/v2ray", "weight": 6},
         {"url": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt", "weight": 4},
-        {"url": "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt", "weight": 3},
-        {"url": "https://raw.githubusercontent.com/HakurouKen/free-node/main/public", "weight": 3},
-        {"url": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub", "weight": 2}
+        {"url": "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt", "weight": 8},
+        {"url": "https://raw.githubusercontent.com/HakurouKen/free-node/main/public", "weight": 7},
+        {"url": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub", "weight": 6}
     ],
     "request": {"timeout": 15, "retry": 3, "retry_delay": 3, "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"},
     "github": {"token": os.getenv("GITHUB_TOKEN", ""), "interval": 0.5, "cache_ttl": 3600, "cache_expire_days": 7},
@@ -48,7 +49,7 @@ CONFIG: Dict = {
             ],
             "fallback": "http://baidu.com"
         },
-        "score_threshold": 45,
+        "score_threshold": 60,
         "rt_thresholds": {  # 优化：所有协议 max 统一提升到 9s
             "vmess": {"min": 0.05, "max": 12},
             "vless": {"min": 0.05, "max": 12},
@@ -447,7 +448,7 @@ def calculate_node_score(proto: str, security: str, port: int, dns_ok: bool, out
     score += rules["security"].get(security, 0)
     score += rules["port"].get(port, rules["port"]["other"])
     score += rules["dns_valid"] if dns_ok else 0
-    score += rules["http_valid"] if outside_ok else -rules["http_valid"]
+    score += rules["http_valid"] if outside_ok else 0  # 不通不扣分，只通了加分
     score = max(score, 0)
 
     speed = rules["response_speed"][proto]
