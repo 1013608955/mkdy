@@ -498,8 +498,9 @@ def process_single_node_final(node: Union[str, Dict]) -> Tuple[Optional[str], Di
 def dedup_nodes_final(nodes: List[Dict]) -> List[Dict]:
     seen = set()
     unique = []
+    source_unique_count = {}  # 新增：统计每个来源去重后剩余数量
+    
     nodes.sort(key=lambda x: x["weight"], reverse=True)
-
     for node in nodes:
         cfg, proto = parse_node(node["line"])
         if cfg and proto:
@@ -507,10 +508,37 @@ def dedup_nodes_final(nodes: List[Dict]) -> List[Dict]:
             if key not in seen:
                 seen.add(key)
                 unique.append(node)
-
+                url = node.get("source_url", "未知来源")
+                source_unique_count[url] = source_unique_count.get(url, 0) + 1
+    
     LOG.info(f"🔍 去重完成：原始{len(nodes)}条 → 去重后{len(unique)}条")
+    
+    # 新增：输出各来源去重后节点数量统计
+    LOG.info("\n📊 去重后各数据源节点数量统计")
+    total_original = len(nodes)
+    total_unique = len(unique)
+    
+    # 遍历所有出现过的来源
+    for url in set(node.get("source_url", "未知来源") for node in nodes):
+        orig_count = sum(1 for n in nodes if n.get("source_url") == url)  # 该来源原始数量
+        uniq_count = source_unique_count.get(url, 0)
+        retain_rate = (uniq_count / orig_count * 100) if orig_count > 0 else 0.0
+        # 缩短URL显示（只显示域名+路径前缀）
+        if '://' in url:
+            parts = url.split('://', 1)[1].split('/', 1)
+            short_url = parts[0] + (('/' + parts[1][:20] + '...') if len(parts) > 1 and len(parts[1]) > 20 else '')
+        else:
+            short_url = url[:40] + '...' if len(url) > 40 else url
+        
+        LOG.info(f"来源: {short_url}")
+        LOG.info(f"  原始节点: {orig_count} 条 → 去重后剩余: {uniq_count} 条 (去重保留率: {retain_rate:.2f}%)")
+        LOG.info("")  # 空行分隔
+    
+    # 总体去重统计
+    overall_rate = (total_unique / total_original * 100) if total_original > 0 else 0.0
+    LOG.info(f"总体总结: 所有来源原始总计 {total_original} 条 → 去重后总计 {total_unique} 条 (总体去重保留率: {overall_rate:.2f}%)")
+    
     return unique
-
 # ========== 数据源与主流程（保持精简）==========
 # 下方保留原函数（仅微调日志格式）
 def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
