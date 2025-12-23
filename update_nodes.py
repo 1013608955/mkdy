@@ -2,7 +2,6 @@ import requests
 import re
 import socket
 import base64
-import binascii
 import os
 import time
 import hashlib
@@ -10,25 +9,13 @@ import logging
 import json
 import asyncio
 import aiohttp
-from urllib.parse import unquote, urlparse
-from functools import lru_cache
+from urllib.parse import urlparse  # 移除未使用的unquote
 import urllib3
-
-# ========== 适配GitHub Actions：依赖检查 & 环境初始化 ==========
-def check_dependencies():
-    """检查核心依赖是否安装"""
-    try:
-        import aiohttp
-        import requests
-    except ImportError as e:
-        raise ImportError(f"依赖缺失，请安装：pip install aiohttp requests\n原错误：{e}")
-
-check_dependencies()
 
 # 禁用不安全请求警告
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# ========== 核心配置（GitHub Actions优化版） ==========
+# ========== 核心配置（清理无效token配置） ==========
 CONFIG = {
     "sources": [
         {"url": "https://raw.githubusercontent.com/ripaojiedian/freenode/main/sub", "weight": 5},
@@ -41,20 +28,19 @@ CONFIG = {
         {"url": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub", "weight": 2}
     ],
     "request": {
-        "timeout": 180,  # GitHub网络上调超时
-        "retry": 3,      # 增加重试次数
+        "timeout": 180,
+        "retry": 3,
         "retry_delay": 3,
         "ua": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0"
     },
     "github": {
-        "token": os.getenv("GITHUB_TOKEN", ""),
-        "interval": 1.0,  # 增加请求间隔，避免速率限制
+        "interval": 1.0,
         "cache_ttl": 3600,
-        "cache_dir": "/tmp/node_scorer_cache",  # GitHub Actions可写目录
+        "cache_dir": "/tmp/node_scorer_cache",
         "cache_max_size": 100 * 1024 * 1024
     },
     "detection": {
-        "tcp_timeout_base": {"vmess": 12, "vless": 12, "trojan": 12, "ss": 10, "hysteria": 15},  # 上调超时
+        "tcp_timeout_base": {"vmess": 12, "vless": 12, "trojan": 12, "ss": 10, "hysteria": 15},
         "tcp_retry": 2,
         "tcp_retry_interval": 1.0,
         "http_validate_urls": [
@@ -62,7 +48,7 @@ CONFIG = {
             "https://www.google.com/generate_204",
             "http://ip-api.com/json/"
         ],
-        "http_validate_timeout_base": 8,  # 上调HTTP超时
+        "http_validate_timeout_base": 8,
         "http_validate_attempts": {
             "excellent": 1,
             "good": 2,
@@ -70,7 +56,7 @@ CONFIG = {
         },
         "score_threshold": 60,
         "min_response_time": 0.05,
-        "max_response_time": 10.0,  # 放宽最大响应时间
+        "max_response_time": 10.0,
         "concurrency": {
             "small": 8,
             "medium": 15,
@@ -143,14 +129,13 @@ CONFIG = {
     }
 }
 
-# ========== 日志初始化（适配GitHub Actions） ==========
+# ========== 日志初始化 ==========
 def init_logger() -> logging.Logger:
     logger = logging.getLogger("node_scorer_github")
     logger.setLevel(logging.INFO)
     logger.propagate = False
     
     if not logger.handlers:
-        # GitHub Actions中输出到stdout
         formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", "%Y-%m-%d %H:%M:%S")
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(formatter)
@@ -160,29 +145,28 @@ def init_logger() -> logging.Logger:
 
 LOG = init_logger()
 
-# ========== 核心工具函数 ==========
+# ========== 核心工具函数（清理未使用的domain变量） ==========
 @lru_cache(maxsize=5000)
-def extract_ip_port(line: str) -> tuple[str, str, int]:
+def extract_ip_port(line: str) -> tuple[str, int]:  # 移除domain返回值
     ip = ""
-    domain = ""
     port = CONFIG["filter"]["DEFAULT_PORT"]
     
     try:
         pattern = r"@([a-zA-Z0-9\-\.]+):(\d+)"
         match = re.search(pattern, line)
         if match:
-            domain = match.group(1)
+            domain_or_ip = match.group(1)
             port = int(match.group(2))
             
-            if not CONFIG["filter"]["private_ip_patterns"].match(domain):
+            if not CONFIG["filter"]["private_ip_patterns"].match(domain_or_ip):
                 try:
-                    ip = socket.gethostbyname(domain)
+                    ip = socket.gethostbyname(domain_or_ip)
                 except (socket.gaierror, ValueError):
-                    ip = domain
+                    ip = domain_or_ip
     except Exception as e:
         LOG.debug(f"解析IP/端口失败: {line[:50]}... 错误: {str(e)}")
     
-    return ip, domain, port
+    return ip, port  # 仅返回使用到的ip和port
 
 def clean_node_lines(raw_lines: list[str]) -> list[str]:
     cleaned = []
@@ -215,7 +199,7 @@ def pre_deduplicate_nodes(lines: list[str], sources: list[dict]) -> list[str]:
         else:
             continue
         
-        ip, _, port = extract_ip_port(line)
+        ip, port = extract_ip_port(line)  # 适配返回值变更
         if not ip or not port:
             continue
         
@@ -236,7 +220,7 @@ def pre_deduplicate_nodes(lines: list[str], sources: list[dict]) -> list[str]:
 def filter_private_ip_and_invalid_port(lines: list[str]) -> list[str]:
     filtered = []
     for line in lines:
-        ip, _, port = extract_ip_port(line)
+        ip, port = extract_ip_port(line)  # 适配返回值变更
         
         if is_private_ip(ip):
             LOG.debug(f"过滤私有IP节点：{line[:50]}...")
@@ -364,7 +348,7 @@ class ProtocolParser:
                 vmess_part = line.replace("vmess://", "")
                 decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
                 cfg = json.loads(decoded)
-                security_type = "tls" if cfg.get("tls") == "tls" else "none"
+                security_type = "tls" if cfg.get("security") == "tls" else "none"  # 优化VMess字段解析
                 return {"protocol": "vmess", "security_type": security_type}
             except Exception:
                 return {"protocol": "vmess", "security_type": "none"}
@@ -563,7 +547,7 @@ async def async_process_single_node(line: str):
     if not node_info:
         return 0, score_detail, line
     
-    ip, domain, port = extract_ip_port(line)
+    ip, port = extract_ip_port(line)  # 适配返回值变更
     
     if is_private_ip(ip):
         return 0, score_detail, line
@@ -631,14 +615,13 @@ async def async_batch_process_nodes(nodes: list[str]):
     return results
 
 def save_results(results: dict):
-    """保存结果到根目录（与原逻辑一致）"""
+    """保存结果到根目录"""
     def encode_nodes(nodes: list[str]) -> str:
         if not nodes:
             return ""
         content = "\n".join(nodes)
         return base64.b64encode(content.encode('utf-8')).decode('utf-8')
     
-    # 输出到根目录（关键修改）
     files = [
         ("s1_excellent.txt", results["excellent"], "优质节点（≥80分）"),
         ("s1_good.txt", results["good"], "良好节点（70-79分）"),
@@ -683,7 +666,7 @@ async def main():
     
     except Exception as e:
         LOG.error(f"❌ 脚本执行失败: {str(e)}", exc_info=True)
-        raise e  # 抛出异常让GitHub Actions标记为失败
+        raise e
 
 if __name__ == "__main__":
     asyncio.run(main())
