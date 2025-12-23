@@ -284,6 +284,119 @@ def dedup_nodes_final(nodes: List[Dict]) -> List[Dict]:
     LOG.info(f"总体总结: 所有来源原始总计 {total_original} 条 → 去重后总计 {total_unique} 条 (总体去重保留率: {overall_rate:.2f}%)")
     
     return unique
+
+# ========== 工具函数（必须完整保留）==========
+def validate_port(port: Union[str, int]) -> int:
+    try:
+        p = int(port)
+        return p if 1 <= p <= 65535 else CONFIG["filter"]["DEFAULT_PORT"]
+    except (ValueError, TypeError):
+        return CONFIG["filter"]["DEFAULT_PORT"]
+
+def log_msg(content: str, line: str = "", proto: str = "") -> str:
+    line_part = f"（{line[:20]}...）" if line and "保留" not in content else ""
+    proto_part = f"（{proto}）" if proto else ""
+    return f"{content}{line_part}{proto_part}"
+
+def b64_safe_decode(b64_str: str) -> str:
+    try:
+        b64_str = b64_str.rstrip('=')
+        b64_str += '=' * (4 - len(b64_str) % 4) if len(b64_str) % 4 else ''
+        b64_str = b64_str.replace('-', '+').replace('_', '/')
+        return base64.b64decode(b64_str, validate=True).decode('utf-8', errors='ignore')
+    except Exception:
+        return b64_str
+
+def clean_node_line(line: str) -> str:
+    """统一清理：去除中文、特殊字符、错误提示"""
+    if not line:
+        return ""
+    line = re.sub(r'[\u4e00-\u9fa5\u200b\u3000\s]+', '', line)
+    line = line.replace('＠', '@')
+    error_keywords = ["订阅内容解析错误", "解析失败", "无效节点", "缺失字段", "过期", "已失效"]
+    for kw in error_keywords:
+        line = line.replace(kw, "")
+    return line.strip()
+
+def decode_b64_sub(text: str) -> str:
+    text = text.strip()
+    if not text:
+        return ""
+    clean = re.sub(r'\s+', '', text)
+    if len(clean) % 4 == 0 and re.match(r'^[A-Za-z0-9+/=_-]+$', clean):
+        try:
+            decoded = b64_safe_decode(clean)
+            if '\n' in decoded:
+                LOG.info(log_msg(f"✅ Base64解码成功，约{decoded.count('\n')+1}节点"))
+                return decoded
+        except Exception:
+            pass
+    lines = [l.strip() for l in text.split('\n') if l.strip() and not l.startswith('#')]
+    LOG.info(log_msg(f"✅ 明文处理，{len(lines)}节点"))
+    return '\n'.join(lines)
+
+def is_private_ip(ip: str) -> bool:
+    return bool(ip and CONFIG["filter"]["private_ip"].match(ip))
+
+def is_cn_ip(ip: str) -> bool:
+    if not ip or is_private_ip(ip):
+        return False
+    for pat in CONFIG["filter"]["cn_ip_ranges"]:
+        if pat.match(ip):
+            return True
+    return False
+
+def is_ip(addr: str) -> bool:
+    return bool(re.match(r'^\d{1,3}(\.\d{1,3}){3}$', addr))
+
+@lru_cache(maxsize=CONFIG["detection"]["dns"]["cache_size"])
+def dns_resolve(domain: str) -> Tuple[bool, List[str]]:
+    if not domain or domain == "未知":
+        return False, []
+    orig_timeout = socket.getdefaulttimeout()
+    socket.setdefaulttimeout(CONFIG["detection"]["dns"]["timeout"])
+    try:
+        for dns_server in CONFIG["detection"]["dns"]["servers"]:
+            try:
+                ips = socket.gethostbyname_ex(domain)[2]
+                valid = [ip for ip in ips if not is_private_ip(ip) and not is_cn_ip(ip)]
+                if valid:
+                    return True, valid
+            except Exception:
+                continue
+        return False, []
+    finally:
+        socket.setdefaulttimeout(orig_timeout)
+
+@lru_cache(maxsize=1000)
+def get_ip_type(ip: str) -> str:
+    if is_private_ip(ip) or is_cn_ip(ip):
+        return "unknown"
+    try:
+        resp = SESSION.get(f"https://ipinfo.io/{ip}/json", timeout=5)
+        data = resp.json()
+        if "hostname" in data and "dc" in data.get("hostname", "").lower():
+            return "dc"
+        if "org" in data and any(k in data["org"].lower() for k in ["residential", "home", "isp"]):
+            return "residential"
+        return "unknown"
+    except Exception:
+        return "unknown"
+
+def process_remark(remark: str, proto: str) -> str:
+    if not remark:
+        return f"{proto}节点"
+    try:
+        decoded = unquote(remark)
+        decoded = re.sub(r'[^\x20-\x7E\u4e00-\u9fa5]', '', decoded)
+        b = decoded.encode('utf-8')
+        if len(b) <= CONFIG["filter"]["max_remark_bytes"]:
+            return decoded
+        trunc = b[:CONFIG["filter"]["max_remark_bytes"]].decode('utf-8', errors='ignore')
+        return trunc + "..." if len(trunc.encode()) + 3 <= CONFIG["filter"]["max_remark_bytes"] else trunc
+    except Exception:
+        return f"{proto}节点"
+
 # ========== 数据源与主流程（保持精简）==========
 # 下方保留原函数（仅微调日志格式）
 def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
