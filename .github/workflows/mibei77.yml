@@ -20,7 +20,7 @@ jobs:
         run: pip install requests beautifulsoup4
 
       - name: Run fetch script
-        run: python fetch_mibei77.py
+        run: python fetch.py
 
       - name: Commit s2.txt
         run: |
