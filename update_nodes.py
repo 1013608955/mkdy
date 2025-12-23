@@ -631,21 +631,19 @@ async def async_batch_process_nodes(nodes: list[str]):
     return results
 
 def save_results(results: dict):
+    """保存结果到根目录（与原逻辑一致）"""
     def encode_nodes(nodes: list[str]) -> str:
         if not nodes:
             return ""
         content = "\n".join(nodes)
         return base64.b64encode(content.encode('utf-8')).decode('utf-8')
     
-    # GitHub Actions中输出到工作目录（便于上传artifact）
-    output_dir = "./node_results"
-    os.makedirs(output_dir, exist_ok=True)
-    
+    # 输出到根目录（关键修改）
     files = [
-        (f"{output_dir}/s1_excellent.txt", results["excellent"], "优质节点（≥80分）"),
-        (f"{output_dir}/s1_good.txt", results["good"], "良好节点（70-79分）"),
-        (f"{output_dir}/s1_qualified.txt", results["qualified"], "合格节点（60-69分）"),
-        (f"{output_dir}/s1.txt", results["all"], "所有有效节点（≥60分）")
+        ("s1_excellent.txt", results["excellent"], "优质节点（≥80分）"),
+        ("s1_good.txt", results["good"], "良好节点（70-79分）"),
+        ("s1_qualified.txt", results["qualified"], "合格节点（60-69分）"),
+        ("s1.txt", results["all"], "所有有效节点（≥60分）")
     ]
     
     for filename, nodes, desc in files:
