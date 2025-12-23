@@ -576,8 +576,11 @@ def load_subscription() -> list[str]:
                 response = sess.get(url, timeout=CONFIG["request"]["timeout"])
                 response.raise_for_status()
                 
-                # 解码订阅内容
-                decoded = base64.b64decode(response.text).decode('utf-8', errors='ignore')
+                # 修复：base64解码前过滤非ASCII+清理非法字符
+                cleaned_text = response.text.encode('ascii', 'ignore').decode('ascii')
+                cleaned_text = re.sub(r'[^A-Za-z0-9+/=]', '', cleaned_text)
+                decoded = base64.b64decode(cleaned_text).decode('utf-8', errors='ignore')
+                
                 nodes = [line.strip() for line in decoded.split("\n") if line.strip()]
                 
                 # 保存缓存
@@ -597,7 +600,7 @@ def load_subscription() -> list[str]:
     LOG.info(f"订阅源加载完成，总节点数: {len(all_nodes)}，原始去重后: {len(unique_raw)}")
     
     return unique_raw
-
+    
 def clean_cache(cache_dir: str):
     """清理缓存（过期/超大）"""
     try:
