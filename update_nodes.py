@@ -396,7 +396,140 @@ def process_remark(remark: str, proto: str) -> str:
         return trunc + "..." if len(trunc.encode()) + 3 <= CONFIG["filter"]["max_remark_bytes"] else trunc
     except Exception:
         return f"{proto}节点"
+# ========== 协议解析函数（必须完整补上）==========
 
+def parse_vmess(line: str) -> Optional[Dict]:
+    try:
+        b64_part = re.match(r'vmess://([A-Za-z0-9+/=]+)', line).group(1)[:1024]
+        decoded = b64_safe_decode(b64_part)
+        cfg = json.loads(re.sub(r'[\x00-\x1f\x7f-\x9f]', '', re.search(r'\{.*\}', decoded, re.DOTALL).group(0)))
+        required = ["add", "port", "id"]
+        if any(k not in cfg for k in required):
+            return None
+        uuid.UUID(cfg["id"])
+        cfg["ps"] = process_remark(cfg.get("ps", ""), "VMess")
+        cfg["port"] = validate_port(cfg.get("port"))
+        return {
+            "address": cfg["add"],
+            "port": cfg["port"],
+            "id": cfg["id"],
+            "security_type": "tls" if cfg.get("tls") == "tls" else ("aead" if cfg.get("scy") in ["aes-128-gcm", "chacha20-ietf-poly1305"] else "none"),
+            "sni": cfg.get("sni") or cfg.get("host") or cfg["add"],
+            "ps": cfg["ps"]
+        }
+    except Exception:
+        return None
+
+def parse_vless(line: str) -> Optional[Dict]:
+    try:
+        core, remark = re.split(r'#', line[8:], 1) if '#' in line[8:] else (line[8:], "VLESS节点")
+        remark = process_remark(remark, "VLESS")
+        uuid_str, rest = core.split('@', 1)
+        uuid.UUID(uuid_str)
+        addr_port, param_str = (rest.split('?', 1) + [""])[:2]
+        address, port_str = addr_port.split(':', 1)
+        params = dict(p.lower().split('=', 1) for p in param_str.split('&') if '=' in p)
+        security = params.get('security', 'tls')
+        return {
+            "address": address,
+            "port": validate_port(port_str),
+            "security_type": security,
+            "sni": params.get('sni', address),
+            "remarks": remark
+        }
+    except Exception:
+        return None
+
+def parse_trojan(line: str) -> Optional[Dict]:
+    try:
+        core, remark = re.split(r'#', line[9:], 1) if '#' in line[9:] else (line[9:], "Trojan节点")
+        remark = process_remark(remark, "Trojan")
+        password, rest = core.split('@', 1)
+        addr_port, param_str = (rest.split('?', 1) + [""])[:2]
+        address, port_str = addr_port.rsplit(':', 1)
+        params = dict(p.lower().split('=', 1) for p in param_str.split('&') if '=' in p)
+        return {
+            "address": address,
+            "port": validate_port(port_str),
+            "password": password,
+            "security_type": params.get('security', 'tls'),
+            "sni": params.get('sni', address),
+            "label": remark
+        }
+    except Exception:
+        return None
+
+def parse_ss(line: str) -> Optional[Dict]:
+    try:
+        core, remark = re.split(r'#', line[5:], 1) if '#' in line[5:] else (line[5:], "SS节点")
+        remark = process_remark(remark, "SS")
+        if '@' in core:
+            auth_b64, addr = core.split('@', 1)
+            auth = b64_safe_decode(auth_b64)
+        else:
+            auth = b64_safe_decode(core)
+            auth, addr = auth.split('@', 1)
+        address, port_str = addr.rsplit(':', 1)
+        method, password = (auth.split(':', 1) + [CONFIG["filter"]["SS_DEFAULT_CIPHER"]])[:2]
+        if method not in CONFIG["filter"]["SS_VALID_CIPHERS"]:
+            return None
+        return {
+            "address": address,
+            "port": validate_port(port_str),
+            "method": method,
+            "password": password,
+            "security_type": "aead" if method in ["aes-256-gcm", "aes-128-gcm", "chacha20-ietf-poly1305"] else "none",
+            "remark": remark
+        }
+    except Exception:
+        return None
+
+def parse_hysteria(line: str) -> Optional[Dict]:
+    try:
+        core, remark = re.split(r'#', line[11:], 1) if '#' in line[11:] else (line[11:], "Hysteria节点")
+        remark = process_remark(remark, "Hysteria")
+        addr_part, param_str = (core.split('?', 1) + [""])[:2]
+        address, port_str = addr_part.rsplit(':', 1)
+        params = dict(p.lower().split('=', 1) for p in param_str.split('&') if '=' in p)
+        auth = params.get('auth') or params.get('auth_str', '')
+        if not auth:
+            return None
+        return {
+            "address": address,
+            "port": validate_port(port_str),
+            "password": auth,
+            "security_type": "tls" if params.get('tls', '1') == '1' else "none",
+            "peer": params.get('peer', address),
+            "label": remark
+        }
+    except Exception:
+        return None
+
+# 协议解析器字典
+PROTO_PARSERS = {
+    "vmess": parse_vmess,
+    "vless": parse_vless,
+    "trojan": parse_trojan,
+    "ss": parse_ss,
+    "hysteria": parse_hysteria,
+}
+
+# 统一解析入口（最关键）
+def parse_node(line: str) -> Tuple[Optional[Dict], str]:
+    clean = clean_node_line(line)
+    if not clean:
+        return None, ""
+
+    for proto, parser in PROTO_PARSERS.items():
+        if clean.startswith(f"{proto}://"):
+            cfg = parser(line)
+            if cfg:
+                return cfg, proto
+            else:
+                return None, ""
+
+    return None, ""  # 未知协议
+    
 # ========== 数据源与主流程（保持精简）==========
 # 下方保留原函数（仅微调日志格式）
 def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
