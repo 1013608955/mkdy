@@ -29,7 +29,6 @@ def get_latest_article_url():
                     candidates.append((href, text))
 
         if candidates:
-            # 按日期排序取最新
             candidates.sort(key=lambda x: x[0], reverse=True)
             print(f"找到最新文章：{candidates[0][1]}")
             print(f"链接：{candidates[0][0]}")
@@ -50,25 +49,23 @@ def extract_sub_links(article_url):
 
         sub_links = set()
 
-        # 优先：mm.mibei77.com 下的 .txt 文件
+        # 优先匹配 mm.mibei77.com 下的 .txt
         mm_links = re.findall(r'https?://mm\.mibei77\.com/[^\s<>"\']*\.txt', text)
-        for link in mm_links:
-            sub_links.add(link)
+        sub_links.update(mm_links)
 
-        # 通用 .txt 订阅链接
-        txt_links = re.findall(r'https?://[^\s<>"\']*\.txt', text)
-        for link in txt_links:
-            if any(k in link for k in ["bagtr", "bagr", "sub", "node", "2025"]):
+        # 其他 .txt 链接（含关键词）
+        other_txt = re.findall(r'https?://[^\s<>"\']*\.txt', text)
+        for link in other_txt:
+            if any(k in link.lower() for k in ["bagtr", "bagr", "sub", "node", "clash", "v2ray"]):
                 sub_links.add(link)
 
-        # 社交分享链接过滤（排除无效）
-        exclude_patterns = ["reddit.com", "telegram.me", "twitter.com", "facebook.com", "tumblr.com", "linkedin.com", "pinterest.com"]
-        sub_links = {l for l in sub_links if not any(p in l for p in exclude_patterns)}
+        # 排除社交分享链接
+        exclude = ["reddit", "telegram", "twitter", "facebook", "tumblr", "linkedin", "pinterest"]
+        sub_links = {l for l in sub_links if not any(ex in l for ex in exclude)}
 
-        # Base64 订阅提取（加强）
-        for tag in soup.find_all(['pre', 'code', 'p', 'div', 'span']):
-            content = tag.get_text()
-            parts = re.split(r'\s+', content)
+        # Base64 订阅
+        for tag in soup.find_all(['pre', 'code', 'p', 'div']):
+            parts = re.split(r'\s+', tag.get_text())
             for part in parts:
                 part = part.strip()
                 if len(part) > 100 and re.match(r'^[A-Za-z0-9+/=]+$', part):
@@ -78,27 +75,55 @@ def extract_sub_links(article_url):
                     except:
                         pass
 
-        # 图片 alt 或附近文字可能含链接
-        for img in soup.find_all('img', alt=True):
-            alt = img['alt'].lower()
-            if any(k in alt for k in ["订阅", "链接", "txt", "bagtr"]):
-                # 取图片附近文字尝试匹配链接
-                parent_text = img.find_parent().get_text()
-                potential = re.findall(r'https?://mm\.mibei77\.com/[^\s<>"\']*\.txt', parent_text)
-                sub_links.update(potential)
-
-        print(f"精准提取到 {len(sub_links)} 个有效订阅源：")
-        for l in sub_links:
-            print(f"  → {l}")
+        print(f"精准提取到 {len(sub_links)} 个订阅源")
         return list(sub_links)
     except Exception as e:
         print(f"解析文章失败：{e}")
         return []
 
-# download_nodes 函数保持不变（你原版的即可）
+def download_nodes(source):
+    try:
+        if source.startswith('http'):
+            resp = requests.get(source, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+            content = resp.text
+        else:
+            content = base64.b64decode(source).decode('utf-8', errors='ignore')
+
+        nodes = [line.strip() for line in content.split('\n') if line.strip().startswith(('vmess://', 'vless://', 'trojan://', 'ss://', 'hysteria://'))]
+        print(f"  → {source[:60]}... 获取 {len(nodes)} 个节点")
+        return nodes
+    except Exception as e:
+        print(f"  → 下载失败：{e}")
+        return []
 
 def main():
-    # ... 原 main 函数不变 ...
+    print("开始抓取米贝77最新节点...")
+    article_url = get_latest_article_url()
+    if not article_url:
+        print("脚本结束")
+        return
+
+    sources = extract_sub_links(article_url)
+    if not sources:
+        print("未找到订阅链接")
+        return
+
+    all_nodes = []
+    for src in sources:
+        nodes = download_nodes(src)
+        all_nodes.extend(nodes)
+        time.sleep(0.5)
+
+    unique_nodes = list(dict.fromkeys(all_nodes))  # 去重保序
+
+    if unique_nodes:
+        encoded = base64.b64encode('\n'.join(unique_nodes).encode('utf-8')).decode('utf-8')
+        with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+            f.write(encoded)
+        print(f"\n成功保存 {len(unique_nodes)} 个节点到 {OUTPUT_FILE}")
+    else:
+        print("未获取到有效节点")
 
 if __name__ == "__main__":
     main()
