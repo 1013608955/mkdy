@@ -2,6 +2,7 @@ import requests
 import re
 import socket
 import base64
+import binascii  # 新增：处理Base64解码异常
 import os
 import time
 import hashlib
@@ -11,7 +12,7 @@ import asyncio
 import aiohttp
 from urllib.parse import urlparse
 import urllib3
-from functools import lru_cache  
+from functools import lru_cache  # 修复：补充lru_cache导入
 
 # 禁用不安全请求警告
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -380,93 +381,7 @@ class ProtocolParser:
         else:
             return {"protocol": "other", "security_type": "none"}
 
-# ========== 评分逻辑 ==========
-def calculate_base_score(node_info: dict, ip: str, port: int, response_time: float, success_count: int) -> tuple[int, dict]:
-    score = 0
-    score_detail = {"penalties": {}, "additions": {}, "base_score": 0}
-    
-    rt_penalty = get_response_time_penalty(response_time)
-    score += rt_penalty
-    score_detail["penalties"]["response_time"] = rt_penalty
-    
-    proto_score = CONFIG["filter"]["score_weights"]["protocol"].get(node_info["protocol"], 0)
-    score += proto_score
-    score_detail["additions"]["protocol"] = proto_score
-    
-    sec_key = "reality" if node_info["security_type"] == "reality" else "tls" if node_info["security_type"] == "tls" else "none"
-    sec_score = CONFIG["filter"]["score_weights"]["security"][sec_key]
-    score += sec_score
-    score_detail["additions"]["security"] = sec_score
-    
-    port_score = CONFIG["filter"]["score_weights"]["port"].get(port, CONFIG["filter"]["score_weights"]["port"]["other"])
-    score += port_score
-    score_detail["additions"]["port"] = port_score
-    
-    dns_score = CONFIG["filter"]["score_weights"]["dns_valid"] if ip else 0
-    score += dns_score
-    score_detail["additions"]["dns_valid"] = dns_score
-    
-    speed_score = get_response_speed_score(response_time)
-    score += speed_score
-    score_detail["additions"]["response_speed"] = speed_score
-    
-    if success_count == 2:
-        stability_score = CONFIG["filter"]["score_weights"]["tcp_stability"]["2_success"]
-    elif success_count == 1:
-        stability_score = CONFIG["filter"]["score_weights"]["tcp_stability"]["1_success"]
-    else:
-        stability_score = CONFIG["filter"]["score_weights"]["tcp_stability"]["0_success"]
-    score += stability_score
-    score_detail["additions"]["tcp_stability"] = stability_score
-    
-    base_score = max(0, min(score, 100))
-    score_detail["base_score"] = base_score
-    
-    if base_score >= CONFIG["filter"]["grade_ranges"]["excellent"][0]:
-        score_detail["pre_grade"] = "excellent"
-    elif base_score >= CONFIG["filter"]["grade_ranges"]["good"][0]:
-        score_detail["pre_grade"] = "good"
-    elif base_score >= CONFIG["filter"]["base_score_threshold"]:
-        score_detail["pre_grade"] = "qualified"
-    else:
-        score_detail["pre_grade"] = "reject"
-    
-    return base_score, score_detail
-
-def calculate_final_score(base_score: int, base_detail: dict, ip: str, availability: str) -> tuple[int, dict]:
-    final_score = base_score
-    score_detail = base_detail.copy()
-    score_detail["final_score"] = 0
-    score_detail["grade"] = ""
-    
-    cn_ip_type = judge_cn_ip(ip, availability == "full")
-    cn_penalty = CONFIG["filter"]["score_weights"]["cn_ip"][cn_ip_type]
-    final_score += cn_penalty
-    score_detail["penalties"]["cn_ip"] = cn_penalty
-    
-    net_score = CONFIG["filter"]["score_weights"]["net_validate"] if availability == "full" else 0
-    final_score += net_score
-    score_detail["additions"]["net_validate"] = net_score
-    
-    avail_score = CONFIG["filter"]["score_weights"]["availability"][availability]
-    final_score += avail_score
-    score_detail["additions"]["availability"] = avail_score
-    
-    final_score = max(0, min(final_score, 100))
-    score_detail["final_score"] = final_score
-    
-    if final_score >= CONFIG["filter"]["grade_ranges"]["excellent"][0]:
-        score_detail["grade"] = "excellent"
-    elif final_score >= CONFIG["filter"]["grade_ranges"]["good"][0]:
-        score_detail["grade"] = "good"
-    elif final_score >= CONFIG["filter"]["grade_ranges"]["qualified"][0]:
-        score_detail["grade"] = "qualified"
-    else:
-        score_detail["grade"] = "reject"
-    
-    return final_score, score_detail
-
-# ========== 核心业务逻辑 ==========
+# ========== 核心业务逻辑（修复：兼容Base64/明文订阅源） ==========
 def load_subscription() -> list[str]:
     all_nodes = []
     cache_dir = CONFIG["github"]["cache_dir"]
@@ -482,6 +397,7 @@ def load_subscription() -> list[str]:
             cache_key = hashlib.md5(url.encode()).hexdigest()
             cache_path = os.path.join(cache_dir, f"{cache_key}.json")
             
+            # 优先读取缓存
             if os.path.exists(cache_path) and time.time() - os.path.getmtime(cache_path) < CONFIG["github"]["cache_ttl"]:
                 try:
                     with open(cache_path, "r", encoding="utf-8") as f:
@@ -492,31 +408,45 @@ def load_subscription() -> list[str]:
                 except Exception as e:
                     LOG.warning(f"缓存读取失败: {cache_path} 错误: {str(e)}")
             
+            # 拉取远程订阅源
             try:
                 response = sess.get(url, timeout=CONFIG["request"]["timeout"])
                 response.raise_for_status()
+                raw_text = response.text.strip()
                 
-                cleaned_text = response.text.encode('ascii', 'ignore').decode('ascii')
-                cleaned_text = re.sub(r'[^A-Za-z0-9+/=]', '', cleaned_text)
-                cleaned_text = cleaned_text.replace('-', '+').replace('_', '/')
-                padding = len(cleaned_text) % 4
-                if padding != 0:
-                    cleaned_text += '=' * (4 - padding)
-                decoded = base64.b64decode(cleaned_text).decode('utf-8', errors='ignore')
+                # 核心修复：兼容Base64编码/明文订阅源
+                try:
+                    # 尝试Base64解码（处理编码的订阅源）
+                    cleaned_text = raw_text.encode('ascii', 'ignore').decode('ascii')
+                    cleaned_text = re.sub(r'[^A-Za-z0-9+/=]', '', cleaned_text)
+                    cleaned_text = cleaned_text.replace('-', '+').replace('_', '/')
+                    padding = len(cleaned_text) % 4
+                    if padding != 0:
+                        cleaned_text += '=' * (4 - padding)
+                    decoded = base64.b64decode(cleaned_text).decode('utf-8', errors='ignore')
+                    LOG.info(f"订阅源 {url} 识别为Base64编码格式，已解码")
+                except (binascii.Error, ValueError, TypeError):
+                    # 解码失败 = 明文订阅源，直接使用原始文本
+                    decoded = raw_text
+                    LOG.info(f"订阅源 {url} 识别为明文格式，直接读取")
                 
+                # 拆分节点（兼容两种格式的结果）
                 nodes = [line.strip() for line in decoded.split("\n") if line.strip()]
                 
+                # 写入缓存
                 with open(cache_path, "w", encoding="utf-8") as f:
                     json.dump(nodes, f, ensure_ascii=False)
                 
                 all_nodes.extend(nodes)
                 LOG.info(f"拉取订阅源成功: {url}，节点数: {len(nodes)}")
                 
+                # 避免请求过快被封禁
                 time.sleep(CONFIG["github"]["interval"])
             except Exception as e:
                 LOG.error(f"拉取订阅源失败: {url} 错误: {str(e)}")
                 continue
     
+    # 原始去重（去重完全重复的行）
     unique_raw = list(dict.fromkeys(all_nodes))
     LOG.info(f"订阅源加载完成，总节点数: {len(all_nodes)}，原始去重后: {len(unique_raw)}")
     
