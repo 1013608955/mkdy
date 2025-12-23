@@ -931,6 +931,7 @@ def dedup_nodes_final(nodes: List[Dict]) -> List[Dict]:
 
 # ========== 数据源与统计（最终版） ==========
 def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
+    """核心修改：两次过滤注释/空行（解码前+解码后）"""
     cache_dir = ".cache"
     os.makedirs(cache_dir, exist_ok=True)
     cache_key = hashlib.md5(url.encode()).hexdigest()
@@ -953,38 +954,65 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
         try:
             resp = SESSION.get(url, timeout=CONFIG["request"]["timeout"], verify=False)
             resp.raise_for_status()
-            content = decode_b64_sub(resp.text)
             
-            # ========== 核心修改：彻底删除注释行 ==========
-            # 1. 按行分割内容
-            raw_lines = content.split('\n')
-            # 2. 过滤：空行、注释行（包括开头有空格的#注释）
-            lines = []
-            comment_count = 0
-            for l in raw_lines:
+            # ========== 第一次过滤：解码前 过滤注释/空行 ==========
+            raw_content = resp.text
+            raw_lines_before_decode = raw_content.split('\n')
+            filtered_before_decode = []
+            comment_count_first = 0
+            empty_line_count_first = 0
+            
+            for l in raw_lines_before_decode:
                 stripped_line = l.strip()
                 # 跳过空行
                 if not stripped_line:
+                    empty_line_count_first += 1
                     continue
                 # 跳过注释行（以#开头）
                 if stripped_line.startswith('#'):
-                    comment_count += 1
+                    comment_count_first += 1
                     continue
-                # 保留有效行
+                # 保留有效行（保留原始格式，用于解码）
+                filtered_before_decode.append(l)
+            
+            # 拼接为连续文本，用于后续解码
+            content_after_first_filter = '\n'.join(filtered_before_decode)
+            LOG.info(f"📝 第一次过滤（解码前）：{url} 移除注释行{comment_count_first}行 | 空行{empty_line_count_first}行")
+            
+            # ========== 解码操作 ==========
+            content = decode_b64_sub(content_after_first_filter)
+            
+            # ========== 第二次过滤：解码后 再次过滤注释/空行 ==========
+            raw_lines_after_decode = content.split('\n')
+            lines = []
+            comment_count_second = 0
+            empty_line_count_second = 0
+            
+            for l in raw_lines_after_decode:
+                stripped_line = l.strip()
+                # 跳过空行
+                if not stripped_line:
+                    empty_line_count_second += 1
+                    continue
+                # 跳过注释行（以#开头）
+                if stripped_line.startswith('#'):
+                    comment_count_second += 1
+                    continue
+                # 保留最终有效行
                 lines.append(stripped_line)
-            # =============================================
             
-            # 记录删除的注释行数
-            if comment_count > 0:
-                LOG.info(f"📝 从 {url} 中删除了 {comment_count} 行注释")
+            # 记录第二次过滤日志
+            if comment_count_second > 0 or empty_line_count_second > 0:
+                LOG.info(f"📝 第二次过滤（解码后）：{url} 移除注释行{comment_count_second}行 | 空行{empty_line_count_second}行")
             
+            # ========== 缓存写入 + 结果返回 ==========
             try:
                 with open(cache_path, "w", encoding="utf-8") as f:
                     json.dump(lines, f, ensure_ascii=False)
             except OSError as e:
                 LOG.info(f"⚠️ 缓存写入失败 {url}: {str(e)[:50]}")
             
-            LOG.info(f"✅ 拉取成功 {url}（权重{weight}），节点 {len(lines)} 条")
+            LOG.info(f"✅ 拉取成功 {url}（权重{weight}），最终有效节点 {len(lines)} 条")
             return lines, weight
         except Exception as e:
             if retry < CONFIG["request"]["retry"] - 1:
