@@ -48,7 +48,7 @@ CONFIG: Dict = {
             ],
             "fallback": "http://baidu.com"
         },
-        "score_threshold": 65,
+        "score_threshold": 55,
         "rt_thresholds": {  # 优化：所有协议 max 统一提升到 9s
             "vmess": {"min": 0.05, "max": 9},
             "vless": {"min": 0.05, "max": 9},
@@ -88,9 +88,9 @@ CONFIG: Dict = {
                 "hysteria": {"fast": 10, "normal": 5, "slow": 1}
             },
             "dns_valid": 8,
-            "http_valid": 10,   # 优化：22 → 10
-            "cn_ip": -10,       # 优化：-40 → -10
-            "response_time_abnormal": -80,
+            "http_valid": 8,   # 优化：22 → 10
+            "cn_ip": 0,       # 优化：-40 → -10
+            "response_time_abnormal": -40,
             "stability": 10,
             "ip_type": {"residential": 15, "dc": 10, "unknown": 5}
         }
@@ -747,7 +747,7 @@ def process_nodes_final(unique_nodes: List[Dict]) -> Tuple[List[str], List[Dict]
     return valid_lines_sorted, valid_nodes_info
 
 def generate_final_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_lines: List[str],
-                        valid_nodes_info: List[Dict], start_time: float) -> None:
+                        valid_nodes_info: List[Dict], start_time: float, source_records: Dict) -> None:
     excellent = [n for n in valid_nodes_info if n["score"] >= 90]
     good = [n for n in valid_nodes_info if 80 <= n["score"] < 90]
     qualified = [n for n in valid_nodes_info if 65 <= n["score"] < 80]
@@ -866,8 +866,7 @@ def main() -> None:
    
     valid_lines, valid_nodes_info = process_nodes_final(unique_nodes)
    
-    generate_final_stats(all_nodes, unique_nodes, valid_lines, valid_nodes_info, start_time)
-   
+    generate_final_stats(all_nodes, unique_nodes, valid_lines, valid_nodes_info, start_time, source_records)
     try:
         SESSION.close()
         LOG.info("🔌 关闭请求会话")
