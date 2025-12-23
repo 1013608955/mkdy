@@ -20,7 +20,7 @@ import json
 # ========== 配置与初始化 ==========
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# 核心配置（放宽规则+容错处理）
+# 核心配置（放宽规则+容错处理，评分阈值调整为60）
 CONFIG: Dict = {
     "sources": [
         {"url": "https://raw.githubusercontent.com/ripaojiedian/freenode/main/sub", "weight": 5},
@@ -50,7 +50,7 @@ CONFIG: Dict = {
             ],
             "fallback": "http://baidu.com"
         },
-        "score_threshold": 50,  # 降低评分阈值
+        "score_threshold": 60,  # 调整为60分（匹配合格节点起始分数）
         "min_response_time": 0.05,  # 放宽最小响应时间
         "max_response_time": 8.0    # 放宽最大响应时间
     },
@@ -1029,14 +1029,14 @@ def process_nodes_final(unique_nodes: List[Dict]) -> Tuple[List[str], List[Dict]
 
 def generate_final_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_lines: List[str], 
                         valid_nodes_info: List[Dict], start_time: float) -> None:
-    """生成最终统计报告"""
-    # 分级：优质（≥90）、良好（80-89）、合格（50-79）
+    """生成最终统计报告（更新文件命名和分数区间）"""
+    # 分级：优质（≥90）、良好（80-89）、合格（60-79）
     excellent = [n for n in valid_nodes_info if n["score"] >= 90]
     good = [n for n in valid_nodes_info if 80 <= n["score"] < 90]
-    qualified = [n for n in valid_nodes_info if 50 <= n["score"] < 80]
+    qualified = [n for n in valid_nodes_info if 60 <= n["score"] < 80]
     proto_count = count_proto(valid_lines)
     
-    # 保存分级节点（Base64编码，可直接导入客户端）
+    # 保存分级节点（更新为指定文件名）
     def save_nodes(lines: List[str], filename: str, desc: str):
         if not lines:
             LOG.info(f"📄 {desc}为空，跳过保存")
@@ -1049,12 +1049,12 @@ def generate_final_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_
         except OSError as e:
             LOG.error(f"❌ {desc}保存失败: {str(e)[:50]}")
     
-    save_nodes([n["line"] for n in excellent], 'final_excellent.txt', "优质节点（≥90分）")
-    save_nodes([n["line"] for n in good], 'final_good.txt', "良好节点（80-89分）")
-    save_nodes([n["line"] for n in qualified], 'final_qualified.txt', "合格节点（50-79分）")
-    save_nodes(valid_lines, 'final_all.txt', "所有有效节点")
+    save_nodes([n["line"] for n in excellent], 's1_excellent.txt', "优质节点（≥90分）")
+    save_nodes([n["line"] for n in good], 's1_good.txt', "良好节点（80-89分）")
+    save_nodes([n["line"] for n in qualified], 's1_qualified.txt', "合格节点（60-79分）")
+    save_nodes(valid_lines, 's1.txt', "所有有效节点")
     
-    # 统计信息
+    # 统计信息（更新分数区间描述）
     total_cost = time.time() - start_time
     avg_response_time = sum([n["response_time"] for n in valid_nodes_info]) / len(valid_nodes_info) if valid_nodes_info else 0
     outside_ok_rate = len([n for n in valid_nodes_info if n["outside_ok"]]) / len(valid_nodes_info) * 100 if valid_nodes_info else 0
@@ -1062,10 +1062,10 @@ def generate_final_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_
     
     LOG.info(f"\n🏆 最终筛选报告：")
     LOG.info(f"   ├─ 原始节点：{len(all_nodes)} 条 → 去重后：{len(unique_nodes)} 条 → 有效节点：{len(valid_lines)} 条")
-    LOG.info(f"   ├─ 节点分级：优质（≥90分）{len(excellent)}条 | 良好（80-89分）{len(good)}条 | 合格（50-79分）{len(qualified)}条")
+    LOG.info(f"   ├─ 节点分级：优质（≥90分）{len(excellent)}条 | 良好（80-89分）{len(good)}条 | 合格（60-79分）{len(qualified)}条")
     LOG.info(f"   ├─ 协议分布：VLESS({proto_count['vless']}) | Trojan({proto_count['trojan']}) | VMess({proto_count['vmess']}) | SS({proto_count['ss']})")
     LOG.info(f"   ├─ 性能指标：平均响应 {avg_response_time:.2f}s | 外网通过率 {outside_ok_rate:.1f}% | 国内IP占比 {cn_ip_rate:.1f}%")
-    LOG.info(f"   └─ 总耗时：{total_cost:.2f} 秒 | 建议优先使用 final_excellent.txt 节点")
+    LOG.info(f"   └─ 总耗时：{total_cost:.2f} 秒 | 建议优先使用 s1_excellent.txt 节点")
 
 def main() -> None:
     """最终主函数"""
@@ -1098,7 +1098,7 @@ def main() -> None:
     except Exception as e:
         LOG.info(f"⚠️ 会话关闭异常: {str(e)[:50]}")
     
-    LOG.info("\n✅ 终极筛选完成！优质节点已保存至 final_excellent.txt，有效率≥80%")
+    LOG.info("\n✅ 终极筛选完成！优质节点已保存至 s1_excellent.txt，有效率≥80%")
 
 if __name__ == "__main__":
     main()
