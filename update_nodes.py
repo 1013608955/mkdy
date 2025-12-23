@@ -48,7 +48,7 @@ CONFIG: Dict = {
             ],
             "fallback": "http://baidu.com"
         },
-        "score_threshold": 30,
+        "score_threshold": 40,
         "rt_thresholds": {  # 优化：所有协议 max 统一提升到 9s
             "vmess": {"min": 0.05, "max": 12},
             "vless": {"min": 0.05, "max": 12},
@@ -679,7 +679,7 @@ def adjust_score_threshold(valid_nodes_info: List[Dict]) -> int:
         return base_threshold
    
     avg_score = sum(scores)/len(scores)
-    dynamic_threshold = max(30, min(75, int(avg_score * 0.7)))
+    dynamic_threshold = max(40, min(75, int(avg_score * 0.5)))
    
     if dynamic_threshold != base_threshold:
         LOG.info(f"📊 动态调整阈值：{base_threshold} → {dynamic_threshold}（平均得分{avg_score:.1f}）")
