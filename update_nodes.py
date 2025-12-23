@@ -19,7 +19,7 @@ import urllib3
 # 禁用不安全请求警告
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# ========== 核心配置（最终优化版） ==========
+# ========== 核心配置（降低协议/安全权重版） ==========
 CONFIG = {
     "sources": [
         {"url": "https://raw.githubusercontent.com/ripaojiedian/freenode/main/sub", "weight": 5},
@@ -78,20 +78,21 @@ CONFIG = {
         "DEFAULT_PORT": 443,
         "SS_DEFAULT_CIPHER": "aes-256-gcm",
         "SS_VALID_CIPHERS": ["aes-256-gcm", "aes-128-gcm", "chacha20-ietf-poly1305", "aes-256-cfb", "aes-128-cfb"],
-        # 评分权重配置（最终优化版）
+        # 评分权重配置（核心修改：降低协议/安全类型权重）
         "score_weights": {
-            # 加分项
+            # 加分项 - 协议类型（原权重下调约25%）
             "protocol": {
-                "vless": 20,
-                "trojan": 18,
-                "vmess": 15,
-                "hysteria": 12,
-                "ss": 8,
+                "vless": 15,    # 原20
+                "trojan": 14,   # 原18
+                "vmess": 12,    # 原15
+                "hysteria": 9,  # 原12
+                "ss": 6,        # 原8
                 "other": 0
             },
+            # 加分项 - 安全类型（原权重下调约20%）
             "security": {
-                "reality": 20,
-                "tls": 18,
+                "reality": 15,  # 原20
+                "tls": 14,      # 原18
                 "none": 0
             },
             "port": {
@@ -125,7 +126,7 @@ CONFIG = {
                 "0.05-3.0": 0
             }
         },
-        # 分级区间（最终优化版）
+        # 分级区间
         "grade_ranges": {
             "excellent": (80, 100),  # 优质
             "good": (70, 79),        # 良好
@@ -136,7 +137,7 @@ CONFIG = {
     }
 }
 
-# ========== 日志初始化（最终优化版） ==========
+# ========== 日志初始化 ==========
 def init_logger() -> logging.Logger:
     logger = logging.getLogger("node_scorer_optimized")
     logger.setLevel(logging.INFO)
@@ -152,7 +153,7 @@ def init_logger() -> logging.Logger:
 
 LOG = init_logger()
 
-# ========== 核心工具函数（极致粗筛+缓存复用） ==========
+# ========== 核心工具函数 ==========
 # IP/端口解析缓存（扩大缓存容量）
 @lru_cache(maxsize=5000)
 def extract_ip_port(line: str) -> tuple[str, str, int]:
@@ -344,7 +345,7 @@ def get_response_time_penalty(response_time: float) -> int:
     else:
         return 0
 
-# ========== 网络探测函数（轻量→重度，逐步升级） ==========
+# ========== 网络探测函数 ==========
 def tcp_probe(ip: str, port: int, proto: str) -> tuple[bool, float]:
     """阶段2.2：TCP探测（稳定性验证：2次探测取平均）"""
     total_time = 0.0
@@ -404,7 +405,7 @@ def http_validate(ip: str, port: int, grade: str) -> str:
     
     return "tcp_only"  # 仅TCP通
 
-# ========== 协议解析（抽象通用逻辑） ==========
+# ========== 协议解析 ==========
 class ProtocolParser:
     """协议解析基类（仅解析必要信息，避免深解析）"""
     @staticmethod
@@ -448,7 +449,7 @@ class ProtocolParser:
         else:
             return {"protocol": "other", "security_type": "none"}
 
-# ========== 评分逻辑（基础分→最终分，分步计算） ==========
+# ========== 评分逻辑 ==========
 def calculate_base_score(node_info: dict, ip: str, port: int, response_time: float) -> tuple[int, dict]:
     """阶段2.3：计算基础分（仅轻量网络信息，无HTTP）"""
     score = 0
@@ -461,12 +462,12 @@ def calculate_base_score(node_info: dict, ip: str, port: int, response_time: flo
     score_detail["penalties"]["response_time"] = rt_penalty
     
     # 2. 加分项（无HTTP相关）
-    # 2.1 协议加分
+    # 2.1 协议加分（已降低权重）
     proto_score = CONFIG["filter"]["score_weights"]["protocol"].get(node_info["protocol"], 0)
     score += proto_score
     score_detail["additions"]["protocol"] = proto_score
     
-    # 2.2 安全类型加分
+    # 2.2 安全类型加分（已降低权重）
     sec_key = "reality" if node_info["security_type"] == "reality" else "tls" if node_info["security_type"] == "tls" else "none"
     sec_score = CONFIG["filter"]["score_weights"]["security"][sec_key]
     score += sec_score
@@ -542,9 +543,9 @@ def calculate_final_score(base_score: int, base_detail: dict, ip: str, availabil
     
     return final_score, score_detail
 
-# ========== 核心业务逻辑（严格按易→难执行） ==========
+# ========== 核心业务逻辑 ==========
 def load_subscription() -> list[str]:
-    """加载订阅源（带缓存优化）"""
+    """加载订阅源（带缓存优化+修复非ASCII解码）"""
     all_nodes = []
     cache_dir = ".cache"
     os.makedirs(cache_dir, exist_ok=True)
@@ -600,7 +601,7 @@ def load_subscription() -> list[str]:
     LOG.info(f"订阅源加载完成，总节点数: {len(all_nodes)}，原始去重后: {len(unique_raw)}")
     
     return unique_raw
-    
+
 def clean_cache(cache_dir: str):
     """清理缓存（过期/超大）"""
     try:
@@ -746,12 +747,12 @@ def save_results(results: dict):
         except OSError as e:
             LOG.error(f"❌ 保存文件失败: {filename} 错误: {str(e)}")
 
-# ========== 主执行函数（严格按易→难流程编排） ==========
+# ========== 主执行函数 ==========
 def main():
-    """主执行函数（最终优化版）"""
+    """主执行函数（降低协议/安全权重版）"""
     start_time = time.time()
     LOG.info("="*60)
-    LOG.info("节点筛选脚本启动（极致粗筛+分级验证版）")
+    LOG.info("节点筛选脚本启动（降低协议/安全权重+极致粗筛版）")
     LOG.info("="*60)
     
     try:
