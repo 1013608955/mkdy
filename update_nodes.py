@@ -11,6 +11,7 @@ import asyncio
 import aiohttp
 from urllib.parse import urlparse
 import urllib3
+from functools import lru_cache  
 
 # 禁用不安全请求警告
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
