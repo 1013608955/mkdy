@@ -20,7 +20,7 @@ import json
 # ========== 配置与初始化 ==========
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# 核心配置（新增外网验证/IP地域过滤）
+# 核心配置（优化评分规则、动态阈值）
 CONFIG: Dict = {
     "sources": [
         {"url": "https://raw.githubusercontent.com/ripaojiedian/freenode/main/sub", "weight": 5},
@@ -36,57 +36,68 @@ CONFIG: Dict = {
     "github": {"token": os.getenv("GITHUB_TOKEN", ""), "interval": 0.5, "cache_ttl": 3600, "cache_expire_days": 7},
     "detection": {
         "tcp_timeout": {"vmess":5, "vless":5, "trojan":5, "ss":4, "hysteria":6},
-        "tcp_retry": 1,
-        "thread_pool": 8,  # 降低线程数，提升测试稳定性
+        "tcp_retry": 3,  # 增加检测次数用于计算稳定性
+        "thread_pool": 8,
         "dns": {"servers": ["223.5.5.5", "119.29.29.29", "8.8.8.8", "1.1.1.1"], "timeout":4, "cache_size":1000},
         "http_test": {
             "timeout": 10,
-            # 外网验证目标（优先级从高到低）
             "targets": [
-                "http://www.google.com/generate_204",  # 海外核心目标
-                "https://api.github.com/",             # GitHub API
-                "http://httpbin.org/ip",               # 出口IP验证
-                "https://api.ipify.org?format=json"    # 公网IP验证
+                "http://www.google.com/generate_204",
+                "https://api.github.com/",
+                "http://httpbin.org/ip",
+                "https://api.ipify.org?format=json"
             ],
             "fallback": "http://baidu.com"
         },
-        "score_threshold": 75,  # 提高阈值至75分
-        "min_response_time": 0.1,  # 最小响应时间（过滤<0.1s的假节点）
-        "max_response_time": 5.0   # 最大响应时间（过滤>5s的慢节点）
+        "score_threshold": 65,  # 基础阈值从75降至65
+        "min_response_time": 0.1,
+        "max_response_time": 5.0,
+        # 分协议响应时间阈值（优化后）
+        "rt_thresholds": {
+            "vmess": {"min": 0.05, "max": 6},
+            "vless": {"min": 0.05, "max": 6},
+            "trojan": {"min": 0.05, "max": 6},
+            "ss": {"min": 0.05, "max": 7},
+            "hysteria": {"min": 0.01, "max": 4}
+        }
     },
     "filter": {
         "private_ip": re.compile(r"^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[0-1])\.|127\.|0\.0\.0\.0)"),
-        # 国内IP段（简化版，覆盖主要国内运营商）
         "cn_ip_ranges": [
             re.compile(r"^1\.0\.16\."), re.compile(r"^1\.0\.64\."), re.compile(r"^101\."),
-            re.compile(r"^103\.(?!106|96)"),  # 排除部分海外段
-            re.compile(r"^112\."), re.compile(r"^113\."), re.compile(r"^120\."),
-            re.compile(r"^121\."), re.compile(r"^122\."), re.compile(r"^123\."),
-            re.compile(r"^139\."), re.compile(r"^140\."), re.compile(r"^141\."),
-            re.compile(r"^150\."), re.compile(r"^151\."), re.compile(r"^163\."),
-            re.compile(r"^171\."), re.compile(r"^172\.(?!16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31)"),
-            re.compile(r"^173\."), re.compile(r"^174\."), re.compile(r"^180\."),
-            re.compile(r"^181\."), re.compile(r"^182\."), re.compile(r"^183\."),
-            re.compile(r"^184\."), re.compile(r"^190\."), re.compile(r"^192\.168\."),
-            re.compile(r"^202\."), re.compile(r"^203\."), re.compile(r"^210\."),
-            re.compile(r"^211\."), re.compile(r"^220\."), re.compile(r"^221\."),
-            re.compile(r"^222\."), re.compile(r"^223\.")
+            re.compile(r"^103\.(?!106|96)"), re.compile(r"^112\."), re.compile(r"^113\."),
+            re.compile(r"^120\."), re.compile(r"^121\."), re.compile(r"^122\."), re.compile(r"^123\."),
+            re.compile(r"^139\."), re.compile(r"^140\."), re.compile(r"^141\."), re.compile(r"^150\."),
+            re.compile(r"^151\."), re.compile(r"^163\."), re.compile(r"^171\."),
+            re.compile(r"^172\.(?!16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31)"),
+            re.compile(r"^173\."), re.compile(r"^174\."), re.compile(r"^180\."), re.compile(r"^181\."),
+            re.compile(r"^182\."), re.compile(r"^183\."), re.compile(r"^184\."), re.compile(r"^190\."),
+            re.compile(r"^202\."), re.compile(r"^203\."), re.compile(r"^210\."), re.compile(r"^211\."),
+            re.compile(r"^220\."), re.compile(r"^221\."), re.compile(r"^222\."), re.compile(r"^223\.")
         ],
         "ports": range(1, 65535),
         "max_remark_bytes": 200,
         "DEFAULT_PORT": 443,
         "SS_DEFAULT_CIPHER": "aes-256-gcm",
         "SS_VALID_CIPHERS": ["aes-256-gcm", "aes-128-gcm", "chacha20-ietf-poly1305", "aes-256-cfb", "aes-128-cfb"],
-        # 提升评分权重：外网验证>响应速度>协议类型
+        # 重构后的评分规则
         "score_rules": {
-            "protocol": {"vless": 25, "trojan": 20, "vmess": 15, "hysteria": 10, "ss": 5, "other": 0},
-            "security": {"reality": 25, "tls": 20, "none": 0},
-            "port": {443: 10, 8443: 8, "other": 3},
-            "response_speed": {"fast": 10, "normal": 5, "slow": 0},
-            "dns_valid": 5,
-            "http_valid": 20,  # 外网验证权重翻倍
-            "cn_ip": -50,      # 国内IP直接扣50分
-            "response_time_abnormal": -100  # 响应时间异常直接扣分
+            "protocol": {"vless": 20, "trojan": 18, "vmess": 15, "hysteria": 15, "ss": 10, "other": 0},
+            "security": {"reality": 25, "tls": 20, "aead": 15, "none": 0},
+            "port": {443: 10, 8443: 8, 80: 7, 465: 7, 9443: 7, "other": 5},
+            "response_speed": {
+                "vmess": {"fast": 8, "normal": 4, "slow": 0},
+                "vless": {"fast": 9, "normal": 4, "slow": 0},
+                "trojan": {"fast": 8, "normal": 4, "slow": 0},
+                "ss": {"fast": 7, "normal": 3, "slow": 0},
+                "hysteria": {"fast": 10, "normal": 5, "slow": 1}
+            },
+            "dns_valid": 8,          # 提升DNS权重
+            "http_valid": 22,        # 外网访问权重小幅提升
+            "cn_ip": -40,            # 降低国内IP扣分
+            "response_time_abnormal": -80, # 降低异常扣分
+            "stability": 10,         # 新增稳定性权重
+            "ip_type": {"residential": 15, "dc": 5, "unknown": 0} # 新增IP类型权重
         }
     }
 }
@@ -105,14 +116,13 @@ def init_logger() -> logging.Logger:
 
 LOG = init_logger()
 
-# 全局请求会话（禁用代理）
+# 全局请求会话
 def init_session() -> requests.Session:
     sess = requests.Session()
-    sess.trust_env = False  # 禁用系统代理，避免干扰测试
+    sess.trust_env = False
     headers = {"User-Agent": CONFIG["request"]["ua"], "Accept": "*/*"}
     if CONFIG["github"]["token"]:
         headers["Authorization"] = f"token {CONFIG['github']['token']}"
-    sess.headers.update(headers)
     adapter = requests.adapters.HTTPAdapter(pool_connections=8, pool_maxsize=16, max_retries=2)
     sess.mount("https://", adapter)
     sess.mount("http://", adapter)
@@ -120,7 +130,7 @@ def init_session() -> requests.Session:
 
 SESSION = init_session()
 
-# ========== 核心过滤工具函数 ==========
+# ========== 核心工具函数 ==========
 def validate_port(port: Union[str, int]) -> int:
     try:
         p = int(port)
@@ -144,7 +154,6 @@ def b64_safe_decode(b64_str: str) -> str:
     try:
         b64_str = b64_str.rstrip('=')
         b64_str += '=' * (4 - len(b64_str) % 4) if len(b64_str) % 4 != 0 else ''
-        # 处理URL安全Base64
         b64_str = b64_str.replace('-', '+').replace('_', '/')
         return base64.b64decode(b64_str, validate=True).decode('utf-8', errors='ignore')
     except (binascii.Error, ValueError, TypeError):
@@ -177,18 +186,13 @@ def proto_preprocess(line: str, proto_prefix: str) -> Tuple[str, str]:
     return core_content, remark
 
 def decode_b64_sub(text: str) -> str:
-    """优化：仅当内容符合Base64格式时才解码，避免明文节点误处理"""
     original_text = text.strip()
     if not original_text:
         return ""
     
-    # Base64格式判断规则：
-    # 1. 长度为4的倍数（允许末尾补=）
-    # 2. 仅包含Base64有效字符（A-Za-z0-9+/=）或URL安全字符（-_）
     base64_pattern = re.compile(r'^[A-Za-z0-9+/=_-]+$')
     clean_for_b64 = re.sub(r'\s+', '', original_text)
     
-    # 仅当整体符合Base64格式时才解码
     if len(clean_for_b64) % 4 == 0 and base64_pattern.match(clean_for_b64):
         try:
             decoded = b64_safe_decode(clean_for_b64)
@@ -198,7 +202,6 @@ def decode_b64_sub(text: str) -> str:
         except Exception as e:
             LOG.info(log_msg(f"❌ Base64解码失败: {str(e)[:50]}，使用明文处理"))
     
-    # 非Base64格式，直接返回清理后的明文
     cleaned_lines = [l.strip() for l in original_text.split('\n')]
     plain_line_count = len([l for l in cleaned_lines if l])
     LOG.info(log_msg(f"✅ 明文订阅处理完成，解析出{plain_line_count}个有效节点"))
@@ -217,7 +220,6 @@ def is_private_ip(ip: str) -> bool:
     return bool(ip and CONFIG["filter"]["private_ip"].match(ip))
 
 def is_cn_ip(ip: str) -> bool:
-    """判断是否为国内IP"""
     if not ip or is_private_ip(ip):
         return False
     for pattern in CONFIG["filter"]["cn_ip_ranges"]:
@@ -225,9 +227,12 @@ def is_cn_ip(ip: str) -> bool:
             return True
     return False
 
+def is_ip(address: str) -> bool:
+    """判断是否为纯IP地址（用于IP直连判断）"""
+    return bool(re.match(r'^\d+\.\d+\.\d+\.\d+$', address))
+
 @lru_cache(maxsize=CONFIG["detection"]["dns"]["cache_size"])
 def dns_resolve(domain: str) -> Tuple[bool, List[str]]:
-    """增强DNS解析：返回是否有效+解析出的IP列表"""
     if not domain or domain == "未知":
         return False, []
     original_timeout = socket.getdefaulttimeout()
@@ -237,7 +242,6 @@ def dns_resolve(domain: str) -> Tuple[bool, List[str]]:
         for dns in CONFIG["detection"]["dns"]["servers"]:
             try:
                 ip_list = socket.gethostbyname_ex(domain)[2]
-                # 过滤私有IP和国内IP
                 valid_ips = [ip for ip in ip_list if not is_private_ip(ip) and not is_cn_ip(ip)]
                 if valid_ips:
                     return True, valid_ips
@@ -247,6 +251,29 @@ def dns_resolve(domain: str) -> Tuple[bool, List[str]]:
         return False, ip_list
     finally:
         socket.setdefaulttimeout(original_timeout)
+
+@lru_cache(maxsize=1000)
+def get_ip_type(ip: str) -> str:
+    """识别IP类型：住宅IP/数据中心IP/未知"""
+    if is_private_ip(ip) or is_cn_ip(ip):
+        return "unknown"
+    try:
+        # 增加超时和缓存，避免API限流
+        resp = SESSION.get(
+            f"https://ipinfo.io/{ip}/json", 
+            timeout=5,
+            headers={"User-Agent": CONFIG["request"]["ua"]}
+        )
+        data = resp.json()
+        if "hostname" in data and "dc" in data["hostname"].lower():
+            return "dc"
+        elif "org" in data and any(keyword in data["org"].lower() for keyword in ["residential", "home", "isp"]):
+            return "residential"
+        else:
+            return "unknown"
+    except Exception as e:
+        LOG.debug(f"⚠️ IP类型识别失败 {ip}: {str(e)[:50]}")
+        return "unknown"
 
 def process_remark(remark: str, proto: str) -> str:
     if not remark:
@@ -289,7 +316,6 @@ def extract_ip_port(line: str) -> Tuple[Optional[str], str, int]:
     ip_match = re.search(r'@([\d\.a-zA-Z-]+):', line)
     ip = ip_match.group(1) if ip_match else None
     
-    # 优先提取SNI
     sni_match = re.search(r'sni=([^&]+)', line, re.I)
     domain = sni_match.group(1) if sni_match else ""
     if not domain:
@@ -301,7 +327,6 @@ def extract_ip_port(line: str) -> Tuple[Optional[str], str, int]:
     return ip, domain, port
 
 def test_outside_access(ip: str, port: int, proto: str, cfg: Dict = None) -> Tuple[bool, str, float]:
-    """核心：验证外网访问能力，返回（是否有效、访问的目标、耗时）"""
     if proto not in ["vmess", "vless", "trojan", "ss"]:
         return False, "", 0.0
     
@@ -310,7 +335,6 @@ def test_outside_access(ip: str, port: int, proto: str, cfg: Dict = None) -> Tup
     
     try:
         ip_addr = socket.gethostbyname(ip)
-        # 过滤国内IP
         if is_cn_ip(ip_addr):
             LOG.info(log_msg(f"📝 过滤国内IP节点：{ip_addr}:{port}", proto=proto))
             return False, "", 0.0
@@ -320,13 +344,11 @@ def test_outside_access(ip: str, port: int, proto: str, cfg: Dict = None) -> Tup
                 start_time = time.time()
                 parsed = urlparse(target)
                 
-                # 模拟代理握手+发送请求
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                     sock.settimeout(timeout)
                     if sock.connect_ex((ip_addr, port)) != 0:
                         continue
                     
-                    # 构造标准HTTP请求
                     request = (
                         f"{parsed.scheme.upper()} {parsed.path or '/'}?{parsed.query} HTTP/1.1\r\n"
                         f"Host: {parsed.netloc}\r\n"
@@ -334,35 +356,13 @@ def test_outside_access(ip: str, port: int, proto: str, cfg: Dict = None) -> Tup
                         f"Connection: close\r\n\r\n"
                     )
                     sock.send(request.encode('utf-8'))
-                    
-                    # 读取响应并验证
-                    response = b""
-                    while True:
-                        chunk = sock.recv(4096)
-                        if not chunk:
-                            break
-                        response += chunk
-                        if b"\r\n\r\n" in response:
-                            break
-                    
+                    response = sock.recv(4096)
                     elapsed = time.time() - start_time
-                    # 验证响应有效性
-                    if len(response) > 0:
-                        # 验证Google 204响应
-                        if "generate_204" in target and b"204 No Content" in response:
-                            return True, target, elapsed
-                        # 验证GitHub响应
-                        elif "github.com" in target and b"200 OK" in response:
-                            return True, target, elapsed
-                        # 验证出口IP响应
-                        elif "httpbin.org/ip" in target or "ipify.org" in target:
-                            # 检查是否包含IP（排除本地IP）
-                            if b"origin" in response or b"ip" in response:
-                                # 排除国内IP字符串
-                                if not any(cn_ip in response.decode('utf-8', errors='ignore') for cn_ip in ["101.", "112.", "120.", "180."]):
-                                    return True, target, elapsed
                     
-                    LOG.info(log_msg(f"⚠️ 目标{target}响应无效：{ip_addr}:{port}", proto=proto))
+                    if len(response) > 0 and any(code in response.decode('utf-8', errors='ignore') for code in ["200", "204"]):
+                        return True, target, elapsed
+                
+                LOG.info(log_msg(f"⚠️ 目标{target}响应无效：{ip_addr}:{port}", proto=proto))
             except socket.timeout:
                 LOG.info(log_msg(f"⚠️ 目标{target}超时：{ip_addr}:{port}", proto=proto))
                 continue
@@ -370,15 +370,19 @@ def test_outside_access(ip: str, port: int, proto: str, cfg: Dict = None) -> Tup
                 LOG.info(log_msg(f"⚠️ 目标{target}测试失败：{str(e)[:30]}", proto=proto))
                 continue
         
-        # 备用目标测试（仅作为参考）
         try:
             fallback = CONFIG["detection"]["http_test"]["fallback"]
-            start_time = time.time()
             parsed_fb = urlparse(fallback)
+            start_time = time.time()
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                 sock.settimeout(timeout/2)
                 if sock.connect_ex((ip_addr, port)) == 0:
-                    request_fb = f"GET {parsed_fb.path or '/'} HTTP/1.1\r\nHost: {parsed_fb.netloc}\r\nConnection: close\r\n\r\n"
+                    request_fb = (
+                        f"GET {parsed_fb.path or '/'} HTTP/1.1\r\n"
+                        f"Host: {parsed_fb.netloc}\r\n"
+                        f"User-Agent: {CONFIG['request']['ua']}\r\n"
+                        f"Connection: close\r\n\r\n"
+                    )
                     sock.send(request_fb.encode('utf-8'))
                     response_fb = sock.recv(1024)
                     if len(response_fb) > 0:
@@ -391,58 +395,86 @@ def test_outside_access(ip: str, port: int, proto: str, cfg: Dict = None) -> Tup
         LOG.info(log_msg(f"⚠️ 外网测试失败：{str(e)[:30]}", proto=proto))
         return False, "", 0.0
 
-def calculate_node_score(proto: str, security: str, port: int, dns_ok: bool, outside_ok: bool, 
-                        response_time: float, is_cn: bool) -> int:
-    """最终评分逻辑：外网验证为核心"""
+def calculate_node_score(
+    proto: str, 
+    security: str, 
+    port: int, 
+    dns_ok: bool, 
+    outside_ok: bool, 
+    response_time: float, 
+    is_cn: bool,
+    stability: float,
+    ip_type: str
+) -> int:
+    """优化后的评分函数：分协议阈值、权重重构、新增维度"""
     score = 0
     rules = CONFIG["filter"]["score_rules"]
+    rt_thresholds = CONFIG["detection"]["rt_thresholds"].get(proto, {"min":0.05, "max":6})
     
-    # 1. 国内IP直接扣50分
+    # 1. 国内IP扣分（降低至-40，不直接置0）
     if is_cn:
-        score += rules["cn_ip"]
-        if score < 0:
-            return 0
+        cn_score = rules["cn_ip"]
+        score += cn_score
+        score = max(score, 0)  # 保证不低于0
     
-    # 2. 响应时间异常扣分
-    if response_time < CONFIG["detection"]["min_response_time"] or response_time > CONFIG["detection"]["max_response_time"]:
-        score += rules["response_time_abnormal"]
-        return 0
+    # 2. 响应时间异常扣分（分协议阈值，不直接置0）
+    if response_time < rt_thresholds["min"] or response_time > rt_thresholds["max"]:
+        rt_score = rules["response_time_abnormal"]
+        score += rt_score
+        score = max(score, 0)
     
     # 3. 协议类型得分
-    score += rules["protocol"].get(proto, rules["protocol"]["other"])
+    proto_score = rules["protocol"].get(proto, 0)
+    score += proto_score
     
     # 4. 安全类型得分
-    score += rules["security"].get(security, rules["security"]["none"])
+    security_score = rules["security"].get(security, 0)
+    score += security_score
     
     # 5. 端口得分
-    if port == 443:
-        score += rules["port"][443]
-    elif port == 8443:
-        score += rules["port"][8443]
-    else:
-        score += rules["port"]["other"]
+    port_score = rules["port"].get(port, rules["port"]["other"])
+    score += port_score
     
-    # 6. DNS有效性得分
-    if dns_ok:
-        score += rules["dns_valid"]
+    # 6. DNS有效性得分（IP直连也加分）
+    dns_score = rules["dns_valid"] if (dns_ok or is_ip(ip_type)) else 0
+    score += dns_score
     
-    # 7. 外网验证得分（核心）
-    if outside_ok:
-        score += rules["http_valid"]
-    else:
-        score = 0  # 无外网访问能力直接得0分
+    # 7. 外网访问得分（无外网扣分，不直接置0）
+    outside_score = rules["http_valid"] if outside_ok else -rules["http_valid"]
+    score += outside_score
+    score = max(score, 0)
     
-    # 8. 响应速度得分
+    # 8. 响应速度得分（分协议）
+    speed_score = 0
+    speed_rules = rules["response_speed"].get(proto, {"fast": 0, "normal": 0, "slow": 0})
     if response_time < 1.0:
-        score += rules["response_speed"]["fast"]
+        speed_score = speed_rules["fast"]
     elif response_time < 3.0:
-        score += rules["response_speed"]["normal"]
+        speed_score = speed_rules["normal"]
     else:
-        score += rules["response_speed"]["slow"]
+        speed_score = speed_rules["slow"]
+    score += speed_score
     
-    return min(max(score, 0), 100)
+    # 9. 稳定性得分（成功率*权重）
+    stability_score = int(rules["stability"] * stability)
+    score += stability_score
+    
+    # 10. IP类型得分
+    ip_type_score = rules["ip_type"].get(ip_type, 0)
+    score += ip_type_score
+    
+    # 总分限制在0-100
+    final_score = min(max(score, 0), 100)
+    
+    # 输出评分明细日志
+    LOG.info(
+        f"📊 评分明细：\n"
+        f"   协议({proto_score}) + 安全({security_score}) + 端口({port_score}) + DNS({dns_score}) + 外网({outside_score}) + 速度({speed_score}) + 稳定性({stability_score}) + IP类型({ip_type_score}) + 国内IP({cn_score if is_cn else 0}) + 响应异常({rt_score if (response_time < rt_thresholds['min'] or response_time > rt_thresholds['max']) else 0}) = 总分({final_score})"
+    )
+    
+    return final_score
 
-# ========== 协议解析函数（最终版） ==========
+# ========== 协议解析函数 ==========
 def parse_vmess(line: str) -> Optional[Dict]:
     try:
         base64_match = re.match(r'^[A-Za-z0-9+/=]+', line[8:].strip())
@@ -460,7 +492,6 @@ def parse_vmess(line: str) -> Optional[Dict]:
         if not validate_fields(cfg, ["add", "port", "id"], "VMess", line):
             return None
         
-        # 强校验核心参数
         try:
             uuid.UUID(cfg["id"])
             alter_id = int(cfg.get("aid", 0))
@@ -476,7 +507,6 @@ def parse_vmess(line: str) -> Optional[Dict]:
             LOG.info(log_msg(f"📝 VMess UUID/alterId格式无效", line, "vmess"))
             return None
         
-        # 默认值兜底
         cfg["ps"] = process_remark(cfg.get('ps', ''), "VMess")
         cfg["port"] = validate_port(cfg.get('port', CONFIG["filter"]["DEFAULT_PORT"]))
         cfg["aid"] = cfg.get('aid', 0)
@@ -496,7 +526,7 @@ def parse_vmess(line: str) -> Optional[Dict]:
             "tls": cfg["tls"],
             "serverName": cfg["host"] or cfg["sni"],
             "ps": cfg["ps"],
-            "security_type": "tls" if cfg.get("tls") == "tls" else "none"
+            "security_type": "tls" if cfg.get("tls") == "tls" else ("aead" if cfg.get("scy") in ["aes-128-gcm", "chacha20-ietf-poly1305"] else "none")
         }
     except Exception as e:
         LOG.info(log_msg(f"❌ VMess解析错误: {str(e)}", line, "vmess"))
@@ -539,7 +569,6 @@ def parse_vless(line: str) -> Optional[Dict]:
             LOG.info(log_msg(f"📝 VLESS非443端口无TLS/Reality（{address}:{port}）", line, "vless"))
             return None
         
-        # Reality参数强校验
         if security == 'reality':
             required_reality = ['pbk', 'sid', 'fp']
             missing = [p for p in required_reality if p not in params]
@@ -673,7 +702,7 @@ def parse_ss(line: str) -> Optional[Dict]:
             "method": method,
             "password": password,
             "method_valid": True,
-            "security_type": "none"
+            "security_type": "aead" if method in ["aes-256-gcm", "aes-128-gcm", "chacha20-ietf-poly1305"] else "none"
         }
         
         if not validate_fields(cfg, ["address", "port"], "SS", line):
@@ -732,7 +761,7 @@ def parse_hysteria(line: str) -> Optional[Dict]:
             "downmbps": params.get('downmbps', ''),
             "upmbps": params.get('upmbps', ''),
             "label": remark,
-            "security_type": "tls"
+            "security_type": "tls" if params.get('tls', '1') == '1' else "none"
         }
         
         if not validate_fields(cfg, ["address", "port", "password"], "Hysteria", line):
@@ -746,51 +775,58 @@ def parse_hysteria(line: str) -> Optional[Dict]:
         LOG.info(log_msg(f"❌ Hysteria解析错误: {str(e)}", line, "hysteria"))
         return None
 
-# ========== 节点检测函数（最终版） ==========
-def test_node_final(ip: str, port: int, proto: str, cfg: Dict = None) -> Tuple[bool, float, bool, str]:
-    """最终节点检测：整合所有过滤条件"""
+# ========== 节点检测函数 ==========
+def test_node_final(ip: str, port: int, proto: str, cfg: Dict = None) -> Tuple[bool, float, bool, str, float]:
+    """优化后：增加多次检测计算稳定性"""
     port = validate_port(port)
     if not ip or is_private_ip(ip):
-        return False, 0.0, False, "private_ip"
+        return False, 0.0, False, "private_ip", 0.0
     
     ip_addr = ""
-    response_time = 0.0
+    avg_response_time = 0.0
     outside_ok = False
     fail_reason = ""
+    success_count = 0
+    response_times = []
+    total_tests = CONFIG["detection"]["tcp_retry"]
     
     try:
-        # DNS解析
         ip_addr = socket.gethostbyname(ip)
         
-        # 过滤国内IP
         if is_cn_ip(ip_addr):
             fail_reason = "cn_ip"
-            return False, 0.0, False, fail_reason
+            return False, 0.0, False, fail_reason, 0.0
         
-        # TCP连接+响应时间
-        start_time = time.time()
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.settimeout(CONFIG["detection"]["tcp_timeout"].get(proto, 5))
-            if sock.connect_ex((ip_addr, port)) != 0:
-                fail_reason = "tcp_connect_fail"
-                return False, 0.0, False, fail_reason
-        response_time = time.time() - start_time
+        # 多次检测计算稳定性
+        for _ in range(total_tests):
+            try:
+                start_time = time.time()
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+                    sock.settimeout(CONFIG["detection"]["tcp_timeout"].get(proto, 5))
+                    if sock.connect_ex((ip_addr, port)) == 0:
+                        success_count += 1
+                        response_times.append(time.time() - start_time)
+                time.sleep(0.1)
+            except Exception:
+                continue
         
-        # 过滤响应时间异常
-        if response_time < CONFIG["detection"]["min_response_time"]:
-            fail_reason = "response_time_too_fast"
-            return False, response_time, False, fail_reason
-        if response_time > CONFIG["detection"]["max_response_time"]:
-            fail_reason = "response_time_too_slow"
-            return False, response_time, False, fail_reason
+        # 计算平均响应时间
+        avg_response_time = sum(response_times)/len(response_times) if response_times else 0.0
+        stability = success_count / total_tests
         
-        # 外网访问验证（核心）
-        outside_ok, target, outside_time = test_outside_access(ip, port, proto, cfg)
+        # 响应时间异常判断（分协议）
+        rt_thresholds = CONFIG["detection"]["rt_thresholds"].get(proto, {"min":0.05, "max":6})
+        if avg_response_time < rt_thresholds["min"] or avg_response_time > rt_thresholds["max"]:
+            fail_reason = "response_time_abnormal"
+            return False, avg_response_time, False, fail_reason, stability
+        
+        # 外网访问验证
+        outside_ok, _, _ = test_outside_access(ip, port, proto, cfg)
         if not outside_ok:
             fail_reason = "no_outside_access"
-            return False, response_time, False, fail_reason
+            return False, avg_response_time, outside_ok, fail_reason, stability
         
-        # 协议专属验证
+        # Hysteria UDP验证
         if proto == "hysteria":
             try:
                 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as udp_sock:
@@ -799,16 +835,15 @@ def test_node_final(ip: str, port: int, proto: str, cfg: Dict = None) -> Tuple[b
             except Exception:
                 pass
         
-        return True, response_time, outside_ok, "success"
+        return True, avg_response_time, outside_ok, "success", stability
     except socket.gaierror:
         fail_reason = "dns_fail"
-        return False, 0.0, False, fail_reason
+        return False, 0.0, False, fail_reason, 0.0
     except Exception as e:
         fail_reason = f"error:{str(e)[:20]}"
-        return False, 0.0, False, fail_reason
+        return False, 0.0, False, fail_reason, 0.0
 
 def process_single_node_final(node: Union[str, Dict]) -> Tuple[Optional[str], Dict, int]:
-    """最终节点处理：极致筛选"""
     raw_line = node["line"] if isinstance(node, dict) else node
     
     try:
@@ -829,6 +864,8 @@ def process_single_node_final(node: Union[str, Dict]) -> Tuple[Optional[str], Di
         response_time = 0.0
         score = 0
         is_cn = False
+        stability = 0.0
+        ip_type = "unknown"
         
         # 协议路由
         if clean_line.startswith('vmess://'):
@@ -862,25 +899,37 @@ def process_single_node_final(node: Union[str, Dict]) -> Tuple[Optional[str], Di
         # 国内IP检测
         is_cn = is_cn_ip(ip)
         if is_cn:
-            LOG.info(log_msg(f"📝 过滤国内IP节点：{ip}:{port}", clean_line, proto))
-            return None, {}, 0
+            LOG.info(log_msg(f"📝 检测到国内IP：{ip}:{port}", clean_line, proto))
         
-        # DNS有效性校验
-        dns_ok, dns_ips = dns_resolve(domain) if domain else dns_resolve(ip)
-        if not dns_ok:
-            LOG.info(log_msg(f"📝 过滤DNS无效节点：{ip}:{port}", clean_line, proto))
-            return None, {}, 0
+        # DNS有效性校验（IP直连也认可）
+        dns_ok, dns_ips = dns_resolve(domain) if domain else (is_ip(ip), [ip])
         
-        # 最终检测
-        tcp_ok, response_time, outside_ok, fail_reason = test_node_final(ip, port, proto, cfg)
+        # IP类型识别
+        ip_type = get_ip_type(ip)
+        
+        # 最终检测（含稳定性）
+        tcp_ok, response_time, outside_ok, fail_reason, stability = test_node_final(ip, port, proto, cfg)
         if not tcp_ok:
             LOG.info(log_msg(f"📝 过滤节点（{fail_reason}）：{ip}:{port}", clean_line, proto))
             return None, {}, 0
         
         # 计算评分
-        score = calculate_node_score(proto, security_type, port, dns_ok, outside_ok, response_time, is_cn)
-        if score < CONFIG["detection"]["score_threshold"]:
-            LOG.info(log_msg(f"📝 过滤低分节点（{score}分 < {CONFIG['detection']['score_threshold']}分）：{ip}:{port}", clean_line, proto))
+        score = calculate_node_score(
+            proto=proto,
+            security=security_type,
+            port=port,
+            dns_ok=dns_ok,
+            outside_ok=outside_ok,
+            response_time=response_time,
+            is_cn=is_cn,
+            stability=stability,
+            ip_type=ip_type
+        )
+        
+        # 动态阈值判断
+        dynamic_threshold = adjust_score_threshold([{"score": score}])
+        if score < dynamic_threshold:
+            LOG.info(log_msg(f"📝 过滤低分节点（{score}分 < {dynamic_threshold}分）：{ip}:{port}", clean_line, proto))
             return None, {}, 0
         
         # 组装节点信息
@@ -896,17 +945,18 @@ def process_single_node_final(node: Union[str, Dict]) -> Tuple[Optional[str], Di
             "dns_ok": dns_ok,
             "outside_ok": outside_ok,
             "is_cn": is_cn,
+            "stability": stability,
+            "ip_type": ip_type,
             "source_url": node.get("source_url", "") if isinstance(node, dict) else ""
         }
         
-        LOG.info(f"✅ 优质节点（{score}分）: {ip}:{port}（{proto}）RT：{response_time:.2f}s | 外网：{'OK' if outside_ok else 'FAIL'}")
+        LOG.info(f"✅ 优质节点（{score}分）: {ip}:{port}（{proto}）RT：{response_time:.2f}s | 稳定性：{stability:.1%} | IP类型：{ip_type} | 外网：{'OK' if outside_ok else 'FAIL'}")
         return clean_line, node_info, score
     except Exception as e:
         LOG.info(log_msg(f"❌ 节点处理错误: {str(e)}", raw_line, proto))
         return None, {}, 0
 
 def dedup_nodes_final(nodes: List[Dict]) -> List[Dict]:
-    """最终去重：IP+端口+协议+核心配置+外网能力"""
     seen = set()
     unique = []
     nodes.sort(key=lambda x: x["weight"], reverse=True)
@@ -943,19 +993,16 @@ def dedup_nodes_final(nodes: List[Dict]) -> List[Dict]:
     LOG.info(f"🔍 最终去重完成：原始{len(nodes)}条 → 去重后{len(unique)}条")
     return unique
 
-# ========== 数据源与统计（最终版） ==========
+# ========== 数据源与统计 ==========
 def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
-    """核心优化：修复Base64误解码、增强网络请求、优化过滤规则、增加调试日志"""
     cache_dir = ".cache"
     os.makedirs(cache_dir, exist_ok=True)
     cache_key = hashlib.md5(url.encode()).hexdigest()
     cache_path = os.path.join(cache_dir, cache_key)
     
-    # 强制清理过期缓存（临时将缓存有效期设为0）
     if os.path.exists(cache_path):
         try:
             cache_mtime = os.path.getmtime(cache_path)
-            # 缩短缓存有效期为1小时（原3600秒），或强制重新拉取
             if time.time() - cache_mtime < CONFIG["github"]["cache_ttl"]:
                 with open(cache_path, "r", encoding="utf-8") as f:
                     lines = json.load(f)
@@ -969,24 +1016,21 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
     
     for retry in range(CONFIG["request"]["retry"]):
         try:
-            # 增强网络请求：延长超时、增加重试、校验内容完整性
             resp = SESSION.get(
                 url, 
                 timeout=CONFIG["request"]["timeout"], 
                 verify=False,
-                headers={"Connection": "close"}  # 关闭长连接，避免连接复用问题
+                headers={"Connection": "close"}
             )
             resp.raise_for_status()
             
-            # 校验拉取内容完整性
             raw_content = resp.text
             if len(raw_content) < 100 and '404' not in raw_content:
                 raise ValueError(f"拉取内容过短（{len(raw_content)}字符），可能被截断")
             
             LOG.debug(f"📝 拉取 {url} 原始内容长度：{len(raw_content)} 字符")
-            LOG.debug(f"📝 拉取 {url} 原始内容前500字符：{raw_content[:500]}")
             
-            # ========== 第一次过滤：解码前 过滤注释/空行（优化规则） ==========
+            # 第一次过滤
             raw_lines_before_decode = raw_content.split('\n')
             filtered_before_decode = []
             comment_count_first = 0
@@ -994,25 +1038,21 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
             
             for l in raw_lines_before_decode:
                 stripped_line = l.strip()
-                # 仅跳过纯空行（无任何字符）
                 if not stripped_line:
                     empty_line_count_first += 1
                     continue
-                # 仅跳过以#开头的注释行（前面无其他有效字符）
                 if stripped_line.startswith('#'):
                     comment_count_first += 1
                     continue
-                # 保留有效行（保留原始格式，用于解码）
                 filtered_before_decode.append(l)
             
-            # 拼接为连续文本，用于后续解码
             content_after_first_filter = '\n'.join(filtered_before_decode)
             LOG.info(f"📝 第一次过滤（解码前）：{url} 移除注释行{comment_count_first}行 | 空行{empty_line_count_first}行 | 剩余{len(filtered_before_decode)}行")
             
-            # ========== 条件解码：仅当内容为Base64格式时才解码 ==========
+            # 条件解码
             content = decode_b64_sub(content_after_first_filter)
             
-            # ========== 第二次过滤：解码后 再次过滤注释/空行（优化规则） ==========
+            # 第二次过滤
             raw_lines_after_decode = content.split('\n')
             lines = []
             comment_count_second = 0
@@ -1020,23 +1060,18 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
             
             for l in raw_lines_after_decode:
                 stripped_line = l.strip()
-                # 仅跳过纯空行
                 if not stripped_line:
                     empty_line_count_second += 1
                     continue
-                # 仅跳过以#开头的注释行
                 if stripped_line.startswith('#'):
                     comment_count_second += 1
                     continue
-                # 保留最终有效行
                 lines.append(stripped_line)
             
-            # 输出调试日志
             LOG.info(f"📝 第二次过滤（解码后）：{url} 移除注释行{comment_count_second}行 | 空行{empty_line_count_second}行 | 剩余{len(lines)}行")
             if lines:
                 LOG.debug(f"📝 {url} 有效节点示例（前3行）：{lines[:3]}")
             
-            # ========== 缓存写入 + 结果返回 ==========
             try:
                 with open(cache_path, "w", encoding="utf-8") as f:
                     json.dump(lines, f, ensure_ascii=False)
@@ -1057,7 +1092,6 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
     return [], weight
 
 def clean_expired_cache() -> None:
-    """优化缓存清理：强制清理过期缓存，增加日志"""
     cache_dir = ".cache"
     if not os.path.exists(cache_dir):
         return
@@ -1119,6 +1153,25 @@ def count_proto(lines: List[Union[str, Dict]]) -> Dict[str, int]:
             count["other"] +=1
     return count
 
+def adjust_score_threshold(valid_nodes_info: List[Dict]) -> int:
+    """动态调整阈值：避免无节点输出"""
+    base_threshold = CONFIG["detection"]["score_threshold"]
+    if not valid_nodes_info:
+        return base_threshold
+    
+    scores = [n["score"] for n in valid_nodes_info if "score" in n]
+    if not scores:
+        return base_threshold
+    
+    avg_score = sum(scores)/len(scores)
+    # 动态阈值：平均得分的70%，且不低于60，不高于75
+    dynamic_threshold = max(60, min(75, int(avg_score * 0.7)))
+    
+    if dynamic_threshold != base_threshold:
+        LOG.info(f"📊 动态调整阈值：{base_threshold} → {dynamic_threshold}（平均得分{avg_score:.1f}）")
+    
+    return dynamic_threshold
+
 def fetch_all_sources() -> Tuple[List[Dict], Dict[str, Dict]]:
     all_nodes = []
     source_records = {}
@@ -1153,7 +1206,6 @@ def fetch_all_sources() -> Tuple[List[Dict], Dict[str, Dict]]:
     return all_nodes, source_records
 
 def process_nodes_final(unique_nodes: List[Dict]) -> Tuple[List[str], List[Dict]]:
-    """最终节点处理：极致筛选"""
     valid_lines = []
     valid_nodes_info = []
     total = len(unique_nodes)
@@ -1170,7 +1222,7 @@ def process_nodes_final(unique_nodes: List[Dict]) -> Tuple[List[str], List[Dict]
             except Exception as e:
                 LOG.warning(f"⚠️ 节点处理异常: {str(e)[:50]}")
                 continue
-            if line and score >= CONFIG["detection"]["score_threshold"]:
+            if line and score >= adjust_score_threshold([node_info]):
                 valid_lines.append(line)
                 valid_nodes_info.append(node_info)
     
@@ -1178,25 +1230,21 @@ def process_nodes_final(unique_nodes: List[Dict]) -> Tuple[List[str], List[Dict]
     valid_nodes_info.sort(key=lambda x: x["score"], reverse=True)
     valid_lines_sorted = [node["line"] for node in valid_nodes_info]
     
-    LOG.info(f"✅ 最终优质节点筛选完成：共{len(valid_lines_sorted)}条（阈值{CONFIG['detection']['score_threshold']}分）")
+    LOG.info(f"✅ 最终优质节点筛选完成：共{len(valid_lines_sorted)}条（基础阈值{CONFIG['detection']['score_threshold']}分）")
     return valid_lines_sorted, valid_nodes_info
 
 def generate_final_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_lines: List[str], 
                         valid_nodes_info: List[Dict], start_time: float) -> None:
-    """生成最终统计报告"""
-    # 分级：优质（≥90）、良好（80-89）、合格（75-79）
     excellent = [n for n in valid_nodes_info if n["score"] >= 90]
     good = [n for n in valid_nodes_info if 80 <= n["score"] < 90]
-    qualified = [n for n in valid_nodes_info if 75 <= n["score"] < 80]
+    qualified = [n for n in valid_nodes_info if 65 <= n["score"] < 80]
     proto_count = count_proto(valid_lines)
     
-    # 保存分级节点（Base64编码，可直接导入客户端）
     def save_nodes(lines: List[str], filename: str, desc: str):
         if not lines:
             LOG.info(f"📄 {desc}为空，跳过保存")
             return
         try:
-            # Base64编码（URL安全）
             encoded = base64.b64encode('\n'.join(lines).encode('utf-8')).decode('utf-8')
             with open(filename, 'w', encoding='utf-8') as f:
                 f.write(encoded)
@@ -1204,26 +1252,24 @@ def generate_final_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_
         except OSError as e:
             LOG.error(f"❌ {desc}保存失败: {str(e)[:50]}")
     
-    save_nodes([n["line"] for n in excellent], 'final_excellent.txt', "优质节点（≥90分）")
-    save_nodes([n["line"] for n in good], 'final_good.txt', "良好节点（80-89分）")
-    save_nodes([n["line"] for n in qualified], 'final_qualified.txt', "合格节点（75-79分）")
-    save_nodes(valid_lines, 'final_all.txt', "所有有效节点")
+    # 保存所有有效节点（未分级）
+    save_nodes(valid_lines, 'final_all.txt', "所有有效节点（≥65分）")
     
     # 统计信息
     total_cost = time.time() - start_time
     avg_response_time = sum([n["response_time"] for n in valid_nodes_info]) / len(valid_nodes_info) if valid_nodes_info else 0
+    avg_stability = sum([n["stability"] for n in valid_nodes_info]) / len(valid_nodes_info) if valid_nodes_info else 0
     outside_ok_rate = len([n for n in valid_nodes_info if n["outside_ok"]]) / len(valid_nodes_info) * 100 if valid_nodes_info else 0
     cn_ip_rate = len([n for n in valid_nodes_info if n["is_cn"]]) / len(valid_nodes_info) * 100 if valid_nodes_info else 0
     
     LOG.info(f"\n🏆 最终筛选报告：")
     LOG.info(f"   ├─ 原始节点：{len(all_nodes)} 条 → 去重后：{len(unique_nodes)} 条 → 有效节点：{len(valid_lines)} 条")
-    LOG.info(f"   ├─ 节点分级：优质（≥90分）{len(excellent)}条 | 良好（80-89分）{len(good)}条 | 合格（75-79分）{len(qualified)}条")
+    LOG.info(f"   ├─ 节点分级：优质（≥90分）{len(excellent)}条 | 良好（80-89分）{len(good)}条 | 合格（65-79分）{len(qualified)}条")
     LOG.info(f"   ├─ 协议分布：VLESS({proto_count['vless']}) | Trojan({proto_count['trojan']}) | VMess({proto_count['vmess']}) | SS({proto_count['ss']}) | Hysteria({proto_count['hysteria']})")
-    LOG.info(f"   ├─ 性能指标：平均响应 {avg_response_time:.2f}s | 外网通过率 {outside_ok_rate:.1f}% | 国内IP占比 {cn_ip_rate:.1f}%")
-    LOG.info(f"   └─ 总耗时：{total_cost:.2f} 秒 | 建议优先使用 final_excellent.txt 节点")
+    LOG.info(f"   ├─ 性能指标：平均响应 {avg_response_time:.2f}s | 平均稳定性 {avg_stability:.1%} | 外网通过率 {outside_ok_rate:.1f}% | 国内IP占比 {cn_ip_rate:.1f}%")
+    LOG.info(f"   └─ 总耗时：{total_cost:.2f} 秒 | 输出文件：final_all.txt")
 
 def main() -> None:
-    """最终主函数"""
     start_time = time.time()
     LOG.info(f"🚀 开始终极节点筛选（{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}）")
     
@@ -1231,29 +1277,23 @@ def main() -> None:
         LOG.error("❌ 配置校验失败，退出")
         return
     
-    # 强制清理过期缓存
     clean_expired_cache()
     
-    # 拉取数据源
     all_nodes, source_records = fetch_all_sources()
     
-    # 最终去重
     unique_nodes = dedup_nodes_final(all_nodes)
     
-    # 最终筛选
     valid_lines, valid_nodes_info = process_nodes_final(unique_nodes)
     
-    # 生成报告
     generate_final_stats(all_nodes, unique_nodes, valid_lines, valid_nodes_info, start_time)
     
-    # 关闭会话
     try:
         SESSION.close()
         LOG.info("🔌 关闭请求会话")
     except Exception as e:
         LOG.warning(f"⚠️ 会话关闭异常: {str(e)[:50]}")
     
-    LOG.info("\n✅ 终极筛选完成！优质节点已保存至 final_excellent.txt，有效率≥80%")
+    LOG.info("\n✅ 终极筛选完成！有效节点已保存至 final_all.txt")
 
 if __name__ == "__main__":
     main()
