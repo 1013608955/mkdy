@@ -765,7 +765,7 @@ def generate_final_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_
         except OSError as e:
             LOG.error(f"❌ {desc}保存失败: {str(e)[:50]}")
    
-    save_nodes(valid_lines, 'final_all.txt', "所有有效节点（≥65分）")
+    save_nodes(valid_lines, 's1.txt', "所有有效节点（≥65分）")
    
     total_cost = time.time() - start_time
     avg_response_time = sum([n["response_time"] for n in valid_nodes_info]) / len(valid_nodes_info) if valid_nodes_info else 0
@@ -778,7 +778,7 @@ def generate_final_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_
     LOG.info(f" ├─ 节点分级：优质（≥90分）{len(excellent)}条 | 良好（80-89分）{len(good)}条 | 合格（65-79分）{len(qualified)}条")
     LOG.info(f" ├─ 协议分布：VLESS({proto_count['vless']}) | Trojan({proto_count['trojan']}) | VMess({proto_count['vmess']}) | SS({proto_count['ss']}) | Hysteria({proto_count['hysteria']})")
     LOG.info(f" ├─ 性能指标：平均响应 {avg_response_time:.2f}s | 平均稳定性 {avg_stability:.1%} | 外网通过率 {outside_ok_rate:.1f}% | 国内IP占比 {cn_ip_rate:.1f}%")
-    LOG.info(f" └─ 总耗时：{total_cost:.2f} 秒 | 输出文件：final_all.txt")
+    LOG.info(f" └─ 总耗时：{total_cost:.2f} 秒 | 输出文件：s1.txt")
 
 def main() -> None:
     start_time = time.time()
@@ -804,7 +804,7 @@ def main() -> None:
     except Exception as e:
         LOG.warning(f"⚠️ 会话关闭异常: {str(e)[:50]}")
    
-    LOG.info("\n✅ 终极筛选完成！有效节点已保存至 final_all.txt")
+    LOG.info("\n✅ 终极筛选完成！有效节点已保存至 s1.txt")
 
 if __name__ == "__main__":
     main()
