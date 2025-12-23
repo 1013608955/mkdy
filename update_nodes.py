@@ -49,7 +49,7 @@ CONFIG: Dict = {
             ],
             "fallback": "http://baidu.com"
         },
-        "score_threshold": 60,
+        "score_threshold": 30,
         "rt_thresholds": {  # 优化：所有协议 max 统一提升到 9s
             "vmess": {"min": 0.05, "max": 12},
             "vless": {"min": 0.05, "max": 12},
@@ -90,7 +90,7 @@ CONFIG: Dict = {
             },
             "dns_valid": 8,
             "http_valid": 8,   # 优化：22 → 10
-            "cn_ip": 0,       # 优化：-40 → -10
+            "cn_ip": -5,       # 优化：-40 → -10
             "response_time_abnormal": -20,
             "stability": 5,
             "ip_type": {"residential": 15, "dc": 10, "unknown": 5}
@@ -424,9 +424,9 @@ def test_node_final(ip: str, port: int, proto: str) -> Tuple[bool, float, bool, 
         if avg_rt < thresh["min"] or avg_rt > thresh["max"]:
             return False, avg_rt, False, "rt_abnormal", stability
 
-        outside_ok, _, _ = test_outside_access(ip, port, proto)
-        if not outside_ok:
-            return False, avg_rt, False, "no_outside", stability
+        # outside_ok, _, _ = test_outside_access(ip, port, proto)
+        # if not outside_ok:
+        #     return False, avg_rt, False, "no_outside", stability
 
         return True, avg_rt, True, "ok", stability
     except Exception:
@@ -680,7 +680,7 @@ def adjust_score_threshold(valid_nodes_info: List[Dict]) -> int:
         return base_threshold
    
     avg_score = sum(scores)/len(scores)
-    dynamic_threshold = max(60, min(75, int(avg_score * 0.7)))
+    dynamic_threshold = max(30, min(75, int(avg_score * 0.7)))
    
     if dynamic_threshold != base_threshold:
         LOG.info(f"📊 动态调整阈值：{base_threshold} → {dynamic_threshold}（平均得分{avg_score:.1f}）")
