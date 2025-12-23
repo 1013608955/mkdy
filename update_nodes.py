@@ -14,1091 +14,720 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from functools import lru_cache
 import urllib3
-from typing import Dict, List, Tuple, Optional, Union
-import json
 
-# ========== 配置与初始化 ==========
+# 禁用不安全请求警告
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# 核心配置（放宽规则+容错处理，评分阈值调整为60）
+# ========== 核心配置（优化后） ==========
 CONFIG: Dict = {
     "sources": [
         {"url": "https://raw.githubusercontent.com/ripaojiedian/freenode/main/sub", "weight": 5},
         {"url": "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/Splitted-By-Protocol/vmess.txt", "weight": 5},
-        {"url": "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt", "weight": 5},
+        {"url": "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray.txt", "weight": 5},
         {"url": "https://raw.githubusercontent.com/mfuu/v2ray/master/v2ray", "weight": 4},
         {"url": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt", "weight": 4},
         {"url": "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt", "weight": 3},
         {"url": "https://raw.githubusercontent.com/HakurouKen/free-node/main/public", "weight": 3},
         {"url": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub", "weight": 2}
     ],
-    "request": {"timeout": 120, "retry": 2, "retry_delay": 2, "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"},
-    "github": {"token": os.getenv("GITHUB_TOKEN", ""), "interval": 0.5, "cache_ttl": 3600, "cache_expire_days": 7},
+    "request": {
+        "timeout": 120,
+        "retry": 2,
+        "retry_delay": 2,
+        "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    },
+    "github": {
+        "token": os.getenv("GITHUB_TOKEN", ""),
+        "interval": 0.5,
+        "cache_ttl": 3600,
+        "cache_max_size": 100 * 1024 * 1024  # 缓存目录最大100MB
+    },
     "detection": {
-        "tcp_timeout": {"vmess":8, "vless":8, "trojan":8, "ss":6, "hysteria":10},  # 延长超时
-        "tcp_retry": 2,  # 增加重试次数
-        "thread_pool": 8,
-        "dns": {"servers": ["1.1.1.1", "8.8.4.4"], "timeout":6, "cache_size":1000},  # 换纯净DNS
-        "http_test": {
-            "timeout": 15,  # 延长HTTP测试超时
-            # 降级外网测试目标（优先可访问的）
-            "targets": [
-                "http://httpbin.org/ip",               # 核心目标（无墙）
-                "https://api.ipify.org?format=json",   # 备用目标
-                "http://www.google.com/generate_204",  # 降级为最后目标
-                "https://api.github.com/"              # 降级为最后目标
-            ],
-            "fallback": "http://baidu.com"
-        },
-        "score_threshold": 60,  # 调整为60分（匹配合格节点起始分数）
-        "min_response_time": 0.05,  # 放宽最小响应时间
-        "max_response_time": 8.0    # 放宽最大响应时间
+        "tcp_timeout": {"vmess": 8, "vless": 8, "trojan": 8, "ss": 6, "hysteria": 10},
+        "tcp_retry": 2,  # TCP探测重试次数（稳定性验证）
+        "tcp_retry_interval": 0.5,  # 重试间隔
+        "http_validate_urls": [  # 可用性验证URL（优先级从高到低）
+            "http://httpbin.org/ip",
+            "https://www.google.com/generate_204",
+            "http://ip-api.com/json/"
+        ],
+        "http_validate_timeout": 5,  # 可用性验证超时
+        "score_threshold": 60,  # 保留阈值
+        "min_response_time": 0.05,  # 最小有效响应时间
+        "max_response_time": 8.0,   # 最大有效响应时间
+        # 动态并发配置
+        "concurrency": {
+            "small": 4,   # 节点数<100
+            "medium": 8,  # 100≤节点数<500
+            "large": 12   # 节点数≥500
+        }
     },
     "filter": {
-        "private_ip": re.compile(r"^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[0-1])\.|127\.|0\.0\.0\.0)"),
-        # 简化国内IP段（减少误判）
-        "cn_ip_ranges": [
-            re.compile(r"^10\."), re.compile(r"^192\.168\."), re.compile(r"^172\.(1[6-9]|2\d|3[0-1])\."),
-            re.compile(r"^223\."), re.compile(r"^202\."), re.compile(r"^210\.")
-        ],
+        "private_ip_patterns": re.compile(r"^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|::1|localhost)"),
+        "cn_ip_patterns": re.compile(r"^(223\.|202\.|210\.|10\.|192\.168\.|172\.)"),
         "ports": range(1, 65535),
         "max_remark_bytes": 200,
         "DEFAULT_PORT": 443,
         "SS_DEFAULT_CIPHER": "aes-256-gcm",
         "SS_VALID_CIPHERS": ["aes-256-gcm", "aes-128-gcm", "chacha20-ietf-poly1305", "aes-256-cfb", "aes-128-cfb"],
-        # 调整评分规则（降低外网权重，取消国内IP硬扣分）
-        "score_rules": {
-            "protocol": {"vless": 25, "trojan": 20, "vmess": 15, "hysteria": 10, "ss": 5, "other": 0},
-            "security": {"reality": 25, "tls": 20, "none": 0},
-            "port": {443: 10, 8443: 8, "other": 3},
-            "response_speed": {"fast": 10, "normal": 5, "slow": 0},
+        # 评分权重配置（优化后）
+        "score_weights": {
+            # 加分项
+            "protocol": {
+                "vless": 20,
+                "trojan": 18,
+                "vmess": 15,
+                "hysteria": 12,
+                "ss": 8,
+                "other": 0
+            },
+            "security": {
+                "reality": 20,
+                "tls": 18,
+                "none": 0
+            },
+            "port": {
+                443: 8,
+                8443: 6,
+                "other": 3
+            },
             "dns_valid": 5,
-            "http_valid": 10,  # 降低外网验证权重
-            "cn_ip": -20,      # 国内IP从扣50分改为扣20分（不再直接归零）
-            "response_time_abnormal": -30  # 响应时间异常从扣100分改为扣30分
+            "net_validate": 10,
+            "response_speed": {
+                "0.05-0.5": 20,
+                "0.5-1.0": 15,
+                "1.0-3.0": 10,
+                "3.0-8.0": 0,
+                "<0.05|>8.0": 0
+            },
+            "availability": {
+                "full": 15,  # HTTP访问成功
+                "tcp_only": 5,  # 仅TCP通
+                "failed": 0
+            },
+            # 扣分项
+            "cn_ip": {
+                "pure_cn": -30,
+                "cn_relay": -10,
+                "non_cn": 0
+            },
+            "response_time": {
+                "<0.05|>8.0": -30,
+                "3.0-8.0": -10,
+                "0.05-3.0": 0
+            }
+        },
+        # 分级区间（优化后）
+        "grade_ranges": {
+            "excellent": (80, 100),  # 优质
+            "good": (70, 79),        # 良好
+            "qualified": (60, 69)    # 合格
         }
     }
 }
 
-# 日志初始化
+# ========== 日志初始化（优化后） ==========
 def init_logger() -> logging.Logger:
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("node_scorer")
     logger.setLevel(logging.INFO)
     logger.propagate = False
+    
     if not logger.handlers:
-        fmt = logging.Formatter("%(asctime)s - %(message)s", "%Y-%m-%d %H:%M:%S")
-        handler = logging.StreamHandler()
-        handler.setFormatter(fmt)
-        logger.addHandler(handler)
+        formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", "%Y-%m-%d %H:%M:%S")
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(formatter)
+        logger.addHandler(console_handler)
+    
     return logger
 
 LOG = init_logger()
 
-# 全局请求会话（禁用代理）
-def init_session() -> requests.Session:
-    sess = requests.Session()
-    sess.trust_env = False  # 禁用系统代理，避免干扰测试
-    headers = {"User-Agent": CONFIG["request"]["ua"], "Accept": "*/*"}
-    if CONFIG["github"]["token"]:
-        headers["Authorization"] = f"token {CONFIG['github']['token']}"
-    sess.headers.update(headers)
-    adapter = requests.adapters.HTTPAdapter(pool_connections=8, pool_maxsize=16, max_retries=1)
-    sess.mount("https://", adapter)
-    sess.mount("http://", adapter)
-    return sess
-
-SESSION = init_session()
-
-# ========== 核心过滤工具函数 ==========
-def validate_port(port: Union[str, int]) -> int:
-    try:
-        p = int(port)
-        return p if p in CONFIG["filter"]["ports"] else CONFIG["filter"]["DEFAULT_PORT"]
-    except (ValueError, TypeError):
-        return CONFIG["filter"]["DEFAULT_PORT"]
-
-def log_msg(content: str, line: str = "", proto: str = "") -> str:
-    if "保留节点" in content:
-        line_part = ""
-    else:
-        if "解析错误" in content or "过滤无效" in content or "空地址节点" in content:
-            line_part = f"（{line}）" if line else ""
-        else:
-            safe_line = line[:20].encode('ascii', 'ignore').decode('ascii')
-            line_part = f"（{safe_line}...）" if safe_line else ""
-    proto_part = f"（{proto}）" if proto else ""
-    return f"{content}{line_part}{proto_part}"
-
-def b64_safe_decode(b64_str: str) -> str:
-    try:
-        b64_str = b64_str.rstrip('=')
-        b64_str += '=' * (4 - len(b64_str) % 4) if len(b64_str) % 4 != 0 else ''
-        return base64.b64decode(b64_str).decode('utf-8', errors='ignore')
-    except Exception:
-        return b64_str
-
-def clean_special_chars(line: str) -> str:
-    if not line:
-        return ""
-    clean_line = re.sub(r'[\u200b\u3000\s]+', '', line)
-    clean_line = clean_line.replace('＠', '@')
-    return clean_line
-
-def proto_preprocess(line: str, proto_prefix: str) -> Tuple[str, str]:
-    clean_line = clean_special_chars(line)
-    remark = f"{proto_prefix.upper()}节点"
-    
-    if '#' in clean_line:
-        main_part, remark = clean_line.split('#', 1)
-        remark = process_remark(remark, proto_prefix.upper())
-    else:
-        main_part = clean_line
-    
-    if not main_part.startswith(proto_prefix):
-        raise ValueError(f"非{proto_prefix.upper()}节点格式")
-    
-    core_content = main_part[len(proto_prefix):].strip()
-    if not core_content:
-        raise ValueError(f"{proto_prefix.upper()}核心内容为空")
-    
-    return core_content, remark
-
-def decode_b64_sub(text: str) -> str:
-    original_text = text.strip()
-    clean_for_b64 = re.sub(r'\s+', '', original_text)
+# ========== 工具函数（优化后） ==========
+# IP/端口解析缓存
+@lru_cache(maxsize=2000)
+def extract_ip_port(line: str) -> tuple[str, str, int]:
+    """提取节点IP、域名、端口（带缓存）"""
+    ip = ""
+    domain = ""
+    port = CONFIG["filter"]["DEFAULT_PORT"]
     
     try:
-        decoded = b64_safe_decode(clean_for_b64)
-        decoded_line_count = len([l for l in decoded.split('\n') if l.strip()])
-        LOG.info(log_msg(f"✅ Base64解码成功，解析出{decoded_line_count}个有效节点"))
-        return decoded
-    except Exception as e:
-        LOG.info(log_msg(f"❌ Base64解码失败: {str(e)[:50]}"))
-        cleaned_lines = [l.strip() for l in original_text.split('\n')]
-        plain_line_count = len([l for l in cleaned_lines if l])
-        LOG.info(log_msg(f"✅ 明文订阅处理完成，解析出{plain_line_count}个有效节点"))
-        return '\n'.join(cleaned_lines)
-
-def clean_node_content(line: str) -> str:
-    if not line:
-        return ""
-    line = re.sub(r'[\u4e00-\u9fa5]', '', line)
-    error_keywords = ["订阅内容解析错误", "解析失败", "无效节点", "缺失字段"]
-    for keyword in error_keywords:
-        line = line.replace(keyword, "")
-    return line.strip()
-
-def is_private_ip(ip: str) -> bool:
-    return bool(ip and CONFIG["filter"]["private_ip"].match(ip))
-
-def is_cn_ip(ip: str) -> bool:
-    """判断是否为国内IP（简化规则，减少误判）"""
-    if not ip or is_private_ip(ip):
-        return False
-    for pattern in CONFIG["filter"]["cn_ip_ranges"]:
-        if pattern.match(ip):
-            return True
-    return False
-
-@lru_cache(maxsize=CONFIG["detection"]["dns"]["cache_size"])
-def dns_resolve(domain: str) -> Tuple[bool, List[str]]:
-    """增强DNS解析：返回是否有效+解析出的IP列表"""
-    if not domain or domain == "未知":
-        return False, []
-    original_timeout = socket.getdefaulttimeout()
-    socket.setdefaulttimeout(CONFIG["detection"]["dns"]["timeout"])
-    ip_list = []
-    try:
-        for dns in CONFIG["detection"]["dns"]["servers"]:
+        # 匹配@后的IP/域名和端口
+        pattern = r"@([a-zA-Z0-9\-\.]+):(\d+)"
+        match = re.search(pattern, line)
+        if match:
+            domain = match.group(1)
+            port = int(match.group(2))
+            
+            # 尝试解析域名到IP
             try:
-                ip_list = socket.gethostbyname_ex(domain)[2]
-                # 过滤私有IP（国内IP仅扣分，不过滤）
-                valid_ips = [ip for ip in ip_list if not is_private_ip(ip)]
-                if valid_ips:
-                    return True, valid_ips
-            except (socket.gaierror, socket.timeout):
-                continue
-        LOG.info(log_msg(f"⚠️ 域名{domain}解析失败/仅私有IP", domain))
-        return False, ip_list
-    finally:
-        socket.setdefaulttimeout(original_timeout)
-
-def process_remark(remark: str, proto: str) -> str:
-    if not remark:
-        return f"{proto}节点"
-    try:
-        decoded = unquote(remark)
-        decoded = re.sub(r'[^\x20-\x7E\u4e00-\u9fa5]', '', decoded)
-        b_remark = decoded.encode('utf-8')
-        max_len = CONFIG["filter"]["max_remark_bytes"]
-        
-        if len(b_remark) <= max_len:
-            return decoded
-        
-        trunc_len = max_len
-        while trunc_len > 0:
-            try:
-                trunc = b_remark[:trunc_len].decode('utf-8')
-                break
-            except UnicodeDecodeError:
-                trunc_len -= 1
-        else:
-            trunc = "截断失败"
-        
-        if len(trunc.encode('utf-8')) + 3 <= max_len:
-            trunc += "..."
-        LOG.info(log_msg(f"⚠️ {proto}备注超限，截断为：{trunc}", remark))
-        return trunc
+                ip = socket.gethostbyname(domain)
+            except (socket.gaierror, ValueError):
+                ip = domain  # 解析失败则用域名代替
     except Exception as e:
-        LOG.info(log_msg(f"⚠️ {proto}备注处理失败：{str(e)[:30]}", remark))
-        return f"{proto}节点"
-
-def validate_fields(fields: Dict, required: List[str], proto: str, line: str) -> bool:
-    missing = [f for f in required if f not in fields]
-    if missing:
-        LOG.info(log_msg(f"📝 过滤无效{proto}节点：缺失{','.join(missing)}", line, proto))
-        return False
-    return True
-
-def extract_ip_port(line: str) -> Tuple[Optional[str], str, int]:
-    ip_match = re.search(r'@([\d\.a-zA-Z-]+):', line)
-    ip = ip_match.group(1) if ip_match else None
+        LOG.warning(f"解析IP/端口失败: {line[:50]}... 错误: {str(e)}")
     
-    # 优先提取SNI
-    sni_match = re.search(r'sni=([^&]+)', line, re.I)
-    domain = sni_match.group(1) if sni_match else ""
-    if not domain:
-        domain_match = re.search(r'host=([^&]+)', line, re.I)
-        domain = next((g for g in domain_match.groups() if g), "") if domain_match else ""
-    
-    port_match = re.search(r':(\d+)', line)
-    port = validate_port(port_match.group(1)) if port_match else CONFIG["filter"]["DEFAULT_PORT"]
     return ip, domain, port
 
-def test_outside_access(ip: str, port: int, proto: str, cfg: Dict = None) -> Tuple[bool, str, float]:
-    """核心：验证外网访问能力（降级逻辑，失败仅警告）"""
-    if proto not in ["vmess", "vless", "trojan", "ss"]:
-        return True, "unsupported_proto", 0.0  # 非核心协议直接返回成功
-    
-    target_list = CONFIG["detection"]["http_test"]["targets"]
-    timeout = CONFIG["detection"]["http_test"]["timeout"]
-    
-    try:
-        ip_addr = socket.gethostbyname(ip)
-        
-        for target in target_list:
-            try:
-                start_time = time.time()
-                parsed = urlparse(target)
-                
-                # 模拟代理握手+发送请求
-                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                    sock.settimeout(timeout)
-                    if sock.connect_ex((ip_addr, port)) != 0:
-                        continue
-                    
-                    # 构造标准HTTP请求
-                    request = (
-                        f"{parsed.scheme.upper()} {parsed.path or '/'}?{parsed.query} HTTP/1.1\r\n"
-                        f"Host: {parsed.netloc}\r\n"
-                        f"User-Agent: {CONFIG['request']['ua']}\r\n"
-                        f"Connection: close\r\n\r\n"
-                    )
-                    sock.send(request.encode('utf-8'))
-                    
-                    # 读取响应并验证
-                    response = b""
-                    while True:
-                        chunk = sock.recv(4096)
-                        if not chunk:
-                            break
-                        response += chunk
-                        if b"\r\n\r\n" in response:
-                            break
-                    
-                    elapsed = time.time() - start_time
-                    # 验证响应有效性
-                    if len(response) > 0:
-                        return True, target, elapsed
-                    
-                    LOG.info(log_msg(f"⚠️ 目标{target}响应无效：{ip_addr}:{port}", proto=proto))
-            except socket.timeout:
-                LOG.info(log_msg(f"⚠️ 目标{target}超时：{ip_addr}:{port}", proto=proto))
-                continue
-            except Exception as e:
-                LOG.info(log_msg(f"⚠️ 目标{target}测试失败：{str(e)[:30]}", proto=proto))
-                continue
-        
-        # 外网测试失败：降级保留，仅警告
-        LOG.info(log_msg(f"⚠️ 所有外网目标测试失败（降级保留）：{ip}:{port}", proto=proto))
-        return True, "fallback", 0.0
-    except Exception as e:
-        LOG.info(log_msg(f"⚠️ 外网测试失败：{str(e)[:30]}", proto=proto))
-        return True, "error", 0.0  # 失败仍返回True，避免过滤
+def is_private_ip(ip: str) -> bool:
+    """判断是否为私有IP"""
+    return CONFIG["filter"]["private_ip_patterns"].match(ip) is not None
 
-def calculate_node_score(proto: str, security: str, port: int, dns_ok: bool, outside_ok: bool, 
-                        response_time: float, is_cn: bool) -> int:
-    """最终评分逻辑：容错处理，不再直接归零"""
-    score = 0
-    rules = CONFIG["filter"]["score_rules"]
-    
-    # 1. 国内IP扣分（不再直接归零）
-    if is_cn:
-        score += rules["cn_ip"]
-    
-    # 2. 响应时间异常扣分（不再直接归零）
+def judge_cn_ip(ip: str, is_available: bool) -> str:
+    """判断IP类型（纯国内/中转/非国内）"""
+    if CONFIG["filter"]["cn_ip_patterns"].match(ip):
+        # 能访问外网则判定为中转
+        return "cn_relay" if is_available else "pure_cn"
+    return "non_cn"
+
+def get_response_speed_score(response_time: float) -> int:
+    """获取响应速度加分（优化后精细化）"""
     if response_time < CONFIG["detection"]["min_response_time"] or response_time > CONFIG["detection"]["max_response_time"]:
-        score += rules["response_time_abnormal"]
-    
-    # 3. 协议类型得分
-    score += rules["protocol"].get(proto, rules["protocol"]["other"])
-    
-    # 4. 安全类型得分
-    score += rules["security"].get(security, rules["security"]["none"])
-    
-    # 5. 端口得分
-    if port == 443:
-        score += rules["port"][443]
-    elif port == 8443:
-        score += rules["port"][8443]
+        return 0
+    elif 0.05 <= response_time < 0.5:
+        return CONFIG["filter"]["score_weights"]["response_speed"]["0.05-0.5"]
+    elif 0.5 <= response_time < 1.0:
+        return CONFIG["filter"]["score_weights"]["response_speed"]["0.5-1.0"]
+    elif 1.0 <= response_time < 3.0:
+        return CONFIG["filter"]["score_weights"]["response_speed"]["1.0-3.0"]
+    else:  # 3.0-8.0
+        return 0
+
+def get_response_time_penalty(response_time: float) -> int:
+    """获取响应时间扣分（优化后精细化）"""
+    if response_time < CONFIG["detection"]["min_response_time"] or response_time > CONFIG["detection"]["max_response_time"]:
+        return CONFIG["filter"]["score_weights"]["response_time"]["<0.05|>8.0"]
+    elif 3.0 <= response_time < 8.0:
+        return CONFIG["filter"]["score_weights"]["response_time"]["3.0-8.0"]
     else:
-        score += rules["port"]["other"]
+        return 0
+
+def tcp_probe(ip: str, port: int, proto: str) -> tuple[bool, float]:
+    """TCP探测（稳定性验证：2次探测取平均）"""
+    total_time = 0.0
+    success_count = 0
+    timeout = CONFIG["detection"]["tcp_timeout"][proto] if proto in CONFIG["detection"]["tcp_timeout"] else 8
     
-    # 6. DNS有效性得分
-    if dns_ok:
-        score += rules["dns_valid"]
+    for _ in range(CONFIG["detection"]["tcp_retry"]):
+        start = time.time()
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.settimeout(timeout)
+                s.connect((ip, port))
+                success_count += 1
+                total_time += (time.time() - start)
+            time.sleep(CONFIG["detection"]["tcp_retry_interval"])
+        except (socket.timeout, ConnectionRefusedError, OSError):
+            continue
     
-    # 7. 外网验证得分（核心）
-    if outside_ok:
-        score += rules["http_valid"]
+    if success_count == 0:
+        return False, 0.0
+    return True, total_time / success_count  # 返回平均响应时间
+
+def http_validate(ip: str, port: int) -> str:
+    """可用性验证：尝试访问外网URL"""
+    headers = {"User-Agent": CONFIG["request"]["ua"]}
     
-    # 8. 响应速度得分
-    if response_time < 1.0 and response_time > 0:
-        score += rules["response_speed"]["fast"]
-    elif response_time < 3.0 and response_time > 0:
-        score += rules["response_speed"]["normal"]
+    for url in CONFIG["detection"]["http_validate_urls"]:
+        try:
+            # 优先用IP访问（避免DNS污染）
+            parsed = urlparse(url)
+            req_url = f"{parsed.scheme}://{ip}:{port}{parsed.path}" if port != 80 and port != 443 else f"{parsed.scheme}://{ip}{parsed.path}"
+            
+            response = requests.get(
+                req_url,
+                headers=headers,
+                timeout=CONFIG["detection"]["http_validate_timeout"],
+                verify=False,
+                allow_redirects=True
+            )
+            if response.status_code in [200, 204]:
+                return "full"  # 完全可用
+        except (requests.Timeout, requests.ConnectionError, ValueError):
+            continue
+    
+    return "tcp_only"  # 仅TCP通
+
+# ========== 协议解析（抽象通用逻辑，优化后） ==========
+class ProtocolParser:
+    """协议解析基类"""
+    @staticmethod
+    def parse_vmess(line: str) -> dict | None:
+        """解析VMess节点"""
+        try:
+            # 提取VMess核心参数
+            vmess_part = line.replace("vmess://", "")
+            decoded = base64.b64decode(vmess_part).decode('utf-8', errors='ignore')
+            cfg = json.loads(decoded)
+            
+            # 基础校验
+            if not all(k in cfg for k in ["add", "port", "id"]):
+                return None
+            
+            # 安全类型判断
+            security_type = "tls" if cfg.get("tls") == "tls" else "none"
+            
+            return {
+                "protocol": "vmess",
+                "ip": "",
+                "domain": cfg["add"],
+                "port": int(cfg["port"]),
+                "security_type": security_type,
+                "remark": cfg.get("ps", ""),
+                "raw": line
+            }
+        except (base64.binascii.Error, json.JSONDecodeError, ValueError, KeyError) as e:
+            LOG.warning(f"VMess解析失败: {line[:50]}... 错误: {str(e)}")
+            return None
+    
+    @staticmethod
+    def parse_vless(line: str) -> dict | None:
+        """解析VLESS节点"""
+        try:
+            vless_part = line.replace("vless://", "")
+            # 拆分参数
+            main_part, params_part = vless_part.split("?", 1) if "?" in vless_part else (vless_part, "")
+            
+            # 提取IP/端口
+            ip_port_part = main_part.split("@")[1] if "@" in main_part else ""
+            domain, port_str = ip_port_part.split(":", 1) if ":" in ip_port_part else ("", "")
+            port = int(port_str) if port_str else CONFIG["filter"]["DEFAULT_PORT"]
+            
+            # 安全类型判断（Reality/TLS）
+            security_type = "reality" if "reality=" in params_part else "tls" if "tls=" in params_part else "none"
+            
+            return {
+                "protocol": "vless",
+                "ip": "",
+                "domain": domain,
+                "port": port,
+                "security_type": security_type,
+                "remark": "",
+                "raw": line
+            }
+        except (ValueError, IndexError) as e:
+            LOG.warning(f"VLESS解析失败: {line[:50]}... 错误: {str(e)}")
+            return None
+    
+    @staticmethod
+    def parse_trojan(line: str) -> dict | None:
+        """解析Trojan节点"""
+        try:
+            trojan_part = line.replace("trojan://", "")
+            main_part = trojan_part.split("#")[0] if "#" in trojan_part else trojan_part
+            
+            # 提取IP/端口
+            ip_port_part = main_part.split("@")[1] if "@" in main_part else ""
+            domain, port_str = ip_port_part.split(":", 1) if ":" in ip_port_part else ("", "")
+            port = int(port_str) if port_str else CONFIG["filter"]["DEFAULT_PORT"]
+            
+            # 安全类型判断
+            security_type = "tls" if "tls" in trojan_part else "none"
+            
+            return {
+                "protocol": "trojan",
+                "ip": "",
+                "domain": domain,
+                "port": port,
+                "security_type": security_type,
+                "remark": trojan_part.split("#")[1] if "#" in trojan_part else "",
+                "raw": line
+            }
+        except (ValueError, IndexError) as e:
+            LOG.warning(f"Trojan解析失败: {line[:50]}... 错误: {str(e)}")
+            return None
+    
+    @staticmethod
+    def parse_ss(line: str) -> dict | None:
+        """解析SS节点"""
+        try:
+            ss_part = line.replace("ss://", "")
+            decoded = base64.b64decode(ss_part).decode('utf-8', errors='ignore')
+            
+            # 提取IP/端口
+            ip_port_part = decoded.split("@")[1] if "@" in decoded else ""
+            domain, port_str = ip_port_part.split(":", 1) if ":" in ip_port_part else ("", "")
+            port = int(port_str) if port_str else CONFIG["filter"]["DEFAULT_PORT"]
+            
+            return {
+                "protocol": "ss",
+                "ip": "",
+                "domain": domain,
+                "port": port,
+                "security_type": "none",  # SS无统一TLS标识
+                "remark": "",
+                "raw": line
+            }
+        except (base64.binascii.Error, ValueError, IndexError) as e:
+            LOG.warning(f"SS解析失败: {line[:50]}... 错误: {str(e)}")
+            return None
+    
+    @staticmethod
+    def parse_hysteria(line: str) -> dict | None:
+        """解析Hysteria节点"""
+        try:
+            hysteria_part = line.replace("hysteria://", "")
+            ip_port_part = hysteria_part.split("?")[0] if "?" in hysteria_part else hysteria_part
+            domain, port_str = ip_port_part.split(":", 1) if ":" in ip_port_part else ("", "")
+            port = int(port_str) if port_str else CONFIG["filter"]["DEFAULT_PORT"]
+            
+            # 安全类型判断
+            security_type = "tls" if "tls=" in hysteria_part else "none"
+            
+            return {
+                "protocol": "hysteria",
+                "ip": "",
+                "domain": domain,
+                "port": port,
+                "security_type": security_type,
+                "remark": "",
+                "raw": line
+            }
+        except (ValueError, IndexError) as e:
+            LOG.warning(f"Hysteria解析失败: {line[:50]}... 错误: {str(e)}")
+            return None
+    
+    @classmethod
+    def parse(cls, line: str) -> dict | None:
+        """统一解析入口"""
+        line = line.strip()
+        if not line:
+            return None
+        
+        if line.startswith("vmess://"):
+            return cls.parse_vmess(line)
+        elif line.startswith("vless://"):
+            return cls.parse_vless(line)
+        elif line.startswith("trojan://"):
+            return cls.parse_trojan(line)
+        elif line.startswith("ss://"):
+            return cls.parse_ss(line)
+        elif line.startswith("hysteria://"):
+            return cls.parse_hysteria(line)
+        else:
+            LOG.debug(f"不支持的协议: {line[:50]}...")
+            return None
+
+# ========== 评分核心逻辑（优化后） ==========
+def calculate_node_score(node: dict) -> tuple[int, dict]:
+    """计算节点分数（优化后完整逻辑）"""
+    # 初始化分数和详情
+    score = 0
+    score_detail = {
+        "base_score": 0,
+        "penalties": {},
+        "additions": {},
+        "final_score": 0,
+        "grade": ""
+    }
+    
+    # 1. 基础信息补全
+    ip, domain, port = extract_ip_port(node["raw"])
+    node["ip"] = ip if ip else socket.gethostbyname(node["domain"]) if node["domain"] else ""
+    node["port"] = port if port else node["port"]
+    
+    # 2. 私有IP直接返回0分
+    if is_private_ip(node["ip"]):
+        score_detail["final_score"] = 0
+        return 0, score_detail
+    
+    # 3. TCP探测（稳定性验证）
+    tcp_ok, response_time = tcp_probe(node["ip"], node["port"], node["protocol"])
+    if not tcp_ok:
+        score_detail["final_score"] = 0
+        return 0, score_detail
+    
+    # 4. 可用性验证
+    availability = http_validate(node["ip"], node["port"])
+    
+    # 5. 扣分项计算
+    # 5.1 国内IP扣分
+    cn_ip_type = judge_cn_ip(node["ip"], availability == "full")
+    cn_penalty = CONFIG["filter"]["score_weights"]["cn_ip"][cn_ip_type]
+    score += cn_penalty
+    score_detail["penalties"]["cn_ip"] = cn_penalty
+    
+    # 5.2 响应时间扣分
+    rt_penalty = get_response_time_penalty(response_time)
+    score += rt_penalty
+    score_detail["penalties"]["response_time"] = rt_penalty
+    
+    # 6. 加分项计算
+    # 6.1 协议加分
+    proto_score = CONFIG["filter"]["score_weights"]["protocol"].get(node["protocol"], 0)
+    score += proto_score
+    score_detail["additions"]["protocol"] = proto_score
+    
+    # 6.2 安全类型加分
+    sec_key = "reality" if node["security_type"] == "reality" else "tls" if node["security_type"] == "tls" else "none"
+    sec_score = CONFIG["filter"]["score_weights"]["security"][sec_key]
+    score += sec_score
+    score_detail["additions"]["security"] = sec_score
+    
+    # 6.3 端口加分
+    port_score = CONFIG["filter"]["score_weights"]["port"].get(node["port"], CONFIG["filter"]["score_weights"]["port"]["other"])
+    score += port_score
+    score_detail["additions"]["port"] = port_score
+    
+    # 6.4 DNS有效性加分（解析成功才加）
+    dns_score = CONFIG["filter"]["score_weights"]["dns_valid"] if node["ip"] else 0
+    score += dns_score
+    score_detail["additions"]["dns_valid"] = dns_score
+    
+    # 6.5 外网验证加分（访问成功才加）
+    net_score = CONFIG["filter"]["score_weights"]["net_validate"] if availability == "full" else 0
+    score += net_score
+    score_detail["additions"]["net_validate"] = net_score
+    
+    # 6.6 响应速度加分
+    speed_score = get_response_speed_score(response_time)
+    score += speed_score
+    score_detail["additions"]["response_speed"] = speed_score
+    
+    # 6.7 可用性加分
+    avail_score = CONFIG["filter"]["score_weights"]["availability"][availability]
+    score += avail_score
+    score_detail["additions"]["availability"] = avail_score
+    
+    # 7. 分数修正（0~100）
+    final_score = max(0, min(score, 100))
+    score_detail["final_score"] = final_score
+    
+    # 8. 分级判断
+    if final_score >= CONFIG["filter"]["grade_ranges"]["excellent"][0]:
+        score_detail["grade"] = "excellent"
+    elif final_score >= CONFIG["filter"]["grade_ranges"]["good"][0]:
+        score_detail["grade"] = "good"
+    elif final_score >= CONFIG["filter"]["grade_ranges"]["qualified"][0]:
+        score_detail["grade"] = "qualified"
     else:
-        score += rules["response_speed"]["slow"]
+        score_detail["grade"] = "reject"
     
-    # 确保最低分不为负，最高分不超100
-    score = max(score, 0)
-    return min(score, 100)
+    return final_score, score_detail
 
-# ========== 协议解析函数（最终版） ==========
-def parse_vmess(line: str) -> Optional[Dict]:
-    try:
-        base64_match = re.match(r'^[A-Za-z0-9+/=]+', line[8:].strip())
-        if not base64_match:
-            raise ValueError("未提取到有效Base64字符段")
+# ========== 核心业务逻辑（优化后） ==========
+def load_subscription() -> list[str]:
+    """加载订阅源（带缓存优化）"""
+    all_nodes = []
+    cache_dir = ".cache"
+    os.makedirs(cache_dir, exist_ok=True)
+    
+    # 清理过期/超大缓存
+    clean_cache(cache_dir)
+    
+    with requests.Session() as sess:
+        sess.headers["User-Agent"] = CONFIG["request"]["ua"]
         
-        vmess_part = base64_match.group(0)[:1024]
-        decoded = b64_safe_decode(vmess_part)
-        
-        json_match = re.search(r'\{.*\}', decoded, re.DOTALL)
-        if not json_match:
-            raise ValueError("未提取到有效JSON配置")
-        
-        cfg = json.loads(re.sub(r'[\x00-\x1f\x7f-\x9f\u3000]', '', json_match.group(0)))
-        if not validate_fields(cfg, ["add", "port", "id"], "VMess", line):
-            return None
-        
-        # 强校验核心参数（容错：仅警告，不过滤）
-        try:
-            uuid.UUID(cfg["id"])
-            alter_id = int(cfg.get("aid", 0))
-            if alter_id < 0 or alter_id > 65535:
-                LOG.info(log_msg(f"⚠️ VMess alterId无效（{alter_id}），降级保留", line, "vmess"))
+        for source in CONFIG["sources"]:
+            url = source["url"]
+            cache_key = hashlib.md5(url.encode()).hexdigest()
+            cache_path = os.path.join(cache_dir, f"{cache_key}.json")
             
-            valid_security = ["auto", "aes-128-gcm", "chacha20-ietf-poly1305"]
-            if cfg.get("scy") not in valid_security and cfg.get("scy") is not None:
-                LOG.info(log_msg(f"⚠️ VMess加密方式无效（{cfg.get('scy')}），降级保留", line, "vmess"))
-        except (ValueError, KeyError):
-            LOG.info(log_msg(f"⚠️ VMess UUID/alterId格式无效，降级保留", line, "vmess"))
-        
-        # 默认值兜底
-        cfg["ps"] = process_remark(cfg.get('ps', ''), "VMess")
-        cfg["port"] = validate_port(cfg.get('port', CONFIG["filter"]["DEFAULT_PORT"]))
-        cfg["aid"] = cfg.get('aid', 0)
-        cfg["net"] = cfg.get('net', 'tcp')
-        cfg["scy"] = cfg.get('scy', 'auto')
-        cfg["tls"] = cfg.get('tls', 'none')
-        cfg["host"] = cfg.get('host', cfg["add"])
-        cfg["sni"] = cfg.get('sni', cfg["add"])
-
-        return {
-            "address": cfg["add"],
-            "port": cfg["port"],
-            "id": cfg["id"],
-            "alterId": cfg["aid"],
-            "security": cfg["scy"],
-            "network": cfg["net"],
-            "tls": cfg["tls"],
-            "serverName": cfg["host"] or cfg["sni"],
-            "ps": cfg["ps"],
-            "security_type": "tls" if cfg.get("tls") == "tls" else "none"
-        }
-    except Exception as e:
-        LOG.info(log_msg(f"❌ VMess解析错误: {str(e)}", line, "vmess"))
-        return None
-
-def parse_vless(line: str) -> Optional[Dict]:
-    try:
-        core_content, remark = proto_preprocess(line, "vless://")
-        vless_parts = core_content.split('?', 1)
-        base_part = vless_parts[0]
-        param_part = vless_parts[1] if len(vless_parts) > 1 else ''
-        
-        if '@' not in base_part:
-            raise ValueError("缺失UUID@地址格式")
-        
-        uuid_str, addr_port = base_part.split('@', 1)
-        if not uuid_str or not addr_port or ':' not in addr_port:
-            raise ValueError("UUID/地址端口错误")
-        
-        # 容错：UUID格式错误仅警告
-        try:
-            uuid.UUID(uuid_str)
-        except ValueError:
-            LOG.info(log_msg(f"⚠️ VLESS UUID格式无效，降级保留", line, "vless"))
-        
-        address, port_str = addr_port.split(':', 1)
-        port = validate_port(port_str)
-        
-        params = {}
-        for p in param_part.split('&'):
-            if '=' in p:
-                k, v = p.split('=', 1)
-                k_lower = k.lower()
-                if k_lower == "remarks":
-                    v = process_remark(v, "VLESS")
-                params[k_lower] = v
-        
-        security = params.get('security', 'tls')
-        if port != 443 and security not in ['tls', 'reality']:
-            LOG.info(log_msg(f"⚠️ VLESS非443端口无TLS/Reality，降级保留", line, "vless"))
-        
-        # Reality参数校验（容错：缺失仅警告）
-        if security == 'reality':
-            required_reality = ['pbk', 'sid', 'fp']
-            missing = [p for p in required_reality if p not in params]
-            if missing:
-                LOG.info(log_msg(f"⚠️ VLESS Reality缺失参数：{','.join(missing)}，降级保留", line, "vless"))
+            # 优先读缓存
+            if os.path.exists(cache_path) and time.time() - os.path.getmtime(cache_path) < CONFIG["github"]["cache_ttl"]:
+                try:
+                    with open(cache_path, "r", encoding="utf-8") as f:
+                        cached_nodes = json.load(f)
+                    all_nodes.extend(cached_nodes)
+                    LOG.info(f"从缓存加载订阅源: {url}，节点数: {len(cached_nodes)}")
+                    continue
+                except (json.JSONDecodeError, OSError) as e:
+                    LOG.warning(f"缓存读取失败: {cache_path} 错误: {str(e)}")
             
-            pbk = params.get('pbk', '')
-            if len(pbk) != 44:
-                LOG.info(log_msg(f"⚠️ VLESS Reality pbk长度无效（{len(pbk)}），降级保留", line, "vless"))
-        
-        cfg = {
-            "uuid": uuid_str,
-            "address": address,
-            "port": port,
-            "security": security,
-            "sni": params.get('sni', address),
-            "network": params.get('type', 'tcp'),
-            "remarks": params.get('remarks', 'VLESS节点'),
-            "security_type": security
-        }
-        
-        if not validate_fields(cfg, ["uuid", "address", "port"], "VLESS", line):
-            return None
-        return cfg
-    except ValueError as e:
-        LOG.info(log_msg(f"📝 过滤无效VLESS节点：{str(e)}", line, "vless"))
-        return None
-    except Exception as e:
-        LOG.info(log_msg(f"❌ VLESS解析错误: {str(e)}", line, "vless"))
-        return None
-
-def parse_trojan(line: str) -> Optional[Dict]:
-    try:
-        core_content, remark = proto_preprocess(line, "trojan://")
-        trojan_parts = core_content.split('?', 1)
-        trojan_part = trojan_parts[0]
-        param_part = trojan_parts[1] if len(trojan_parts) > 1 else ''
-        
-        if '@' not in trojan_part:
-            raise ValueError("缺失密码@地址格式")
-        
-        password, addr_port = trojan_part.split('@', 1)
-        if not password or not addr_port or ':' not in addr_port:
-            raise ValueError("密码/地址端口错误")
-        
-        # 容错：密码过短仅警告
-        if len(password.strip()) < 8:
-            LOG.info(log_msg(f"⚠️ Trojan密码过短（{len(password)}字符），降级保留", line, "trojan"))
-        
-        address, port_str = addr_port.rsplit(':', 1)
-        port = validate_port(port_str)
-        
-        params = {}
-        for p in param_part.split('&'):
-            if '=' in p:
-                k, v = p.split('=', 1)
-                params[k.lower()] = v
-        
-        security = params.get('security', 'tls')
-        if port != 443 and security != 'tls':
-            LOG.info(log_msg(f"⚠️ Trojan非443端口无TLS，降级保留", line, "trojan"))
-        
-        cfg = {
-            "address": address,
-            "port": port,
-            "password": password,
-            "sni": params.get('sni', address),
-            "security": security,
-            "label": remark,
-            "security_type": security
-        }
-        
-        if not validate_fields(cfg, ["address", "port", "password"], "Trojan", line):
-            return None
-        return cfg
-    except ValueError as e:
-        LOG.info(log_msg(f"📝 过滤无效Trojan节点：{str(e)}", line, "trojan"))
-        return None
-    except Exception as e:
-        LOG.info(log_msg(f"❌ Trojan解析错误: {str(e)}", line, "trojan"))
-        return None
-
-def parse_ss(line: str) -> Optional[Dict]:
-    try:
-        ss_core, remark = proto_preprocess(line, "ss://")
-        addr_port = ""
-        decoded_auth = ""
-        
-        if '@' in ss_core:
-            base64_part, addr_port = ss_core.split('@', 1)
-            decoded_auth = b64_safe_decode(base64_part)
-        else:
-            decoded_auth = b64_safe_decode(ss_core)
-            if '@' not in decoded_auth:
-                raise ValueError("标准格式但Base64内无@分隔符")
-            decoded_auth, addr_port = decoded_auth.split('@', 1)
-        
-        if not addr_port or ':' not in addr_port:
-            raise ValueError("地址端口格式错误（需为IP:端口/域名:端口）")
-        address, port_str = addr_port.rsplit(':', 1)
-        port = validate_port(port_str)
-        
-        if not decoded_auth:
-            raise ValueError("加密方式/密码为空")
-        
-        if ':' not in decoded_auth:
-            method = CONFIG["filter"]["SS_DEFAULT_CIPHER"]
-            password = decoded_auth.strip()
-        else:
-            method, password = decoded_auth.split(':', 1)
-            method = method.strip()
-            password = password.strip()
-            if not method or not password:
-                raise ValueError("加密方式或密码为空")
-        
-        # 容错：加密方式无效仅警告
-        if method not in CONFIG["filter"]["SS_VALID_CIPHERS"]:
-            LOG.info(log_msg(f"⚠️ SS加密方式无效（{method}），降级保留", line, "ss"))
-        
-        # 容错：密码过短仅警告
-        if len(password) < 4:
-            LOG.info(log_msg(f"⚠️ SS密码过短（{len(password)}字符），降级保留", line, "ss"))
-        
-        cfg = {
-            "address": address.strip(),
-            "port": port,
-            "remark": remark,
-            "method": method,
-            "password": password,
-            "method_valid": True,
-            "security_type": "none"
-        }
-        
-        if not validate_fields(cfg, ["address", "port"], "SS", line):
-            return None
-        return cfg
-    except ValueError as e:
-        LOG.info(log_msg(f"📝 过滤无效SS节点：{str(e)}", line, "ss"))
-        return None
-    except Exception as e:
-        LOG.info(log_msg(f"❌ SS解析错误: {str(e)}", line, "ss"))
-        return None
-
-def parse_hysteria(line: str) -> Optional[Dict]:
-    try:
-        core_content, remark = proto_preprocess(line, "hysteria://")
-        
-        if '?' in core_content:
-            addr_port_part, param_part = core_content.split('?', 1)
-            param_part = param_part.replace(' ', '')
-        else:
-            addr_port_part = core_content
-            param_part = ''
-        
-        if not addr_port_part or ':' not in addr_port_part:
-            raise ValueError("地址端口格式错误（需为IP:端口/域名:端口）")
-        address, port_str = addr_port_part.rsplit(':', 1)
-        address = address.strip()
-        port = validate_port(port_str)
-        
-        params = {}
-        if param_part:
-            for p in param_part.split('&'):
-                if '=' in p:
-                    k, v = p.split('=', 1)
-                    k_lower = k.lower()
-                    params[k_lower] = v.strip()
-        
-        auth = params.get('auth', params.get('auth_str', ''))
-        if not auth:
-            raise ValueError("缺失认证信息（auth/auth_str参数）")
-        
-        alpn = params.get('alpn', 'h3')
-        if alpn not in ['h3', 'http/1.1']:
-            LOG.info(log_msg(f"⚠️ Hysteria ALPN无效（{alpn}），降级保留", line, "hysteria"))
-        
-        cfg = {
-            "address": address,
-            "port": port,
-            "password": auth,
-            "obfs": params.get('obfs', ''),
-            "alpn": alpn,
-            "peer": params.get('peer', address),
-            "protocol": params.get('protocol', 'udp'),
-            "insecure": params.get('insecure', '1'),
-            "downmbps": params.get('downmbps', ''),
-            "upmbps": params.get('upmbps', ''),
-            "label": remark,
-            "security_type": "tls"
-        }
-        
-        if not validate_fields(cfg, ["address", "port", "password"], "Hysteria", line):
-            return None
-        
-        return cfg
-    except ValueError as e:
-        LOG.info(log_msg(f"📝 过滤无效Hysteria节点：{str(e)}", line, "hysteria"))
-        return None
-    except Exception as e:
-        LOG.info(log_msg(f"❌ Hysteria解析错误: {str(e)}", line, "hysteria"))
-        return None
-
-# ========== 节点检测函数（最终版） ==========
-def test_node_final(ip: str, port: int, proto: str, cfg: Dict = None) -> Tuple[bool, float, bool, str]:
-    """最终节点检测：容错处理，减少硬过滤"""
-    port = validate_port(port)
-    if not ip or is_private_ip(ip):
-        return False, 0.0, False, "private_ip"
-    
-    ip_addr = ""
-    response_time = 0.0
-    outside_ok = False
-    fail_reason = ""
-    
-    try:
-        # 优先使用节点的SNI解析IP（避免DNS污染）
-        if cfg and cfg.get("serverName"):
+            # 拉取订阅源
             try:
-                ip_addr = socket.gethostbyname(cfg["serverName"])
-            except:
-                ip_addr = socket.gethostbyname(ip)
-        else:
-            ip_addr = socket.gethostbyname(ip)
-        
-        # TCP连接增加重试+延长超时
-        start_time = time.time()
-        tcp_ok = False
-        for _ in range(CONFIG["detection"]["tcp_retry"]):
-            try:
-                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                    sock.settimeout(CONFIG["detection"]["tcp_timeout"].get(proto, 8))
-                    if sock.connect_ex((ip_addr, port)) == 0:
-                        tcp_ok = True
-                        break
-                time.sleep(0.5)
-            except:
+                response = sess.get(url, timeout=CONFIG["request"]["timeout"])
+                response.raise_for_status()
+                
+                # 解码订阅内容
+                decoded = base64.b64decode(response.text).decode('utf-8', errors='ignore')
+                nodes = [line.strip() for line in decoded.split("\n") if line.strip()]
+                
+                # 保存缓存
+                with open(cache_path, "w", encoding="utf-8") as f:
+                    json.dump(nodes, f, ensure_ascii=False)
+                
+                all_nodes.extend(nodes)
+                LOG.info(f"拉取订阅源成功: {url}，节点数: {len(nodes)}")
+                
+                time.sleep(CONFIG["github"]["interval"])
+            except (requests.RequestException, base64.binascii.Error) as e:
+                LOG.error(f"拉取订阅源失败: {url} 错误: {str(e)}")
                 continue
-        
-        if not tcp_ok:
-            fail_reason = "tcp_connect_fail"
-            return False, 0.0, False, fail_reason
-        response_time = time.time() - start_time
-        
-        # 外网访问验证（降级逻辑，失败仅警告）
-        outside_ok, target, outside_time = test_outside_access(ip, port, proto, cfg)
-        
-        return True, response_time, outside_ok, "success"
-    except socket.gaierror:
-        fail_reason = "dns_fail"
-        return False, 0.0, False, fail_reason
-    except Exception as e:
-        fail_reason = f"error:{str(e)[:20]}"
-        return False, 0.0, False, fail_reason
-
-def process_single_node_final(node: Union[str, Dict]) -> Tuple[Optional[str], Dict, int]:
-    """最终节点处理：极致筛选+容错"""
-    raw_line = node["line"] if isinstance(node, dict) else node
     
-    try:
-        if not raw_line:
-            return None, {}, 0
-        
-        clean_line = clean_node_content(raw_line)
-        if not clean_line:
-            LOG.info(log_msg(f"📝 过滤空节点", raw_line))
-            return None, {}, 0
-        
-        ip, domain, port = extract_ip_port(clean_line)
-        cfg = None
-        proto = ""
-        security_type = "none"
-        dns_ok = False
-        outside_ok = False
-        response_time = 0.0
-        score = 0
-        is_cn = False
-        
-        # 协议路由
-        if clean_line.startswith('vmess://'):
-            proto, cfg = "vmess", parse_vmess(clean_line)
-        elif clean_line.startswith('vless://'):
-            proto, cfg = "vless", parse_vless(clean_line)
-        elif clean_line.startswith('trojan://'):
-            proto, cfg = "trojan", parse_trojan(clean_line)
-        elif clean_line.startswith('ss://'):
-            proto, cfg = "ss", parse_ss(clean_line)
-        elif clean_line.startswith('hysteria://'):
-            proto, cfg = "hysteria", parse_hysteria(clean_line)
-        else:
-            LOG.info(log_msg(f"📝 过滤未知协议节点", raw_line))
-            return None, {}, 0
-        
-        if not cfg:
-            return None, {}, 0
-        
-        # 提取核心信息
-        ip = cfg.get("address", ip)
-        domain = cfg.get("sni", domain)
-        port = cfg.get("port", port)
-        security_type = cfg.get("security_type", "none")
-        
-        # 过滤私有IP（硬规则）
-        if is_private_ip(ip):
-            LOG.info(log_msg(f"📝 过滤私有IP：{ip}:{port}", clean_line, proto))
-            return None, {}, 0
-        
-        # 国内IP检测（仅警告+扣分，不过滤）
-        is_cn = is_cn_ip(ip)
-        if is_cn:
-            LOG.info(log_msg(f"⚠️ 国内IP节点（扣分）：{ip}:{port}", clean_line, proto))
-        
-        # DNS有效性校验（容错：失败仅警告）
-        dns_ok, dns_ips = dns_resolve(domain) if domain else dns_resolve(ip)
-        if not dns_ok:
-            LOG.info(log_msg(f"⚠️ DNS无效节点（降级保留）：{ip}:{port}", clean_line, proto))
-            dns_ok = True  # 强制标记为True，避免过滤
-        
-        # 最终检测
-        tcp_ok, response_time, outside_ok, fail_reason = test_node_final(ip, port, proto, cfg)
-        if not tcp_ok:
-            LOG.info(log_msg(f"📝 过滤节点（{fail_reason}）：{ip}:{port}", clean_line, proto))
-            return None, {}, 0
-        
-        # 计算评分
-        score = calculate_node_score(proto, security_type, port, dns_ok, outside_ok, response_time, is_cn)
-        if score < CONFIG["detection"]["score_threshold"]:
-            LOG.info(log_msg(f"📝 过滤低分节点（{score}分 < {CONFIG['detection']['score_threshold']}分）：{ip}:{port}", clean_line, proto))
-            return None, {}, 0
-        
-        # 组装节点信息
-        node_info = {
-            "line": clean_line,
-            "proto": proto,
-            "ip": ip,
-            "port": port,
-            "domain": domain,
-            "security_type": security_type,
-            "score": score,
-            "response_time": response_time,
-            "dns_ok": dns_ok,
-            "outside_ok": outside_ok,
-            "is_cn": is_cn,
-            "source_url": node.get("source_url", "") if isinstance(node, dict) else ""
-        }
-        
-        LOG.info(f"✅ 优质节点（{score}分）: {ip}:{port}（{proto}）RT：{response_time:.2f}s | 外网：{'OK' if outside_ok else '降级保留'}")
-        return clean_line, node_info, score
-    except Exception as e:
-        LOG.info(log_msg(f"❌ 节点处理错误: {str(e)}", raw_line, proto))
-        return None, {}, 0
+    # 去重（原始行去重）
+    unique_nodes = list(dict.fromkeys(all_nodes))
+    LOG.info(f"订阅源加载完成，总节点数: {len(all_nodes)}，去重后: {len(unique_nodes)}")
+    
+    return unique_nodes
 
-def dedup_nodes_final(nodes: List[Dict]) -> List[Dict]:
-    """最终去重：IP+端口+协议+核心配置+外网能力"""
+def clean_cache(cache_dir: str):
+    """清理缓存（过期/超大）"""
+    try:
+        total_size = 0
+        files = []
+        
+        for f in os.listdir(cache_dir):
+            f_path = os.path.join(cache_dir, f)
+            if os.path.isfile(f_path):
+                f_size = os.path.getsize(f_path)
+                total_size += f_size
+                files.append((f_path, os.path.getmtime(f_path), f_size))
+        
+        # 删除过期文件
+        for f_path, mtime, _ in files:
+            if time.time() - mtime > CONFIG["github"]["cache_ttl"]:
+                os.remove(f_path)
+                LOG.info(f"删除过期缓存: {f_path}")
+        
+        # 删除最旧文件直到小于最大限制
+        files.sort(key=lambda x: x[1])
+        while total_size > CONFIG["github"]["cache_max_size"] and files:
+            f_path, _, f_size = files.pop(0)
+            os.remove(f_path)
+            total_size -= f_size
+            LOG.info(f"删除超大缓存: {f_path}")
+    
+    except OSError as e:
+        LOG.error(f"缓存清理失败: {str(e)}")
+
+def deduplicate_nodes(nodes: list[str]) -> list[str]:
+    """节点去重（IP+端口+协议）"""
     seen = set()
     unique = []
-    nodes.sort(key=lambda x: x["weight"], reverse=True)
-    proto_list = ["vmess", "vless", "trojan", "ss", "hysteria"]
     
-    for node in nodes:
-        raw_line = node["line"]
-        clean_line = clean_node_content(raw_line)
-        proto = "other"
+    for line in nodes:
+        node = ProtocolParser.parse(line)
+        if not node:
+            continue
         
-        for p in proto_list:
-            if clean_line.startswith(f"{p}://"):
-                proto = p
-                break
-        
-        ip, _, port = extract_ip_port(clean_line)
-        if ip:
-            if proto == "vless" or proto == "vmess":
-                cfg_match = re.search(r'([0-9a-f-]{8})', clean_line)
-                cfg_key = cfg_match.group(1) if cfg_match else ""
-            elif proto == "trojan" or proto == "ss":
-                cfg_match = re.search(r'@([0-9a-f]{8})', clean_line)
-                cfg_key = cfg_match.group(1) if cfg_match else ""
-            else:
-                cfg_key = ""
-            key = f"{ip}:{port}:{proto}:{cfg_key}"
-        else:
-            key = f"{clean_line[:100]}:{proto}"
+        ip, _, port = extract_ip_port(line)
+        key = f"{node['protocol']}_{ip}_{port}"
         
         if key not in seen:
             seen.add(key)
-            unique.append({"line": raw_line, "source_url": node["source_url"], "weight": node["weight"]})
+            unique.append(line)
     
-    LOG.info(f"🔍 最终去重完成：原始{len(nodes)}条 → 去重后{len(unique)}条")
+    LOG.info(f"节点去重完成，原数量: {len(nodes)}，去重后: {len(unique)}")
     return unique
 
-# ========== 数据源与统计（最终版） ==========
-def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
-    cache_dir = ".cache"
-    os.makedirs(cache_dir, exist_ok=True)
-    cache_key = hashlib.md5(url.encode()).hexdigest()
-    cache_path = os.path.join(cache_dir, cache_key)
+def process_nodes(nodes: list[str]) -> dict:
+    """批量处理节点（动态并发）"""
+    results = {
+        "excellent": [],
+        "good": [],
+        "qualified": [],
+        "all": []
+    }
     
-    if os.path.exists(cache_path):
-        try:
-            cache_mtime = os.path.getmtime(cache_path)
-            if time.time() - cache_mtime < CONFIG["github"]["cache_ttl"]:
-                with open(cache_path, "r", encoding="utf-8") as f:
-                    lines = json.load(f)
-                LOG.info(f"✅ 缓存加载 {url}（权重{weight}），节点 {len(lines)} 条")
-                return lines, weight
-        except (json.JSONDecodeError, OSError) as e:
-            LOG.info(f"⚠️ 缓存读取失败 {url}: {str(e)[:50]}")
+    # 动态调整并发数
+    node_count = len(nodes)
+    if node_count < 100:
+        worker_num = CONFIG["detection"]["concurrency"]["small"]
+    elif node_count < 500:
+        worker_num = CONFIG["detection"]["concurrency"]["medium"]
+    else:
+        worker_num = CONFIG["detection"]["concurrency"]["large"]
     
-    time.sleep(CONFIG["github"]["interval"])
+    LOG.info(f"开始处理节点，总数: {node_count}，并发数: {worker_num}")
     
-    for retry in range(CONFIG["request"]["retry"]):
-        try:
-            resp = SESSION.get(url, timeout=CONFIG["request"]["timeout"], verify=False)
-            resp.raise_for_status()
-            content = decode_b64_sub(resp.text)
-            lines = [l.strip() for l in content.split('\n') if l.strip() and not l.startswith('#')]
-            
-            try:
-                with open(cache_path, "w", encoding="utf-8") as f:
-                    json.dump(lines, f, ensure_ascii=False)
-            except OSError as e:
-                LOG.info(f"⚠️ 缓存写入失败 {url}: {str(e)[:50]}")
-            
-            LOG.info(f"✅ 拉取成功 {url}（权重{weight}），节点 {len(lines)} 条")
-            return lines, weight
-        except Exception as e:
-            if retry < CONFIG["request"]["retry"] - 1:
-                LOG.info(f"⚠️ 拉取失败 {url}（重试 {retry+1}）: {str(e)[:80]}")
-                time.sleep(CONFIG["request"]["retry_delay"])
-            else:
-                LOG.info(f"❌ 拉取最终失败 {url}: {str(e)[:80]}")
-                return [], weight
-    return [], weight
-
-def clean_expired_cache() -> None:
-    cache_dir = ".cache"
-    if not os.path.exists(cache_dir):
-        return
-    expire_seconds = CONFIG["github"]["cache_expire_days"] * 86400
-    deleted = 0
-    
-    for file_name in os.listdir(cache_dir):
-        file_path = os.path.join(cache_dir, file_name)
-        try:
-            if os.path.isfile(file_path) and time.time() - os.path.getmtime(file_path) > expire_seconds:
-                os.remove(file_path)
-                deleted += 1
-        except OSError as e:
-            LOG.info(f"⚠️ 缓存删除失败 {file_name}: {str(e)[:50]}")
-    
-    if deleted:
-        LOG.info(f"🗑️ 清理过期缓存 {deleted} 个")
-
-def validate_sources() -> bool:
-    invalid = []
-    pattern = re.compile(r'^https?://', re.IGNORECASE)
-    
-    for idx, src in enumerate(CONFIG["sources"], 1):
-        url = src.get("url", "")
-        weight = src.get("weight", 0)
-        if not pattern.match(url):
-            invalid.append(f"第{idx}个源：URL格式错误 {url}")
-        if not isinstance(weight, int) or weight < 1:
-            invalid.append(f"第{idx}个源：权重无效 {url}（权重{weight}）")
-    
-    if invalid:
-        LOG.info("❌ 配置校验失败：")
-        for err in invalid:
-            LOG.info(f"   - {err}")
-        return False
-    return True
-
-def count_proto(lines: List[Union[str, Dict]]) -> Dict[str, int]:
-    count = {"vmess":0, "vless":0, "trojan":0, "ss":0, "hysteria":0, "other":0}
-    for line in lines:
-        line_str = line["line"] if isinstance(line, dict) else line
-        clean_line = clean_node_content(line_str)
-        if clean_line.startswith('vmess://'):
-            count["vmess"] +=1
-        elif clean_line.startswith('vless://'):
-            count["vless"] +=1
-        elif clean_line.startswith('trojan://'):
-            count["trojan"] +=1
-        elif clean_line.startswith('ss://'):
-            count["ss"] +=1
-        elif clean_line.startswith('hysteria://'):
-            count["hysteria"] +=1
-        else:
-            count["other"] +=1
-    return count
-
-def fetch_all_sources() -> Tuple[List[Dict], Dict[str, Dict]]:
-    all_nodes = []
-    source_records = {}
-    
-    with ThreadPoolExecutor(max_workers=5) as executor:
-        futures = {executor.submit(fetch_source_data, src["url"], src["weight"]): src["url"] for src in CONFIG["sources"]}
+    with ThreadPoolExecutor(max_workers=worker_num) as executor:
+        # 提交任务
+        futures = {}
+        for line in nodes:
+            future = executor.submit(process_single_node, line)
+            futures[future] = line
+        
+        # 处理结果
         for future in as_completed(futures):
-            url = futures[future]
+            line = futures[future]
             try:
-                lines, weight = future.result()
-                proto_count = count_proto(lines)
-                source_records[url] = {
-                    "original": lines,
-                    "original_count": len(lines),
-                    "weight": weight,
-                    "proto_count": proto_count,
-                    "retained_count": 0,
-                    "retained_lines": []
-                }
-                all_nodes.extend([{"line": l, "weight": weight, "source_url": url} for l in lines])
+                score, score_detail = future.result()
+                if score >= CONFIG["detection"]["score_threshold"]:
+                    # 按分级归类
+                    if score_detail["grade"] == "excellent":
+                        results["excellent"].append(line)
+                    elif score_detail["grade"] == "good":
+                        results["good"].append(line)
+                    elif score_detail["grade"] == "qualified":
+                        results["qualified"].append(line)
+                    results["all"].append(line)
             except Exception as e:
-                LOG.info(f"❌ 处理源{url}异常：{str(e)[:50]}")
-                source_records[url] = {
-                    "original": [],
-                    "original_count":0,
-                    "weight":0,
-                    "proto_count":count_proto([]),
-                    "retained_count":0
-                }
-    return all_nodes, source_records
+                LOG.warning(f"处理节点失败: {line[:50]}... 错误: {str(e)}")
+    
+    LOG.info(f"节点处理完成 - 优质: {len(results['excellent'])}，良好: {len(results['good'])}，合格: {len(results['qualified'])}，总计: {len(results['all'])}")
+    return results
 
-def process_nodes_final(unique_nodes: List[Dict]) -> Tuple[List[str], List[Dict]]:
-    """最终节点处理：极致筛选+容错"""
-    valid_lines = []
-    valid_nodes_info = []
-    total = len(unique_nodes)
+def process_single_node(line: str) -> tuple[int, dict]:
+    """处理单个节点（线程池任务）"""
+    # 解析协议
+    node = ProtocolParser.parse(line)
+    if not node:
+        return 0, {"final_score": 0, "grade": "reject"}
     
-    with ThreadPoolExecutor(max_workers=CONFIG["detection"]["thread_pool"]) as executor:
-        futures = [executor.submit(process_single_node_final, node) for node in unique_nodes]
-        for idx, future in enumerate(as_completed(futures)):
-            if idx % 10 == 0:
-                progress = (idx / total) * 100 if total > 0 else 0
-                LOG.info(f"⏳ 最终处理进度：{idx}/{total} ({progress:.1f}%)")
-            try:
-                line, node_info, score = future.result()
-            except Exception as e:
-                LOG.info(f"⚠️ 节点处理异常: {str(e)[:50]}")
-                continue
-            if line and score >= CONFIG["detection"]["score_threshold"]:
-                valid_lines.append(line)
-                valid_nodes_info.append(node_info)
-    
-    # 按评分降序排序
-    valid_nodes_info.sort(key=lambda x: x["score"], reverse=True)
-    valid_lines_sorted = [node["line"] for node in valid_nodes_info]
-    
-    LOG.info(f"✅ 最终优质节点筛选完成：共{len(valid_lines_sorted)}条（阈值{CONFIG['detection']['score_threshold']}分）")
-    return valid_lines_sorted, valid_nodes_info
+    # 计算分数
+    score, score_detail = calculate_node_score(node)
+    return score, score_detail
 
-def generate_final_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_lines: List[str], 
-                        valid_nodes_info: List[Dict], start_time: float) -> None:
-    """生成最终统计报告（更新文件命名和分数区间）"""
-    # 分级：优质（≥90）、良好（80-89）、合格（60-79）
-    excellent = [n for n in valid_nodes_info if n["score"] >= 90]
-    good = [n for n in valid_nodes_info if 80 <= n["score"] < 90]
-    qualified = [n for n in valid_nodes_info if 60 <= n["score"] < 80]
-    proto_count = count_proto(valid_lines)
+def save_results(results: dict):
+    """保存结果（优化后命名+编码）"""
+    # 统一Base64编码
+    def encode_nodes(nodes: list[str]) -> str:
+        if not nodes:
+            return ""
+        content = "\n".join(nodes)
+        return base64.b64encode(content.encode('utf-8')).decode('utf-8')
     
-    # 保存分级节点（更新为指定文件名）
-    def save_nodes(lines: List[str], filename: str, desc: str):
-        if not lines:
-            LOG.info(f"📄 {desc}为空，跳过保存")
-            return
-        encoded = base64.b64encode('\n'.join(lines).encode('utf-8')).decode('utf-8')
+    # 保存各分级文件
+    files = [
+        ("s1_excellent.txt", results["excellent"], "优质节点（≥80分）"),
+        ("s1_good.txt", results["good"], "良好节点（70-79分）"),
+        ("s1_qualified.txt", results["qualified"], "合格节点（60-69分）"),
+        ("s1.txt", results["all"], "所有有效节点（≥60分）")
+    ]
+    
+    for filename, nodes, desc in files:
+        encoded = encode_nodes(nodes)
         try:
-            with open(filename, 'w', encoding='utf-8') as f:
+            with open(filename, "w", encoding="utf-8") as f:
                 f.write(encoded)
-            LOG.info(f"📄 {desc}保存至 {filename}（{len(lines)} 条）")
+            LOG.info(f"保存{desc}到 {filename}，节点数: {len(nodes)}")
         except OSError as e:
-            LOG.error(f"❌ {desc}保存失败: {str(e)[:50]}")
-    
-    save_nodes([n["line"] for n in excellent], 's1_excellent.txt', "优质节点（≥90分）")
-    save_nodes([n["line"] for n in good], 's1_good.txt', "良好节点（80-89分）")
-    save_nodes([n["line"] for n in qualified], 's1_qualified.txt', "合格节点（60-79分）")
-    save_nodes(valid_lines, 's1.txt', "所有有效节点")
-    
-    # 统计信息（更新分数区间描述）
-    total_cost = time.time() - start_time
-    avg_response_time = sum([n["response_time"] for n in valid_nodes_info]) / len(valid_nodes_info) if valid_nodes_info else 0
-    outside_ok_rate = len([n for n in valid_nodes_info if n["outside_ok"]]) / len(valid_nodes_info) * 100 if valid_nodes_info else 0
-    cn_ip_rate = len([n for n in valid_nodes_info if n["is_cn"]]) / len(valid_nodes_info) * 100 if valid_nodes_info else 0
-    
-    LOG.info(f"\n🏆 最终筛选报告：")
-    LOG.info(f"   ├─ 原始节点：{len(all_nodes)} 条 → 去重后：{len(unique_nodes)} 条 → 有效节点：{len(valid_lines)} 条")
-    LOG.info(f"   ├─ 节点分级：优质（≥90分）{len(excellent)}条 | 良好（80-89分）{len(good)}条 | 合格（60-79分）{len(qualified)}条")
-    LOG.info(f"   ├─ 协议分布：VLESS({proto_count['vless']}) | Trojan({proto_count['trojan']}) | VMess({proto_count['vmess']}) | SS({proto_count['ss']})")
-    LOG.info(f"   ├─ 性能指标：平均响应 {avg_response_time:.2f}s | 外网通过率 {outside_ok_rate:.1f}% | 国内IP占比 {cn_ip_rate:.1f}%")
-    LOG.info(f"   └─ 总耗时：{total_cost:.2f} 秒 | 建议优先使用 s1_excellent.txt 节点")
+            LOG.error(f"保存文件失败: {filename} 错误: {str(e)}")
 
-def main() -> None:
-    """最终主函数"""
+# ========== 主函数 ==========
+def main():
+    """主执行函数"""
     start_time = time.time()
-    LOG.info(f"🚀 开始终极节点筛选（{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}）")
+    LOG.info("="*50)
+    LOG.info("节点筛选脚本启动（优化版）")
+    LOG.info("="*50)
     
-    if not validate_sources():
-        LOG.info("❌ 配置校验失败，退出")
-        return
-    
-    clean_expired_cache()
-    
-    # 拉取数据源
-    all_nodes, source_records = fetch_all_sources()
-    LOG.info(f"\n📥 数据源拉取完成：原始节点 {len(all_nodes)} 条")
-    
-    # 最终去重
-    unique_nodes = dedup_nodes_final(all_nodes)
-    
-    # 最终筛选
-    valid_lines, valid_nodes_info = process_nodes_final(unique_nodes)
-    
-    # 生成报告
-    generate_final_stats(all_nodes, unique_nodes, valid_lines, valid_nodes_info, start_time)
-    
-    # 关闭会话
     try:
-        SESSION.close()
-        LOG.info("🔌 关闭请求会话")
-    except Exception as e:
-        LOG.info(f"⚠️ 会话关闭异常: {str(e)[:50]}")
+        # 1. 加载订阅源
+        raw_nodes = load_subscription()
+        
+        # 2. 去重
+        unique_nodes = deduplicate_nodes(raw_nodes)
+        
+        # 3. 处理节点（评分+分级）
+        results = process_nodes(unique_nodes)
+        
+        # 4. 保存结果
+        save_results(results)
+        
+        # 5. 输出统计
+        total_time = time.time() - start_time
+        LOG.info("="*50)
+        LOG.info(f"脚本执行完成，总耗时: {total_time:.2f}秒")
+        LOG.info(f"最终结果 - 优质节点: {len(results['excellent'])} | 良好节点: {len(results['good'])} | 合格节点: {len(results['qualified'])} | 总计有效: {len(results['all'])}")
+        LOG.info("="*50)
     
-    LOG.info("\n✅ 终极筛选完成！优质节点已保存至 s1_excellent.txt，有效率≥80%")
+    except Exception as e:
+        LOG.error(f"脚本执行失败: {str(e)}", exc_info=True)
+
+# ========== 补充缺失的json导入（关键） ==========
+import json
 
 if __name__ == "__main__":
     main()
