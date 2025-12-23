@@ -299,7 +299,7 @@ def parse_vmess(line: str) -> Optional[Dict]:
         return None
 
 def parse_vless(line: str) -> Optional[Dict]:
-    """解析VLESS节点：增强UUID/端口校验"""
+    """解析VLESS节点：增强UUID/端口校验（修复ip变量名错误）"""
     try:
         core_content, remark = proto_preprocess(line, "vless://")
         vless_parts = core_content.split('?', 1)
@@ -323,7 +323,7 @@ def parse_vless(line: str) -> Optional[Dict]:
         address, port_str = addr_port.split(':', 1)
         port = validate_port(port_str)
         
-        # 增强：非443端口但无TLS的VLESS标记为低优先级
+        # 增强：非443端口但无TLS的VLESS标记为低优先级（修复ip→address）
         params = {}
         for p in param_part.split('&'):
             if '=' in p:
@@ -335,7 +335,16 @@ def parse_vless(line: str) -> Optional[Dict]:
         
         security = params.get('security', 'tls')
         if port != 443 and security != 'tls':
-            LOG.info(log_msg(f"⚠️ VLESS非443端口但无TLS（{ip}:{port}）", line, "vless"))
+            LOG.info(log_msg(f"⚠️ VLESS非443端口但无TLS（{address}:{port}）", line, "vless"))
+        
+        # 补充：Reality节点参数校验（提升可读性）
+        if security == 'reality':
+            reality_required = ['pbk', 'sid']
+            missing_reality = [p for p in reality_required if p not in params]
+            if missing_reality:
+                LOG.info(log_msg(f"⚠️ VLESS Reality节点缺失参数：{','.join(missing_reality)}", line, "vless"))
+            else:
+                LOG.info(log_msg(f"✅ VLESS Reality节点参数完整（{address}:{port}）", line, "vless"))
         
         cfg = {
             "uuid": uuid_str,
@@ -389,7 +398,7 @@ def parse_trojan(line: str) -> Optional[Dict]:
         # 增强：非443端口但无TLS的Trojan标记为低优先级
         security = params.get('security', 'tls')
         if port != 443 and security != 'tls':
-            LOG.info(log_msg(f"⚠️ Trojan非443端口但无TLS（{ip}:{port}）", line, "trojan"))
+            LOG.info(log_msg(f"⚠️ Trojan非443端口但无TLS（{address}:{port}）", line, "trojan"))
         
         cfg = {
             "address": address,
