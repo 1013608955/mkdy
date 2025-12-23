@@ -2,13 +2,13 @@ name: 极致免费节点更新（多来源 + 域名去重 + Reality/TLS优先 + 
 
 on:
   schedule:
-    - cron: '0 */1 * * *'  # 每3小时执行一次，如需调整：每1小时→0 */1 * * *，每天→0 0 * * *
+    - cron: '0 */1 * * *'  # 每1小时执行一次
   workflow_dispatch:  # 保留手动触发
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 100  # 缩短超时时间（移除V2Ray后脚本运行≤3分钟）
+    timeout-minutes: 100  # 异步脚本效率更高，保留足够超时余量
     steps:
       - name: Checkout代码
         uses: actions/checkout@v4
@@ -16,23 +16,26 @@ jobs:
       - name: 设置Python环境
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.12'  # 兼容aiohttp和脚本的Python版本
 
-      - name: 安装Python依赖
-        run: pip install requests
+      - name: 安装Python依赖（适配异步脚本）
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests aiohttp urllib3  # 新增aiohttp依赖，补充urllib3避免警告
 
       - name: 运行节点更新脚本
-        run: python update_nodes.py
+        run: python update_nodes.py  # 脚本文件名为update_nodes.py，与实际一致
         env:
           PYTHONUNBUFFERED: "1"  # 实时输出日志，方便排查
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 传递token，适配脚本内缓存/请求鉴权
 
-      - name: 提交并推送结果
+      - name: 提交并推送结果（根目录s1.txt）
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          # 仅当s1.txt有变更时提交
+          # 仅当s1.txt有变更时提交（根目录）
           if [ -f s1.txt ] && [ $(git diff --name-only s1.txt | wc -l) -gt 0 ]; then
-            git add s1.txt
+            git add s1.txt s1_excellent.txt s1_good.txt s1_qualified.txt  # 可选提交所有分级文件
             git commit -m "多来源+Reality优先更新订阅: $(date +'%Y-%m-%d %H:%M:%S')"
             git push
             echo "✅ 订阅文件已更新并推送"
