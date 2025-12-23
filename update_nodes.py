@@ -650,7 +650,7 @@ def count_proto(lines: List[Union[str, Dict]]) -> Dict[str, int]:
     count = {"vmess":0, "vless":0, "trojan":0, "ss":0, "hysteria":0, "other":0}
     for line in lines:
         line_str = line["line"] if isinstance(line, dict) else line
-        clean_line = clean_node_content(line_str)
+        clean_line = clean_node_line(line_str)
         if clean_line.startswith('vmess://'):
             count["vmess"] +=1
         elif clean_line.startswith('vless://'):
