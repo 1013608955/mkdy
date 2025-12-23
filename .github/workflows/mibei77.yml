@@ -1,0 +1,31 @@
+name: Fetch Mibei77 Nodes
+
+on:
+  schedule:
+    - cron: '30 0 * * *'  # 每天 UTC 0:30 运行（北京时间 8:30）
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Run fetch script
+        run: python fetch_mibei77.py
+
+      - name: Commit s2.txt
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add s2.txt
+          git commit -m "Update mibei77 nodes $(date +'%Y-%m-%d')" || exit 0
+          git push
