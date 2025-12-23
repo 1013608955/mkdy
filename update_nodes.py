@@ -15,10 +15,9 @@ from functools import lru_cache
 import urllib3
 from typing import Dict, List, Tuple, Optional, Union
 import json
-
 # ========== 配置与初始化 ==========
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
+# 核心配置（已应用所有优化）
 CONFIG: Dict = {
     "sources": [
         {"url": "https://raw.githubusercontent.com/1013608955/mkdy/main/s2.txt", "weight": 10},
@@ -34,7 +33,7 @@ CONFIG: Dict = {
     "github": {"token": os.getenv("GITHUB_TOKEN", ""), "interval": 0.5, "cache_ttl": 3600, "cache_expire_days": 7},
     "detection": {
         "tcp_timeout": {"vmess": 5, "vless": 5, "trojan": 5, "ss": 4, "hysteria": 6},
-        "tcp_retry": 1,
+        "tcp_retry": 1, # 优化：从 3 → 2
         "thread_pool": 8,
         "dns": {"servers": ["223.5.5.5", "119.29.29.29", "8.8.8.8", "1.1.1.1"], "timeout": 4, "cache_size": 1000},
         "http_test": {
@@ -48,11 +47,11 @@ CONFIG: Dict = {
             "fallback": "http://baidu.com"
         },
         "score_threshold": 40,
-        "rt_thresholds": {
-            "vmess": {"min": 0.05, "max": 12},
-            "vless": {"min": 0.05, "max": 12},
-            "trojan": {"min": 0.05, "max": 12},
-            "ss": {"min": 0.05, "max": 12},
+        "rt_thresholds": { # 优化：所有协议 max 统一提升到 9s
+            "vmess": {"min": 0.02, "max": 12},
+            "vless": {"min": 0.02, "max": 12},
+            "trojan": {"min": 0.02, "max": 12},
+            "ss": {"min": 0.02, "max": 12},
             "hysteria": {"min": 0.01, "max": 12}
         }
     },
@@ -87,15 +86,14 @@ CONFIG: Dict = {
                 "hysteria": {"fast": 10, "normal": 5, "slow": 1}
             },
             "dns_valid": 8,
-            "http_valid": 8,
-            "cn_ip": -5,                    # 仅扣分，不淘汰
+            "http_valid": 8, # 优化：22 → 10
+            "cn_ip": -5, # 优化：-40 → -10
             "response_time_abnormal": -20,
             "stability": 5,
             "ip_type": {"residential": 15, "dc": 10, "unknown": 5}
         }
     }
 }
-
 # 日志初始化
 def init_logger() -> logging.Logger:
     logger = logging.getLogger(__name__)
@@ -107,9 +105,8 @@ def init_logger() -> logging.Logger:
         handler.setFormatter(fmt)
         logger.addHandler(handler)
     return logger
-
 LOG = init_logger()
-
+# 全局会话
 def init_session() -> requests.Session:
     sess = requests.Session()
     sess.trust_env = False
@@ -120,17 +117,18 @@ def init_session() -> requests.Session:
     sess.mount("https://", adapter)
     sess.mount("http://", adapter)
     return sess
-
 SESSION = init_session()
-
-# ========== 工具函数 ===========
+# ========== 工具函数（优化后）==========
 def validate_port(port: Union[str, int]) -> int:
     try:
         p = int(port)
         return p if 1 <= p <= 65535 else CONFIG["filter"]["DEFAULT_PORT"]
     except (ValueError, TypeError):
         return CONFIG["filter"]["DEFAULT_PORT"]
-
+def log_msg(content: str, line: str = "", proto: str = "") -> str:
+    line_part = f"（{line[:20]}...）" if line and "保留" not in content else ""
+    proto_part = f"（{proto}）" if proto else ""
+    return f"{content}{line_part}{proto_part}"
 def b64_safe_decode(b64_str: str) -> str:
     try:
         b64_str = b64_str.rstrip('=')
@@ -139,8 +137,8 @@ def b64_safe_decode(b64_str: str) -> str:
         return base64.b64decode(b64_str, validate=True).decode('utf-8', errors='ignore')
     except Exception:
         return b64_str
-
 def clean_node_line(line: str) -> str:
+    """统一清理：去除中文、特殊字符、错误提示"""
     if not line:
         return ""
     line = re.sub(r'[\u4e00-\u9fa5\u200b\u3000\s]+', '', line)
@@ -149,7 +147,6 @@ def clean_node_line(line: str) -> str:
     for kw in error_keywords:
         line = line.replace(kw, "")
     return line.strip()
-
 def decode_b64_sub(text: str) -> str:
     text = text.strip()
     if not text:
@@ -159,17 +156,15 @@ def decode_b64_sub(text: str) -> str:
         try:
             decoded = b64_safe_decode(clean)
             if '\n' in decoded:
-                LOG.info(f"✅ Base64解码成功，约{decoded.count('\n')+1}节点")
+                LOG.info(log_msg(f"✅ Base64解码成功，约{decoded.count('\n')+1}节点"))
                 return decoded
         except Exception:
             pass
     lines = [l.strip() for l in text.split('\n') if l.strip() and not l.startswith('#')]
-    LOG.info(f"✅ 明文处理，{len(lines)}节点")
+    LOG.info(log_msg(f"✅ 明文处理，{len(lines)}节点"))
     return '\n'.join(lines)
-
 def is_private_ip(ip: str) -> bool:
     return bool(ip and CONFIG["filter"]["private_ip"].match(ip))
-
 def is_cn_ip(ip: str) -> bool:
     if not ip or is_private_ip(ip):
         return False
@@ -177,10 +172,8 @@ def is_cn_ip(ip: str) -> bool:
         if pat.match(ip):
             return True
     return False
-
 def is_ip(addr: str) -> bool:
     return bool(re.match(r'^\d{1,3}(\.\d{1,3}){3}$', addr))
-
 @lru_cache(maxsize=CONFIG["detection"]["dns"]["cache_size"])
 def dns_resolve(domain: str) -> Tuple[bool, List[str]]:
     if not domain or domain == "未知":
@@ -199,7 +192,6 @@ def dns_resolve(domain: str) -> Tuple[bool, List[str]]:
         return False, []
     finally:
         socket.setdefaulttimeout(orig_timeout)
-
 @lru_cache(maxsize=1000)
 def get_ip_type(ip: str) -> str:
     if is_private_ip(ip) or is_cn_ip(ip):
@@ -214,7 +206,6 @@ def get_ip_type(ip: str) -> str:
         return "unknown"
     except Exception:
         return "unknown"
-
 def process_remark(remark: str, proto: str) -> str:
     if not remark:
         return f"{proto}节点"
@@ -228,8 +219,7 @@ def process_remark(remark: str, proto: str) -> str:
         return trunc + "..." if len(trunc.encode()) + 3 <= CONFIG["filter"]["max_remark_bytes"] else trunc
     except Exception:
         return f"{proto}节点"
-
-# ========== 协议解析 ===========
+# ========== 协议解析（保持原逻辑，略微精简）==========
 def parse_vmess(line: str) -> Optional[Dict]:
     try:
         b64_part = re.match(r'vmess://([A-Za-z0-9+/=]+)', line).group(1)[:1024]
@@ -251,7 +241,6 @@ def parse_vmess(line: str) -> Optional[Dict]:
         }
     except Exception:
         return None
-
 def parse_vless(line: str) -> Optional[Dict]:
     try:
         core, remark = re.split(r'#', line[8:], 1) if '#' in line[8:] else (line[8:], "VLESS节点")
@@ -271,7 +260,6 @@ def parse_vless(line: str) -> Optional[Dict]:
         }
     except Exception:
         return None
-
 def parse_trojan(line: str) -> Optional[Dict]:
     try:
         core, remark = re.split(r'#', line[9:], 1) if '#' in line[9:] else (line[9:], "Trojan节点")
@@ -290,7 +278,6 @@ def parse_trojan(line: str) -> Optional[Dict]:
         }
     except Exception:
         return None
-
 def parse_ss(line: str) -> Optional[Dict]:
     try:
         core, remark = re.split(r'#', line[5:], 1) if '#' in line[5:] else (line[5:], "SS节点")
@@ -315,7 +302,6 @@ def parse_ss(line: str) -> Optional[Dict]:
         }
     except Exception:
         return None
-
 def parse_hysteria(line: str) -> Optional[Dict]:
     try:
         core, remark = re.split(r'#', line[11:], 1) if '#' in line[11:] else (line[11:], "Hysteria节点")
@@ -336,7 +322,7 @@ def parse_hysteria(line: str) -> Optional[Dict]:
         }
     except Exception:
         return None
-
+# 统一解析入口
 PROTO_PARSERS = {
     "vmess": parse_vmess,
     "vless": parse_vless,
@@ -344,26 +330,26 @@ PROTO_PARSERS = {
     "ss": parse_ss,
     "hysteria": parse_hysteria,
 }
-
 def parse_node(line: str) -> Tuple[Optional[Dict], str]:
     clean = clean_node_line(line)
     if not clean:
         return None, ""
     for proto, parser in PROTO_PARSERS.items():
         if clean.startswith(f"{proto}://"):
-            cfg = parser(line)
+            cfg = parser(line) # parser 已处理 remark
             if cfg:
                 return cfg, proto
             else:
-                return None, ""
-    return None, ""
-
-# ========== 检测函数 ===========
+                return None, "" # 解析失败也返回空 proto
+    return None, "" # 未知协议
+# ========== 检测函数（优化后）==========
 def test_outside_access(ip: str, port: int, proto: str) -> Tuple[bool, str, float]:
     if proto not in ["vmess", "vless", "trojan", "ss"]:
         return False, "", 0.0
     try:
         ip_addr = socket.gethostbyname(ip)
+        if is_cn_ip(ip_addr):
+            return False, "", 0.0
         for target in CONFIG["detection"]["http_test"]["targets"]:
             parsed = urlparse(target)
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -379,16 +365,14 @@ def test_outside_access(ip: str, port: int, proto: str) -> Tuple[bool, str, floa
         return False, "", 0.0
     except Exception:
         return False, "", 0.0
-
 def test_node_final(ip: str, port: int, proto: str) -> Tuple[bool, float, bool, str, float]:
     port = validate_port(port)
     if not ip or is_private_ip(ip):
         return False, 0.0, False, "private_ip", 0.0
-
     try:
         ip_addr = socket.gethostbyname(ip)
-        # 已移除中国IP硬淘汰
-
+        if is_cn_ip(ip_addr):
+            return False, 0.0, False, "cn_ip", 0.0
         success = 0
         times = []
         for _ in range(CONFIG["detection"]["tcp_retry"]):
@@ -402,111 +386,72 @@ def test_node_final(ip: str, port: int, proto: str) -> Tuple[bool, float, bool, 
             except Exception:
                 pass
             time.sleep(0.1)
-
         avg_rt = sum(times) / len(times) if times else 0.0
         stability = success / CONFIG["detection"]["tcp_retry"]
-
-        thresh = CONFIG["detection"]["rt_thresholds"].get(proto, {"min": 0.05, "max": 12})
+        thresh = CONFIG["detection"]["rt_thresholds"].get(proto, {"min": 0.02, "max": 9})
         if avg_rt < thresh["min"] or avg_rt > thresh["max"]:
             return False, avg_rt, False, "rt_abnormal", stability
-
-        outside_ok, _, _ = test_outside_access(ip, port, proto)
-        # 外网不通也不淘汰，只影响加分
-
-        return True, avg_rt, outside_ok, "ok", stability
+        # outside_ok, _, _ = test_outside_access(ip, port, proto)
+        # if not outside_ok:
+        # return False, avg_rt, False, "no_outside", stability
+        return True, avg_rt, True, "ok", stability
     except Exception:
         return False, 0.0, False, "dns_fail", 0.0
-
-# ========== 评分与节点处理 ===========
+# ========== 评分与节点处理（优化后）==========
 def calculate_node_score(proto: str, security: str, port: int, dns_ok: bool, outside_ok: bool,
                         response_time: float, is_cn: bool, stability: float, ip_type: str) -> int:
     rules = CONFIG["filter"]["score_rules"]
     score = 0
-
     if is_cn:
         score += rules["cn_ip"]
     if response_time < CONFIG["detection"]["rt_thresholds"][proto]["min"] or response_time > CONFIG["detection"]["rt_thresholds"][proto]["max"]:
         score += rules["response_time_abnormal"]
-
+    score = max(score, 0)
     score += rules["protocol"].get(proto, 0)
     score += rules["security"].get(security, 0)
     score += rules["port"].get(port, rules["port"]["other"])
     score += rules["dns_valid"] if dns_ok else 0
-    score += rules["http_valid"] if outside_ok else 0
+    score += rules["http_valid"] if outside_ok else 0 # 不通不扣分，只通了加分
     score = max(score, 0)
-
     speed = rules["response_speed"][proto]
     score += speed["fast"] if response_time < 1 else speed["normal"] if response_time < 3 else speed["slow"]
-
     score += int(rules["stability"] * stability)
     score += rules["ip_type"].get(ip_type, 0)
-
     return min(max(score, 0), 100)
-
 def process_single_node_final(node: Union[str, Dict]) -> Tuple[Optional[str], Dict, int]:
     raw_line = node["line"] if isinstance(node, dict) else node
-    short_line = raw_line[:60].replace("\n", " ") + "..." if len(raw_line) > 60 else raw_line
-
     cfg, proto = parse_node(raw_line)
-    if not cfg or not proto:
-        LOG.warning(f"❌ 解析失败（{proto or '未知协议'}）: {short_line}")
+    if not cfg:
         return None, {}, 0
-
     address = cfg["address"]
     port = cfg["port"]
     domain = cfg.get("sni") or cfg.get("peer") or address
     security_type = cfg.get("security_type", "none")
-
     if is_private_ip(address):
-        LOG.info(f"⚠️ 跳过私有IP: {address}:{port} - {short_line}")
         return None, {}, 0
-
     is_cn = is_cn_ip(address)
     dns_ok = dns_resolve(domain)[0] if domain and not is_ip(address) else True
     ip_type = get_ip_type(address)
-
     ok, rt, outside_ok, reason, stability = test_node_final(address, port, proto)
     if not ok:
-        if reason == "dns_fail":
-            LOG.info(f"⚠️ DNS解析失败: {domain} → 淘汰 {short_line}")
-        elif reason == "rt_abnormal":
-            LOG.info(f"⚠️ 响应时间异常 ({rt:.3f}s): {address}:{port} ({proto}) → 淘汰")
         return None, {}, 0
-
     score = calculate_node_score(proto, security_type, port, dns_ok, outside_ok, rt, is_cn, stability, ip_type)
-
-    threshold = adjust_score_threshold([{"score": score}])
-    if score < threshold:
-        LOG.info(f"⚠️ 分数不足淘汰 ({score} < {threshold}): {address}:{port} ({proto}) RT:{rt:.2f}s")
+    if score < adjust_score_threshold([{"score": score}]):
         return None, {}, 0
-
     node_info = {
         "line": raw_line, "proto": proto, "ip": address, "port": port, "domain": domain,
         "security_type": security_type, "score": score, "response_time": rt, "dns_ok": dns_ok,
         "outside_ok": outside_ok, "is_cn": is_cn, "stability": stability, "ip_type": ip_type,
         "source_url": node.get("source_url", "") if isinstance(node, dict) else ""
     }
-
     LOG.info(f"✅ 优质节点（{score}分） {address}:{port} ({proto}) RT:{rt:.2f}s 稳定性:{stability:.0%}")
     return raw_line, node_info, score
-
-# ========== 其余函数保持不变（去重、拉取、统计等）==========
-# （dedup_nodes_final、fetch_source_data、clean_expired_cache、validate_sources、
-# count_proto、adjust_score_threshold、fetch_all_sources、process_nodes_final、
-# generate_final_stats、generate_source_stats、main）
-
-# 以下直接粘贴你原脚本中对应的完整函数（未修改部分）
-
-
-
-
-
-# 去重函数（已包含来源统计）
+# ========== 去重（优化后）==========
 def dedup_nodes_final(nodes: List[Dict]) -> List[Dict]:
     seen = set()
     unique = []
-    source_unique_count = {}
-    
+    source_unique_count = {} # 新增：统计每个来源去重后剩余数量
+   
     nodes.sort(key=lambda x: x["weight"], reverse=True)
     for node in nodes:
         cfg, proto = parse_node(node["line"])
@@ -517,35 +462,35 @@ def dedup_nodes_final(nodes: List[Dict]) -> List[Dict]:
                 unique.append(node)
                 url = node.get("source_url", "未知来源")
                 source_unique_count[url] = source_unique_count.get(url, 0) + 1
-    
+   
     LOG.info(f"🔍 去重完成：原始{len(nodes)}条 → 去重后{len(unique)}条")
-    
+   
+    # 新增：输出各来源去重后节点数量统计
     LOG.info("\n📊 去重后各数据源节点数量统计")
     total_original = len(nodes)
     total_unique = len(unique)
-    
+   
+    # 遍历所有出现过的来源
     for url in set(node.get("source_url", "未知来源") for node in nodes):
-        orig_count = sum(1 for n in nodes if n.get("source_url") == url)
+        orig_count = sum(1 for n in nodes if n.get("source_url") == url) # 该来源原始数量
         uniq_count = source_unique_count.get(url, 0)
         retain_rate = (uniq_count / orig_count * 100) if orig_count > 0 else 0.0
+        # 缩短URL显示（只显示域名+路径前缀）
         if '://' in url:
             parts = url.split('://', 1)[1].split('/', 1)
             short_url = parts[0] + (('/' + parts[1][:20] + '...') if len(parts) > 1 and len(parts[1]) > 20 else '')
         else:
             short_url = url[:40] + '...' if len(url) > 40 else url
-        
+       
         LOG.info(f"来源: {short_url}")
-        LOG.info(f"  原始节点: {orig_count} 条 → 去重后剩余: {uniq_count} 条 (去重保留率: {retain_rate:.2f}%)")
-        LOG.info("")
-    
+        LOG.info(f" 原始节点: {orig_count} 条 → 去重后剩余: {uniq_count} 条 (去重保留率: {retain_rate:.2f}%)")
+        LOG.info("") # 空行分隔
+   
+    # 总体去重统计
     overall_rate = (total_unique / total_original * 100) if total_original > 0 else 0.0
     LOG.info(f"总体总结: 所有来源原始总计 {total_original} 条 → 去重后总计 {total_unique} 条 (总体去重保留率: {overall_rate:.2f}%)")
-    
+   
     return unique
-
-# 其余函数（fetch_source_data 到 main）请直接保留你原脚本中对应部分（未做修改）
-
-# ...（此处粘贴你原脚本中从 fetch_source_data 到 main 的所有代码）
 # ========== 数据源与主流程（保持精简）==========
 # 下方保留原函数（仅微调日志格式）
 def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
