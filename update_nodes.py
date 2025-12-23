@@ -22,21 +22,11 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # 核心配置（优化评分规则、动态阈值）
 CONFIG: Dict = {
-    "sources": [
-        {"url": "https://raw.githubusercontent.com/ripaojiedian/freenode/main/sub", "weight": 5},
-        {"url": "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/Splitted-By-Protocol/vmess.txt", "weight": 5},
-        {"url": "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt", "weight": 5},
-        {"url": "https://raw.githubusercontent.com/mfuu/v2ray/master/v2ray", "weight": 4},
-        {"url": "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt", "weight": 4},
-        {"url": "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt", "weight": 3},
-        {"url": "https://raw.githubusercontent.com/HakurouKen/free-node/main/public", "weight": 3},
-        {"url": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub", "weight": 2}
-    ],
-    "request": {"timeout": 15, "retry": 3, "retry_delay": 3, "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"},
-    "github": {"token": os.getenv("GITHUB_TOKEN", ""), "interval": 0.5, "cache_ttl": 3600, "cache_expire_days": 7},
+    # ... 其他不变的部分 ...
+
     "detection": {
         "tcp_timeout": {"vmess":5, "vless":5, "trojan":5, "ss":4, "hysteria":6},
-        "tcp_retry": 3,  # 增加检测次数用于计算稳定性
+        "tcp_retry": 2,  # 【修改】原 3 → 2，减少因瞬时波动导致的假负
         "thread_pool": 8,
         "dns": {"servers": ["223.5.5.5", "119.29.29.29", "8.8.8.8", "1.1.1.1"], "timeout":4, "cache_size":1000},
         "http_test": {
@@ -49,41 +39,23 @@ CONFIG: Dict = {
             ],
             "fallback": "http://baidu.com"
         },
-        "score_threshold": 65,  # 基础阈值从75降至65
+        "score_threshold": 65,  # 建议后续可降到 55~60，进一步增加节点数
         "min_response_time": 0.1,
         "max_response_time": 5.0,
-        # 分协议响应时间阈值（优化后）
-        "rt_thresholds": {
-            "vmess": {"min": 0.05, "max": 6},
-            "vless": {"min": 0.05, "max": 6},
-            "trojan": {"min": 0.05, "max": 6},
-            "ss": {"min": 0.05, "max": 7},
-            "hysteria": {"min": 0.01, "max": 4}
+        "rt_thresholds": {  # 【修改】所有协议 max 统一提升到 9s（8-10s 区间中间值）
+            "vmess": {"min": 0.05, "max": 9},
+            "vless": {"min": 0.05, "max": 9},
+            "trojan": {"min": 0.05, "max": 9},
+            "ss": {"min": 0.05, "max": 9},
+            "hysteria": {"min": 0.01, "max": 9}  # hysteria 原更严，也放宽
         }
     },
     "filter": {
-        "private_ip": re.compile(r"^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[0-1])\.|127\.|0\.0\.0\.0)"),
-        "cn_ip_ranges": [
-            re.compile(r"^1\.0\.16\."), re.compile(r"^1\.0\.64\."), re.compile(r"^101\."),
-            re.compile(r"^103\.(?!106|96)"), re.compile(r"^112\."), re.compile(r"^113\."),
-            re.compile(r"^120\."), re.compile(r"^121\."), re.compile(r"^122\."), re.compile(r"^123\."),
-            re.compile(r"^139\."), re.compile(r"^140\."), re.compile(r"^141\."), re.compile(r"^150\."),
-            re.compile(r"^151\."), re.compile(r"^163\."), re.compile(r"^171\."),
-            re.compile(r"^172\.(?!16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31)"),
-            re.compile(r"^173\."), re.compile(r"^174\."), re.compile(r"^180\."), re.compile(r"^181\."),
-            re.compile(r"^182\."), re.compile(r"^183\."), re.compile(r"^184\."), re.compile(r"^190\."),
-            re.compile(r"^202\."), re.compile(r"^203\."), re.compile(r"^210\."), re.compile(r"^211\."),
-            re.compile(r"^220\."), re.compile(r"^221\."), re.compile(r"^222\."), re.compile(r"^223\.")
-        ],
-        "ports": range(1, 65535),
-        "max_remark_bytes": 200,
-        "DEFAULT_PORT": 443,
-        "SS_DEFAULT_CIPHER": "aes-256-gcm",
-        "SS_VALID_CIPHERS": ["aes-256-gcm", "aes-128-gcm", "chacha20-ietf-poly1305", "aes-256-cfb", "aes-128-cfb"],
-        # 重构后的评分规则
+        # ... 其他不变的部分 ...
+
         "score_rules": {
-            "protocol": {"vless": 20, "trojan": 18, "vmess": 15, "hysteria": 15, "ss": 10, "other": 0},
-            "security": {"reality": 25, "tls": 20, "aead": 15, "none": 0},
+            "protocol": {"vless": 20, "trojan": 18, "vmess": 18, "hysteria": 15, "ss": 12, "other": 0},  # 【修改】vmess 15→18，ss 10→12
+            "security": {"reality": 15, "tls": 20, "aead": 15, "none": 0},  # 【修改】reality 25→15，降低依赖
             "port": {443: 10, 8443: 8, 80: 7, 465: 7, 9443: 7, "other": 5},
             "response_speed": {
                 "vmess": {"fast": 8, "normal": 4, "slow": 0},
@@ -92,12 +64,12 @@ CONFIG: Dict = {
                 "ss": {"fast": 7, "normal": 3, "slow": 0},
                 "hysteria": {"fast": 10, "normal": 5, "slow": 1}
             },
-            "dns_valid": 8,          # 提升DNS权重
-            "http_valid": 22,        # 外网访问权重小幅提升
-            "cn_ip": -40,            # 降低国内IP扣分
-            "response_time_abnormal": -80, # 降低异常扣分
-            "stability": 10,         # 新增稳定性权重
-            "ip_type": {"residential": 15, "dc": 5, "unknown": 0} # 新增IP类型权重
+            "dns_valid": 8,
+            "http_valid": 10,  # 【修改】原 22 → 10，外网权重大幅降低
+            "cn_ip": -10,  # 【修改】原 -40 → -10，国内IP不再重扣
+            "response_time_abnormal": -80,  # 可选：后续若仍节点少，可改为 -40
+            "stability": 10,
+            "ip_type": {"residential": 15, "dc": 10, "unknown": 5}  # 【修改】dc 5→10，unknown 0→5
         }
     }
 }
