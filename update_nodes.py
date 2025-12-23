@@ -356,11 +356,18 @@ PROTO_PARSERS = {
 
 def parse_node(line: str) -> Tuple[Optional[Dict], str]:
     clean = clean_node_line(line)
+    if not clean:
+        return None, ""
+
     for proto, parser in PROTO_PARSERS.items():
         if clean.startswith(f"{proto}://"):
-            cfg = parser(line)
-            return cfg, proto if cfg else None, ""
-    return None, ""
+            cfg = parser(line)  # parser 已处理 remark
+            if cfg:
+                return cfg, proto
+            else:
+                return None, ""  # 解析失败也返回空 proto
+
+    return None, ""  # 未知协议
 
 # ========== 检测函数（优化后）==========
 def test_outside_access(ip: str, port: int, proto: str) -> Tuple[bool, str, float]:
@@ -492,22 +499,19 @@ def dedup_nodes_final(nodes: List[Dict]) -> List[Dict]:
     seen = set()
     unique = []
     nodes.sort(key=lambda x: x["weight"], reverse=True)
+
     for node in nodes:
         cfg, proto = parse_node(node["line"])
-        if cfg:
+        if cfg and proto:
             key = (cfg["address"], cfg["port"], proto)
             if key not in seen:
                 seen.add(key)
                 unique.append(node)
-    LOG.info(f"🔍 去重：{len(nodes)} → {len(unique)}")
+
+    LOG.info(f"🔍 去重完成：原始{len(nodes)}条 → 去重后{len(unique)}条")
     return unique
 
 # ========== 数据源与主流程（保持精简）==========
-# （fetch_source_data、clean_expired_cache、validate_sources、count_proto、adjust_score_threshold、
-#  fetch_all_sources、process_nodes_final、generate_final_stats、main）
-# 这些函数逻辑未变，仅微调日志和变量名，保持原样即可（为节省篇幅此处不重复粘贴，
-#  可直接从你之前的完整脚本复制过来，替换上面的优化部分即可）
-
 # 下方保留原函数（仅微调日志格式）
 def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
     cache_dir = ".cache"
