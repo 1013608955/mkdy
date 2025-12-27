@@ -1,7 +1,5 @@
-# 工作流名称，可自定义
 name: 监控mukuidm.dpdns.org域名过期时间
 
-# 触发规则：定时执行 + 手动触发
 on:
   schedule:
     - cron: '0 2 * * 0'  # 每周日UTC2点（国内10点）执行
@@ -18,19 +16,19 @@ jobs:
 
       - name: 执行过期检查脚本
         env:
-          # 修正：只保留Push URL的基础部分，去掉后面的参数
+          # 关键修正：使用提取后的基础URL
           PUSH_URL_BASE: "https://mkjk.zeabur.app/api/push/o62FOv2OEq"
           DOMAIN: "mukuidm.dpdns.org"
         run: |
-          # 1. 获取域名过期时间
-          EXPIRY_DATE=$(whois $DOMAIN | grep -Ei "Expiry|Expiration|Expire Date" | head -1 | awk -F ':' '{print $2}' | sed 's/^ //g')
+          # 1. 获取域名过期时间（兼容dpdns.org格式）
+          EXPIRY_DATE=$(whois $DOMAIN | grep -Ei "Expiry|Expiration|Registry Expiry Date|Expire On" | head -1 | awk -F ':' '{print $2}' | sed 's/^ //g')
           
-          # 2. 处理解析失败的情况
+          # 2. 处理解析失败场景
           if [ -z "$EXPIRY_DATE" ]; then
             STATUS="down"
             MESSAGE="⚠️ 域名过期时间解析失败！请手动检查 mukuidm.dpdns.org"
           else
-            # 3. 计算剩余天数
+            # 3. 计算剩余天数（处理日期格式异常）
             EXPIRY_TIMESTAMP=$(date -d "$EXPIRY_DATE" +%s 2>/dev/null)
             CURRENT_TIMESTAMP=$(date +%s)
             
@@ -40,7 +38,7 @@ jobs:
             else
               DAYS_UNTIL_EXPIRY=$(( (EXPIRY_TIMESTAMP - CURRENT_TIMESTAMP) / 86400 ))
               
-              # 4. 判断告警状态
+              # 4. 按剩余天数判断告警状态
               if [ $DAYS_UNTIL_EXPIRY -lt 0 ]; then
                 STATUS="down"
                 MESSAGE="❌ 域名已过期！过期日期：$EXPIRY_DATE（已过期 $((-DAYS_UNTIL_EXPIRY)) 天）"
@@ -54,10 +52,10 @@ jobs:
             fi
           fi
 
-          # 5. URL编码消息
+          # 5. URL编码消息（避免特殊字符导致推送失败）
           ENCODED_MSG=$(echo -n "$MESSAGE" | jq -s -R -r @uri)
           
-          # 6. 推送到Uptime Kuma（修正：用&拼接参数，而非重复的?）
+          # 6. 推送请求（用&拼接参数，而非重复?）
           echo "推送内容：$MESSAGE"
           curl -X POST "${PUSH_URL_BASE}?status=${STATUS}&msg=${ENCODED_MSG}" \
             --connect-timeout 10 \
