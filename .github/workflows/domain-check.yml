@@ -9,53 +9,40 @@ jobs:
   check-domain-expiry:
     runs-on: ubuntu-latest
     steps:
-      - name: 安装whois和jq工具
+      - name: 安装jq工具（仅用于URL编码）
         run: |
           sudo apt update
-          sudo apt install -y whois jq
+          sudo apt install -y jq
 
-      - name: 执行过期检查脚本
+      - name: 执行过期检查（用已知过期时间）
         env:
-          # 关键修正：使用提取后的基础URL
+          # 替换为你Uptime Kuma的正确基础Push URL
           PUSH_URL_BASE: "https://mkjk.zeabur.app/api/push/o62FOv2OEq"
           DOMAIN: "mukuidm.dpdns.org"
+          # 已知过期时间（格式化为date命令可识别的形式）
+          KNOWN_EXPIRY_DATE: "2026-12-27"
         run: |
-          # 1. 获取域名过期时间（兼容dpdns.org格式）
-          EXPIRY_DATE=$(whois $DOMAIN | grep -Ei "Expiry|Expiration|Registry Expiry Date|Expire On" | head -1 | awk -F ':' '{print $2}' | sed 's/^ //g')
+          # 1. 计算剩余天数
+          EXPIRY_TIMESTAMP=$(date -d "$KNOWN_EXPIRY_DATE" +%s)
+          CURRENT_TIMESTAMP=$(date +%s)
+          DAYS_UNTIL_EXPIRY=$(( (EXPIRY_TIMESTAMP - CURRENT_TIMESTAMP) / 86400 ))
           
-          # 2. 处理解析失败场景
-          if [ -z "$EXPIRY_DATE" ]; then
+          # 2. 判断告警状态
+          if [ $DAYS_UNTIL_EXPIRY -lt 0 ]; then
             STATUS="down"
-            MESSAGE="⚠️ 域名过期时间解析失败！请手动检查 mukuidm.dpdns.org"
+            MESSAGE="❌ 域名已过期！过期日期：$KNOWN_EXPIRY_DATE（已过期 $((-DAYS_UNTIL_EXPIRY)) 天）"
+          elif [ $DAYS_UNTIL_EXPIRY -lt 30 ]; then
+            STATUS="down"
+            MESSAGE="⚠️ 域名即将过期！过期日期：$KNOWN_EXPIRY_DATE（剩余 $DAYS_UNTIL_EXPIRY 天）"
           else
-            # 3. 计算剩余天数（处理日期格式异常）
-            EXPIRY_TIMESTAMP=$(date -d "$EXPIRY_DATE" +%s 2>/dev/null)
-            CURRENT_TIMESTAMP=$(date +%s)
-            
-            if [ -z "$EXPIRY_TIMESTAMP" ]; then
-              STATUS="down"
-              MESSAGE="⚠️ 过期日期格式解析失败：$EXPIRY_DATE"
-            else
-              DAYS_UNTIL_EXPIRY=$(( (EXPIRY_TIMESTAMP - CURRENT_TIMESTAMP) / 86400 ))
-              
-              # 4. 按剩余天数判断告警状态
-              if [ $DAYS_UNTIL_EXPIRY -lt 0 ]; then
-                STATUS="down"
-                MESSAGE="❌ 域名已过期！过期日期：$EXPIRY_DATE（已过期 $((-DAYS_UNTIL_EXPIRY)) 天）"
-              elif [ $DAYS_UNTIL_EXPIRY -lt 30 ]; then
-                STATUS="down"
-                MESSAGE="⚠️ 域名即将过期！过期日期：$EXPIRY_DATE（剩余 $DAYS_UNTIL_EXPIRY 天）"
-              else
-                STATUS="up"
-                MESSAGE="✅ 域名状态正常！过期日期：$EXPIRY_DATE（剩余 $DAYS_UNTIL_EXPIRY 天）"
-              fi
-            fi
+            STATUS="up"
+            MESSAGE="✅ 域名状态正常！过期日期：$KNOWN_EXPIRY_DATE（剩余 $DAYS_UNTIL_EXPIRY 天）"
           fi
 
-          # 5. URL编码消息（避免特殊字符导致推送失败）
+          # 3. URL编码消息
           ENCODED_MSG=$(echo -n "$MESSAGE" | jq -s -R -r @uri)
           
-          # 6. 推送请求（用&拼接参数，而非重复?）
+          # 4. 推送到Uptime Kuma
           echo "推送内容：$MESSAGE"
           curl -X POST "${PUSH_URL_BASE}?status=${STATUS}&msg=${ENCODED_MSG}" \
             --connect-timeout 10 \
