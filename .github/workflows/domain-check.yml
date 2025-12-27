@@ -3,35 +3,26 @@ name: 监控mukuidm.dpdns.org域名过期时间
 
 # 触发规则：定时执行 + 手动触发
 on:
-  # 定时执行（Cron表达式，UTC时区）
-  # 这里配置的是「每周日UTC时间2点」= 国内时间10点执行，可按需修改
   schedule:
-    - cron: '0 2 * * 0'
-  # 手动触发（在GitHub仓库的Actions页面可点击运行）
-  workflow_dispatch:
+    - cron: '0 2 * * 0'  # 每周日UTC2点（国内10点）执行
+  workflow_dispatch:     # 手动触发
 
-# 要执行的任务
 jobs:
   check-domain-expiry:
-    # 运行环境：Ubuntu最新版
     runs-on: ubuntu-latest
-    # 任务步骤
     steps:
-      # 步骤1：安装依赖（whois用于查过期时间，jq用于URL编码）
       - name: 安装whois和jq工具
         run: |
           sudo apt update
           sudo apt install -y whois jq
 
-      # 步骤2：检查域名过期时间并推送到Uptime Kuma
       - name: 执行过期检查脚本
         env:
-          # 配置环境变量（Push URL从GitHub Secrets读取，更安全）
-          PUSH_URL: "https://mkjk.zeabur.app/api/push/o62FOv2OEq?status=up&msg=OK&ping="
-          # 要监控的域名（可直接写死，也可放Secrets）
+          # 修正：只保留Push URL的基础部分，去掉后面的参数
+          PUSH_URL_BASE: "https://mkjk.zeabur.app/api/push/o62FOv2OEq"
           DOMAIN: "mukuidm.dpdns.org"
         run: |
-          # 1. 获取域名过期时间（兼容dpdns.org的whois输出格式）
+          # 1. 获取域名过期时间
           EXPIRY_DATE=$(whois $DOMAIN | grep -Ei "Expiry|Expiration|Expire Date" | head -1 | awk -F ':' '{print $2}' | sed 's/^ //g')
           
           # 2. 处理解析失败的情况
@@ -39,19 +30,17 @@ jobs:
             STATUS="down"
             MESSAGE="⚠️ 域名过期时间解析失败！请手动检查 mukuidm.dpdns.org"
           else
-            # 3. 计算剩余天数（兼容常见日期格式）
-            # 先把日期转成时间戳，再计算差值（单位：天）
+            # 3. 计算剩余天数
             EXPIRY_TIMESTAMP=$(date -d "$EXPIRY_DATE" +%s 2>/dev/null)
             CURRENT_TIMESTAMP=$(date +%s)
             
-            # 处理日期格式解析失败的情况
             if [ -z "$EXPIRY_TIMESTAMP" ]; then
               STATUS="down"
               MESSAGE="⚠️ 过期日期格式解析失败：$EXPIRY_DATE"
             else
               DAYS_UNTIL_EXPIRY=$(( (EXPIRY_TIMESTAMP - CURRENT_TIMESTAMP) / 86400 ))
               
-              # 4. 判断告警状态（剩余<30天触发Down，否则Up）
+              # 4. 判断告警状态
               if [ $DAYS_UNTIL_EXPIRY -lt 0 ]; then
                 STATUS="down"
                 MESSAGE="❌ 域名已过期！过期日期：$EXPIRY_DATE（已过期 $((-DAYS_UNTIL_EXPIRY)) 天）"
@@ -65,12 +54,12 @@ jobs:
             fi
           fi
 
-          # 5. URL编码消息（避免特殊字符导致推送失败）
+          # 5. URL编码消息
           ENCODED_MSG=$(echo -n "$MESSAGE" | jq -s -R -r @uri)
           
-          # 6. 推送到Uptime Kuma
+          # 6. 推送到Uptime Kuma（修正：用&拼接参数，而非重复的?）
           echo "推送内容：$MESSAGE"
-          curl -X POST "$PUSH_URL?status=$STATUS&msg=$ENCODED_MSG" \
+          curl -X POST "${PUSH_URL_BASE}?status=${STATUS}&msg=${ENCODED_MSG}" \
             --connect-timeout 10 \
             --max-time 20 \
             -w "\n推送状态码：%{http_code}\n"
