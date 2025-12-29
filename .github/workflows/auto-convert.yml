@@ -17,13 +17,12 @@ jobs:
         with:
           fetch-depth: 0  # 拉取完整历史，避免提交冲突
 
-      # 步骤2：设置Python环境
+      # 步骤2：设置Python环境（修复：移除cache参数，避免依赖文件检查失败）
       - name: 配置Python 3.10
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-          # 无需pip缓存（因依赖仅需pyyaml，安装耗时短）
-    
+
       # 步骤3：安装依赖包
       - name: 安装所需依赖
         run: |
