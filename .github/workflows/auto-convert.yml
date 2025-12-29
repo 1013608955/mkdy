@@ -1,44 +1,64 @@
-name: 自动转换为Clash格式
+name: 自动转换V2订阅为Clash格式
 
 on:
   schedule:
-    - cron: '0 * * * *'  # 每小时运行一次
-  workflow_dispatch:  # 允许手动触发
+    - cron: '0 * * * *'  # 每小时整点运行
+  workflow_dispatch:     # 允许手动触发（便于测试）
 
 jobs:
-  convert:
+  convert-and-deploy:
     permissions:
-      contents: write  # 显式授予写入权限，避免提交失败
+      contents: write  # 必须授予写入权限，否则无法提交代码
     runs-on: ubuntu-latest
     steps:
+      # 步骤1：拉取仓库代码
       - name: 拉取代码仓库
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 拉取完整历史，避免提交冲突
 
-      - name: 设置Python环境
+      # 步骤2：设置Python环境
+      - name: 配置Python 3.10
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+          cache: 'pip'  # 缓存pip依赖，加速运行
 
-      - name: 安装依赖
+      # 步骤3：安装依赖包
+      - name: 安装所需依赖
         run: |
           python -m pip install --upgrade pip
-          pip install pyyaml  # 用于处理YAML格式
+          pip install pyyaml
 
-      - name: 检查源文件是否存在
+      # 步骤4：检查源文件是否存在
+      - name: 验证源文件
         run: |
-          ls -l s.txt s1.txt s2.txt || echo "部分源文件不存在，请检查"
+          echo "检查源文件列表："
+          ls -la s.txt s1.txt s2.txt || echo "⚠️ 部分源文件缺失，请检查仓库根目录"
 
-      - name: 运行转换脚本
-        run: python convert_to_clash.py
-
-      - name: 检查转换后的文件
+      # 步骤5：运行转换脚本
+      - name: 执行转换脚本
         run: |
-          ls -l *.yaml || echo "转换后的yaml文件未生成"
+          python convert_to_clash.py
 
-      - name: 提交转换结果
+      # 步骤6：检查转换后的文件
+      - name: 验证输出文件
         run: |
+          echo "检查转换后的YAML文件："
+          ls -la *.yaml || echo "⚠️ 转换后的文件未生成"
+
+      # 步骤7：提交并推送结果
+      - name: 提交到GitHub仓库
+        run: |
+          # 配置Git身份
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
+          
+          # 添加文件（仅添加转换后的yaml文件）
           git add s-clash.yaml s1-clash.yaml s2-clash.yaml
-          git commit -m "自动转换Clash配置 $(date +'%Y-%m-%d %H:%M:%S')" || echo "没有需要提交的更改"
-          git push
+          
+          # 提交（无更改则跳过）
+          git commit -m "Auto convert: $(date +'%Y-%m-%d %H:%M:%S')" || echo "✅ 无内容变更，无需提交"
+          
+          # 推送更改
+          git push origin main --force-with-lease || echo "⚠️ 推送失败，请检查仓库权限"
