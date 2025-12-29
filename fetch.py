@@ -25,7 +25,7 @@ TARGET_SITES = [
 NODE_OUTPUT_FILE = "s2.txt"  # 所有网站的txt节点合并到这个文件
 
 def get_latest_article_url(site):
-    """适配不同网站，获取最新的节点/订阅文章链接"""
+    """适配不同网站，获取最新的节点/订阅文章链接（放宽米贝77的筛选条件）"""
     site_name = site["name"]
     home_url = site["url"]
     print(f"\n========== 开始处理 [{site_name}] 网站 ==========")
@@ -37,15 +37,19 @@ def get_latest_article_url(site):
         article_candidates = []
         today = datetime.now().strftime("%Y%m%d")
         yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y%m%d")
+        recent_dates = [today, yesterday]  # 近2天的日期
 
         if site_name == "米贝77":
-            # 适配mibei77的链接特征：含当日/昨日日期的http链接+关键词
+            # 【修复点1】放宽筛选：只要链接含近2天日期，且是文章链接（即使标题无关键词）
             for a in soup.find_all('a', href=True):
                 href = a['href']
                 text = a.get_text(strip=True) + (a.get('title', ''))
-                if ("节点" in text or "订阅" in text or "免费" in text) and any(d in href for d in [today, yesterday]):
-                    if href.startswith("http"):
-                        article_candidates.append((href, text))
+                # 条件：链接是http开头 + 含近2天日期 + （标题有关键词 或 链接含订阅相关后缀）
+                if (href.startswith("http") 
+                    and any(d in href for d in recent_dates)
+                    and (("节点" in text or "订阅" in text or "免费" in text) 
+                         or any(suffix in href for suffix in [".txt", ".yaml"]))):
+                    article_candidates.append((href, text))
             # 按链接排序取最新
             if article_candidates:
                 article_candidates.sort(key=lambda x: x[0], reverse=True)
@@ -85,7 +89,7 @@ def get_latest_article_url(site):
         return None
 
 def extract_sub_links(article_url, site_name):
-    """从文章中提取txt和yaml链接，返回(节点链接列表, YAML链接列表)"""
+    """从文章中提取txt和yaml链接（优化米贝77的txt链接提取）"""
     try:
         resp = requests.get(article_url, headers=HEADERS, timeout=20)
         resp.raise_for_status()
@@ -96,19 +100,28 @@ def extract_sub_links(article_url, site_name):
         yaml_links = set() # .yaml配置链接
         exclude_domains = ["reddit", "telegram", "twitter", "facebook"]
 
-        # 1. 提取所有.txt链接（含节点/订阅关键词）
-        txt_links = re.findall(r'https?://[^\s<>"\']*\.txt', text)
-        for link in txt_links:
+        # 【修复点2】米贝77的mm子域名txt链接：直接保留（无需关键词过滤）
+        if site_name == "米贝77":
+            mm_txt_links = re.findall(r'https?://mm\.mibei77\.com/[^\s<>"\']*\.txt', text)
+            sub_links.update(mm_txt_links)
+            # 其他域名的txt链接再过滤关键词
+            other_txt = re.findall(r'https?://(?!mm\.mibei77\.com)[^\s<>"\']*\.txt', text)
+        else:
+            # Datiya的txt链接正常过滤关键词
+            other_txt = re.findall(r'https?://[^\s<>"\']*\.txt', text)
+        
+        # 过滤其他txt链接的关键词
+        for link in other_txt:
             if any(k in link.lower() for k in ["sub", "node", "v2ray", "clash", "bagtr"]):
                 sub_links.add(link)
 
-        # 2. 提取所有.yaml链接（含clash关键词）
+        # 提取所有.yaml链接（含clash关键词）
         yaml_links_raw = re.findall(r'https?://[^\s<>"\']*\.yaml', text)
         for link in yaml_links_raw:
             if "clash" in link.lower():
                 yaml_links.add(link)
 
-        # 3. 提取文章内的Base64格式节点（直接写的长字符串）
+        # 提取文章内的Base64格式节点（直接写的长字符串）
         for tag in soup.find_all(['pre', 'code', 'p', 'div']):
             parts = re.split(r'\s+', tag.get_text())
             for part in parts:
