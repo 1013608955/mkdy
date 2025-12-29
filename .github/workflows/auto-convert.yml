@@ -23,7 +23,13 @@ jobs:
         with:
           python-version: '3.10'
           cache: 'pip'  # 缓存pip依赖，加速运行
-
+      # 步骤2：设置Python环境
+      - name: 配置Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          # 无需pip缓存（因依赖仅需pyyaml，安装耗时短）
+    
       # 步骤3：安装依赖包
       - name: 安装所需依赖
         run: |
