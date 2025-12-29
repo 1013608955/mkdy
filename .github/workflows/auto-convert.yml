@@ -29,6 +29,6 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add mkdy/*.txt
+          git add s-clash.txt s1-clash.txt s2-clash.txt
           git commit -m "自动转换Clash配置 $(date +'%Y-%m-%d %H:%M:%S')" || echo "没有需要提交的更改"
           git push
