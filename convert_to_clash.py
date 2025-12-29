@@ -160,16 +160,12 @@ def process_file(input_path, output_path):
         logger.error(f"保存文件 {output_path} 失败: {str(e)}")
 
 def main():
-    # 修正为根目录路径
+    # 修正：源文件在根目录，输出文件改为yaml后缀
     file_mapping = {
-        's.txt': 's-clash.txt',
-        's1.txt': 's1-clash.txt',
-        's2.txt': 's2-clash.txt'
+        's.txt': 's-clash.yaml',
+        's1.txt': 's1-clash.yaml',
+        's2.txt': 's2-clash.yaml'
     }
-    
-    # 确保输出目录存在
-    for output_path in file_mapping.values():
-        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
 
     # 处理所有文件
     for input_path, output_path in file_mapping.items():
