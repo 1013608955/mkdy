@@ -2,8 +2,8 @@ name: Fetch Mibei77 Nodes
 
 on:
   schedule:
-    - cron: '0 */4 * * *'  # 
-  workflow_dispatch:
+    - cron: '0 */4 * * *'  # 每4小时执行一次
+  workflow_dispatch:  # 保留手动触发功能
 
 jobs:
   fetch:
@@ -22,10 +22,12 @@ jobs:
       - name: Run fetch script
         run: python fetch.py
 
-      - name: Commit s2.txt
+      - name: Commit generated files
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          git add s2.txt
-          git commit -m "Update mibei77 nodes $(date +'%Y-%m-%d')" || exit 0
+          # 同时添加 s2.txt 和 s2-clash.yaml 两个文件
+          git add s2.txt s2-clash.yaml
+          # 提交信息包含日期和时间，更清晰
+          git commit -m "Update mibei77 nodes & clash config $(date +'%Y-%m-%d %H:%M:%S')" || exit 0
           git push
