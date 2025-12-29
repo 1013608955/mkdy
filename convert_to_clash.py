@@ -160,13 +160,13 @@ def process_file(input_path, output_path):
         logger.error(f"保存文件 {output_path} 失败: {str(e)}")
 
 def main():
-    # 定义文件映射关系
+    # 修正为根目录路径
     file_mapping = {
-        'mkdy/s.txt': 'mkdy/s-clash.txt',
-        'mkdy/s1.txt': 'mkdy/s1-clash.txt',
-        'mkdy/s2.txt': 'mkdy/s2-clash.txt'
+        's.txt': 's-clash.txt',
+        's1.txt': 's1-clash.txt',
+        's2.txt': 's2-clash.txt'
     }
-
+    
     # 确保输出目录存在
     for output_path in file_mapping.values():
         Path(output_path).parent.mkdir(parents=True, exist_ok=True)
