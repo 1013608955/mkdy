@@ -1,0 +1,67 @@
+name: 自动清理所有工作流运行记录
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天凌晨自动运行
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  cleanup-all-workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 安装jq工具
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: 清理所有工作流的旧运行记录
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}  # 仍需配置有workflow权限的PAT令牌
+          REPO_OWNER: "1013608955"  # 替换为实际值
+          REPO_NAME: "mkdy"                # 替换为实际值
+          RETAIN_DAYS: 7                         # 保留最近7天的运行记录
+          MAX_RETAIN_COUNT: 100                   # 每个工作流最多保留10条记录
+        run: |
+          # 1. 获取仓库中所有工作流的ID列表
+          echo "正在获取仓库中所有工作流..."
+          WORKFLOW_IDS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/actions/workflows" | \
+            jq -r '.workflows[].id')
+
+          if [ -z "$WORKFLOW_IDS" ]; then
+            echo "未找到任何工作流，清理结束"
+            exit 0
+          fi
+          echo "找到的工作流ID列表：$WORKFLOW_IDS"
+
+          # 2. 遍历每个工作流ID，逐个清理旧运行记录
+          for WORKFLOW_ID in $WORKFLOW_IDS; do
+            echo -e "\n========== 开始清理工作流ID: $WORKFLOW_ID =========="
+            
+            # 获取该工作流的所有运行记录（分页取前100条，满足大部分场景）
+            RUNS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+              "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/actions/workflows/$WORKFLOW_ID/runs?per_page=100")
+
+            # 筛选需要删除的运行记录（超过保留天数 且 超过保留数量）
+            TO_DELETE=$(echo "$RUNS" | jq -r --arg DAYS "$RETAIN_DAYS" --arg COUNT "$MAX_RETAIN_COUNT" '
+              .workflow_runs
+              | sort_by(.created_at) | reverse  # 按时间降序排列（最新在前）
+              | .[$COUNT:]  # 先保留前$COUNT条
+              | map(select(.created_at < (now - ($DAYS | tonumber) * 86400 | strftime("%Y-%m-%dT%H:%M:%SZ"))))  # 过滤近$DAYS天内的
+              | .[].id
+            ')
+
+            if [ -z "$TO_DELETE" ] || [ "$TO_DELETE" == "null" ]; then
+              echo "工作流$WORKFLOW_ID 暂无需要清理的运行记录"
+              continue
+            fi
+
+            # 逐个删除符合条件的运行记录
+            echo "工作流$WORKFLOW_ID 待删除的运行ID：$TO_DELETE"
+            for RUN_ID in $TO_DELETE; do
+              echo "正在删除运行记录 $RUN_ID"
+              curl -s -X DELETE -H "Authorization: token $GITHUB_TOKEN" \
+                "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/actions/runs/$RUN_ID"
+              sleep 1  # 避免API限流
+            done
+            echo -e "========== 工作流$WORKFLOW_ID 清理完成 ==========\n"
+          done
+
+          echo "所有工作流清理完成！"
