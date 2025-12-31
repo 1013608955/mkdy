@@ -181,16 +181,16 @@ jobs:
           generate_config "$V2_URL2" "./s2-clash.yaml"
 
       # ========== 第五步：推送Clash配置文件（仅变更时推送） ==========
-      - name: 📤 提交并推送Clash配置文件
+      - name: 📤 提交并推送Clash配置文件（简化逻辑）
         run: |
           set -euo pipefail
-          # 配置Git用户（仅当前仓库）
+          # 配置Git用户
           git config user.name "${{ env.GIT_USER_NAME }}"
           git config user.email "${{ env.GIT_USER_EMAIL }}"
-          # 先拉取最新代码，避免冲突
-          git pull origin ${{ github.ref_name }} --rebase
-          # 添加配置文件
+      
+          # 直接添加配置文件（无需拉取，当前是最新生成的）
           git add s-clash.yaml s1-clash.yaml s2-clash.yaml
+      
           # 仅当有变更时提交
           if git diff --cached --quiet; then
             echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') ℹ️  Clash配置文件无变更，跳过提交"
@@ -199,7 +199,7 @@ jobs:
             git push origin ${{ github.ref_name }}
             echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') ✅ Clash配置文件已推送（最新版本）"
           fi
-
+          
       # ========== 收尾：强制清理容器（无论流程是否失败） ==========
       - name: 🧹 清理SubConverter容器
         if: always()  # 所有情况都执行清理，避免资源泄漏
