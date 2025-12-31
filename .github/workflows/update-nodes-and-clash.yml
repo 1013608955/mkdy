@@ -85,29 +85,36 @@ jobs:
           fi
 
       # ========== 第三步：启动SubConverter服务（带状态检查） ==========
-      - name: 🐳 启动SubConverter服务（避免端口占用）
+      - name: 🐳 启动SubConverter服务（增强稳定性）
         run: |
           set -euo pipefail
-          # 清理残留容器（无论是否存在，避免报错）
+          # 清理残留容器
           docker rm -f ${{ env.SUB_CONTAINER_NAME }} 2>/dev/null || true
-          # 启动SubConverter容器（指定名称，便于后续清理）
-          docker run -d --name ${{ env.SUB_CONTAINER_NAME }} -p 25500:25500 tindy2013/subconverter
-          sleep 5  # 缩短等待时间（加重试逻辑，不影响稳定性）
+          
+          # 启动容器（指定具体版本，避免latest镜像的兼容性问题）
+          docker run -d --name ${{ env.SUB_CONTAINER_NAME }} -p 25500:25500 tindy2013/subconverter:v0.7.2  # 指定稳定版本
+          
+          # 延长初始等待时间（从5秒→10秒）
+          sleep 10
+          
           # 检查容器是否运行
           if ! docker ps | grep -q ${{ env.SUB_CONTAINER_NAME }}; then
-            echo "[ERROR] $(date +'%Y-%m-%d %H:%M:%S') SubConverter容器启动失败，终止流程"
+            echo "[ERROR] $(date +'%Y-%m-%d %H:%M:%S') SubConverter容器未运行，查看容器日志："
+            docker logs ${{ env.SUB_CONTAINER_NAME }}  # 输出容器日志，便于排查
             exit 1
           fi
-          # 检查服务是否可用（3次重试）
-          for i in {1..3}; do
+          
+          # 增加重试次数（从3次→5次）
+          for i in {1..5}; do
             if curl -s -I http://localhost:25500/sub | grep -q "200 OK"; then
               echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') SubConverter服务启动成功"
               break
             fi
             echo "[WARN] $(date +'%Y-%m-%d %H:%M:%S') SubConverter服务未就绪，第$i次重试..."
-            sleep 2
-            if [ $i -eq 3 ]; then
-              echo "[ERROR] $(date +'%Y-%m-%d %H:%M:%S') SubConverter服务启动超时，终止流程"
+            sleep 3  # 每次重试间隔延长到3秒
+            if [ $i -eq 5 ]; then
+              echo "[ERROR] $(date +'%Y-%m-%d %H:%M:%S') SubConverter服务启动超时，查看容器日志："
+              docker logs ${{ env.SUB_CONTAINER_NAME }}  # 输出日志，定位问题
               exit 1
             fi
           done
