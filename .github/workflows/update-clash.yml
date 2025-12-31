@@ -54,6 +54,5 @@ jobs:
           file_pattern: "s-clash.yaml,s1-clash.yaml,s2-clash.yaml"  # 指定要推送的三个文件
           branch: ${{ github.ref_name }}
           push_options: '--force'  # 可选：强制推送（避免分支冲突）
-          commit_options: '--allow-empty'  # 允许空提交（内容不变也提交）
-          skip_fetch: true  # 跳过拉取，避免冲突
-          skip_checkout: false
+          commit_options: '--allow-empty'  # 允许空提交
+          skip_dirty_check: true           # 跳过内容变更检查
