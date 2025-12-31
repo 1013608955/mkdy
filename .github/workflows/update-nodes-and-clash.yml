@@ -85,7 +85,7 @@ jobs:
           fi
 
       # ========== 第三步：启动SubConverter服务（带状态检查） ==========
-      - name: 🐳 启动SubConverter服务（精准检查就绪状态）
+      - name: 🐳 启动SubConverter服务（修复timeout误判）
         run: |
           set -euo pipefail
           # 清理残留容器
@@ -94,32 +94,45 @@ jobs:
           # 启动容器（latest版本）
           docker run -d --name ${{ env.SUB_CONTAINER_NAME }} -p 25500:25500 tindy2013/subconverter:latest
           
-          # 监听容器日志，等待“Startup completed”（最长等待30秒）
-          echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') 等待SubConverter服务启动完成..."
-          timeout 30s docker logs -f ${{ env.SUB_CONTAINER_NAME }} | while read line; do
+          # 创建标记文件，用于检测启动完成
+          touch /tmp/subconverter_started
+          rm -f /tmp/subconverter_ready
+          
+          # 后台监听容器日志，匹配到Startup completed后创建就绪标记
+          docker logs -f ${{ env.SUB_CONTAINER_NAME }} | while read line; do
             echo "$line"
-            if echo "$line" | grep -q "Startup completed"; then
+            # 匹配启动完成关键字（兼容不同版本的日志格式）
+            if echo "$line" | grep -qE "Startup completed|Serving HTTP @"; then
               echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') SubConverter服务已完成启动"
-              # 停止日志监听
-              pkill -P $$ docker
-              exit 0
+              touch /tmp/subconverter_ready
+              break  # 退出日志监听循环
+            fi
+          done &
+          
+          # 轮询检查就绪标记（最长等待30秒，每次间隔1秒）
+          echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') 等待SubConverter服务启动完成..."
+          for i in {1..30}; do
+            if [ -f /tmp/subconverter_ready ]; then
+              # 终止后台的docker logs进程
+              pkill -f "docker logs -f ${{ env.SUB_CONTAINER_NAME }}" 2>/dev/null || true
+              break
+            fi
+            sleep 1
+            if [ $i -eq 30 ]; then
+              echo "[ERROR] $(date +'%Y-%m-%d %H:%M:%S') SubConverter服务启动超时，查看完整日志："
+              docker logs ${{ env.SUB_CONTAINER_NAME }}
+              exit 1
             fi
           done
           
-          # 超时处理
-          if [ $? -ne 0 ]; then
-            echo "[ERROR] $(date +'%Y-%m-%d %H:%M:%S') SubConverter服务启动超时，查看完整日志："
-            docker logs ${{ env.SUB_CONTAINER_NAME }}
-            exit 1
-          fi
-          
-          # 验证服务可访问（启动完成后再检查）
+          # 验证服务可访问
           if ! curl -s -I http://localhost:25500/sub | grep -q "200 OK"; then
             echo "[ERROR] $(date +'%Y-%m-%d %H:%M:%S') SubConverter服务启动但无法访问，查看日志："
             docker logs ${{ env.SUB_CONTAINER_NAME }}
             exit 1
           fi
           echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') SubConverter服务就绪"
+
 
 
       # ========== 第四步：转换V2订阅为Clash配置（本地读取最新s1.txt） ==========
