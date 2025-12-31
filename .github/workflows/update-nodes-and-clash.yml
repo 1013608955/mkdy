@@ -1,0 +1,37 @@
+name: 节点更新 + Clash配置转换（每1小时）
+
+on:
+  schedule:
+    - cron: '0 */1 * * *'
+  workflow_dispatch:
+
+# 修正后的env块（移除循环引用）
+env:
+  SUB_CONTAINER_NAME: subconverter-temp
+  GIT_USER_NAME: github-actions[bot]
+  GIT_USER_EMAIL: github-actions[bot]@users.noreply.github.com
+
+jobs:
+  update-and-convert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: 🔍 检出仓库代码
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          token: ${{ secrets.PAT_TOKEN }}
+          persist-credentials: true
+          fetch-depth: 1
+
+      # ...（其他步骤）
+
+      - name: 🔄 转换V2订阅为Clash配置（本地文件优先）
+        run: |
+          set -euo pipefail
+          # 定义订阅地址（s1.txt用内置工作目录，避免路径错误）
+          V2_URL="https://raw.githubusercontent.com/1013608955/${{ github.event.repository.name }}/main/s.txt"
+          V2_URL1="file://${{ github.workspace }}/s1.txt"  # 改用内置变量
+          V2_URL2="https://raw.githubusercontent.com/1013608955/${{ github.event.repository.name }}/main/s2.txt"
+          
+          # ...（后续逻辑）
