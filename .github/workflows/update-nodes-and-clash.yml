@@ -57,11 +57,23 @@ jobs:
       - name: 📤 提交并推送更新后的s1.txt（仅变更时推送）
         run: |
           set -euo pipefail
-          # 仅当前仓库配置Git用户（避免全局污染）
+          # 配置Git用户
           git config user.name "${{ env.GIT_USER_NAME }}"
           git config user.email "${{ env.GIT_USER_EMAIL }}"
-          # 先拉取最新代码，减少冲突
+      
+          # 处理本地未暂存的更改：先暂存（stash），拉取后再恢复
+          if ! git diff --quiet; then
+            git stash save "temp-stash-s1.txt"  # 暂存本地更改
+          fi
+      
+          # 拉取远程最新代码（避免冲突）
           git pull origin ${{ github.ref_name }} --rebase
+      
+          # 恢复之前暂存的更改
+          if git stash list | grep -q "temp-stash-s1.txt"; then
+            git stash pop stash@{0} || true  # 恢复更改，冲突时忽略（自动脚本中优先保留本地最新节点）
+          fi
+      
           # 检查s1.txt是否有变更
           if [ -f s1.txt ] && [ $(git diff --name-only s1.txt | wc -l) -gt 0 ]; then
             git add s1.txt
