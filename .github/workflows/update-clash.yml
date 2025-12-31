@@ -14,8 +14,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
-          token: ${{ secrets.PAT_TOKEN }}  # 调用我们配置的PAT令牌
-          persist-credentials: true        # 保留凭证，允许后续推送
+          token: ${{ secrets.PAT_TOKEN }}
+          persist-credentials: true
 
       # 步骤2：启动SubConverter服务
       - name: Start SubConverter Service
@@ -26,33 +26,36 @@ jobs:
       # 步骤3：转换3个V2订阅为对应的Clash配置文件
       - name: Convert V2 Subscription (3 addresses)
         run: |
-          # 定义3个V2订阅地址（替换成你实际的三个地址）
+          # 定义3个V2订阅地址
           V2_URL="https://raw.githubusercontent.com/1013608955/mkdy/main/s.txt"
-          V2_URL1="https://raw.githubusercontent.com/1013608955/mkdy/main/s1.txt"  # 第二个订阅地址
-          V2_URL2="https://raw.githubusercontent.com/1013608955/mkdy/main/s2.txt"  # 第三个订阅地址
+          V2_URL1="https://raw.githubusercontent.com/1013608955/mkdy/main/s1.txt"
+          V2_URL2="https://raw.githubusercontent.com/1013608955/mkdy/main/s2.txt"
 
-          # 转换第一个订阅 → s-clash.yaml
-          curl "http://localhost:25500/sub?target=clash&url=$V2_URL&group=Auto&interval=60&url_test=https://www.google.com/generate_204" -o s-clash.yaml
-          # 转换第二个订阅 → s1-clash.yaml
-          curl "http://localhost:25500/sub?target=clash&url=$V2_URL1&group=Auto&interval=60&url_test=https://www.google.com/generate_204" -o s1-clash.yaml
-          # 转换第三个订阅 → s2-clash.yaml
-          curl "http://localhost:25500/sub?target=clash&url=$V2_URL2&group=Auto&interval=60&url_test=https://www.google.com/generate_204" -o s2-clash.yaml
+          # 生成配置文件（明确指定生成到仓库根目录）
+          curl "http://localhost:25500/sub?target=clash&url=$V2_URL&group=Auto&interval=60&url_test=https://www.google.com/generate_204" -o ./s-clash.yaml
+          curl "http://localhost:25500/sub?target=clash&url=$V2_URL1&group=Auto&interval=60&url_test=https://www.google.com/generate_204" -o ./s1-clash.yaml
+          curl "http://localhost:25500/sub?target=clash&url=$V2_URL2&group=Auto&interval=60&url_test=https://www.google.com/generate_204" -o ./s2-clash.yaml
 
-          # 验证所有文件是否生成成功（缺一不可）
-          if [ -f "s-clash.yaml" ] && [ -f "s1-clash.yaml" ] && [ -f "s2-clash.yaml" ]; then
+          # 验证文件+打印文件列表（新增：排查文件是否真的存在）
+          echo "📂 生成的文件列表："
+          ls -l ./s-clash.yaml ./s1-clash.yaml ./s2-clash.yaml
+          if [ -f "./s-clash.yaml" ] && [ -f "./s1-clash.yaml" ] && [ -f "./s2-clash.yaml" ]; then
             echo "✅ 三个配置文件都生成成功"
           else
             echo "❌ 部分配置文件生成失败"
             exit 1
           fi
 
-      # 步骤4：推送所有配置文件到仓库
+      # 步骤4：推送所有配置文件到仓库（修复文件匹配+简化提交参数）
       - name: Save Config to Repository
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Auto update Clash config $(date +'%Y-%m-%d %H:%M:%S')"
-          file_pattern: "s-clash.yaml,s1-clash.yaml,s2-clash.yaml"  # 指定要推送的三个文件
+          commit_message: "Auto update Clash config $(date +'%Y-%m-%d_%H-%M-%S')"  # 替换:为_，避免字符冲突
+          file_pattern: |  # 用分行格式，避免逗号拼接错误
+            s-clash.yaml
+            s1-clash.yaml
+            s2-clash.yaml
           branch: ${{ github.ref_name }}
-          push_options: '--force'  # 可选：强制推送（避免分支冲突）
-          commit_options: '--allow-empty'  # 允许空提交
-          skip_dirty_check: true           # 跳过内容变更检查
+          push_options: '--force'
+          commit_options: '--allow-empty'
+          skip_dirty_check: true
