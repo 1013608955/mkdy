@@ -2,14 +2,13 @@ name: Auto Convert V2 to Clash Daily
 
 on:
   schedule:
-    - cron: '0 1 * * *'  # 每天UTC1点（北京时间9点）自动运行
-  workflow_dispatch:     # 手动触发
+    - cron: '0 1 * * *'
+  workflow_dispatch:
 
 jobs:
   convert:
     runs-on: ubuntu-latest
     steps:
-      # 步骤1：检出仓库（用PAT令牌获取推送权限）
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -17,41 +16,66 @@ jobs:
           token: ${{ secrets.PAT_TOKEN }}
           persist-credentials: true
 
-      # 步骤2：启动SubConverter服务
       - name: Start SubConverter Service
         run: |
           docker run -d -p 25500:25500 tindy2013/subconverter
-          sleep 5  # 等待服务启动
+          sleep 10  # 延长启动等待时间，确保服务就绪
+          # 验证SubConverter服务是否启动
+          curl -I http://localhost:25500/sub || echo "❌ SubConverter服务启动失败"
 
-      # 步骤3：转换3个V2订阅为对应的Clash配置文件
       - name: Convert V2 Subscription (3 addresses)
         run: |
-          # 定义3个V2订阅地址
+          # 定义3个订阅地址（替换为你实际有效地址）
           V2_URL="https://raw.githubusercontent.com/1013608955/mkdy/main/s.txt"
           V2_URL1="https://raw.githubusercontent.com/1013608955/mkdy/main/s1.txt"
           V2_URL2="https://raw.githubusercontent.com/1013608955/mkdy/main/s2.txt"
 
-          # 生成配置文件（明确指定生成到仓库根目录）
-          curl "http://localhost:25500/sub?target=clash&url=$V2_URL&group=Auto&interval=60&url_test=https://www.google.com/generate_204" -o ./s-clash.yaml
-          curl "http://localhost:25500/sub?target=clash&url=$V2_URL1&group=Auto&interval=60&url_test=https://www.google.com/generate_204" -o ./s1-clash.yaml
-          curl "http://localhost:25500/sub?target=clash&url=$V2_URL2&group=Auto&interval=60&url_test=https://www.google.com/generate_204" -o ./s2-clash.yaml
+          # 1. 先验证订阅地址是否有效
+          echo "🔍 验证订阅地址有效性："
+          for url in "$V2_URL" "$V2_URL1" "$V2_URL2"; do
+            if curl -s --head "$url" | grep -q "200 OK"; then
+              echo "✅ $url 地址有效"
+            else
+              echo "❌ $url 地址无效，退出脚本"
+              exit 1
+            fi
+          done
 
-          # 验证文件+打印文件列表（新增：排查文件是否真的存在）
-          echo "📂 生成的文件列表："
-          ls -l ./s-clash.yaml ./s1-clash.yaml ./s2-clash.yaml
-          if [ -f "./s-clash.yaml" ] && [ -f "./s1-clash.yaml" ] && [ -f "./s2-clash.yaml" ]; then
-            echo "✅ 三个配置文件都生成成功"
-          else
-            echo "❌ 部分配置文件生成失败"
-            exit 1
-          fi
+          # 2. 生成配置文件（添加重试+超时）
+          echo "📝 开始生成配置文件："
+          # 生成s-clash.yaml
+          curl --max-time 30 --retry 3 "http://localhost:25500/sub?target=clash&url=$V2_URL&group=Auto&interval=60&url_test=https://cp.cloudflare.com/generate_204" -o ./s-clash.yaml
+          # 生成s1-clash.yaml
+          curl --max-time 30 --retry 3 "http://localhost:25500/sub?target=clash&url=$V2_URL1&group=Auto&interval=60&url_test=https://cp.cloudflare.com/generate_204" -o ./s1-clash.yaml
+          # 生成s2-clash.yaml
+          curl --max-time 30 --retry 3 "http://localhost:25500/sub?target=clash&url=$V2_URL2&group=Auto&interval=60&url_test=https://cp.cloudflare.com/generate_204" -o ./s2-clash.yaml
 
-      # 步骤4：推送所有配置文件到仓库（修复文件匹配+简化提交参数）
+          # 3. 强制刷新文件时间戳（确保git识别为修改）
+          touch ./s-clash.yaml ./s1-clash.yaml ./s2-clash.yaml
+
+          # 4. 验证文件生成+打印文件大小（关键：大小为0则生成失败）
+          echo "📂 生成的文件详情："
+          for file in ./s-clash.yaml ./s1-clash.yaml ./s2-clash.yaml; do
+            if [ -f "$file" ]; then
+              size=$(du -h "$file" | awk '{print $1}')
+              echo "✅ $file 已生成，大小：$size"
+              # 若文件大小为0，说明转换失败
+              if [ "$(stat -c%s "$file")" -eq 0 ]; then
+                echo "❌ $file 内容为空，转换失败"
+                exit 1
+              fi
+            else
+              echo "❌ $file 未生成"
+              exit 1
+            fi
+          done
+
       - name: Save Config to Repository
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Auto update Clash config $(date +'%Y-%m-%d_%H-%M-%S')"  # 替换:为_，避免字符冲突
-          file_pattern: |  # 用分行格式，避免逗号拼接错误
+          # 修复date命令解析问题：用env传递时间戳
+          commit_message: "Auto update Clash config ${{ env.GITHUB_RUN_AT }}"
+          file_pattern: |
             s-clash.yaml
             s1-clash.yaml
             s2-clash.yaml
@@ -59,3 +83,5 @@ jobs:
           push_options: '--force'
           commit_options: '--allow-empty'
           skip_dirty_check: true
+        env:
+          GITHUB_RUN_AT: ${{ github.run_at }}  # 使用GitHub内置时间戳，避免shell解析问题
