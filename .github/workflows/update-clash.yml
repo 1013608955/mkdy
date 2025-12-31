@@ -19,21 +19,18 @@ jobs:
       - name: Start SubConverter Service
         run: |
           docker run -d -p 25500:25500 tindy2013/subconverter
-          sleep 10  # 延长启动等待时间，确保服务就绪
-          # 验证SubConverter服务是否启动
+          sleep 10
           curl -I http://localhost:25500/sub || echo "❌ SubConverter服务启动失败"
 
       - name: Convert V2 Subscription (3 addresses)
         run: |
-          # 定义3个订阅地址（替换为你实际有效地址）
           V2_URL="https://raw.githubusercontent.com/1013608955/mkdy/main/s.txt"
           V2_URL1="https://raw.githubusercontent.com/1013608955/mkdy/main/s1.txt"
           V2_URL2="https://raw.githubusercontent.com/1013608955/mkdy/main/s2.txt"
 
-          # 1. 修复：适配GitHub Raw地址的有效性验证（宽松匹配200状态码）
+          # 验证订阅地址
           echo "🔍 验证订阅地址有效性："
           for url in "$V2_URL" "$V2_URL1" "$V2_URL2"; do
-            # 提取HTTP状态码（忽略协议版本/空格，只匹配200）
             status_code=$(curl -s --head "$url" -L | grep -i "^http" | awk '{print $2}')
             if [ "$status_code" = "200" ]; then
               echo "✅ $url 地址有效（状态码：$status_code）"
@@ -43,25 +40,18 @@ jobs:
             fi
           done
 
-          # 2. 生成配置文件（添加重试+超时）
+          # 生成配置文件
           echo "📝 开始生成配置文件："
-          # 生成s-clash.yaml（改用Cloudflare国内可访问测速地址）
           curl --max-time 30 --retry 3 "http://localhost:25500/sub?target=clash&url=$V2_URL&group=Auto&interval=60&url_test=https://cp.cloudflare.com/generate_204" -o ./s-clash.yaml
-          # 生成s1-clash.yaml
           curl --max-time 30 --retry 3 "http://localhost:25500/sub?target=clash&url=$V2_URL1&group=Auto&interval=60&url_test=https://cp.cloudflare.com/generate_204" -o ./s1-clash.yaml
-          # 生成s2-clash.yaml
           curl --max-time 30 --retry 3 "http://localhost:25500/sub?target=clash&url=$V2_URL2&group=Auto&interval=60&url_test=https://cp.cloudflare.com/generate_204" -o ./s2-clash.yaml
 
-          # 3. 强制刷新文件时间戳（确保git识别为修改）
-          touch ./s-clash.yaml ./s1-clash.yaml ./s2-clash.yaml
-
-          # 4. 验证文件生成+打印文件大小（关键：大小为0则生成失败）
+          # 验证文件生成
           echo "📂 生成的文件详情："
           for file in ./s-clash.yaml ./s1-clash.yaml ./s2-clash.yaml; do
             if [ -f "$file" ]; then
               size=$(du -h "$file" | awk '{print $1}')
               echo "✅ $file 已生成，大小：$size"
-              # 若文件大小为0，说明转换失败
               if [ "$(stat -c%s "$file")" -eq 0 ]; then
                 echo "❌ $file 内容为空，转换失败"
                 exit 1
@@ -72,18 +62,15 @@ jobs:
             fi
           done
 
+      # 替换原插件步骤，用原生git命令提交推送
       - name: Save Config to Repository
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          # 修复date命令解析问题：用env传递时间戳
-          commit_message: "Auto update Clash config ${{ env.GITHUB_RUN_AT }}"
-          file_pattern: |
-            s-clash.yaml
-            s1-clash.yaml
-            s2-clash.yaml
-          branch: ${{ github.ref_name }}
-          push_options: '--force'
-          commit_options: '--allow-empty'
-          skip_dirty_check: true
-        env:
-          GITHUB_RUN_AT: ${{ github.run_at }}  # 使用GitHub内置时间戳，避免shell解析问题
+        run: |
+          # 显式添加所有目标文件（新增/修改都包含）
+          git add s-clash.yaml s1-clash.yaml s2-clash.yaml
+          # 配置git用户信息
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          # 提交（无变更则跳过）
+          git commit -m "Auto update Clash config ${{ github.run_at }}" || echo "✅ 无变更无需提交"
+          # 强制推送（确保新增文件被推送到仓库）
+          git push origin ${{ github.ref_name }} --force
