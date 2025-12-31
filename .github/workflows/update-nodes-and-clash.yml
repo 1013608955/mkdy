@@ -27,15 +27,15 @@ jobs:
           fetch-depth: 1  # 仅拉取最新提交，提升运行速度
 
       # ========== 第二步：更新s1.txt（节点更新核心逻辑） ==========
-      - name: 🐍 设置Python环境（带依赖缓存）
+      - name: 🐍 设置Python环境（避免缓存报错）
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: 'pip'  # 缓存pip依赖，避免重复安装requests
-
+          # 移除cache: 'pip'，跳过依赖文件检查
+      
       - name: 📦 安装Python依赖
         run: |
-          set -euo pipefail  # 开启严格模式，捕获所有错误
+          set -euo pipefail
           pip install --upgrade pip
           pip install requests
           echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') Python依赖安装完成"
