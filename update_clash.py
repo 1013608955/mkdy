@@ -48,7 +48,10 @@ def decode_ss_to_clash(ss_link: str) -> dict:
         # 处理包含备注的SS链接
         if "#" in ss_link:
             ss_link, remark = ss_link.split("#", 1)
-            remark = base64.b64decode(remark).decode("utf-8") if len(remark) % 4 == 0 else remark
+            try:
+                remark = base64.b64decode(remark).decode("utf-8")
+            except:
+                remark = remark
         else:
             remark = ""
         
@@ -81,7 +84,7 @@ def decode_ss_to_clash(ss_link: str) -> dict:
         return None
 
 def decode_trojan_to_clash(trojan_link: str) -> dict:
-    """解析Trojan链接（修复端口解析错误）"""
+    """解析Trojan链接（修复端口解析错误，生成完整字段）"""
     try:
         trojan_link = trojan_link.strip().replace("trojan://", "")
         # 去掉链接中的参数部分（?后面的内容）
@@ -101,9 +104,10 @@ def decode_trojan_to_clash(trojan_link: str) -> dict:
         # 提取纯数字端口
         port = re.findall(r'\d+', port)[0] if re.findall(r'\d+', port) else "443"
         
-        # 构建节点名称
-        name = f"Trojan-{server}:{port}"
+        # 构建节点名称（模仿示例格式）
+        name = f"Trojan-{server}({port})"
         
+        # 生成完整的Trojan节点配置（匹配示例格式）
         return {
             "name": name,
             "server": server,
@@ -118,7 +122,7 @@ def decode_trojan_to_clash(trojan_link: str) -> dict:
         return None
 
 def decode_vless_to_clash(vless_link: str) -> dict:
-    """新增：解析VLESS链接（支持vless协议）"""
+    """新增：解析VLESS链接（支持vless协议，生成完整字段）"""
     try:
         vless_link = vless_link.strip().replace("vless://", "")
         # 去掉参数部分
@@ -146,9 +150,12 @@ def decode_vless_to_clash(vless_link: str) -> dict:
                     k, v = param.split("=", 1)
                     params[k] = v
         
-        # 构建节点配置
+        # 构建节点名称（模仿示例格式）
+        name = params.get("remarks", f"VLESS-{server}({port})")
+        
+        # 生成完整的VLESS节点配置
         node = {
-            "name": params.get("remarks", f"VLESS-{server}:{port}"),
+            "name": name,
             "server": server,
             "port": int(port),
             "type": "vless",
@@ -227,10 +234,12 @@ def main():
         clash_conf["proxies"] = []
     # 去重添加（避免重复节点）
     existing_names = [p.get("name") for p in clash_conf["proxies"]]
+    new_added = 0
     for proxy in new_proxies:
         if proxy["name"] not in existing_names:
             clash_conf["proxies"].append(proxy)
             existing_names.append(proxy["name"])
+            new_added += 1
 
     # 5. 将新节点加入“♻️ 自动选择”分组
     new_proxy_names = [p["name"] for p in new_proxies]
@@ -244,87 +253,45 @@ def main():
             group["proxies"] = existing_group_proxies
             break
 
-    # 6. 生成标准YAML后，手动转换proxies为单行流式格式
+    # 6. 直接生成单行流式的proxies格式（核心修复：不再分步收集字段）
     try:
-        # 第一步：生成标准展开式YAML
-        standard_yaml = yaml.dump(
-            clash_conf,
-            allow_unicode=True,
-            sort_keys=False,
-            default_flow_style=False,
-            indent=2,
-            width=10000
-        )
+        # 先备份原有proxies，重新构建流式格式的proxies
+        original_proxies = clash_conf["proxies"]
+        clash_conf["proxies"] = []  # 清空临时列表
         
-        # 第二步：解析并转换proxies部分为单行流式
-        lines = standard_yaml.splitlines()
-        final_lines = []
-        in_proxies_block = False
-        proxy_indent_level = 0
-        proxy_dict_buffer = {}
-        collecting_proxy = False
+        # 生成最终的YAML内容
+        yaml_parts = []
         
-        for line in lines:
-            stripped_line = line.strip()
-            current_indent = len(line) - len(stripped_line)
-            
-            # 检测proxies区块开始
-            if stripped_line == "proxies:":
-                final_lines.append(line)
-                in_proxies_block = True
-                proxy_indent_level = current_indent
-                continue
-            
-            # 处理proxies区块内的内容
-            if in_proxies_block:
-                # 退出proxies区块的条件：缩进回到proxies级别或更低，且不是列表项
-                if current_indent <= proxy_indent_level and not stripped_line.startswith("- "):
-                    in_proxies_block = False
-                    collecting_proxy = False
-                    proxy_dict_buffer = {}
-                    final_lines.append(line)
-                    continue
-                
-                # 处理proxies下的列表项
-                if stripped_line.startswith("- "):
-                    # 如果正在收集上一个代理，先生成流式字符串
-                    if collecting_proxy and proxy_dict_buffer:
-                        flow_str = yaml.dump(proxy_dict_buffer, default_flow_style=True, sort_keys=False).strip()
-                        final_lines.append(" " * (proxy_indent_level + 2) + f"- {flow_str}")
-                        proxy_dict_buffer = {}
-                    
-                    # 开始收集新代理
-                    collecting_proxy = True
-                    # 提取第一个字段（如name: xxx）
-                    first_key_value = stripped_line[2:]
-                    if ": " in first_key_value:
-                        key, value = first_key_value.split(": ", 1)
-                        proxy_dict_buffer[key] = yaml.safe_load(value)
-                elif collecting_proxy and current_indent > proxy_indent_level + 2:
-                    # 收集代理的其他字段
-                    if ": " in stripped_line:
-                        key, value = stripped_line.split(": ", 1)
-                        proxy_dict_buffer[key] = yaml.safe_load(value)
-            else:
-                # 非proxies区块内容直接保留
-                final_lines.append(line)
+        # 处理除proxies外的其他配置
+        for key, value in clash_conf.items():
+            if key != "proxies":
+                # 生成其他配置的YAML
+                part = yaml.dump({key: value}, allow_unicode=True, sort_keys=False, default_flow_style=False, indent=2)
+                yaml_parts.append(part.strip())
         
-        # 处理最后一个代理
-        if collecting_proxy and proxy_dict_buffer:
-            flow_str = yaml.dump(proxy_dict_buffer, default_flow_style=True, sort_keys=False).strip()
-            final_lines.append(" " * (proxy_indent_level + 2) + f"- {flow_str}")
+        # 单独处理proxies，生成单行流式格式
+        proxies_lines = ["proxies:"]
+        for proxy in original_proxies:
+            # 为每个代理生成单行流式字符串
+            flow_proxy = yaml.dump(proxy, allow_unicode=True, sort_keys=False, default_flow_style=True).strip()
+            proxies_lines.append(f"  - {flow_proxy}")
+        proxies_yaml = "\n".join(proxies_lines)
+        yaml_parts.append(proxies_yaml)
         
-        # 第三步：保存最终的YAML文件
-        final_yaml = "\n".join(final_lines)
+        # 合并所有部分
+        final_yaml = "\n\n".join(yaml_parts)
+        
+        # 保存文件
         with open("s-clash.yaml", "w", encoding="utf-8") as f:
             f.write(final_yaml)
         
         print(f"✅ 脚本执行成功！")
-        print(f"📊 新增有效节点数: {len(new_proxies)}")
+        print(f"📊 新增有效节点数: {new_added}")
         print(f"📁 生成文件: s-clash.yaml")
         
     except Exception as e:
         print(f"保存配置文件失败: {e}", file=sys.stderr)
+        print(f"错误详情: {sys.exc_info()[1]}", file=sys.stderr)
         sys.exit(1)
 
 if __name__ == "__main__":
