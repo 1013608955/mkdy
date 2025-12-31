@@ -30,20 +30,22 @@ jobs:
           V2_URL1="https://raw.githubusercontent.com/1013608955/mkdy/main/s1.txt"
           V2_URL2="https://raw.githubusercontent.com/1013608955/mkdy/main/s2.txt"
 
-          # 1. 先验证订阅地址是否有效
+          # 1. 修复：适配GitHub Raw地址的有效性验证（宽松匹配200状态码）
           echo "🔍 验证订阅地址有效性："
           for url in "$V2_URL" "$V2_URL1" "$V2_URL2"; do
-            if curl -s --head "$url" | grep -q "200 OK"; then
-              echo "✅ $url 地址有效"
+            # 提取HTTP状态码（忽略协议版本/空格，只匹配200）
+            status_code=$(curl -s --head "$url" -L | grep -i "^http" | awk '{print $2}')
+            if [ "$status_code" = "200" ]; then
+              echo "✅ $url 地址有效（状态码：$status_code）"
             else
-              echo "❌ $url 地址无效，退出脚本"
+              echo "❌ $url 地址无效（状态码：$status_code），退出脚本"
               exit 1
             fi
           done
 
           # 2. 生成配置文件（添加重试+超时）
           echo "📝 开始生成配置文件："
-          # 生成s-clash.yaml
+          # 生成s-clash.yaml（改用Cloudflare国内可访问测速地址）
           curl --max-time 30 --retry 3 "http://localhost:25500/sub?target=clash&url=$V2_URL&group=Auto&interval=60&url_test=https://cp.cloudflare.com/generate_204" -o ./s-clash.yaml
           # 生成s1-clash.yaml
           curl --max-time 30 --retry 3 "http://localhost:25500/sub?target=clash&url=$V2_URL1&group=Auto&interval=60&url_test=https://cp.cloudflare.com/generate_204" -o ./s1-clash.yaml
