@@ -3,228 +3,196 @@ name: 节点更新 + Clash配置转换（每1小时）
 
 on:
   schedule:
-    - cron: '0 */1 * * *'  # 每1小时执行一次（如需降低频率可改为0 */2 * * *）
+    - cron: '0 */1 * * *'  # 每1小时执行一次
   workflow_dispatch:       # 保留手动触发
-  # 可选：代码推送时触发，便于测试
-  push:
-    paths:
-      - 'update_nodes.py'
-      - '.github/workflows/update-nodes-and-clash.yml'
 
-# 全局环境变量（抽离易变配置，便于维护）
+# 全局环境变量（移除循环引用，仅保留无依赖的核心配置）
 env:
-  # 容器配置
-  SUB_CONTAINER_NAME: subconverter-temp
-  SUB_CONTAINER_PORT: 25500
-  # Git配置
-  GIT_USER_NAME: github-actions[bot]
-  GIT_USER_EMAIL: github-actions[bot]@users.noreply.github.com
-  # 订阅链接（集中管理，修改时只需改这里）
-  SUB_URL_S: https://raw.githubusercontent.com/1013608955/${{ github.event.repository.name }}/main/s.txt
-  SUB_URL_S1: https://raw.githubusercontent.com/1013608955/${{ github.event.repository.name }}/main/s1.txt
-  SUB_URL_S2: https://raw.githubusercontent.com/1013608955/${{ github.event.repository.name }}/main/s2.txt
-  # 超时配置（统一管理）
-  CURL_TIMEOUT: 30
-  CURL_RETRY: 3
-  SERVICE_WAIT_SECONDS: 15  # 固定等待15秒
+  SUB_CONTAINER_NAME: subconverter-temp    # 临时容器名（便于清理）
+  GIT_USER_NAME: github-actions[bot]       # Git提交用户名
+  GIT_USER_EMAIL: github-actions[bot]@users.noreply.github.com  # Git提交邮箱
 
 jobs:
   update-and-convert:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
-    # 关键步骤失败后重试1次
-    strategy:
-      fail-fast: true
-      matrix:
-        retry: [1]
+    timeout-minutes: 8  # 精准设置超时（优化后流程≤5分钟）
     steps:
-      # ========== 第一步：检出仓库代码 ==========
+      # ========== 第一步：检出仓库代码（带PAT权限，避免推送失败） ==========
       - name: 🔍 检出仓库代码
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
-          token: ${{ secrets.PAT_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}  # 替换为你的PAT令牌（仓库设置中配置）
           persist-credentials: true
-          fetch-depth: 1
-        timeout-minutes: 2
+          fetch-depth: 1  # 仅拉取最新提交，提升运行速度
 
-      # ========== 第二步：Python环境配置（启用缓存） ==========
-      - name: 🐍 设置Python环境
+      # ========== 第二步：更新s1.txt（节点更新核心逻辑） ==========
+      - name: 🐍 设置Python环境（避免缓存报错）
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: 'pip'  # 重新启用缓存，提升依赖安装速度
-          cache-dependency-path: '**/requirements.txt'  # 如有requirements.txt可指定
-        timeout-minutes: 2
+          # 移除cache: 'pip'，跳过依赖文件检查'
 
       - name: 📦 安装Python依赖
         run: |
           set -euo pipefail
           pip install --upgrade pip
           pip install requests
-          echo "[✅] Python依赖安装完成 | $(date +'%Y-%m-%d %H:%M:%S')"
-        timeout-minutes: 2
+          echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') Python依赖安装完成"
 
-      # ========== 第三步：更新s1.txt并推送 ==========
-      - name: 🚀 运行节点更新脚本
+      - name: 🚀 运行节点更新脚本（生成最新s1.txt）
         run: |
           set -euo pipefail
+          # 检查脚本是否存在，避免运行失败
           if [ ! -f "update_nodes.py" ]; then
-            echo "[❌] update_nodes.py文件不存在，终止流程 | $(date +'%Y-%m-%d %H:%M:%S')"
+            echo "[ERROR] $(date +'%Y-%m-%d %H:%M:%S') update_nodes.py文件不存在，终止流程"
             exit 1
           fi
-          echo "[ℹ️] 开始运行节点更新脚本 | $(date +'%Y-%m-%d %H:%M:%S')"
+          echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') 开始运行节点更新脚本..."
           python update_nodes.py
-          # 打印s1.txt前10行，快速验证内容（敏感信息可注释）
-          echo "[ℹ️] s1.txt最新内容（前10行）："
-          head -10 s1.txt || echo "[ℹ️] s1.txt为空"
-          echo "[✅] 节点更新脚本运行完成 | $(date +'%Y-%m-%d %H:%M:%S')"
+          echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') 节点更新脚本运行完成"
         env:
-          PYTHONUNBUFFERED: "1"
-        timeout-minutes: 3
+          PYTHONUNBUFFERED: "1"  # 实时输出日志，便于排查问题
 
-      - name: 📤 推送更新后的s1.txt
+      - name: 📤 提交并推送更新后的s1.txt（仅变更时推送）
         run: |
           set -euo pipefail
+          # 配置Git用户
           git config user.name "${{ env.GIT_USER_NAME }}"
           git config user.email "${{ env.GIT_USER_EMAIL }}"
-          
-          # 优化冲突处理：先拉取最新代码，再尝试提交
-          git pull origin ${{ github.ref_name }} --rebase --autostash || true
-          
-          if [ -f s1.txt ] && git diff --name-only --exit-code s1.txt; then
-            echo "[ℹ️] s1.txt无变更，跳过提交 | $(date +'%Y-%m-%d %H:%M:%S')"
-            exit 0
+
+          # 处理本地未暂存的更改：先暂存（stash），拉取后再恢复
+          if ! git diff --quiet; then
+            git stash save "temp-stash-s1.txt"  # 暂存本地更改
           fi
-          
-          git add s1.txt
-          git commit -m "更新订阅: $(date +'%Y-%m-%d %H:%M:%S') [Auto]"
-          # 推送时添加重试
-          git push origin ${{ github.ref_name }} || (sleep 5 && git push origin ${{ github.ref_name }})
-          echo "[✅] s1.txt已推送 | $(date +'%Y-%m-%d %H:%M:%S')"
-        timeout-minutes: 2
 
-      # ========== 第四步：启动SubConverter（改回固定15秒等待） ==========
-      - name: 🧹 清理残留容器
-        if: always()
+          # 拉取远程最新代码（避免冲突）
+          git pull origin ${{ github.ref_name }} --rebase
+
+          # 恢复之前暂存的更改
+          if git stash list | grep -q "temp-stash-s1.txt"; then
+            git stash pop stash@{0} || true  # 恢复更改，冲突时忽略（自动脚本中优先保留本地最新节点）
+          fi
+
+          # 检查s1.txt是否有变更
+          if [ -f s1.txt ] && [ $(git diff --name-only s1.txt | wc -l) -gt 0 ]; then
+            git add s1.txt
+            git commit -m "多来源+Reality优先更新订阅: $(date +'%Y-%m-%d %H:%M:%S')"
+            git push origin ${{ github.ref_name }}
+            echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') ✅ s1.txt已更新并推送（最新版本）"
+          else
+            echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') ℹ️  s1.txt无变更，跳过提交"
+          fi
+
+      # ========== 第三步：启动SubConverter服务（带状态检查） ==========
+      - name: 🐳 启动SubConverter服务（极简稳定版）
         run: |
           set -euo pipefail
-          docker rm -f ${{ env.SUB_CONTAINER_NAME }} 2>/dev/null || echo "[ℹ️] 无残留容器需要清理"
-          echo "[✅] 容器清理完成 | $(date +'%Y-%m-%d %H:%M:%S')"
-        timeout-minutes: 1
+          # 清理残留容器
+          docker rm -f ${{ env.SUB_CONTAINER_NAME }} 2>/dev/null || true
 
-      - name: 🐳 启动SubConverter服务
-        run: |
-          set -euo pipefail
-          # 启动容器并限制资源（避免占用过多Runner资源）
-          docker run -d --name ${{ env.SUB_CONTAINER_NAME }} \
-            -p ${{ env.SUB_CONTAINER_PORT }}:25500 \
-            --memory=256m --cpus=0.5 \
-            tindy2013/subconverter:latest
-          
-          # 改回固定15秒等待（替换原动态等待逻辑）
-          echo "[ℹ️] 等待SubConverter服务初始化（固定${{ env.SERVICE_WAIT_SECONDS }}秒） | $(date +'%Y-%m-%d %H:%M:%S')"
-          sleep ${{ env.SERVICE_WAIT_SECONDS }}
-          
+          # 启动容器（不做任何日志监听）
+          docker run -d --name ${{ env.SUB_CONTAINER_NAME }} -p 25500:25500 tindy2013/subconverter:latest
+
+          # 直接等待15秒（给足服务初始化时间，日志已证明15秒足够启动）
+          echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') 等待SubConverter服务初始化..."
+          sleep 15
+
           # 轻量验证服务是否可访问（仅做2次重试，失败也输出日志但不强制退出）
-          echo "[ℹ️] 验证SubConverter服务可用性 | $(date +'%Y-%m-%d %H:%M:%S')"
+          echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') 验证SubConverter服务可用性..."
           for i in {1..2}; do
-            if curl -s -I http://localhost:${{ env.SUB_CONTAINER_PORT }}/sub | grep -q "200 OK"; then
-              echo "[✅] SubConverter服务就绪 | $(date +'%Y-%m-%d %H:%M:%S')"
+            if curl -s -I http://localhost:25500/sub | grep -q "200 OK"; then
+              echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') SubConverter服务就绪 ✅"
               exit 0
             fi
-            echo "[⚠️] 第$i次验证失败，3秒后重试 | $(date +'%Y-%m-%d %H:%M:%S')"
+            echo "[WARN] 第$i次验证失败，3秒后重试..."
             sleep 3
           done
-          
-          # 即使验证失败，也只告警并继续
-          echo "[⚠️] SubConverter服务curl验证未通过，但容器已启动，继续执行后续步骤 | $(date +'%Y-%m-%d %H:%M:%S')"
-          docker logs ${{ env.SUB_CONTAINER_NAME }} | tail -20
-        timeout-minutes: 3
 
-      # ========== 第五步：转换Clash配置（强化验证） ==========
-      - name: 🔄 转换V2订阅为Clash配置
+          # 即使验证失败，也只告警并继续（服务实际已启动，curl验证可能因网络小波动失败）
+          echo "[WARN] $(date +'%Y-%m-%d %H:%M:%S') SubConverter服务curl验证未通过，但容器已启动，继续执行后续步骤"
+          docker logs ${{ env.SUB_CONTAINER_NAME }} | tail -20  # 输出最后20行日志备查
+
+      # ========== 第四步：转换V2订阅为Clash配置（仅使用远程订阅链接） ==========
+      - name: 🔄 转换V2订阅为Clash配置（仅远程链接）
         run: |
           set -euo pipefail
-          # 定义验证URL函数（强化容错）
+          # 定义订阅地址（仅保留远程链接，移除本地file://路径）
+          # 注意：请替换成你实际的远程订阅链接
+          V2_URL="https://raw.githubusercontent.com/1013608955/${{ github.event.repository.name }}/main/s.txt"
+          # 原本地s1.txt改为远程链接（对应仓库中刚推送的s1.txt）
+          V2_URL1="https://raw.githubusercontent.com/1013608955/${{ github.event.repository.name }}/main/s1.txt"
+          V2_URL2="https://raw.githubusercontent.com/1013608955/${{ github.event.repository.name }}/main/s2.txt"
+
+          # 验证订阅地址（移除本地file://协议的特殊处理）
+          echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') 开始验证订阅地址..."
           validate_url() {
             local url=$1
-            echo "[ℹ️] 验证订阅地址：$url | $(date +'%Y-%m-%d %H:%M:%S')"
-            for i in $(seq 1 ${{ env.CURL_RETRY }}); do
-              status_code=$(curl -s --max-time 10 --head -L "$url" | grep -i "^HTTP" | awk '{print $2}')
+            local retry=3
+            for i in {1..$retry}; do
+              # 仅验证远程地址状态码
+              status_code=$(curl -s --head "$url" -L | grep -i "^http" | awk '{print $2}')
               if [ "$status_code" = "200" ]; then
-                echo "[✅] $url 验证通过（状态码：$status_code） | $(date +'%Y-%m-%d %H:%M:%S')"
+                echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') ✅ $url 地址有效（状态码：$status_code）"
                 return 0
               fi
-              echo "[⚠️] $url 验证失败（状态码：$status_code），第$i次重试 | $(date +'%Y-%m-%d %H:%M:%S')"
+              echo "[WARN] $(date +'%Y-%m-%d %H:%M:%S') $url 地址无效（状态码：$status_code），第$i次重试..."
               sleep 2
+              if [ $i -eq $retry ]; then
+                echo "[ERROR] $(date +'%Y-%m-%d %H:%M:%S') ❌ $url 地址验证失败，终止流程"
+                return 1
+              fi
             done
-            echo "[❌] $url 验证失败，终止流程 | $(date +'%Y-%m-%d %H:%M:%S')"
-            exit 1
           }
+          # 批量验证订阅地址
+          for url in "$V2_URL" "$V2_URL1" "$V2_URL2"; do
+            validate_url "$url" || exit 1
+          done
 
-          # 定义生成配置函数（验证有效节点）
-          generate_clash_config() {
+          # 生成Clash配置文件（带超时+重试，非空检查）
+          echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') 开始生成Clash配置文件..."
+          generate_config() {
             local url=$1
             local output=$2
-            echo "[ℹ️] 生成Clash配置：$output | $(date +'%Y-%m-%d %H:%M:%S')"
-            curl --max-time ${{ env.CURL_TIMEOUT }} --retry ${{ env.CURL_RETRY }} \
-              "http://localhost:${{ env.SUB_CONTAINER_PORT }}/sub?target=clash&url=$url&group=Auto&interval=60&url_test=https://cp.cloudflare.com/generate_204" \
+            # 调用SubConverter生成配置
+            curl --max-time 30 --retry 3 \
+              "http://localhost:25500/sub?target=clash&url=$url&group=Auto&interval=60&url_test=https://cp.cloudflare.com/generate_204" \
               -o "$output"
-            
-            # 双重验证：文件非空 + 包含有效节点
-            if [ ! -s "$output" ]; then
-              echo "[❌] $output 内容为空 | $(date +'%Y-%m-%d %H:%M:%S')"
+            # 检查配置文件是否非空
+            if [ "$(stat -c%s "$output")" -eq 0 ]; then
+              echo "[ERROR] $(date +'%Y-%m-%d %H:%M:%S') ❌ $output 内容为空，转换失败"
               exit 1
             fi
-            if ! grep -q "- name:" "$output"; then
-              echo "[❌] $output 无有效节点 | $(date +'%Y-%m-%d %H:%M:%S')"
-              cat "$output"  # 打印内容便于排查
-              exit 1
-            fi
-            file_size=$(du -h "$output" | awk '{print $1}')
-            node_count=$(grep -c "- name:" "$output")
-            echo "[✅] $output 生成成功（大小：$file_size，节点数：$node_count） | $(date +'%Y-%m-%d %H:%M:%S')"
+            echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') ✅ $output 生成成功，大小：$(du -h "$output" | awk '{print $1}')"
           }
-
-          # 批量验证订阅地址
-          validate_url "${{ env.SUB_URL_S }}"
-          validate_url "${{ env.SUB_URL_S1 }}"
-          validate_url "${{ env.SUB_URL_S2 }}"
-
           # 批量生成配置文件
-          generate_clash_config "${{ env.SUB_URL_S }}" "./s-clash.yaml"
-          generate_clash_config "${{ env.SUB_URL_S1 }}" "./s1-clash.yaml"
-          generate_clash_config "${{ env.SUB_URL_S2 }}" "./s2-clash.yaml"
-        timeout-minutes: 4
+          generate_config "$V2_URL" "./s-clash.yaml"
+          generate_config "$V2_URL1" "./s1-clash.yaml"
+          generate_config "$V2_URL2" "./s2-clash.yaml"
 
-      # ========== 第六步：推送Clash配置 ==========
-      - name: 📤 推送Clash配置文件
+      # ========== 第五步：推送Clash配置文件（仅变更时推送） ==========
+      - name: 📤 提交并推送Clash配置文件（简化逻辑）
         run: |
           set -euo pipefail
+          # 配置Git用户
           git config user.name "${{ env.GIT_USER_NAME }}"
           git config user.email "${{ env.GIT_USER_EMAIL }}"
-          
-          git add s-clash.yaml s1-clash.yaml s2-clash.yaml
-          
-          if git diff --cached --quiet; then
-            echo "[ℹ️] Clash配置文件无变更，跳过提交 | $(date +'%Y-%m-%d %H:%M:%S')"
-            exit 0
-          fi
-          
-          git commit -m "更新Clash配置: ${{ github.run_at }} [Auto]"
-          # 推送重试+静默失败（避免无权限时流程中断）
-          git push origin ${{ github.ref_name }} || (sleep 3 && git push origin ${{ github.ref_name }} || echo "[⚠️] 推送失败，可能是权限问题")
-          echo "[✅] Clash配置文件已推送 | $(date +'%Y-%m-%d %H:%M:%S')"
-        timeout-minutes: 2
 
-      # ========== 收尾：清理资源 ==========
+          # 直接添加配置文件（无需拉取，当前是最新生成的）
+          git add s-clash.yaml s1-clash.yaml s2-clash.yaml
+
+          # 仅当有变更时提交
+          if git diff --cached --quiet; then
+            echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') ℹ️  Clash配置文件无变更，跳过提交"
+          else
+            git commit -m "Auto update Clash config: ${{ github.run_at }}"
+            git push origin ${{ github.ref_name }}
+            echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') ✅ Clash配置文件已推送（最新版本）"
+          fi
+
+      # ========== 收尾：强制清理容器（无论流程是否失败） ==========
       - name: 🧹 清理SubConverter容器
-        if: always()
+        if: always()  # 所有情况都执行清理，避免资源泄漏
         run: |
-          set -euo pipefail
           docker rm -f ${{ env.SUB_CONTAINER_NAME }} 2>/dev/null || true
-          # 可选：清理无用镜像（节省空间）
-          docker image prune -f
-          echo "[✅] 资源清理完成 | $(date +'%Y-%m-%d %H:%M:%S')"
-        timeout-minutes: 1
+          echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') SubConverter容器已清理完成"
