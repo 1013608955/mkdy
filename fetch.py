@@ -14,7 +14,7 @@ TARGET_SITES = [
     {
         "name": "米贝77",
         "url": "https://www.mibei77.com/",
-        "yaml_file": "s2-clash.yaml"  # 米贝77的YAML单独存这个文件
+        "yaml_file": "s2-clash-1.yaml"  # 米贝77的YAML单独存这个文件
     },
     {
         "name": "Datiya",
