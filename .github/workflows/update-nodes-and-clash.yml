@@ -31,8 +31,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          # 移除cache: 'pip'，跳过依赖文件检查
-      
+          # 移除cache: 'pip'，跳过依赖文件检查'
+
       - name: 📦 安装Python依赖
         run: |
           set -euo pipefail
@@ -60,20 +60,20 @@ jobs:
           # 配置Git用户
           git config user.name "${{ env.GIT_USER_NAME }}"
           git config user.email "${{ env.GIT_USER_EMAIL }}"
-      
+
           # 处理本地未暂存的更改：先暂存（stash），拉取后再恢复
           if ! git diff --quiet; then
             git stash save "temp-stash-s1.txt"  # 暂存本地更改
           fi
-      
+
           # 拉取远程最新代码（避免冲突）
           git pull origin ${{ github.ref_name }} --rebase
-      
+
           # 恢复之前暂存的更改
           if git stash list | grep -q "temp-stash-s1.txt"; then
             git stash pop stash@{0} || true  # 恢复更改，冲突时忽略（自动脚本中优先保留本地最新节点）
           fi
-      
+
           # 检查s1.txt是否有变更
           if [ -f s1.txt ] && [ $(git diff --name-only s1.txt | wc -l) -gt 0 ]; then
             git add s1.txt
@@ -90,14 +90,14 @@ jobs:
           set -euo pipefail
           # 清理残留容器
           docker rm -f ${{ env.SUB_CONTAINER_NAME }} 2>/dev/null || true
-          
+
           # 启动容器（不做任何日志监听）
           docker run -d --name ${{ env.SUB_CONTAINER_NAME }} -p 25500:25500 tindy2013/subconverter:latest
-          
+
           # 直接等待15秒（给足服务初始化时间，日志已证明15秒足够启动）
           echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') 等待SubConverter服务初始化..."
           sleep 15
-          
+
           # 轻量验证服务是否可访问（仅做2次重试，失败也输出日志但不强制退出）
           echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') 验证SubConverter服务可用性..."
           for i in {1..2}; do
@@ -108,39 +108,29 @@ jobs:
             echo "[WARN] 第$i次验证失败，3秒后重试..."
             sleep 3
           done
-          
+
           # 即使验证失败，也只告警并继续（服务实际已启动，curl验证可能因网络小波动失败）
           echo "[WARN] $(date +'%Y-%m-%d %H:%M:%S') SubConverter服务curl验证未通过，但容器已启动，继续执行后续步骤"
           docker logs ${{ env.SUB_CONTAINER_NAME }} | tail -20  # 输出最后20行日志备查
 
-      # ========== 第四步：转换V2订阅为Clash配置（本地读取最新s1.txt） ==========
-      - name: 🔄 转换V2订阅为Clash配置（本地文件优先）
+      # ========== 第四步：转换V2订阅为Clash配置（仅使用远程订阅链接） ==========
+      - name: 🔄 转换V2订阅为Clash配置（仅远程链接）
         run: |
           set -euo pipefail
-          # 定义订阅地址（使用GitHub内置变量，避免硬编码）
-          # github.event.repository.name：自动获取当前仓库名，无需手动修改
+          # 定义订阅地址（仅保留远程链接，移除本地file://路径）
+          # 注意：请替换成你实际的远程订阅链接
           V2_URL="https://raw.githubusercontent.com/1013608955/${{ github.event.repository.name }}/main/s.txt"
-          V2_URL1="file://${{ github.workspace }}/s1.txt"  # 本地最新s1.txt（内置工作目录）
+          # 原本地s1.txt改为远程链接（对应仓库中刚推送的s1.txt）
+          V2_URL1="https://raw.githubusercontent.com/1013608955/${{ github.event.repository.name }}/main/s1.txt"
           V2_URL2="https://raw.githubusercontent.com/1013608955/${{ github.event.repository.name }}/main/s2.txt"
 
-          # 验证订阅地址（带3次重试，兼容本地文件）
+          # 验证订阅地址（移除本地file://协议的特殊处理）
           echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') 开始验证订阅地址..."
           validate_url() {
             local url=$1
             local retry=3
             for i in {1..$retry}; do
-              # 本地文件直接判定为有效
-              if [[ "$url" == file://* ]]; then
-                local local_path=${url#file://}
-                if [ -f "$local_path" ]; then
-                  echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') ✅ $url 本地文件有效"
-                  return 0
-                else
-                  echo "[ERROR] $(date +'%Y-%m-%d %H:%M:%S') ❌ $url 本地文件不存在"
-                  return 1
-                fi
-              fi
-              # 远程地址验证状态码
+              # 仅验证远程地址状态码
               status_code=$(curl -s --head "$url" -L | grep -i "^http" | awk '{print $2}')
               if [ "$status_code" = "200" ]; then
                 echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') ✅ $url 地址有效（状态码：$status_code）"
@@ -187,10 +177,10 @@ jobs:
           # 配置Git用户
           git config user.name "${{ env.GIT_USER_NAME }}"
           git config user.email "${{ env.GIT_USER_EMAIL }}"
-      
+
           # 直接添加配置文件（无需拉取，当前是最新生成的）
           git add s-clash.yaml s1-clash.yaml s2-clash.yaml
-      
+
           # 仅当有变更时提交
           if git diff --cached --quiet; then
             echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') ℹ️  Clash配置文件无变更，跳过提交"
@@ -199,7 +189,7 @@ jobs:
             git push origin ${{ github.ref_name }}
             echo "[INFO] $(date +'%Y-%m-%d %H:%M:%S') ✅ Clash配置文件已推送（最新版本）"
           fi
-          
+
       # ========== 收尾：强制清理容器（无论流程是否失败） ==========
       - name: 🧹 清理SubConverter容器
         if: always()  # 所有情况都执行清理，避免资源泄漏
