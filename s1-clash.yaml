@@ -5,18 +5,17 @@ mode: Rule
 log-level: info
 external-controller: 127.0.0.1:9090
 proxies:
-  - {name: SG新加坡(mibei77.com 米贝节点分享), server: n1747624271.lie5d.cyou, port: 443, type: vmess, uuid: a231ba8b-8871-416c-813b-e2240bc66bb2, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /, headers: {Host: n1747624271.lie5d.cyou}}}
   - {name: US美国(mibei77.com 米贝节点分享), server: n1761214908.wpg27.xyz, port: 443, type: vmess, uuid: 3514a93f-bb26-4442-8f99-971b2ff3388a, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /, headers: {Host: n1761214908.wpg27.xyz}}}
-  - {name: SG新加坡(mibei77.com 米贝节点分享) 2, server: n1761214905.wpg27.xyz, port: 443, type: vmess, uuid: b1d3007c-441a-42d5-84b5-20301c46fa2c, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /, headers: {Host: n1761214905.wpg27.xyz}}}
+  - {name: SG新加坡(mibei77.com 米贝节点分享), server: n1761214905.wpg27.xyz, port: 443, type: vmess, uuid: b1d3007c-441a-42d5-84b5-20301c46fa2c, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /, headers: {Host: n1761214905.wpg27.xyz}}}
+  - {name: SG新加坡(mibei77.com 米贝节点分享) 2, server: n1747624271.lie5d.cyou, port: 443, type: vmess, uuid: a231ba8b-8871-416c-813b-e2240bc66bb2, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /, headers: {Host: n1747624271.lie5d.cyou}}}
   - {name: SG新加坡(mibei77.com 米贝节点分享) 3, server: n1761214907.74qxv.top, port: 443, type: vmess, uuid: 4c17399f-c93d-4527-8ace-5bdc2f0901f3, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /, headers: {Host: n1761214907.74qxv.top}}}
   - {name: US美国(mibei77.com 米贝节点分享) 2, server: free-de-3.undef.network, port: 443, type: trojan, password: xtA6WF92Itmhm9jfvXUH1MDVL, sni: free-de-3.undef.network, network: ws, ws-opts: {path: /f2fc2a1f, headers: {Host: free-de-3.undef.network}}}
-  - {name: US美国(mibei77.com 米贝节点分享) 3, server: blueivy.qzz.io, port: 443, type: trojan, password: da943f80-91e6-46df-b7ba-c6ecf28e0171, sni: blueivy.qzz.io, network: ws, ws-opts: {path: /192.252.182.52:7602, headers: {Host: blueivy.qzz.io}}}
   - {name: _香港, server: 58.152.25.86, port: 443, type: trojan, password: BxceQaOe, sni: t.me%2Fripaojiedian, skip-cert-verify: true}
   - {name: _香港 2, server: 58.152.25.236, port: 443, type: trojan, password: BxceQaOe, sni: t.me%2Fripaojiedian, skip-cert-verify: true}
   - {name: _香港 3, server: 58.152.18.147, port: 443, type: trojan, password: f36f4495b4b26cc2fe346cfa23e05b1b, sni: www.nintendogames.net, skip-cert-verify: false}
   - {name: _香港 4, server: 58.152.46.60, port: 443, type: trojan, password: BxceQaOe, sni: t.me%2Fripaojiedian, skip-cert-verify: true}
-  - {name: "[peasoft/NoMoreWalls]#121 HK43", server: n1747624280.lie5d.cyou, port: 443, type: vmess, uuid: 49dcf4b4-81eb-4fe2-91d3-86dc2e27ced5, alterId: 0, cipher: auto, tls: true, servername: n1747624280.lie5d.cyou, network: ws, ws-opts: {path: /, headers: {Host: n1747624280.lie5d.cyou}}}
   - {name: "[peasoft/NoMoreWalls]#122 HK44", server: n1747624267.4u9ma.icu, port: 443, type: vmess, uuid: 8c5d150c-b046-4440-8230-e84506a065a3, alterId: 0, cipher: auto, tls: true, servername: n1747624267.4u9ma.icu, network: ws, ws-opts: {path: /, headers: {Host: n1747624267.4u9ma.icu}}}
+  - {name: "[peasoft/NoMoreWalls]#121 HK43", server: n1747624280.lie5d.cyou, port: 443, type: vmess, uuid: 49dcf4b4-81eb-4fe2-91d3-86dc2e27ced5, alterId: 0, cipher: auto, tls: true, servername: n1747624280.lie5d.cyou, network: ws, ws-opts: {path: /, headers: {Host: n1747624280.lie5d.cyou}}}
   - {name: VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443, server: cg1c07.waimaojd.com, port: 443, type: vmess, uuid: be8e3136-b874-4085-bd23-ec3699300490, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /api/v1/graphql, headers: {Host: cg1c07.waimaojd.com}}}
   - {name: VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443, server: cg1c01.waimaojd.com, port: 443, type: vmess, uuid: be8e3136-b874-4085-bd23-ec3699300490, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /api/v1/graphql, headers: {Host: cg1c01.waimaojd.com}}}
   - {name: VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443, server: cg1c04.waimaojd.com, port: 443, type: vmess, uuid: be8e3136-b874-4085-bd23-ec3699300490, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /api/v1/graphql, headers: {Host: cg1c04.waimaojd.com}}}
@@ -30,6 +29,7 @@ proxies:
   - {name: JP-47.74.1.191-0339, server: n1753598451.74qxv.top, port: 443, type: vmess, uuid: 9798678f-5b8c-4ff1-bbdd-b9b5c1539de0, alterId: 0, cipher: auto, tls: true, servername: n1753598451.74qxv.top, network: ws, ws-opts: {path: /, headers: {Host: n1753598451.74qxv.top}}}
   - {name: FR-91.134.8.100-7392, server: 91.134.8.100, port: 443, type: vmess, uuid: 03fcc618-b93d-6796-6aed-8a38c975d581, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /, headers: {Host: kampong.org}}}
   - {name: ⚡ b2n.ir/v2ray-configs | 176, server: hinet.mjt000.com, port: 443, type: trojan, password: 92435aa8-f3b6-466a-ad58-c55cbb6d2acf}
+  - {name: US美国(mibei77.com 米贝节点分享) 3, server: bpbg.anguswen.top, port: 2053, type: trojan, password: !<str> 123456, sni: Bpbg.aNGuSweN.top, network: ws, ws-opts: {path: "/eyJqdW5rIjoiYWJZUDZ0Z2RMTSIsInByb3RvY29sIjoidHIiLCJtb2RlIjoicHJveHlpcCIsInBhbmVsSVBzIjpbImJwYi55b3VzZWYuaXNlZ2Fyby5jb20iXX0=?ed=2560", headers: {Host: Bpbg.aNGuSweN.top}}}
   - {name: US美国(mibei77.com 米贝节点分享) 4, server: 158.101.11.204, port: 15805, type: trojan, password: iwangjie, sni: nodes.830901.xyz, network: ws, ws-opts: {path: /, headers: {Host: nodes.830901.xyz}}}
   - {name: 免费VPN：https://tt.vg/gwaAy, server: 170.64.132.131, port: 8080, type: trojan, password: FR8IHksUYg, skip-cert-verify: true}
   - {name: _日本, server: 54.238.144.17, port: 3194, type: trojan, password: BxceQaOe, sni: t.me%252Fripaojiedian, skip-cert-verify: true}
@@ -52,6 +52,7 @@ proxies:
   - {name: HK-219.79.49.180-0357, server: 4333a411-t7bj40-tkka1f-1k25p.hkt.gotochinatown.net, port: 80, type: vmess, uuid: 6e8482fb-1f9b-11ed-af5f-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: 4333a411-t7bj40-tkka1f-1k25p.hkt.gotochinatown.net}}}
   - {name: GB英国(mibei77.com 米贝节点分享), server: 82.198.246.97, port: 180, type: vmess, uuid: d13fc2f5-3e05-4795-81eb-44143a09e552, alterId: 0, cipher: auto, tls: false}
   - {name: _尼日利亚, server: 160.119.196.92, port: 36334, type: vmess, uuid: 575ac7a3-0127-4420-a9ea-5ff3f6c02ac7, alterId: 0, cipher: auto, tls: false}
+  - {name: 香港|@ripaojiedian, server: v10.hdacd.com, port: 30807, type: vmess, uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484, alterId: 2, cipher: auto, tls: false}
   - {name: "[ermaozi/get_subscribe]🇩🇪_DE_德国", server: 45.87.175.174, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: k1dBOmOB4oqi7Ump37a1bQ}
   - {name: _US_美国, server: 185.47.255.22, port: 990, type: ss, cipher: chacha20-ietf-poly1305, password: f8f7aCzcPKbsF8p3}
   - {name: SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000, server: 144.217.164.29, port: 12000, type: ss, cipher: aes-256-gcm, password: 8JCsPssfgS8tiRwiMlhARg==}
@@ -62,6 +63,7 @@ proxies:
   - {name: ⚡ b2n.ir/v2ray-configs | 372, server: 82.38.31.184, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: k1dBOmOB4oqi7Ump37a1bQ}
   - {name: ⚡ b2n.ir/v2ray-configs | 639, server: 185.255.123.166, port: 990, type: ss, cipher: chacha20-ietf-poly1305, password: ARgvGZywA+gacgGV26Bvmu05+wZmRW/j+AdU+Z8Bt44=}
   - {name: ⚡ b2n.ir/v2ray-configs | 617, server: 38.75.137.9, port: 8080, type: ss, cipher: aes-256-gcm, password: KixLvKzwjekG00rm}
+  - {name: ⚡ b2n.ir/v2ray-configs | 991, server: beesyar.org, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: 4a2rfixophdjffa8KVA4Aa}
   - {name: ⚡ b2n.ir/v2ray-configs | 790, server: 82.38.31.218, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: k1dBOmOB4oqi7Ump37a1bQ}
   - {name: ⚡ b2n.ir/v2ray-configs | 70, server: 45.87.175.183, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: cvII85TrW6n0OGyfpHVS1u}
   - {name: _MD_摩尔多瓦, server: 185.153.197.5, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3}
@@ -72,18 +74,17 @@ proxy-groups:
     proxies:
       - ♻️ 自动选择
       - 🎯 全球直连
-      - SG新加坡(mibei77.com 米贝节点分享)
       - US美国(mibei77.com 米贝节点分享)
+      - SG新加坡(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享) 2
       - SG新加坡(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 2
-      - US美国(mibei77.com 米贝节点分享) 3
       - _香港
       - _香港 2
       - _香港 3
       - _香港 4
-      - "[peasoft/NoMoreWalls]#121 HK43"
       - "[peasoft/NoMoreWalls]#122 HK44"
+      - "[peasoft/NoMoreWalls]#121 HK43"
       - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443
       - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443
       - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443
@@ -97,6 +98,7 @@ proxy-groups:
       - JP-47.74.1.191-0339
       - FR-91.134.8.100-7392
       - ⚡ b2n.ir/v2ray-configs | 176
+      - US美国(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 4
       - 免费VPN：https://tt.vg/gwaAy
       - _日本
@@ -119,6 +121,7 @@ proxy-groups:
       - HK-219.79.49.180-0357
       - GB英国(mibei77.com 米贝节点分享)
       - _尼日利亚
+      - 香港|@ripaojiedian
       - "[ermaozi/get_subscribe]🇩🇪_DE_德国"
       - _US_美国
       - SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000
@@ -129,6 +132,7 @@ proxy-groups:
       - ⚡ b2n.ir/v2ray-configs | 372
       - ⚡ b2n.ir/v2ray-configs | 639
       - ⚡ b2n.ir/v2ray-configs | 617
+      - ⚡ b2n.ir/v2ray-configs | 991
       - ⚡ b2n.ir/v2ray-configs | 790
       - ⚡ b2n.ir/v2ray-configs | 70
       - _MD_摩尔多瓦
@@ -138,18 +142,17 @@ proxy-groups:
     url: http://www.gstatic.com/generate_204
     interval: 300
     proxies:
-      - SG新加坡(mibei77.com 米贝节点分享)
       - US美国(mibei77.com 米贝节点分享)
+      - SG新加坡(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享) 2
       - SG新加坡(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 2
-      - US美国(mibei77.com 米贝节点分享) 3
       - _香港
       - _香港 2
       - _香港 3
       - _香港 4
-      - "[peasoft/NoMoreWalls]#121 HK43"
       - "[peasoft/NoMoreWalls]#122 HK44"
+      - "[peasoft/NoMoreWalls]#121 HK43"
       - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443
       - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443
       - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443
@@ -163,6 +166,7 @@ proxy-groups:
       - JP-47.74.1.191-0339
       - FR-91.134.8.100-7392
       - ⚡ b2n.ir/v2ray-configs | 176
+      - US美国(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 4
       - 免费VPN：https://tt.vg/gwaAy
       - _日本
@@ -185,6 +189,7 @@ proxy-groups:
       - HK-219.79.49.180-0357
       - GB英国(mibei77.com 米贝节点分享)
       - _尼日利亚
+      - 香港|@ripaojiedian
       - "[ermaozi/get_subscribe]🇩🇪_DE_德国"
       - _US_美国
       - SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000
@@ -195,6 +200,7 @@ proxy-groups:
       - ⚡ b2n.ir/v2ray-configs | 372
       - ⚡ b2n.ir/v2ray-configs | 639
       - ⚡ b2n.ir/v2ray-configs | 617
+      - ⚡ b2n.ir/v2ray-configs | 991
       - ⚡ b2n.ir/v2ray-configs | 790
       - ⚡ b2n.ir/v2ray-configs | 70
       - _MD_摩尔多瓦
@@ -205,18 +211,17 @@ proxy-groups:
       - 🔰 节点选择
       - ♻️ 自动选择
       - 🎯 全球直连
-      - SG新加坡(mibei77.com 米贝节点分享)
       - US美国(mibei77.com 米贝节点分享)
+      - SG新加坡(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享) 2
       - SG新加坡(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 2
-      - US美国(mibei77.com 米贝节点分享) 3
       - _香港
       - _香港 2
       - _香港 3
       - _香港 4
-      - "[peasoft/NoMoreWalls]#121 HK43"
       - "[peasoft/NoMoreWalls]#122 HK44"
+      - "[peasoft/NoMoreWalls]#121 HK43"
       - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443
       - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443
       - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443
@@ -230,6 +235,7 @@ proxy-groups:
       - JP-47.74.1.191-0339
       - FR-91.134.8.100-7392
       - ⚡ b2n.ir/v2ray-configs | 176
+      - US美国(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 4
       - 免费VPN：https://tt.vg/gwaAy
       - _日本
@@ -252,6 +258,7 @@ proxy-groups:
       - HK-219.79.49.180-0357
       - GB英国(mibei77.com 米贝节点分享)
       - _尼日利亚
+      - 香港|@ripaojiedian
       - "[ermaozi/get_subscribe]🇩🇪_DE_德国"
       - _US_美国
       - SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000
@@ -262,6 +269,7 @@ proxy-groups:
       - ⚡ b2n.ir/v2ray-configs | 372
       - ⚡ b2n.ir/v2ray-configs | 639
       - ⚡ b2n.ir/v2ray-configs | 617
+      - ⚡ b2n.ir/v2ray-configs | 991
       - ⚡ b2n.ir/v2ray-configs | 790
       - ⚡ b2n.ir/v2ray-configs | 70
       - _MD_摩尔多瓦
@@ -284,18 +292,17 @@ proxy-groups:
       - 🔰 节点选择
       - ♻️ 自动选择
       - 🎯 全球直连
-      - SG新加坡(mibei77.com 米贝节点分享)
       - US美国(mibei77.com 米贝节点分享)
+      - SG新加坡(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享) 2
       - SG新加坡(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 2
-      - US美国(mibei77.com 米贝节点分享) 3
       - _香港
       - _香港 2
       - _香港 3
       - _香港 4
-      - "[peasoft/NoMoreWalls]#121 HK43"
       - "[peasoft/NoMoreWalls]#122 HK44"
+      - "[peasoft/NoMoreWalls]#121 HK43"
       - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443
       - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443
       - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443
@@ -309,6 +316,7 @@ proxy-groups:
       - JP-47.74.1.191-0339
       - FR-91.134.8.100-7392
       - ⚡ b2n.ir/v2ray-configs | 176
+      - US美国(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 4
       - 免费VPN：https://tt.vg/gwaAy
       - _日本
@@ -331,6 +339,7 @@ proxy-groups:
       - HK-219.79.49.180-0357
       - GB英国(mibei77.com 米贝节点分享)
       - _尼日利亚
+      - 香港|@ripaojiedian
       - "[ermaozi/get_subscribe]🇩🇪_DE_德国"
       - _US_美国
       - SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000
@@ -341,6 +350,7 @@ proxy-groups:
       - ⚡ b2n.ir/v2ray-configs | 372
       - ⚡ b2n.ir/v2ray-configs | 639
       - ⚡ b2n.ir/v2ray-configs | 617
+      - ⚡ b2n.ir/v2ray-configs | 991
       - ⚡ b2n.ir/v2ray-configs | 790
       - ⚡ b2n.ir/v2ray-configs | 70
       - _MD_摩尔多瓦
@@ -353,24 +363,24 @@ proxy-groups:
       - _香港 2
       - _香港 3
       - _香港 4
+      - 香港|@ripaojiedian
       - 🔰 节点选择
   - name: Ⓜ️ 微软服务
     type: select
     proxies:
       - 🎯 全球直连
       - 🔰 节点选择
-      - SG新加坡(mibei77.com 米贝节点分享)
       - US美国(mibei77.com 米贝节点分享)
+      - SG新加坡(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享) 2
       - SG新加坡(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 2
-      - US美国(mibei77.com 米贝节点分享) 3
       - _香港
       - _香港 2
       - _香港 3
       - _香港 4
-      - "[peasoft/NoMoreWalls]#121 HK43"
       - "[peasoft/NoMoreWalls]#122 HK44"
+      - "[peasoft/NoMoreWalls]#121 HK43"
       - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443
       - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443
       - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443
@@ -384,6 +394,7 @@ proxy-groups:
       - JP-47.74.1.191-0339
       - FR-91.134.8.100-7392
       - ⚡ b2n.ir/v2ray-configs | 176
+      - US美国(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 4
       - 免费VPN：https://tt.vg/gwaAy
       - _日本
@@ -406,6 +417,7 @@ proxy-groups:
       - HK-219.79.49.180-0357
       - GB英国(mibei77.com 米贝节点分享)
       - _尼日利亚
+      - 香港|@ripaojiedian
       - "[ermaozi/get_subscribe]🇩🇪_DE_德国"
       - _US_美国
       - SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000
@@ -416,6 +428,7 @@ proxy-groups:
       - ⚡ b2n.ir/v2ray-configs | 372
       - ⚡ b2n.ir/v2ray-configs | 639
       - ⚡ b2n.ir/v2ray-configs | 617
+      - ⚡ b2n.ir/v2ray-configs | 991
       - ⚡ b2n.ir/v2ray-configs | 790
       - ⚡ b2n.ir/v2ray-configs | 70
       - _MD_摩尔多瓦
@@ -425,18 +438,17 @@ proxy-groups:
     proxies:
       - 🔰 节点选择
       - 🎯 全球直连
-      - SG新加坡(mibei77.com 米贝节点分享)
       - US美国(mibei77.com 米贝节点分享)
+      - SG新加坡(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享) 2
       - SG新加坡(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 2
-      - US美国(mibei77.com 米贝节点分享) 3
       - _香港
       - _香港 2
       - _香港 3
       - _香港 4
-      - "[peasoft/NoMoreWalls]#121 HK43"
       - "[peasoft/NoMoreWalls]#122 HK44"
+      - "[peasoft/NoMoreWalls]#121 HK43"
       - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443
       - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443
       - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443
@@ -450,6 +462,7 @@ proxy-groups:
       - JP-47.74.1.191-0339
       - FR-91.134.8.100-7392
       - ⚡ b2n.ir/v2ray-configs | 176
+      - US美国(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 4
       - 免费VPN：https://tt.vg/gwaAy
       - _日本
@@ -472,6 +485,7 @@ proxy-groups:
       - HK-219.79.49.180-0357
       - GB英国(mibei77.com 米贝节点分享)
       - _尼日利亚
+      - 香港|@ripaojiedian
       - "[ermaozi/get_subscribe]🇩🇪_DE_德国"
       - _US_美国
       - SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000
@@ -482,6 +496,7 @@ proxy-groups:
       - ⚡ b2n.ir/v2ray-configs | 372
       - ⚡ b2n.ir/v2ray-configs | 639
       - ⚡ b2n.ir/v2ray-configs | 617
+      - ⚡ b2n.ir/v2ray-configs | 991
       - ⚡ b2n.ir/v2ray-configs | 790
       - ⚡ b2n.ir/v2ray-configs | 70
       - _MD_摩尔多瓦
@@ -492,18 +507,17 @@ proxy-groups:
       - 🔰 节点选择
       - 🎯 全球直连
       - ♻️ 自动选择
-      - SG新加坡(mibei77.com 米贝节点分享)
       - US美国(mibei77.com 米贝节点分享)
+      - SG新加坡(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享) 2
       - SG新加坡(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 2
-      - US美国(mibei77.com 米贝节点分享) 3
       - _香港
       - _香港 2
       - _香港 3
       - _香港 4
-      - "[peasoft/NoMoreWalls]#121 HK43"
       - "[peasoft/NoMoreWalls]#122 HK44"
+      - "[peasoft/NoMoreWalls]#121 HK43"
       - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443
       - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443
       - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443
@@ -517,6 +531,7 @@ proxy-groups:
       - JP-47.74.1.191-0339
       - FR-91.134.8.100-7392
       - ⚡ b2n.ir/v2ray-configs | 176
+      - US美国(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 4
       - 免费VPN：https://tt.vg/gwaAy
       - _日本
@@ -539,6 +554,7 @@ proxy-groups:
       - HK-219.79.49.180-0357
       - GB英国(mibei77.com 米贝节点分享)
       - _尼日利亚
+      - 香港|@ripaojiedian
       - "[ermaozi/get_subscribe]🇩🇪_DE_德国"
       - _US_美国
       - SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000
@@ -549,6 +565,7 @@ proxy-groups:
       - ⚡ b2n.ir/v2ray-configs | 372
       - ⚡ b2n.ir/v2ray-configs | 639
       - ⚡ b2n.ir/v2ray-configs | 617
+      - ⚡ b2n.ir/v2ray-configs | 991
       - ⚡ b2n.ir/v2ray-configs | 790
       - ⚡ b2n.ir/v2ray-configs | 70
       - _MD_摩尔多瓦
@@ -568,18 +585,17 @@ proxy-groups:
       - 🔰 节点选择
       - 🎯 全球直连
       - ♻️ 自动选择
-      - SG新加坡(mibei77.com 米贝节点分享)
       - US美国(mibei77.com 米贝节点分享)
+      - SG新加坡(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享) 2
       - SG新加坡(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 2
-      - US美国(mibei77.com 米贝节点分享) 3
       - _香港
       - _香港 2
       - _香港 3
       - _香港 4
-      - "[peasoft/NoMoreWalls]#121 HK43"
       - "[peasoft/NoMoreWalls]#122 HK44"
+      - "[peasoft/NoMoreWalls]#121 HK43"
       - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443
       - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443
       - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443
@@ -593,6 +609,7 @@ proxy-groups:
       - JP-47.74.1.191-0339
       - FR-91.134.8.100-7392
       - ⚡ b2n.ir/v2ray-configs | 176
+      - US美国(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 4
       - 免费VPN：https://tt.vg/gwaAy
       - _日本
@@ -615,6 +632,7 @@ proxy-groups:
       - HK-219.79.49.180-0357
       - GB英国(mibei77.com 米贝节点分享)
       - _尼日利亚
+      - 香港|@ripaojiedian
       - "[ermaozi/get_subscribe]🇩🇪_DE_德国"
       - _US_美国
       - SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000
@@ -625,6 +643,7 @@ proxy-groups:
       - ⚡ b2n.ir/v2ray-configs | 372
       - ⚡ b2n.ir/v2ray-configs | 639
       - ⚡ b2n.ir/v2ray-configs | 617
+      - ⚡ b2n.ir/v2ray-configs | 991
       - ⚡ b2n.ir/v2ray-configs | 790
       - ⚡ b2n.ir/v2ray-configs | 70
       - _MD_摩尔多瓦
