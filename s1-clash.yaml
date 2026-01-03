@@ -5,20 +5,16 @@ mode: Rule
 log-level: info
 external-controller: 127.0.0.1:9090
 proxies:
-  - {name: US美国(mibei77.com 米贝节点分享), server: cf.130519.xyz, port: 443, type: trojan, password: 5a2c16f9, sni: snippets.kkii.eu.org, network: ws, ws-opts: {path: //, headers: {Host: snippets.kkii.eu.org}}}
   - {name: _香港, server: n1761214904.wpg27.xyz, port: 443, type: vmess, uuid: 7f6f64ae-3778-434c-adfc-95cb67ee8b73, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /, headers: {Host: n1761214904.wpg27.xyz}}}
   - {name: _新加坡, server: n1747624271.lie5d.cyou, port: 443, type: vmess, uuid: a231ba8b-8871-416c-813b-e2240bc66bb2, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /, headers: {Host: n1747624271.lie5d.cyou}}}
   - {name: _法国, server: 57.128.189.240, port: 443, type: vmess, uuid: 03fcc618-b93d-6796-6aed-8a38c975d581, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /linkvws}}
   - {name: 香港4|@ripaojiedian, server: 58.152.25.86, port: 443, type: trojan, password: BxceQaOe, sni: t.me%2Fripaojiedian, skip-cert-verify: true}
   - {name: 香港5|@ripaojiedian, server: 58.152.25.236, port: 443, type: trojan, password: BxceQaOe, sni: t.me%2Fripaojiedian, skip-cert-verify: true}
   - {name: "[peasoft/NoMoreWalls]#128 HK57", server: 58.152.46.60, port: 443, type: trojan, password: BxceQaOe, sni: "%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%20%5BBy%20EbraSha%5D%20trojan-HK%20", skip-cert-verify: true}
-  - {name: VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443, server: cg1c07.waimaojd.com, port: 443, type: vmess, uuid: be8e3136-b874-4085-bd23-ec3699300490, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /api/v1/graphql, headers: {Host: cg1c07.waimaojd.com}}}
-  - {name: VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443, server: cg1c01.waimaojd.com, port: 443, type: vmess, uuid: be8e3136-b874-4085-bd23-ec3699300490, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /api/v1/graphql, headers: {Host: cg1c01.waimaojd.com}}}
-  - {name: VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443, server: cg1c04.waimaojd.com, port: 443, type: vmess, uuid: be8e3136-b874-4085-bd23-ec3699300490, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /api/v1/graphql, headers: {Host: cg1c04.waimaojd.com}}}
-  - {name: VMESS-美国-ChatGPT-TikTok-YouTube-cg1c14.waimaojd.com:443, server: cg1c14.waimaojd.com, port: 443, type: vmess, uuid: be8e3136-b874-4085-bd23-ec3699300490, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /api/v1/graphql, headers: {Host: cg1c14.waimaojd.com}}}
-  - {name: US美国(mibei77.com 米贝节点分享) 2, server: n1761214908.wpg27.xyz, port: 443, type: vmess, uuid: 3514a93f-bb26-4442-8f99-971b2ff3388a, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /, headers: {Host: n1761214908.wpg27.xyz}}}
+  - {name: US美国(mibei77.com 米贝节点分享), server: n1761214908.wpg27.xyz, port: 443, type: vmess, uuid: 3514a93f-bb26-4442-8f99-971b2ff3388a, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /, headers: {Host: n1761214908.wpg27.xyz}}}
   - {name: SG新加坡(mibei77.com 米贝节点分享), server: n1761214905.wpg27.xyz, port: 443, type: vmess, uuid: b1d3007c-441a-42d5-84b5-20301c46fa2c, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /, headers: {Host: n1761214905.wpg27.xyz}}}
   - {name: SG新加坡(mibei77.com 米贝节点分享) 2, server: n1761214907.74qxv.top, port: 443, type: vmess, uuid: 4c17399f-c93d-4527-8ace-5bdc2f0901f3, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /, headers: {Host: n1761214907.74qxv.top}}}
+  - {name: US美国(mibei77.com 米贝节点分享) 2, server: free-de-3.undef.network, port: 443, type: trojan, password: xtA6WF92Itmhm9jfvXUH1MDVL, sni: free-de-3.undef.network, skip-cert-verify: false, network: ws, ws-opts: {path: "%2Ff2fc2a1f", headers: {Host: free-de-3.undef.network}}}
   - {name: US-107.173.31.37-5090, server: 107.173.31.37, port: 443, type: vmess, uuid: be8771bd-10b9-4766-ad44-87971ba1fba4, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /}}
   - {name: DE-64.190.63.222-0854, server: khvwycch.cymlr.xyz, port: 443, type: vmess, uuid: db39ef95-4245-418a-84c0-14c202f29bc6, alterId: 0, cipher: auto, tls: true, network: ws, ws-opts: {path: /, headers: {Host: khvwycch.cymlr.xyz}}}
   - {name: HK-207.46.147.148-1535, server: fullaccesstohongkongnet.azurewebsites.net, port: 443, type: vmess, uuid: 274f11c6-f69b-40b9-8966-f39e06e97be7, alterId: 0, cipher: auto, tls: true, servername: fullaccesstohongkongnet.azurewebsites.net, network: ws, ws-opts: {path: /, headers: {Host: fullaccesstohongkongnet.azurewebsites.net}}}
@@ -30,42 +26,40 @@ proxies:
   - {name: DE-57.129.28.215-7257, server: 57.129.28.215, port: 443, type: vmess, uuid: 03fcc618-b93d-6796-6aed-8a38c975d581, alterId: 0, cipher: auto, tls: true, servername: serkat.org, network: ws, ws-opts: {path: /, headers: {Host: serkat.org}}}
   - {name: ⚡ b2n.ir/v2ray-configs | 802, server: jp.mjt001.com, port: 443, type: trojan, password: 459d23f4-dcfd-4fef-9ba3-ef0ad10fc336, sni: jp.mjt001.com}
   - {name: ⚡ b2n.ir/v2ray-configs | 857, server: 148.113.141.99, port: 443, type: trojan, password: HdsUZmsHQW}
-  - {name: US美国(mibei77.com 米贝节点分享) 3, server: free-de-3.undef.network, port: 443, type: trojan, password: xtA6WF92Itmhm9jfvXUH1MDVL, sni: free-de-3.undef.network, skip-cert-verify: false, network: ws, ws-opts: {path: "%2Ff2fc2a1f", headers: {Host: free-de-3.undef.network}}}
-  - {name: _美国, server: 158.101.11.204, port: 15805, type: trojan, password: iwangjie, sni: nodes.830901.xyz, skip-cert-verify: false, network: ws, ws-opts: {path: /, headers: {Host: nodes.830901.xyz}}}
   - {name: "[Rawdroid/Free-servers]美国+华盛顿Cogent通信公司", server: 38.96.254.102, port: 18509, type: trojan, password: .ie4rghJuMkcf0oF, sni: shoppingmall.electricbanana.click}
-  - {name: US-199.188.105.56-7826, server: 199.188.105.56, port: 31004, type: vmess, uuid: 418048af-a293-4b99-9b0c-98ca3580dd24, alterId: 64, cipher: auto, tls: true, network: ws, ws-opts: {path: /, headers: {Host: www.46554484.xyz}}}
-  - {name: US-192.74.242.243-7881, server: 192.74.242.243, port: 38003, type: vmess, uuid: 418048af-a293-4b99-9b0c-98ca3580dd24, alterId: 64, cipher: auto, tls: true, network: ws, ws-opts: {path: /, headers: {Host: www.62813234.xyz}}}
+  - {name: 美国 加州, server: 64.94.95.118, port: 57142, type: trojan, password: kkzh2prsyr2ik47as615}
+  - {name: _美国, server: 209.126.84.189, port: 443, type: vmess, uuid: 2c981164-9b93-4bca-94ff-b78d3f8498d7, alterId: 0, cipher: auto, tls: false, network: ws, ws-opts: {path: /vmessws, headers: {Host: 209.126.84.189}}}
   - {name: _土耳其, server: 94.131.108.36, port: 443, type: vmess, uuid: 9855f1f0-a800-40d4-8b38-c7d3eb79302d, alterId: 0, cipher: auto, tls: false, network: ws, ws-opts: {path: /}}
   - {name: _美国 2, server: v2ray.codefyinc.com, port: 443, type: vmess, uuid: 2c981164-9b93-4bca-94ff-b78d3f8498d7, alterId: 0, cipher: auto, tls: false, network: ws, ws-opts: {path: /vmessws, headers: {Host: v2ray.codefyinc.com}}}
   - {name: "[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯", server: 194.246.114.101, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: HaNqw9pIE4jcx98sg7UQgHeGNTM4R2pk}
-  - {name: _IR_伊朗, server: 217.60.249.112, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: 0eC4ZBvStOgQEzTpCYjWN5}
-  - {name: SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-71.19.148.143:443, server: 71.19.148.143, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: p78naCf2EfOlRSLTX0wFVx}
-  - {name: SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-pupas-shirting-unsung.freesocks.work:443, server: pupas-shirting-unsung.freesocks.work, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: p78naCf2EfOlRSLTX0wFVx}
+  - {name: "[ermaozi/get_subscribe]🇳🇱_NL_荷兰", server: 178.23.190.238, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: uo7EbtqIwgZXXHmMv5LbLcOxptyPlNkh}
   - {name: SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-23.95.75.146:443, server: 23.95.75.146, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: NDRySIABARbErNIVsCNVkyYAHiBzhveT}
   - {name: FR法国(mibei77.com 米贝节点分享), server: switcher-nick-croquet.freesocks.work, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: RFK38Cg7APneSB5cWDcpbm}
   - {name: _加拿大, server: 15.235.41.200, port: 80, type: vmess, uuid: 58fe1542-5290-40ad-815a-77707a81afe5, alterId: 0, cipher: auto, tls: false, network: ws, ws-opts: {path: /IOebhLMhl1CTbFHbL95myfRX2}}
   - {name: _加拿大 2, server: 51.79.102.253, port: 80, type: vmess, uuid: 58fe1542-5290-40ad-815a-77707a81afe5, alterId: 0, cipher: auto, tls: false, network: ws, ws-opts: {path: /IOebhLMhl1CTbFHbL95myfRX2}}
-  - {name: US-47.254.16.114-8403, server: 47.254.16.114, port: 80, type: vmess, uuid: f3464642-f113-4575-aa33-f68aef56b5c0, alterId: 0, cipher: auto, tls: false, network: ws, ws-opts: {path: /}}
-  - {name: _尼日利亚, server: 160.119.196.92, port: 36334, type: vmess, uuid: 575ac7a3-0127-4420-a9ea-5ff3f6c02ac7, alterId: 0, cipher: auto, tls: false}
   - {name: 香港|@ripaojiedian, server: v10.hdacd.com, port: 30807, type: vmess, uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484, alterId: 2, cipher: auto, tls: false}
   - {name: HK-47.244.120.197-4991, server: 47.244.120.197, port: 36703, type: vmess, uuid: 45b83519-9c4f-4052-a11b-02e017b636d4, alterId: 0, cipher: auto, tls: false, network: ws, ws-opts: {path: /}}
-  - {name: "[ermaozi/get_subscribe]🇳🇱_NL_荷兰", server: 178.23.190.238, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: uo7EbtqIwgZXXHmMv5LbLcOxptyPlNkh}
+  - {name: 未知2, server: 2.56.242.210, port: 34895, type: vmess, uuid: 6fe6b62a-dfbe-4753-d795-e02f2561edea, alterId: 0, cipher: auto, tls: false}
   - {name: 日本4|@ripaojiedian, server: 103.106.228.247, port: 990, type: ss, cipher: chacha20-ietf-poly1305, password: ARgvGZywA+gacgGV26Bvmu05+wZmRW/j+AdU+Z8Bt44=}
   - {name: "[ermaozi/get_subscribe]🇩🇪_DE_德国", server: 45.87.175.174, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: k1dBOmOB4oqi7Ump37a1bQ}
   - {name: _US_美国, server: 185.47.255.22, port: 990, type: ss, cipher: chacha20-ietf-poly1305, password: f8f7aCzcPKbsF8p3}
   - {name: SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000, server: 144.217.164.29, port: 12000, type: ss, cipher: aes-256-gcm, password: 8JCsPssfgS8tiRwiMlhARg==}
+  - {name: SS-阿塞拜疆-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-45.154.204.7:990, server: 45.154.204.7, port: 990, type: ss, cipher: chacha20-ietf-poly1305, password: ARgvGZywA+gacgGV26Bvmu05+wZmRW/j+AdU+Z8Bt44=}
   - {name: SS-美国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-23.95.76.59:990, server: 23.95.76.59, port: 990, type: ss, cipher: chacha20-ietf-poly1305, password: ARgvGZywA+gacgGV26Bvmu05+wZmRW/j+AdU+Z8Bt44=}
+  - {name: SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-92.118.112.101:9483, server: 92.118.112.101, port: 9483, type: ss, cipher: chacha20-ietf-poly1305, password: qFvn2fNEvBgM5knffrN96q}
   - {name: SS-英国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-79.127.233.170:990, server: 79.127.233.170, port: 990, type: ss, cipher: chacha20-ietf-poly1305, password: f8f7aCzcPKbsF8p3}
-  - {name: US美国(mibei77.com 米贝节点分享) 4, server: 82.38.31.191, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: k1dBOmOB4oqi7Ump37a1bQ}
-  - {name: US美国(mibei77.com 米贝节点分享) 5, server: 82.38.31.217, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: k1dBOmOB4oqi7Ump37a1bQ}
-  - {name: US美国(mibei77.com 米贝节点分享) 6, server: 45.87.175.183, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: cvII85TrW6n0OGyfpHVS1u}
-  - {name: US美国(mibei77.com 米贝节点分享) 7, server: 82.38.31.184, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: k1dBOmOB4oqi7Ump37a1bQ}
+  - {name: SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-107.175.87.207:10011, server: 107.175.87.207, port: 10011, type: ss, cipher: chacha20-ietf-poly1305, password: 86039b71-ba82-4ca8-838e-87086ae666de}
+  - {name: US美国(mibei77.com 米贝节点分享) 3, server: 82.38.31.191, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: k1dBOmOB4oqi7Ump37a1bQ}
+  - {name: US美国(mibei77.com 米贝节点分享) 4, server: 82.38.31.217, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: k1dBOmOB4oqi7Ump37a1bQ}
+  - {name: US美国(mibei77.com 米贝节点分享) 5, server: 45.87.175.183, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: cvII85TrW6n0OGyfpHVS1u}
+  - {name: US美国(mibei77.com 米贝节点分享) 6, server: 82.38.31.184, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: k1dBOmOB4oqi7Ump37a1bQ}
   - {name: ⚡ b2n.ir/v2ray-configs | 355, server: 45.87.175.199, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: 1RWwXhwfAB5gAEozU4G2Pg}
-  - {name: ⚡ b2n.ir/v2ray-configs | 838, server: 46.183.217.204, port: 990, type: ss, cipher: chacha20-ietf-poly1305, password: ARgvGZywA+gacgGV26Bvmu05+wZmRW/j+AdU+Z8Bt44=}
   - {name: ⚡ b2n.ir/v2ray-configs | 844, server: ss.037.node-for-bigairport.win, port: 11688, type: ss, cipher: aes-256-gcm, password: 5f00e880-45d9-444c-af13-12820eb13ffc}
   - {name: ⚡ b2n.ir/v2ray-configs | 542, server: 193.29.139.206, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: 4a2rfixophdjffa8KVA4Aa}
   - {name: ⚡ b2n.ir/v2ray-configs | 370, server: 193.29.139.157, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: 4a2rfixophdjffa8KVA4Aa}
   - {name: ⚡ b2n.ir/v2ray-configs | 460, server: 45.87.175.35, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: oZIoA69Q8yhcQV8ka3Pa3A}
+  - {name: _尼日利亚, server: 160.119.196.92, port: 36334, type: vmess, uuid: 575ac7a3-0127-4420-a9ea-5ff3f6c02ac7, alterId: 0, cipher: auto, tls: false}
+  - {name: ⚡ b2n.ir/v2ray-configs | 838, server: 46.183.217.204, port: 990, type: ss, cipher: chacha20-ietf-poly1305, password: ARgvGZywA+gacgGV26Bvmu05+wZmRW/j+AdU+Z8Bt44=}
   - {name: ⚡ b2n.ir/v2ray-configs | 157, server: 195.154.119.77, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3}
 proxy-groups:
   - name: 🔰 节点选择
@@ -73,20 +67,16 @@ proxy-groups:
     proxies:
       - ♻️ 自动选择
       - 🎯 全球直连
-      - US美国(mibei77.com 米贝节点分享)
       - _香港
       - _新加坡
       - _法国
       - 香港4|@ripaojiedian
       - 香港5|@ripaojiedian
       - "[peasoft/NoMoreWalls]#128 HK57"
-      - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443
-      - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443
-      - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443
-      - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c14.waimaojd.com:443
-      - US美国(mibei77.com 米贝节点分享) 2
+      - US美国(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享) 2
+      - US美国(mibei77.com 米贝节点分享) 2
       - US-107.173.31.37-5090
       - DE-64.190.63.222-0854
       - HK-207.46.147.148-1535
@@ -98,62 +88,56 @@ proxy-groups:
       - DE-57.129.28.215-7257
       - ⚡ b2n.ir/v2ray-configs | 802
       - ⚡ b2n.ir/v2ray-configs | 857
-      - US美国(mibei77.com 米贝节点分享) 3
-      - _美国
       - "[Rawdroid/Free-servers]美国+华盛顿Cogent通信公司"
-      - US-199.188.105.56-7826
-      - US-192.74.242.243-7881
+      - 美国 加州
+      - _美国
       - _土耳其
       - _美国 2
       - "[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯"
-      - _IR_伊朗
-      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-71.19.148.143:443
-      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-pupas-shirting-unsung.freesocks.work:443
+      - "[ermaozi/get_subscribe]🇳🇱_NL_荷兰"
       - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-23.95.75.146:443
       - FR法国(mibei77.com 米贝节点分享)
       - _加拿大
       - _加拿大 2
-      - US-47.254.16.114-8403
-      - _尼日利亚
       - 香港|@ripaojiedian
       - HK-47.244.120.197-4991
-      - "[ermaozi/get_subscribe]🇳🇱_NL_荷兰"
+      - 未知2
       - 日本4|@ripaojiedian
       - "[ermaozi/get_subscribe]🇩🇪_DE_德国"
       - _US_美国
       - SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000
+      - SS-阿塞拜疆-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-45.154.204.7:990
       - SS-美国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-23.95.76.59:990
+      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-92.118.112.101:9483
       - SS-英国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-79.127.233.170:990
+      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-107.175.87.207:10011
+      - US美国(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 4
       - US美国(mibei77.com 米贝节点分享) 5
       - US美国(mibei77.com 米贝节点分享) 6
-      - US美国(mibei77.com 米贝节点分享) 7
       - ⚡ b2n.ir/v2ray-configs | 355
-      - ⚡ b2n.ir/v2ray-configs | 838
       - ⚡ b2n.ir/v2ray-configs | 844
       - ⚡ b2n.ir/v2ray-configs | 542
       - ⚡ b2n.ir/v2ray-configs | 370
       - ⚡ b2n.ir/v2ray-configs | 460
+      - _尼日利亚
+      - ⚡ b2n.ir/v2ray-configs | 838
       - ⚡ b2n.ir/v2ray-configs | 157
   - name: ♻️ 自动选择
     type: url-test
     url: http://www.gstatic.com/generate_204
     interval: 300
     proxies:
-      - US美国(mibei77.com 米贝节点分享)
       - _香港
       - _新加坡
       - _法国
       - 香港4|@ripaojiedian
       - 香港5|@ripaojiedian
       - "[peasoft/NoMoreWalls]#128 HK57"
-      - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443
-      - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443
-      - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443
-      - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c14.waimaojd.com:443
-      - US美国(mibei77.com 米贝节点分享) 2
+      - US美国(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享) 2
+      - US美国(mibei77.com 米贝节点分享) 2
       - US-107.173.31.37-5090
       - DE-64.190.63.222-0854
       - HK-207.46.147.148-1535
@@ -165,42 +149,40 @@ proxy-groups:
       - DE-57.129.28.215-7257
       - ⚡ b2n.ir/v2ray-configs | 802
       - ⚡ b2n.ir/v2ray-configs | 857
-      - US美国(mibei77.com 米贝节点分享) 3
-      - _美国
       - "[Rawdroid/Free-servers]美国+华盛顿Cogent通信公司"
-      - US-199.188.105.56-7826
-      - US-192.74.242.243-7881
+      - 美国 加州
+      - _美国
       - _土耳其
       - _美国 2
       - "[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯"
-      - _IR_伊朗
-      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-71.19.148.143:443
-      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-pupas-shirting-unsung.freesocks.work:443
+      - "[ermaozi/get_subscribe]🇳🇱_NL_荷兰"
       - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-23.95.75.146:443
       - FR法国(mibei77.com 米贝节点分享)
       - _加拿大
       - _加拿大 2
-      - US-47.254.16.114-8403
-      - _尼日利亚
       - 香港|@ripaojiedian
       - HK-47.244.120.197-4991
-      - "[ermaozi/get_subscribe]🇳🇱_NL_荷兰"
+      - 未知2
       - 日本4|@ripaojiedian
       - "[ermaozi/get_subscribe]🇩🇪_DE_德国"
       - _US_美国
       - SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000
+      - SS-阿塞拜疆-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-45.154.204.7:990
       - SS-美国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-23.95.76.59:990
+      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-92.118.112.101:9483
       - SS-英国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-79.127.233.170:990
+      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-107.175.87.207:10011
+      - US美国(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 4
       - US美国(mibei77.com 米贝节点分享) 5
       - US美国(mibei77.com 米贝节点分享) 6
-      - US美国(mibei77.com 米贝节点分享) 7
       - ⚡ b2n.ir/v2ray-configs | 355
-      - ⚡ b2n.ir/v2ray-configs | 838
       - ⚡ b2n.ir/v2ray-configs | 844
       - ⚡ b2n.ir/v2ray-configs | 542
       - ⚡ b2n.ir/v2ray-configs | 370
       - ⚡ b2n.ir/v2ray-configs | 460
+      - _尼日利亚
+      - ⚡ b2n.ir/v2ray-configs | 838
       - ⚡ b2n.ir/v2ray-configs | 157
   - name: 🎥 NETFLIX
     type: select
@@ -208,20 +190,16 @@ proxy-groups:
       - 🔰 节点选择
       - ♻️ 自动选择
       - 🎯 全球直连
-      - US美国(mibei77.com 米贝节点分享)
       - _香港
       - _新加坡
       - _法国
       - 香港4|@ripaojiedian
       - 香港5|@ripaojiedian
       - "[peasoft/NoMoreWalls]#128 HK57"
-      - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443
-      - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443
-      - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443
-      - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c14.waimaojd.com:443
-      - US美国(mibei77.com 米贝节点分享) 2
+      - US美国(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享) 2
+      - US美国(mibei77.com 米贝节点分享) 2
       - US-107.173.31.37-5090
       - DE-64.190.63.222-0854
       - HK-207.46.147.148-1535
@@ -233,42 +211,40 @@ proxy-groups:
       - DE-57.129.28.215-7257
       - ⚡ b2n.ir/v2ray-configs | 802
       - ⚡ b2n.ir/v2ray-configs | 857
-      - US美国(mibei77.com 米贝节点分享) 3
-      - _美国
       - "[Rawdroid/Free-servers]美国+华盛顿Cogent通信公司"
-      - US-199.188.105.56-7826
-      - US-192.74.242.243-7881
+      - 美国 加州
+      - _美国
       - _土耳其
       - _美国 2
       - "[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯"
-      - _IR_伊朗
-      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-71.19.148.143:443
-      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-pupas-shirting-unsung.freesocks.work:443
+      - "[ermaozi/get_subscribe]🇳🇱_NL_荷兰"
       - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-23.95.75.146:443
       - FR法国(mibei77.com 米贝节点分享)
       - _加拿大
       - _加拿大 2
-      - US-47.254.16.114-8403
-      - _尼日利亚
       - 香港|@ripaojiedian
       - HK-47.244.120.197-4991
-      - "[ermaozi/get_subscribe]🇳🇱_NL_荷兰"
+      - 未知2
       - 日本4|@ripaojiedian
       - "[ermaozi/get_subscribe]🇩🇪_DE_德国"
       - _US_美国
       - SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000
+      - SS-阿塞拜疆-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-45.154.204.7:990
       - SS-美国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-23.95.76.59:990
+      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-92.118.112.101:9483
       - SS-英国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-79.127.233.170:990
+      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-107.175.87.207:10011
+      - US美国(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 4
       - US美国(mibei77.com 米贝节点分享) 5
       - US美国(mibei77.com 米贝节点分享) 6
-      - US美国(mibei77.com 米贝节点分享) 7
       - ⚡ b2n.ir/v2ray-configs | 355
-      - ⚡ b2n.ir/v2ray-configs | 838
       - ⚡ b2n.ir/v2ray-configs | 844
       - ⚡ b2n.ir/v2ray-configs | 542
       - ⚡ b2n.ir/v2ray-configs | 370
       - ⚡ b2n.ir/v2ray-configs | 460
+      - _尼日利亚
+      - ⚡ b2n.ir/v2ray-configs | 838
       - ⚡ b2n.ir/v2ray-configs | 157
   - name: ⛔️ 广告拦截
     type: select
@@ -288,20 +264,16 @@ proxy-groups:
       - 🔰 节点选择
       - ♻️ 自动选择
       - 🎯 全球直连
-      - US美国(mibei77.com 米贝节点分享)
       - _香港
       - _新加坡
       - _法国
       - 香港4|@ripaojiedian
       - 香港5|@ripaojiedian
       - "[peasoft/NoMoreWalls]#128 HK57"
-      - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443
-      - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443
-      - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443
-      - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c14.waimaojd.com:443
-      - US美国(mibei77.com 米贝节点分享) 2
+      - US美国(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享) 2
+      - US美国(mibei77.com 米贝节点分享) 2
       - US-107.173.31.37-5090
       - DE-64.190.63.222-0854
       - HK-207.46.147.148-1535
@@ -313,42 +285,40 @@ proxy-groups:
       - DE-57.129.28.215-7257
       - ⚡ b2n.ir/v2ray-configs | 802
       - ⚡ b2n.ir/v2ray-configs | 857
-      - US美国(mibei77.com 米贝节点分享) 3
-      - _美国
       - "[Rawdroid/Free-servers]美国+华盛顿Cogent通信公司"
-      - US-199.188.105.56-7826
-      - US-192.74.242.243-7881
+      - 美国 加州
+      - _美国
       - _土耳其
       - _美国 2
       - "[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯"
-      - _IR_伊朗
-      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-71.19.148.143:443
-      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-pupas-shirting-unsung.freesocks.work:443
+      - "[ermaozi/get_subscribe]🇳🇱_NL_荷兰"
       - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-23.95.75.146:443
       - FR法国(mibei77.com 米贝节点分享)
       - _加拿大
       - _加拿大 2
-      - US-47.254.16.114-8403
-      - _尼日利亚
       - 香港|@ripaojiedian
       - HK-47.244.120.197-4991
-      - "[ermaozi/get_subscribe]🇳🇱_NL_荷兰"
+      - 未知2
       - 日本4|@ripaojiedian
       - "[ermaozi/get_subscribe]🇩🇪_DE_德国"
       - _US_美国
       - SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000
+      - SS-阿塞拜疆-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-45.154.204.7:990
       - SS-美国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-23.95.76.59:990
+      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-92.118.112.101:9483
       - SS-英国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-79.127.233.170:990
+      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-107.175.87.207:10011
+      - US美国(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 4
       - US美国(mibei77.com 米贝节点分享) 5
       - US美国(mibei77.com 米贝节点分享) 6
-      - US美国(mibei77.com 米贝节点分享) 7
       - ⚡ b2n.ir/v2ray-configs | 355
-      - ⚡ b2n.ir/v2ray-configs | 838
       - ⚡ b2n.ir/v2ray-configs | 844
       - ⚡ b2n.ir/v2ray-configs | 542
       - ⚡ b2n.ir/v2ray-configs | 370
       - ⚡ b2n.ir/v2ray-configs | 460
+      - _尼日利亚
+      - ⚡ b2n.ir/v2ray-configs | 838
       - ⚡ b2n.ir/v2ray-configs | 157
   - name: 🌏 国内媒体
     type: select
@@ -364,20 +334,16 @@ proxy-groups:
     proxies:
       - 🎯 全球直连
       - 🔰 节点选择
-      - US美国(mibei77.com 米贝节点分享)
       - _香港
       - _新加坡
       - _法国
       - 香港4|@ripaojiedian
       - 香港5|@ripaojiedian
       - "[peasoft/NoMoreWalls]#128 HK57"
-      - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443
-      - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443
-      - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443
-      - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c14.waimaojd.com:443
-      - US美国(mibei77.com 米贝节点分享) 2
+      - US美国(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享) 2
+      - US美国(mibei77.com 米贝节点分享) 2
       - US-107.173.31.37-5090
       - DE-64.190.63.222-0854
       - HK-207.46.147.148-1535
@@ -389,62 +355,56 @@ proxy-groups:
       - DE-57.129.28.215-7257
       - ⚡ b2n.ir/v2ray-configs | 802
       - ⚡ b2n.ir/v2ray-configs | 857
-      - US美国(mibei77.com 米贝节点分享) 3
-      - _美国
       - "[Rawdroid/Free-servers]美国+华盛顿Cogent通信公司"
-      - US-199.188.105.56-7826
-      - US-192.74.242.243-7881
+      - 美国 加州
+      - _美国
       - _土耳其
       - _美国 2
       - "[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯"
-      - _IR_伊朗
-      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-71.19.148.143:443
-      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-pupas-shirting-unsung.freesocks.work:443
+      - "[ermaozi/get_subscribe]🇳🇱_NL_荷兰"
       - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-23.95.75.146:443
       - FR法国(mibei77.com 米贝节点分享)
       - _加拿大
       - _加拿大 2
-      - US-47.254.16.114-8403
-      - _尼日利亚
       - 香港|@ripaojiedian
       - HK-47.244.120.197-4991
-      - "[ermaozi/get_subscribe]🇳🇱_NL_荷兰"
+      - 未知2
       - 日本4|@ripaojiedian
       - "[ermaozi/get_subscribe]🇩🇪_DE_德国"
       - _US_美国
       - SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000
+      - SS-阿塞拜疆-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-45.154.204.7:990
       - SS-美国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-23.95.76.59:990
+      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-92.118.112.101:9483
       - SS-英国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-79.127.233.170:990
+      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-107.175.87.207:10011
+      - US美国(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 4
       - US美国(mibei77.com 米贝节点分享) 5
       - US美国(mibei77.com 米贝节点分享) 6
-      - US美国(mibei77.com 米贝节点分享) 7
       - ⚡ b2n.ir/v2ray-configs | 355
-      - ⚡ b2n.ir/v2ray-configs | 838
       - ⚡ b2n.ir/v2ray-configs | 844
       - ⚡ b2n.ir/v2ray-configs | 542
       - ⚡ b2n.ir/v2ray-configs | 370
       - ⚡ b2n.ir/v2ray-configs | 460
+      - _尼日利亚
+      - ⚡ b2n.ir/v2ray-configs | 838
       - ⚡ b2n.ir/v2ray-configs | 157
   - name: 📲 电报信息
     type: select
     proxies:
       - 🔰 节点选择
       - 🎯 全球直连
-      - US美国(mibei77.com 米贝节点分享)
       - _香港
       - _新加坡
       - _法国
       - 香港4|@ripaojiedian
       - 香港5|@ripaojiedian
       - "[peasoft/NoMoreWalls]#128 HK57"
-      - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443
-      - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443
-      - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443
-      - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c14.waimaojd.com:443
-      - US美国(mibei77.com 米贝节点分享) 2
+      - US美国(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享) 2
+      - US美国(mibei77.com 米贝节点分享) 2
       - US-107.173.31.37-5090
       - DE-64.190.63.222-0854
       - HK-207.46.147.148-1535
@@ -456,42 +416,40 @@ proxy-groups:
       - DE-57.129.28.215-7257
       - ⚡ b2n.ir/v2ray-configs | 802
       - ⚡ b2n.ir/v2ray-configs | 857
-      - US美国(mibei77.com 米贝节点分享) 3
-      - _美国
       - "[Rawdroid/Free-servers]美国+华盛顿Cogent通信公司"
-      - US-199.188.105.56-7826
-      - US-192.74.242.243-7881
+      - 美国 加州
+      - _美国
       - _土耳其
       - _美国 2
       - "[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯"
-      - _IR_伊朗
-      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-71.19.148.143:443
-      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-pupas-shirting-unsung.freesocks.work:443
+      - "[ermaozi/get_subscribe]🇳🇱_NL_荷兰"
       - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-23.95.75.146:443
       - FR法国(mibei77.com 米贝节点分享)
       - _加拿大
       - _加拿大 2
-      - US-47.254.16.114-8403
-      - _尼日利亚
       - 香港|@ripaojiedian
       - HK-47.244.120.197-4991
-      - "[ermaozi/get_subscribe]🇳🇱_NL_荷兰"
+      - 未知2
       - 日本4|@ripaojiedian
       - "[ermaozi/get_subscribe]🇩🇪_DE_德国"
       - _US_美国
       - SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000
+      - SS-阿塞拜疆-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-45.154.204.7:990
       - SS-美国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-23.95.76.59:990
+      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-92.118.112.101:9483
       - SS-英国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-79.127.233.170:990
+      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-107.175.87.207:10011
+      - US美国(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 4
       - US美国(mibei77.com 米贝节点分享) 5
       - US美国(mibei77.com 米贝节点分享) 6
-      - US美国(mibei77.com 米贝节点分享) 7
       - ⚡ b2n.ir/v2ray-configs | 355
-      - ⚡ b2n.ir/v2ray-configs | 838
       - ⚡ b2n.ir/v2ray-configs | 844
       - ⚡ b2n.ir/v2ray-configs | 542
       - ⚡ b2n.ir/v2ray-configs | 370
       - ⚡ b2n.ir/v2ray-configs | 460
+      - _尼日利亚
+      - ⚡ b2n.ir/v2ray-configs | 838
       - ⚡ b2n.ir/v2ray-configs | 157
   - name: 🍎 苹果服务
     type: select
@@ -499,20 +457,16 @@ proxy-groups:
       - 🔰 节点选择
       - 🎯 全球直连
       - ♻️ 自动选择
-      - US美国(mibei77.com 米贝节点分享)
       - _香港
       - _新加坡
       - _法国
       - 香港4|@ripaojiedian
       - 香港5|@ripaojiedian
       - "[peasoft/NoMoreWalls]#128 HK57"
-      - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443
-      - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443
-      - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443
-      - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c14.waimaojd.com:443
-      - US美国(mibei77.com 米贝节点分享) 2
+      - US美国(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享) 2
+      - US美国(mibei77.com 米贝节点分享) 2
       - US-107.173.31.37-5090
       - DE-64.190.63.222-0854
       - HK-207.46.147.148-1535
@@ -524,42 +478,40 @@ proxy-groups:
       - DE-57.129.28.215-7257
       - ⚡ b2n.ir/v2ray-configs | 802
       - ⚡ b2n.ir/v2ray-configs | 857
-      - US美国(mibei77.com 米贝节点分享) 3
-      - _美国
       - "[Rawdroid/Free-servers]美国+华盛顿Cogent通信公司"
-      - US-199.188.105.56-7826
-      - US-192.74.242.243-7881
+      - 美国 加州
+      - _美国
       - _土耳其
       - _美国 2
       - "[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯"
-      - _IR_伊朗
-      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-71.19.148.143:443
-      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-pupas-shirting-unsung.freesocks.work:443
+      - "[ermaozi/get_subscribe]🇳🇱_NL_荷兰"
       - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-23.95.75.146:443
       - FR法国(mibei77.com 米贝节点分享)
       - _加拿大
       - _加拿大 2
-      - US-47.254.16.114-8403
-      - _尼日利亚
       - 香港|@ripaojiedian
       - HK-47.244.120.197-4991
-      - "[ermaozi/get_subscribe]🇳🇱_NL_荷兰"
+      - 未知2
       - 日本4|@ripaojiedian
       - "[ermaozi/get_subscribe]🇩🇪_DE_德国"
       - _US_美国
       - SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000
+      - SS-阿塞拜疆-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-45.154.204.7:990
       - SS-美国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-23.95.76.59:990
+      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-92.118.112.101:9483
       - SS-英国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-79.127.233.170:990
+      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-107.175.87.207:10011
+      - US美国(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 4
       - US美国(mibei77.com 米贝节点分享) 5
       - US美国(mibei77.com 米贝节点分享) 6
-      - US美国(mibei77.com 米贝节点分享) 7
       - ⚡ b2n.ir/v2ray-configs | 355
-      - ⚡ b2n.ir/v2ray-configs | 838
       - ⚡ b2n.ir/v2ray-configs | 844
       - ⚡ b2n.ir/v2ray-configs | 542
       - ⚡ b2n.ir/v2ray-configs | 370
       - ⚡ b2n.ir/v2ray-configs | 460
+      - _尼日利亚
+      - ⚡ b2n.ir/v2ray-configs | 838
       - ⚡ b2n.ir/v2ray-configs | 157
   - name: 🎯 全球直连
     type: select
@@ -576,20 +528,16 @@ proxy-groups:
       - 🔰 节点选择
       - 🎯 全球直连
       - ♻️ 自动选择
-      - US美国(mibei77.com 米贝节点分享)
       - _香港
       - _新加坡
       - _法国
       - 香港4|@ripaojiedian
       - 香港5|@ripaojiedian
       - "[peasoft/NoMoreWalls]#128 HK57"
-      - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c07.waimaojd.com:443
-      - VMESS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-cg1c01.waimaojd.com:443
-      - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c04.waimaojd.com:443
-      - VMESS-美国-ChatGPT-TikTok-YouTube-cg1c14.waimaojd.com:443
-      - US美国(mibei77.com 米贝节点分享) 2
+      - US美国(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享)
       - SG新加坡(mibei77.com 米贝节点分享) 2
+      - US美国(mibei77.com 米贝节点分享) 2
       - US-107.173.31.37-5090
       - DE-64.190.63.222-0854
       - HK-207.46.147.148-1535
@@ -601,42 +549,40 @@ proxy-groups:
       - DE-57.129.28.215-7257
       - ⚡ b2n.ir/v2ray-configs | 802
       - ⚡ b2n.ir/v2ray-configs | 857
-      - US美国(mibei77.com 米贝节点分享) 3
-      - _美国
       - "[Rawdroid/Free-servers]美国+华盛顿Cogent通信公司"
-      - US-199.188.105.56-7826
-      - US-192.74.242.243-7881
+      - 美国 加州
+      - _美国
       - _土耳其
       - _美国 2
       - "[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯"
-      - _IR_伊朗
-      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-71.19.148.143:443
-      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-pupas-shirting-unsung.freesocks.work:443
+      - "[ermaozi/get_subscribe]🇳🇱_NL_荷兰"
       - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-23.95.75.146:443
       - FR法国(mibei77.com 米贝节点分享)
       - _加拿大
       - _加拿大 2
-      - US-47.254.16.114-8403
-      - _尼日利亚
       - 香港|@ripaojiedian
       - HK-47.244.120.197-4991
-      - "[ermaozi/get_subscribe]🇳🇱_NL_荷兰"
+      - 未知2
       - 日本4|@ripaojiedian
       - "[ermaozi/get_subscribe]🇩🇪_DE_德国"
       - _US_美国
       - SS-加拿大>英国-NF解锁英国地区非自制剧-ChatGPT-144.217.164.29:12000
+      - SS-阿塞拜疆-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-45.154.204.7:990
       - SS-美国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-23.95.76.59:990
+      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-92.118.112.101:9483
       - SS-英国-NF解锁加拿大地区非自制剧-ChatGPT-TikTok-YouTube-79.127.233.170:990
+      - SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-107.175.87.207:10011
+      - US美国(mibei77.com 米贝节点分享) 3
       - US美国(mibei77.com 米贝节点分享) 4
       - US美国(mibei77.com 米贝节点分享) 5
       - US美国(mibei77.com 米贝节点分享) 6
-      - US美国(mibei77.com 米贝节点分享) 7
       - ⚡ b2n.ir/v2ray-configs | 355
-      - ⚡ b2n.ir/v2ray-configs | 838
       - ⚡ b2n.ir/v2ray-configs | 844
       - ⚡ b2n.ir/v2ray-configs | 542
       - ⚡ b2n.ir/v2ray-configs | 370
       - ⚡ b2n.ir/v2ray-configs | 460
+      - _尼日利亚
+      - ⚡ b2n.ir/v2ray-configs | 838
       - ⚡ b2n.ir/v2ray-configs | 157
 rules:
   - DOMAIN-SUFFIX,local,🎯 全球直连
