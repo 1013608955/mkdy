@@ -111,7 +111,7 @@ def parse_vmess(uri):
     except Exception:
         return None
     node = {
-        "name": (j.get("ps") or "vmess").strip(),
+        "name": (j.get("ps") or f"vmess_{j.get('add')}:{j.get('port') or 0}").strip(),
         "type": "vmess",
         "server": j.get("add"),
         "port": int(j.get("port") or 0),
@@ -141,7 +141,7 @@ def parse_vless(uri):
     security = qget("security") or "none"
     net = qget("type") or "tcp"
     node = {
-        "name": (frag or "vless").strip(),
+        "name": (frag or f"vless_{server}:{port}").strip(),
         "type": "vless",
         "server": server,
         "port": port,
@@ -180,7 +180,7 @@ def parse_trojan(uri):
     hp = hostport.rsplit(":", 1)
     server, port = hp[0], int(hp[1]) if len(hp) > 1 else 443
     node = {
-        "name": (frag or "trojan").strip(),
+        "name": (frag or f"trojan_{server}:{port}").strip(),
         "type": "trojan",
         "server": server,
         "port": port,
@@ -203,8 +203,10 @@ def parse_trojan(uri):
 
 def parse_ss(uri):
     rest = uri[len("ss://"):]
+    frag = ""
     if "#" in rest:
-        rest = rest.split("#", 1)[0]
+        rest, frag = rest.split("#", 1)
+        frag = unquote(frag).strip()
     plugin = ""
     if "?plugin=" in rest:
         rest, plugin = rest.split("?plugin=", 1)
@@ -229,7 +231,7 @@ def parse_ss(uri):
         hp = hostport.rsplit(":", 1)
         server, port = hp[0], int(hp[1]) if len(hp) > 1 else 0
     node = {
-        "name": "ss",
+        "name": frag or f"ss_{server}:{port}",
         "type": "ss",
         "server": server,
         "port": port,
@@ -258,7 +260,7 @@ def parse_ssr(uri):
     except Exception:
         return None
     node = {
-        "name": "ssr",
+        "name": f"ssr_{server}:{port}",
         "type": "ssr",
         "server": server,
         "port": port,
@@ -276,7 +278,7 @@ def parse_hy2(uri):
     hp = hostport.rsplit(":", 1)
     server, port = hp[0], int(hp[1]) if len(hp) > 1 else 0
     node = {
-        "name": (frag or "hysteria2").strip(),
+        "name": (frag or f"hysteria2_{server}:{port}").strip(),
         "type": "hysteria2",
         "server": server,
         "port": port,
@@ -296,7 +298,7 @@ def parse_tuic(uri):
     hp = hostport.rsplit(":", 1)
     server, port = hp[0], int(hp[1]) if len(hp) > 1 else 0
     node = {
-        "name": (frag or "tuic").strip(),
+        "name": (frag or f"tuic_{server}:{port}").strip(),
         "type": "tuic",
         "server": server,
         "port": port,
@@ -360,6 +362,25 @@ def clean_node(p):
     return out
 
 
+def make_names_unique(nodes):
+    """兜底确保 name 唯一：同名重复追加 _2/_3/...，并把空名回填为可读默认。
+
+    触发场景：某些订阅源 URI 不带 #fragment，导致多个不同节点被解析为同一默认名
+    （如 "ss"），下游 Clash/Clash Verge 校验会因 duplicate name 拒绝加载。
+    """
+    counts = {}
+    for n in nodes:
+        name = (n.get("name") or "").strip()
+        if not name:
+            name = f"{n.get('type', 'node')}_{n.get('server', '')}:{n.get('port', 0)}"
+            n["name"] = name
+        if name in counts:
+            counts[name] += 1
+            n["name"] = f"{name}_{counts[name]}"
+        else:
+            counts[name] = 1
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="s-clash.yaml")
@@ -399,10 +420,13 @@ def main():
         seen.add(k)
         merged.append(clean_node(n))
 
-    # 4) 稳定排序（便于 diff）
+    # 4) name 唯一化（兜底：处理默认名冲突，保证 Clash/Clash Verge 校验通过）
+    make_names_unique(merged)
+
+    # 5) 稳定排序（便于 diff）
     merged.sort(key=lambda n: (n.get("type", ""), n.get("server", ""), int(n.get("port") or 0)))
 
-    # 5) 写出（仅 proxies 列表，兼容 v2rayN 与 verify_cn）
+    # 6) 写出（仅 proxies 列表，兼容 v2rayN 与 verify_cn）
     # 注意：header 只放注释，proxies: 由下方 dump 产出，避免重复 key。
     header = (
         "# Auto-merged subscription (mkdy)\n"
