@@ -1,101 +1,39 @@
-
+# Auto-merged subscription (mkdy)
+# sources: s.txt, s1.txt, s2.txt + s2-clash-1.yaml, s2-clash-2.yaml
+# raw=213 unique=211
 proxies:
-  - name: GB英国(mibei77.com 米贝节点分享)_2
+  - name: ⚡ b2n.ir/v2ray-configs | 633
     type: ss
-    server: 185.223.82.82
-    port: 10021
-    cipher: chacha20-ietf-poly1305
-    password: m02X9p9Cqn3Ic4l6PyJMF8
-  - name: GB英国(mibei77.com 米贝节点分享)_36
-    type: ss
-    server: 45e755.shlswe.xyz
-    port: 28118
-    cipher: aes-128-gcm
-    password: f97cf7d99d
-  - name: GB英国(mibei77.com 米贝节点分享)_15
-    type: ss
-    server: 45e755.shlswe.xyz
-    port: 28308
-    cipher: aes-128-gcm
-    password: f97cf7d99d
-  - name: ss
-    type: ss
-    server: 5.188.181.201
-    port: 9054
-    cipher: aes-256-cfb
-    password: VcFuyXvND2yQWSFY
+    server: 167.88.63.59
+    port: 443
+    cipher: aes-256-gcm
+    password: pKEW8JPByTVTLtM
   - name: tg频道:@freenodedaily
     server: 63.180.254.10
     port: 443
     type: ss
     cipher: aes-256-cfb
     password: amazonskr05
-  - name: ss_2
+  - name: ⚡ b2n.ir/v2ray-configs | 310
     type: ss
-    server: 82.38.31.176
-    port: 8080
-    cipher: chacha20-ietf-poly1305
-    password: k1dBOmOB4oqi7Ump37a1bQ
-  - name: ss_3
-    type: ss
-    server: 82.38.31.34
+    server: 82.38.31.174
     port: 8080
     cipher: chacha20-ietf-poly1305
     password: oZIoA69Q8yhcQV8ka3Pa3A
-  - name: HK香港(mibei77.com 米贝节点分享)_1
+  - name: ⚡ b2n.ir/v2ray-configs | 987
     type: ss
-    server: chengbai02.ascwt179.com
-    port: 13223
-    cipher: aes-128-gcm
-    password: JVrsLLN1tkN8oXZO
-  - name: US美国(mibei77.com 米贝节点分享)_16
-    type: ss
-    server: switcher-nick-croquet.freesocks.work
-    port: 443
+    server: 82.38.31.187
+    port: 8080
     cipher: chacha20-ietf-poly1305
-    password: RFK38Cg7APneSB5cWDcpbm
-  - name: US美国(mibei77.com 米贝节点分享)_18
-    type: ss
-    server: switcher-nick-croquet.freesocks.work
-    port: 443
-    cipher: chacha20-ietf-poly1305
-    password: 9tqhMdIrTkgQ46PvhyAtMH
-  - name: US美国(mibei77.com 米贝节点分享)_31
-    type: ss
-    server: switcher-nick-croquet.freesocks.work
-    port: 443
-    cipher: chacha20-ietf-poly1305
-    password: wwzVn2ZnHfqYa6l8EWh3eY
-  - name: US美国(mibei77.com 米贝节点分享)_10
-    type: ss
-    server: tinkered-pennies-puppies.freesocks.work
-    port: 443
-    cipher: chacha20-ietf-poly1305
-    password: hbGrpfvNrJsUmKmPbR3iY2
-  - name: US美国(mibei77.com 米贝节点分享)
+    password: k1dBOmOB4oqi7Ump37a1bQ
+  - name: 🇫🇷 FR法国(mibei77.com 米贝节点分享)
     type: trojan
-    server: 109.234.211.66
-    port: 2087
-    password: trojan
+    server: 104.16.174.121
+    port: 443
+    password: humanity
     tls: true
-    network: ws
-    sni: store.timimi.dpdns.org
-    ws-opts:
-      path: /
-      headers:
-        Host: store.timimi.dpdns.org
-  - name: US美国(mibei77.com 米贝节点分享)_2
-    type: trojan
-    server: 109.234.211.66
-    port: 8443
-    password: trojan
-    tls: true
-    network: ws
-    sni: store.timimi.dpdns.org
-    ws-opts:
-      path: /
-      headers:
-        Host: store.timimi.dpdns.org
+    network: tcp
+    sni: www.ignitelimit.com
   - name: '[peasoft/NoMoreWalls]🇯🇵JP_10|4.8MB/s'
     type: trojan
     server: 13.231.180.231
@@ -112,133 +50,68 @@ proxies:
     tls: true
     network: tcp
     sni: classic-pug.rooster465.autos
-  - name: ⚡ b2n.ir/v2ray-configs | 170
-    type: trojan
-    server: 148.113.141.99
-    port: 443
-    password: HdsUZmsHQW
-    tls: true
-    network: tcp
-  - name: US美国(mibei77.com 米贝节点分享)_3
-    type: trojan
-    server: 152.53.200.167
-    port: 8444
-    password: trojan
-    tls: true
-    network: ws
-    sni: jflsjlaf.pages.dev
-    ws-opts:
-      path: /
-      headers:
-        Host: jflsjlaf.pages.dev
-  - name: US美国(mibei77.com 米贝节点分享)_4
-    type: trojan
-    server: 152.53.200.98
-    port: 8444
-    password: trojan
-    tls: true
-    network: ws
-    sni: jflsjlaf.pages.dev
-    ws-opts:
-      path: /
-      headers:
-        Host: jflsjlaf.pages.dev
-  - name: GB英国(mibei77.com 米贝节点分享)
-    type: trojan
-    server: 152.53.45.251
-    port: 8888
-    password: trojan
-    tls: true
-    network: ws
-    sni: jflsjlaf.pages.dev
-    ws-opts:
-      path: /
-      headers:
-        Host: jflsjlaf.pages.dev
-  - name: HK香港(mibei77.com 米贝节点分享)
-    type: trojan
-    server: 152.53.60.198
-    port: 8444
-    password: trojan
-    tls: true
-    network: ws
-    sni: jflsjlaf.pages.dev
-    ws-opts:
-      path: /
-      headers:
-        Host: jflsjlaf.pages.dev
-  - name: 🇯🇵 日本3
+  - name: 🇯🇵 日本2
     server: 16.162.100.124
     port: 3415
     type: trojan
     password: 6ec301428255a78a1d826988d86cc87e
     sni: www.nintendogames.net
     skip-cert-verify: true
-  - name: 🇺🇸 美国
-    server: 16.162.109.29
-    port: 10418
+  - name: 🇯🇵 日本3
+    server: 16.162.100.29
+    port: 7630
     type: trojan
     password: 6ec301428255a78a1d826988d86cc87e
     sni: www.nintendogames.net
     skip-cert-verify: true
   - name: 🇸🇬 新加坡
-    server: 16.162.129.182
-    port: 32434
-    type: trojan
-    password: 6ec301428255a78a1d826988d86cc87e
-    sni: www.nintendogames.net
-    skip-cert-verify: true
-  - name: 🇺🇸 美国3
-    server: 16.162.192.11
-    port: 53001
-    type: trojan
-    password: BxceQaOe
-    sni: t.me%2Fripaojiedian
-    skip-cert-verify: true
-  - name: 🇸🇬 新加坡2
-    server: 16.162.192.182
+    server: 16.162.109.29
     port: 45744
     type: trojan
     password: 6ec301428255a78a1d826988d86cc87e
     sni: www.nintendogames.net
     skip-cert-verify: true
-  - name: US美国(mibei77.com 米贝节点分享)_5
+  - name: 🇸🇬 新加坡2
+    server: 16.162.109.29
+    port: 51396
     type: trojan
-    server: 167.68.4.199
-    port: 2053
-    password: Aimer
-    tls: true
-    network: ws
-    sni: epge.muarua.filegear-sg.me
-    ws-opts:
-      path: /?ed=2560&proxyip=ts.hpc.tw
-      headers:
-        Host: epge.muarua.filegear-sg.me
-  - name: ⚡ b2n.ir/v2ray-configs | 766
+    password: 6ec301428255a78a1d826988d86cc87e
+    sni: www.nintendogames.net
+    skip-cert-verify: true
+  - name: 🇯🇵 日本
+    server: 16.162.93.233
+    port: 16691
     type: trojan
-    server: 172.64.152.23
-    port: 443
-    password: humanity
-    tls: true
-    network: ws
-    sni: www.multiplydose.com
-    ws-opts:
-      path: /assignment
-      headers:
-        Host: www.multiplydose.com
-  - name: 🇭🇰 香港4
-    server: 18.163.113.86
-    port: 11035
+    password: BxceQaOe
+    sni: t.me%252Fripaojiedian
+    skip-cert-verify: true
+  - name: 🇺🇸 美国3
+    server: 18.162.154.22
+    port: 1431
     type: trojan
     password: BxceQaOe
     sni: t.me%2Fripaojiedian
     skip-cert-verify: true
-  - name: 🇭🇰 香港5
-    server: 18.163.113.86
-    port: 25982
+  - name: 🇸🇬 新加坡3
+    server: 18.162.154.22
+    port: 44900
     type: trojan
     password: BxceQaOe
-    sni: t.me%2Fripaojiedian
+    sni: t.me%252Fripaojiedian
+    skip-cert-verify: true
+  - name: 🇭🇰 香港3
+    server: 18.163.126.92
+    port: 17111
+    type: trojan
+    password: 6ec301428255a78a1d826988d86cc87e
+    sni: www.nintendogames.net
+    skip-cert-verify: true
+  - name: 🇺🇸 美国
+    server: 18.163.126.92
+    port: 39024
+    type: trojan
+    password: 6ec301428255a78a1d826988d86cc87e
+    sni: www.nintendogames.net
     skip-cert-verify: true
   - name: '[peasoft/NoMoreWalls]🇯🇵JP_12|2.8MB/s'
     type: trojan
@@ -256,15 +129,19 @@ proxies:
     tls: true
     network: tcp
     sni: bright-buffalo.rooster465.autos
-  - name: 🇮🇷 伊朗 V2CROSS.COM
+  - name: 伊朗+V2CROSS.COM
     type: trojan
     server: 2.144.21.112
     port: 40443
     password: humanity
     tls: true
-    network: tcp
+    network: ws
     sni: www.ignitelimit.com
-  - name: 🇮🇷 伊朗(mibei77.com 米贝节点分享)
+    ws-opts:
+      path: /assignment
+      headers:
+        Host: www.ignitelimit.com
+  - name: 🇮🇷_伊朗丨yoyapai.com\r
     type: trojan
     server: 2.144.21.150
     port: 2000
@@ -272,19 +149,8 @@ proxies:
     tls: true
     network: tcp
     sni: www.ignitelimit.com
-  - name: KR韩国(mibei77.com 米贝节点分享)
-    type: trojan
-    server: 221.146.116.77
-    port: 10003
-    password: trojan
-    tls: true
-    network: ws
-    sni: jflsjlaf.pages.dev
-    ws-opts:
-      path: /
-      headers:
-        Host: jflsjlaf.pages.dev
-  - name: 🇭🇰 香港 Amazon数据中心
+    skip-cert-verify: true
+  - name: 🇭🇰_HK_中国香港
     type: trojan
     server: 2c.fast9988.com
     port: 50887
@@ -292,6 +158,7 @@ proxies:
     tls: true
     network: tcp
     sni: www.nintendogames.net
+    skip-cert-verify: true
   - name: '[peasoft/NoMoreWalls]🇯🇵JP_14|5.7MB/s'
     type: trojan
     server: 3.112.250.103
@@ -308,6 +175,22 @@ proxies:
     tls: true
     network: tcp
     sni: balanced-heron.rooster465.autos
+  - name: ⚡ b2n.ir/v2ray-configs | 774
+    type: trojan
+    server: 3.35.140.99
+    port: 443
+    password: ND91608427
+    tls: true
+    network: tcp
+    sni: moved-meerkat.rooster465.autos
+  - name: ⚡ b2n.ir/v2ray-configs | 848
+    type: trojan
+    server: 34.251.228.118
+    port: 443
+    password: UO36402987
+    tls: true
+    network: tcp
+    sni: definite-ladybird.rooster465.autos
   - name: '[peasoft/NoMoreWalls]🇩🇪DE_2|4.2MB/s'
     type: trojan
     server: 35.159.21.7
@@ -316,27 +199,6 @@ proxies:
     tls: true
     network: tcp
     sni: summary-lemming.rooster465.autos
-  - name: 🇭🇰 香港3
-    server: 43.198.107.164
-    port: 7674
-    type: trojan
-    password: 6ec301428255a78a1d826988d86cc87e
-    sni: www.nintendogames.net
-    skip-cert-verify: true
-  - name: 🇯🇵 日本
-    server: 43.199.31.69
-    port: 4099
-    type: trojan
-    password: BxceQaOe
-    sni: t.me%252Fripaojiedian
-    skip-cert-verify: true
-  - name: 🇸🇬 新加坡3
-    server: 43.199.31.69
-    port: 45744
-    type: trojan
-    password: BxceQaOe
-    sni: t.me%252Fripaojiedian
-    skip-cert-verify: true
   - name: '[peasoft/NoMoreWalls]🇰🇷KR_2|5.5MB/s'
     type: trojan
     server: 43.202.61.210
@@ -393,48 +255,19 @@ proxies:
     tls: true
     network: tcp
     sni: engaged-lionfish.rooster465.autos
-  - name: '[peasoft/NoMoreWalls]香港5|@ripaojiedian'
+  - name: 🇭🇰 香港4
+    server: 95.40.111.110
+    port: 27161
     type: trojan
-    server: 58.152.25.253
-    port: 443
     password: BxceQaOe
-    tls: true
-    network: tcp
-    sni: t.me/ripaojiedian
+    sni: t.me%2Fripaojiedian
     skip-cert-verify: true
-  - name: US美国(mibei77.com 米贝节点分享)_6
+  - name: 🇭🇰 香港5
+    server: 95.40.95.57
+    port: 27161
     type: trojan
-    server: 59.20.121.139
-    port: 29999
-    password: trojan
-    tls: true
-    network: ws
-    sni: jflsjlaf.pages.dev
-    ws-opts:
-      path: /
-      headers:
-        Host: jflsjlaf.pages.dev
-  - name: 🇬🇧_英国
-    type: trojan
-    server: 8443.golden-cards.me
-    port: 443
-    password: q2GRUM1-odJBWq_KV6xv2fuNvu8ed-
-    tls: true
-    network: tcp
-    skip-cert-verify: true
-  - name: 🇯🇵 日本2
-    server: 95.40.14.234
-    port: 18617
-    type: trojan
-    password: 6ec301428255a78a1d826988d86cc87e
-    sni: www.nintendogames.net
-    skip-cert-verify: true
-  - name: 🇺🇸 美国2
-    server: 95.40.14.234
-    port: 39024
-    type: trojan
-    password: 6ec301428255a78a1d826988d86cc87e
-    sni: www.nintendogames.net
+    password: BxceQaOe
+    sni: t.me%2Fripaojiedian
     skip-cert-verify: true
   - name: 🇯🇵_日本_75
     type: trojan
@@ -653,13 +486,6 @@ proxies:
     tls: true
     network: tcp
     sni: engaged-lionfish.rooster465.autos
-  - name: ⚡ b2n.ir/v2ray-configs | 850
-    type: trojan
-    server: engaging-toucan.rooster465.autos
-    port: 443
-    password: IL37892054
-    tls: true
-    network: tcp
   - name: 🇯🇵_日本_52
     type: trojan
     server: equal-labrador.rooster465.autos
@@ -667,14 +493,6 @@ proxies:
     password: FH72359861
     tls: true
     network: tcp
-  - name: ⚡ b2n.ir/v2ray-configs | 289
-    type: trojan
-    server: exciting-grizzly.rooster465.autos
-    port: 443
-    password: AE62539071
-    tls: true
-    network: tcp
-    sni: exciting-grizzly.rooster465.autos
   - name: 🇯🇵_日本_32
     type: trojan
     server: flexible-pony.rooster465.autos
@@ -733,14 +551,6 @@ proxies:
     password: FH72359861
     tls: true
     network: tcp
-  - name: 🇦🇺 AU澳大利亚(mibei77.com 米贝节点分享)
-    type: trojan
-    server: humorous-llama.rooster465.autos
-    port: 443
-    password: AE62539071
-    tls: true
-    network: tcp
-    sni: humorous-llama.rooster465.autos
   - name: 🇸🇬_新加坡_8
     type: trojan
     server: immune-grackle.rooster465.autos
@@ -748,6 +558,14 @@ proxies:
     password: FH72359861
     tls: true
     network: tcp
+  - name: 🇯🇵 JP日本(mibei77.com 米贝节点分享)
+    type: trojan
+    server: internal-mongoose.rooster465.autos
+    port: 443
+    password: FH72359861
+    tls: true
+    network: tcp
+    sni: internal-mongoose.rooster465.autos
   - name: 🇯🇵_日本_50
     type: trojan
     server: internal-peacock.rooster465.autos
@@ -763,6 +581,13 @@ proxies:
     tls: true
     network: tcp
     sni: intimate-adder.rooster465.autos
+  - name: ⚡ b2n.ir/v2ray-configs | 896
+    type: trojan
+    server: kind-grizzly.rooster465.autos
+    port: 443
+    password: FH72359861
+    tls: true
+    network: tcp
   - name: 🇯🇵_日本_57
     type: trojan
     server: lasting-jaguar.rooster465.autos
@@ -908,24 +733,10 @@ proxies:
     password: FH72359861
     tls: true
     network: tcp
-  - name: ⚡ b2n.ir/v2ray-configs | 906
+  - name: ⚡ b2n.ir/v2ray-configs | 847
     type: trojan
-    server: official.tokyometropolis.kharkov.ua
-    port: 2053
-    password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
-    tls: true
-    network: tcp
-  - name: ⚡ b2n.ir/v2ray-configs | 700
-    type: trojan
-    server: official.tokyometropolis.kyiv.ua
-    port: 2053
-    password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
-    tls: true
-    network: tcp
-  - name: ⚡ b2n.ir/v2ray-configs | 470
-    type: trojan
-    server: official.tokyometropolis.odesa.ua
-    port: 2053
+    server: official.taipeicitygovernment.biz.ua
+    port: 8443
     password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
     tls: true
     network: tcp
@@ -1068,14 +879,6 @@ proxies:
     password: FH72359861
     tls: true
     network: tcp
-  - name: 🇭🇰 HK香港(mibei77.com 米贝节点分享)
-    type: trojan
-    server: strong-haddock.rooster465.autos
-    port: 443
-    password: AE62539071
-    tls: true
-    network: tcp
-    sni: strong-haddock.rooster465.autos
   - name: 🇮🇪_爱尔兰_102
     type: trojan
     server: summary-firefly.rooster465.autos
@@ -1136,26 +939,6 @@ proxies:
     password: FH72359861
     tls: true
     network: tcp
-  - name: US美国(mibei77.com 米贝节点分享)_7
-    type: trojan
-    server: vip2.kaixincloud.top
-    port: 8443
-    password: T9BpZIVMNv
-    tls: true
-    network: ws
-    sni: sweden.vmaxpanel.com
-    ws-opts:
-      path: /amd
-      headers:
-        Host: sweden.vmaxpanel.com
-  - name: 🇦🇺 AU澳大利亚(mibei77.com 米贝节点分享)_2
-    type: trojan
-    server: wanted-marmoset.rooster465.autos
-    port: 443
-    password: AE62539071
-    tls: true
-    network: tcp
-    sni: wanted-marmoset.rooster465.autos
   - name: 🇺🇸_美国_116
     type: trojan
     server: warm-aardvark.rooster465.autos
@@ -1214,234 +997,6 @@ proxies:
       path: /v1
       headers:
         Host: 104.171.132.128
-  - name: _未知
-    type: vless
-    server: 104.18.32.47
-    port: 2052
-    uuid: 5e62ddcf-78c9-4b15-803a-436c8c839ddc
-    tls: false
-    network: ws
-    ws-opts:
-      path: /
-      headers:
-        Host: oBEDiENt-noiseqJf5ja18yF.wIndLer.CO.UK.
-  - name: US美国(mibei77.com 米贝节点分享)_8
-    type: vless
-    server: 104.21.31.4
-    port: 8880
-    uuid: 0a5ab719-2407-4398-b507-8437ef365023
-    tls: false
-    network: ws
-    ws-opts:
-      path: /FCHANNEL---ELiV2-RAY---ELiV2-RAY---ELiV2-RAY---ELiV2-RAY---ELiV2-RAY---ELiV2-RAY---ELiV2-RAY---ELiV2-RAY---ELiV2-RAY---ELiV2-RAY---ELiV2-RAY---ELiV2-RAY---ELiV2-RAY---ELiV2-RAY---ELiV2-RAY---ELiV2-RAY---ELiV2-RAY---ELiV2-RAY
-      headers:
-        Host: underthegun.cfd.
-  - name: RU俄罗斯(mibei77.com 米贝节点分享)
-    type: vless
-    server: 109.196.103.78
-    port: 49169
-    uuid: 801ddf0d-5b03-4a1d-a7b0-211458015187
-    tls: false
-    network: ws
-    ws-opts:
-      path: /
-      headers:
-        Host: 109.196.103.78
-  - name: 🇰🇷_韩国
-    type: vless
-    server: 112.167.47.83
-    port: 23297
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_2
-    type: vless
-    server: 116.93.199.28
-    port: 21510
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_3
-    type: vless
-    server: 118.42.204.220
-    port: 11176
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_4
-    type: vless
-    server: 118.42.204.220
-    port: 12735
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_5
-    type: vless
-    server: 119.195.168.105
-    port: 12417
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_6
-    type: vless
-    server: 121.128.104.37
-    port: 12202
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_7
-    type: vless
-    server: 121.128.104.37
-    port: 13202
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_8
-    type: vless
-    server: 121.139.183.69
-    port: 30020
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_9
-    type: vless
-    server: 121.140.226.21
-    port: 10428
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_10
-    type: vless
-    server: 121.140.226.21
-    port: 12076
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_11
-    type: vless
-    server: 121.140.226.21
-    port: 13382
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_12
-    type: vless
-    server: 121.140.226.21
-    port: 14648
-    uuid: ba55ef37-c33c-4a8f-aafa-2abc85312863
-    tls: true
-    network: ws
-    sni: apk.arises.dynv6.net
-    servername: apk.arises.dynv6.net
-    ws-opts:
-      path: /
-      headers:
-        Host: apk.arises.dynv6.net
-  - name: 🇰🇷_韩国_13
-    type: vless
-    server: 121.153.38.160
-    port: 30030
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_14
-    type: vless
-    server: 121.157.190.209
-    port: 11717
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_15
-    type: vless
-    server: 121.168.144.41
-    port: 12511
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
   - name: 🇭🇰_香港_155
     type: vless
     server: 124.156.182.132
@@ -1452,19 +1007,6 @@ proxies:
     network: tcp
     sni: www.apple.com
     servername: www.apple.com
-  - name: 🇯🇵_日本
-    type: vless
-    server: 125.192.35.51
-    port: 14772
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
   - name: 🇸🇪_瑞典_188
     type: vless
     server: 129.151.198.3
@@ -1493,149 +1035,17 @@ proxies:
       short-id: 360e
       spider-x: ''
     client-fingerprint: firefox
-  - name: 🇨🇳_中国
+  - name: ⚡ b2n.ir/v2ray-configs | 969
     type: vless
-    server: 139.196.41.153
-    port: 443
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
+    server: 146.75.119.82
+    port: 80
+    uuid: 6999d0cf-87d9-4cda-b1c2-4af7be1cb881
+    tls: false
     network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
     ws-opts:
-      path: /gs5=6666:6666@47.239.178.125:6666
+      path: ws/?ed=2048/@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr@vpnserverrr/?2048
       headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_16
-    type: vless
-    server: 14.37.103.127
-    port: 10084
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_17
-    type: vless
-    server: 14.37.103.127
-    port: 11470
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_18
-    type: vless
-    server: 14.37.103.127
-    port: 12448
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_19
-    type: vless
-    server: 14.37.103.127
-    port: 21476
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_20
-    type: vless
-    server: 14.40.15.171
-    port: 19979
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_21
-    type: vless
-    server: 14.40.15.171
-    port: 21699
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_22
-    type: vless
-    server: 14.40.15.171
-    port: 38142
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇺🇸_美国
-    type: vless
-    server: 141.11.90.246
-    port: 443
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇮🇷_伊朗
-    type: vless
-    server: 151.242.74.249
-    port: 443
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: US美国(mibei77.com 米贝节点分享)_9
-    type: vless
-    server: 157.230.27.167
-    port: 443
-    uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
-    tls: true
-    network: ws
-    sni: sni.111000.indevs.in
-    servername: sni.111000.indevs.in
-    ws-opts:
-      path: /?ed=2560&Telegram🇨🇳@WangCai2
-      headers:
-        Host: sni.111000.indevs.in
+        Host: rb24.ir
   - name: 🇷🇺_俄罗斯_181
     type: vless
     server: 158.160.57.2
@@ -1649,19 +1059,17 @@ proxies:
       path: /websocket?ed=2560
       headers:
         Host: cloudflare.vhub.pro
-  - name: US美国(mibei77.com 米贝节点分享)_10_2
+  - name: ⚡ b2n.ir/v2ray-configs | 468
     type: vless
-    server: 166.117.33.104
-    port: 443
-    uuid: 948fac3c-42bf-41a6-a5f9-704d36ff0d8d
-    tls: true
+    server: 168.222.140.204
+    port: 4100
+    uuid: 155e8dd4-a559-407a-9ea8-13a5e829f066
+    tls: false
     network: ws
-    sni: snippet.danfeng.theworkpc.com
-    servername: snippet.danfeng.theworkpc.com
     ws-opts:
-      path: /danfeng?ed=2560
+      path: /v1
       headers:
-        Host: snippet.danfeng.theworkpc.com
+        Host: 168.222.140.204
   - name: 🇷🇺_俄罗斯_212
     type: vless
     server: 168.222.140.236
@@ -1673,97 +1081,19 @@ proxies:
       path: /v1
       headers:
         Host: 168.222.140.236
-  - name: US美国(mibei77.com 米贝节点分享)_11
+  - name: 🇺🇸_US_美国->🇹🇭_TH_泰国
     type: vless
-    server: 173.249.203.187
-    port: 10554
-    uuid: 948fac3c-42bf-41a6-a5f9-704d36ff0d8d
+    server: 18.238.109.26
+    port: 443
+    uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
     tls: true
     network: ws
-    sni: snippet.danfeng.theworkpc.com
-    servername: snippet.danfeng.theworkpc.com
+    sni: d1yxsk0zprgivr.cloudfront.net
+    servername: d1yxsk0zprgivr.cloudfront.net
     ws-opts:
-      path: /danfeng?ed=2560
+      path: /
       headers:
-        Host: snippet.danfeng.theworkpc.com
-  - name: 🇰🇷_韩国_23
-    type: vless
-    server: 175.212.45.195
-    port: 12053
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_24
-    type: vless
-    server: 183.104.92.31
-    port: 11293
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_25
-    type: vless
-    server: 183.104.92.31
-    port: 13707
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_26
-    type: vless
-    server: 183.104.97.23
-    port: 30000
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_27
-    type: vless
-    server: 183.105.38.87
-    port: 37124
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_28
-    type: vless
-    server: 183.109.80.50
-    port: 12000
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
+        Host: d1yxsk0zprgivr.cloudfront.net
   - name: 🇳🇱_荷兰_201
     type: vless
     server: 185.109.48.13
@@ -1777,19 +1107,17 @@ proxies:
       path: /
       headers:
         Host: forfreeuse.rtqa.ru
-  - name: DE德国(mibei77.com 米贝节点分享)
+  - name: ⚡ b2n.ir/v2ray-configs | 161
     type: vless
-    server: 185.16.110.0
-    port: 443
-    uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
-    tls: true
+    server: 185.143.233.238
+    port: 2086
+    uuid: 1ee1f28d-4975-4d7c-95c7-76172c20eed5
+    tls: false
     network: ws
-    sni: sni.111000.dynv6.net
-    servername: sni.111000.dynv6.net
     ws-opts:
-      path: /?ed=2560&Telegram🇨🇳@WangCai2
+      path: /
       headers:
-        Host: sni.111000.dynv6.net
+        Host: parsi.parsi.sbs
   - name: 🇱🇹_立陶宛_194
     type: vless
     server: 185.237.185.182
@@ -1829,30 +1157,6 @@ proxies:
       short-id: 5629431325884ff0
       spider-x: ''
     client-fingerprint: firefox
-  - name: US美国(mibei77.com 米贝节点分享)_12
-    type: vless
-    server: 188.114.98.112
-    port: 80
-    uuid: 0991a0c4-0ee5-4213-af89-7ad589f853f3
-    tls: false
-    network: ws
-    ws-opts:
-      path: /ELiV2-RAY----ELiV2-RAY----ELiV2-RAY----ELiV2-RAY----ELiV2-RAY----ELiV2-RAY?ed=2560
-      headers:
-        Host: elenaaaaaaaaaa.cloudns.pro.
-  - name: US美国(mibei77.com 米贝节点分享)_13
-    type: vless
-    server: 188.241.241.123
-    port: 2053
-    uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
-    tls: true
-    network: ws
-    sni: sni.111000.dynv6.net
-    servername: sni.111000.dynv6.net
-    ws-opts:
-      path: /?ed=2560&Telegram🇨🇳@WangCai2
-      headers:
-        Host: sni.111000.dynv6.net
   - name: 🇷🇴_罗马尼亚_177
     type: vless
     server: 188.241.241.37
@@ -1866,262 +1170,19 @@ proxies:
       path: /
       headers:
         Host: forfreeuse.rtqa.ru
-  - name: US美国(mibei77.com 米贝节点分享)_14
+  - name: 🇨🇿_捷克_182
     type: vless
-    server: 192.0.54.131
-    port: 443
-    uuid: 948fac3c-42bf-41a6-a5f9-704d36ff0d8d
+    server: 195.133.94.188
+    port: 2053
+    uuid: c7e9c591-2764-423a-afca-efbd010fd396
     tls: true
     network: ws
-    sni: snippet.danfeng.kozow.com
-    servername: snippet.danfeng.kozow.com
+    sni: forfreeuse.rtqa.ru
+    servername: forfreeuse.rtqa.ru
     ws-opts:
-      path: /danfeng?ed=2560
+      path: /
       headers:
-        Host: snippet.danfeng.kozow.com
-  - name: US美国(mibei77.com 米贝节点分享)_15
-    type: vless
-    server: 192.0.54.216
-    port: 443
-    uuid: 948fac3c-42bf-41a6-a5f9-704d36ff0d8d
-    tls: true
-    network: ws
-    sni: snippet.fgfw.ndjp.net
-    servername: snippet.fgfw.ndjp.net
-    ws-opts:
-      path: /danfeng
-      headers:
-        Host: snippet.fgfw.ndjp.net
-  - name: US美国(mibei77.com 米贝节点分享)_16_2
-    type: vless
-    server: 192.0.54.225
-    port: 443
-    uuid: 948fac3c-42bf-41a6-a5f9-704d36ff0d8d
-    tls: true
-    network: ws
-    sni: snippet.danfeng.kozow.com
-    servername: snippet.danfeng.kozow.com
-    ws-opts:
-      path: /danfeng?ed=2560
-      headers:
-        Host: snippet.danfeng.kozow.com
-  - name: US美国(mibei77.com 米贝节点分享)_17
-    type: vless
-    server: 192.0.63.115
-    port: 443
-    uuid: 948fac3c-42bf-41a6-a5f9-704d36ff0d8d
-    tls: true
-    network: ws
-    sni: snippet.danfeng.theworkpc.com
-    servername: snippet.danfeng.theworkpc.com
-    ws-opts:
-      path: /danfeng?ed=2560
-      headers:
-        Host: snippet.danfeng.theworkpc.com
-  - name: US美国(mibei77.com 米贝节点分享)_18_2
-    type: vless
-    server: 192.0.63.18
-    port: 443
-    uuid: 948fac3c-42bf-41a6-a5f9-704d36ff0d8d
-    tls: true
-    network: ws
-    sni: snippet.danfeng.loc.cc
-    servername: snippet.danfeng.loc.cc
-    ws-opts:
-      path: /danfeng?ed=2560
-      headers:
-        Host: snippet.danfeng.loc.cc
-  - name: US美国(mibei77.com 米贝节点分享)_19
-    type: vless
-    server: 192.0.63.216
-    port: 443
-    uuid: 948fac3c-42bf-41a6-a5f9-704d36ff0d8d
-    tls: true
-    network: ws
-    sni: snippet.danfeng.theworkpc.com
-    servername: snippet.danfeng.theworkpc.com
-    ws-opts:
-      path: /danfeng?ed=2560
-      headers:
-        Host: snippet.danfeng.theworkpc.com
-  - name: US美国(mibei77.com 米贝节点分享)_20
-    type: vless
-    server: 192.0.63.230
-    port: 443
-    uuid: 948fac3c-42bf-41a6-a5f9-704d36ff0d8d
-    tls: true
-    network: ws
-    sni: snippet.danfeng.kozow.com
-    servername: snippet.danfeng.kozow.com
-    ws-opts:
-      path: /danfeng
-      headers:
-        Host: snippet.danfeng.kozow.com
-  - name: US美国(mibei77.com 米贝节点分享)_21
-    type: vless
-    server: 192.0.63.49
-    port: 443
-    uuid: 948fac3c-42bf-41a6-a5f9-704d36ff0d8d
-    tls: true
-    network: ws
-    sni: snippet.danfeng.theworkpc.com
-    servername: snippet.danfeng.theworkpc.com
-    ws-opts:
-      path: /danfeng?ed=2560
-      headers:
-        Host: snippet.danfeng.theworkpc.com
-  - name: US美国(mibei77.com 米贝节点分享)_22
-    type: vless
-    server: 192.0.63.56
-    port: 443
-    uuid: 948fac3c-42bf-41a6-a5f9-704d36ff0d8d
-    tls: true
-    network: ws
-    sni: snippet.danfeng.kozow.com
-    servername: snippet.danfeng.kozow.com
-    ws-opts:
-      path: /danfeng?ed=2560
-      headers:
-        Host: snippet.danfeng.kozow.com
-  - name: US美国(mibei77.com 米贝节点分享)_23
-    type: vless
-    server: 192.0.63.76
-    port: 443
-    uuid: 948fac3c-42bf-41a6-a5f9-704d36ff0d8d
-    tls: true
-    network: ws
-    sni: snippet.danfeng.theworkpc.com
-    servername: snippet.danfeng.theworkpc.com
-    ws-opts:
-      path: /danfeng?ed=2560
-      headers:
-        Host: snippet.danfeng.theworkpc.com
-  - name: US美国(mibei77.com 米贝节点分享)_24
-    type: vless
-    server: 192.200.160.20
-    port: 443
-    uuid: 92b82d0f-d2f8-4f6f-b177-08f681a337e6
-    tls: true
-    network: ws
-    sni: 639073677243791121.camry-perma.info
-    servername: 639073677243791121.camry-perma.info
-    ws-opts:
-      path: /njvqoews?ed=2560
-      headers:
-        Host: 639073677243791121.camry-perma.info
-  - name: US美国(mibei77.com 米贝节点分享)_25
-    type: vless
-    server: 192.200.160.20
-    port: 443
-    uuid: 3b034275-27f8-437d-9ac0-5982708ae143
-    tls: true
-    network: ws
-    sni: 639073677243249982.camry-perma.info
-    servername: 639073677243249982.camry-perma.info
-    ws-opts:
-      path: /ferhbiws?ed=2560
-      headers:
-        Host: 639073677243249982.camry-perma.info
-  - name: US美国(mibei77.com 米贝节点分享)_26
-    type: vless
-    server: 192.200.160.20
-    port: 443
-    uuid: ee248e40-9468-4ef6-81b7-707a1e47c54a
-    tls: true
-    network: ws
-    sni: 639073677243557970.camry-perma.info
-    servername: 639073677243557970.camry-perma.info
-    ws-opts:
-      path: /yaeungws?ed=2560
-      headers:
-        Host: 639073677243557970.camry-perma.info
-  - name: US美国(mibei77.com 米贝节点分享)_27
-    type: vless
-    server: 192.200.160.20
-    port: 443
-    uuid: c1a5ecfa-8a01-4070-91e0-0328b82388ad
-    tls: true
-    network: ws
-    sni: 639073677243396643.camry-perma.info
-    servername: 639073677243396643.camry-perma.info
-    ws-opts:
-      path: /phnkfhws
-      headers:
-        Host: 639073677243396643.camry-perma.info
-  - name: 🇩🇪_德国
-    type: vless
-    server: 194.87.10.77
-    port: 443
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: KR韩国(mibei77.com 米贝节点分享)_2
-    type: vless
-    server: 195.181.173.199
-    port: 8443
-    uuid: 394f6981-a782-4779-9a85-e6cf22935d93
-    tls: true
-    network: tcp
-    sni: ams1.fromblancwithlove.com
-    servername: ams1.fromblancwithlove.com
-  - name: 🇺🇸_美国_2
-    type: vless
-    server: 198.62.62.124
-    port: 443
-    uuid: 5a4abb78-ecd7-4d68-ab2a-c11a3842f261
-    tls: true
-    network: ws
-    sni: war.connecticut-haloo.info
-    servername: war.connecticut-haloo.info
-    ws-opts:
-      path: /love
-      headers:
-        Host: war.connecticut-haloo.info
-  - name: 🇺🇸_美国_3
-    type: vless
-    server: 198.62.62.235
-    port: 443
-    uuid: 5a4abb78-ecd7-4d68-ab2a-c11a3842f261
-    tls: true
-    network: ws
-    sni: bank.alaska-tigr.info
-    servername: bank.alaska-tigr.info
-    ws-opts:
-      path: /love
-      headers:
-        Host: bank.alaska-tigr.info
-  - name: 🇺🇸_美国_4
-    type: vless
-    server: 198.62.62.248
-    port: 443
-    uuid: 5a4abb78-ecd7-4d68-ab2a-c11a3842f261
-    tls: true
-    network: ws
-    sni: tar.alabama-tigr.info
-    servername: tar.alabama-tigr.info
-    ws-opts:
-      path: /love
-      headers:
-        Host: tar.alabama-tigr.info
-  - name: US美国(mibei77.com 米贝节点分享)_28
-    type: vless
-    server: 199.107.164.217
-    port: 443
-    uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
-    tls: true
-    network: ws
-    sni: sni.111000.dynv6.net
-    servername: sni.111000.dynv6.net
-    ws-opts:
-      path: /?ed=2560&Telegram🇨🇳@WangCai2
-      headers:
-        Host: sni.111000.dynv6.net
+        Host: forfreeuse.rtqa.ru
   - name: 🇺🇸_美国_160
     type: vless
     server: 200.165.228.47
@@ -2135,162 +1196,6 @@ proxies:
       path: /v1
       headers:
         Host: live.ok.ru
-  - name: 🇹🇼_中国台湾省
-    type: vless
-    server: 203.69.248.40
-    port: 14147
-    uuid: 69ab6d73-6db3-1c80-4eb6-2b91420c3944
-    tls: true
-    network: ws
-    sni: 6745d1ce.cloudorg.ccwu.cc
-    servername: 6745d1ce.cloudorg.ccwu.cc
-    ws-opts:
-      path: /socks5=4b2c7676:6f0f4cbba5bb@38.111.30.111:26433
-      headers:
-        Host: 6745d1ce.cloudorg.ccwu.cc
-  - name: 🇰🇷_韩国_29
-    type: vless
-    server: 210.105.224.42
-    port: 10840
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_30
-    type: vless
-    server: 211.195.135.214
-    port: 10162
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_31
-    type: vless
-    server: 211.195.135.214
-    port: 16333
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_32
-    type: vless
-    server: 211.198.88.33
-    port: 12577
-    uuid: 69ab6d73-6db3-1c80-4eb6-2b91420c3944
-    tls: true
-    network: ws
-    sni: 6745d1ce.cloudorg.ccwu.cc
-    servername: 6745d1ce.cloudorg.ccwu.cc
-    ws-opts:
-      path: /socks5=4b2c7676:6f0f4cbba5bb@38.111.30.111:26433
-      headers:
-        Host: 6745d1ce.cloudorg.ccwu.cc
-  - name: KR韩国(mibei77.com 米贝节点分享)_3
-    type: vless
-    server: 211.228.64.93
-    port: 37661
-    uuid: 948fac3c-42bf-41a6-a5f9-704d36ff0d8d
-    tls: true
-    network: ws
-    sni: snippet.danfeng.kozow.com
-    servername: snippet.danfeng.kozow.com
-    ws-opts:
-      path: /danfeng?ed=2560
-      headers:
-        Host: snippet.danfeng.kozow.com
-  - name: 🇰🇷_韩国_33
-    type: vless
-    server: 211.238.83.146
-    port: 23792
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_34
-    type: vless
-    server: 211.238.83.146
-    port: 26373
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_35
-    type: vless
-    server: 211.238.83.146
-    port: 32641
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_36
-    type: vless
-    server: 211.33.238.198
-    port: 15380
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_37
-    type: vless
-    server: 211.48.77.114
-    port: 11265
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_38
-    type: vless
-    server: 211.48.77.114
-    port: 22410
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
   - name: 🇳🇱_荷兰_174
     type: vless
     server: 213.183.61.100
@@ -2304,293 +1209,6 @@ proxies:
       path: /
       headers:
         Host: forfreeuse.rtqa.ru
-  - name: ⚡ b2n.ir/v2ray-configs | 671
-    type: vless
-    server: 217.19.122.234
-    port: 9001
-    uuid: 2c634977-584e-4e1f-b501-1b70c77a6743
-    tls: true
-    network: grpc
-    sni: api-maps.yandex.ru
-    servername: api-maps.yandex.ru
-    reality-opts:
-      public-key: SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc
-      short-id: 6ba85179e30d4fc2
-      spider-x: ''
-    client-fingerprint: firefox
-  - name: 🇰🇷_韩国_39
-    type: vless
-    server: 218.150.33.69
-    port: 30052
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_40
-    type: vless
-    server: 218.154.216.119
-    port: 12616
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_41
-    type: vless
-    server: 218.155.23.9
-    port: 12184
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_42
-    type: vless
-    server: 220.124.144.20
-    port: 19300
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_43
-    type: vless
-    server: 220.124.144.20
-    port: 26011
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_44
-    type: vless
-    server: 220.124.144.20
-    port: 27453
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_45
-    type: vless
-    server: 220.125.207.242
-    port: 12313
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_46
-    type: vless
-    server: 220.125.207.242
-    port: 12493
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_47
-    type: vless
-    server: 220.125.207.242
-    port: 27138
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_48
-    type: vless
-    server: 220.71.102.124
-    port: 16691
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_49
-    type: vless
-    server: 220.78.129.86
-    port: 11937
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_50
-    type: vless
-    server: 220.85.144.155
-    port: 10907
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_51
-    type: vless
-    server: 220.85.144.155
-    port: 11091
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_52
-    type: vless
-    server: 220.85.144.155
-    port: 14087
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_53
-    type: vless
-    server: 220.92.158.117
-    port: 15916
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_54
-    type: vless
-    server: 220.94.94.109
-    port: 10177
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_55
-    type: vless
-    server: 221.146.116.77
-    port: 15284
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_56
-    type: vless
-    server: 221.159.114.102
-    port: 11901
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_57
-    type: vless
-    server: 221.159.114.102
-    port: 23130
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_58
-    type: vless
-    server: 222.110.16.126
-    port: 10405
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_59
-    type: vless
-    server: 223.222.195.84
-    port: 11654
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
   - name: 🇵🇱_波兰_170
     type: vless
     server: 31.133.0.240
@@ -2617,31 +1235,6 @@ proxies:
       path: /
       headers:
         Host: forfreeuse.rtqa.ru
-  - name: 伊朗+V2CROSS.COM
-    type: vless
-    server: 31.59.129.225
-    port: 443
-    uuid: 41f4cb15-5a3f-3934-89fe-b4177146adf4
-    flow: xtls-rprx-vision
-    tls: true
-    network: tcp
-    sni: u643766u5dfdedf2s846.csgfw.top
-    servername: u643766u5dfdedf2s846.csgfw.top
-  - name: ⚡ b2n.ir/v2ray-configs | 945
-    type: vless
-    server: 31.76.113.51
-    port: 443
-    uuid: dfc0cb9d-f005-41b0-848c-7703bd39d0de
-    flow: xtls-rprx-vision
-    tls: true
-    network: tcp
-    sni: it.s3-cloud.xyz
-    servername: it.s3-cloud.xyz
-    reality-opts:
-      public-key: zPi2L9vrl2hkaCTT3lZTzBna-qz6JrteRjDz1i-DsxY
-      short-id: 7a3f9e2b1c8d4f6a
-      spider-x: ''
-    client-fingerprint: chrome
   - name: 🇫🇮_芬兰_149
     type: vless
     server: 31.76.77.213
@@ -2652,46 +1245,16 @@ proxies:
     network: tcp
     sni: valenciatobcn.life
     servername: valenciatobcn.life
-  - name: ⚡ b2n.ir/v2ray-configs | 638
+  - name: 🇮🇹_意大利_159
     type: vless
-    server: 31.76.80.69
-    port: 2083
-    uuid: 8975546a-375c-4966-8064-19fc0f66f30a
+    server: 46.28.68.63
+    port: 443
+    uuid: 44927d9f-1a75-4c03-ab8c-79898adaaece
+    flow: xtls-rprx-vision
     tls: true
-    network: xhttp
-    sni: www.amd.com
-    servername: www.amd.com
-    reality-opts:
-      public-key: zq3gOJkXi6laNuxMohL3lr-wFOKi4Z9oG7QuMMiTDAk
-      short-id: 29b21343ab4d
-      spider-x: /y52f8gp4rv1il6u
-    client-fingerprint: firefox
-  - name: 🇭🇰_香港
-    type: vless
-    server: 43.161.217.205
-    port: 1443
-    uuid: 69ab6d73-6db3-1c80-4eb6-2b91420c3944
-    tls: true
-    network: ws
-    sni: 6745d1ce.cloudorg.ccwu.cc
-    servername: 6745d1ce.cloudorg.ccwu.cc
-    ws-opts:
-      path: /socks5=4b2c7676:6f0f4cbba5bb@38.111.30.111:26433
-      headers:
-        Host: 6745d1ce.cloudorg.ccwu.cc
-  - name: 🇸🇬_新加坡
-    type: vless
-    server: 43.165.180.71
-    port: 8443
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
+    network: tcp
+    sni: www.cloudflare.com
+    servername: www.cloudflare.com
   - name: 🇩🇪_德国_172
     type: vless
     server: 5.187.6.30
@@ -2705,32 +1268,6 @@ proxies:
       path: /
       headers:
         Host: forfreeuse.rtqa.ru
-  - name: 🇯🇵_日本_2
-    type: vless
-    server: 5.226.49.164
-    port: 443
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 美国+Amazon数据中心
-    type: vless
-    server: 52.84.199.28
-    port: 443
-    uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-    tls: true
-    network: ws
-    sni: d1yxsk0zprgivr.cloudfront.net
-    servername: d1yxsk0zprgivr.cloudfront.net
-    ws-opts:
-      path: /
-      headers:
-        Host: d1yxsk0zprgivr.cloudfront.net
   - name: 🇮🇪_爱尔兰_179
     type: vless
     server: 54.229.164.147
@@ -2744,58 +1281,6 @@ proxies:
       path: /
       headers:
         Host: forfreeuse.rtqa.ru
-  - name: 🇰🇷_韩国_60
-    type: vless
-    server: 59.1.166.218
-    port: 14551
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_61
-    type: vless
-    server: 59.21.10.151
-    port: 27964
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇰🇷_韩国_62
-    type: vless
-    server: 59.29.89.197
-    port: 18765
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇹🇼_中国台湾省_2
-    type: vless
-    server: 60.251.232.240
-    port: 995
-    uuid: 69ab6d73-6db3-1c80-4eb6-2b91420c3944
-    tls: true
-    network: ws
-    sni: 6745d1ce.cloudorg.ccwu.cc
-    servername: 6745d1ce.cloudorg.ccwu.cc
-    ws-opts:
-      path: /socks5=4b2c7676:6f0f4cbba5bb@38.111.30.111:26433
-      headers:
-        Host: 6745d1ce.cloudorg.ccwu.cc
   - name: 🇫🇮_芬兰_184
     type: vless
     server: 65.109.12.58
@@ -2824,45 +1309,6 @@ proxies:
       short-id: '61'
       spider-x: /b46a29a208a37d1
     client-fingerprint: chrome
-  - name: 🇺🇸_美国_5
-    type: vless
-    server: 68.64.179.243
-    port: 443
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇺🇸_美国_6
-    type: vless
-    server: 68.64.179.250
-    port: 443
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇺🇸_美国_7
-    type: vless
-    server: 68.64.179.96
-    port: 443
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
   - name: 电报群：https://t.me/vvkj11
     type: vless
     server: 78.159.247.253
@@ -2878,32 +1324,6 @@ proxies:
       short-id: 8d3293f0066e129a
       spider-x: ''
     client-fingerprint: firefox
-  - name: 🇳🇬_尼日利亚
-    type: vless
-    server: 83.229.121.78
-    port: 8443
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
-  - name: 🇳🇬_尼日利亚_2
-    type: vless
-    server: 83.229.123.173
-    port: 443
-    uuid: 14b02e2a-8930-4afb-8412-ea4a4954ca5b
-    tls: true
-    network: ws
-    sni: ylnhh.cc.cd
-    servername: ylnhh.cc.cd
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2
-      headers:
-        Host: ylnhh.cc.cd
   - name: 🇷🇺_俄罗斯_183
     type: vless
     server: 84.201.136.20
@@ -2928,6 +1348,20 @@ proxies:
       path: /v1
       headers:
         Host: rzd.ru
+  - name: ⚡ b2n.ir/v2ray-configs | 915
+    type: vless
+    server: 88.218.44.5
+    port: 443
+    uuid: adf1fac3-cf57-ff40-574c-cf514457eb3f
+    tls: true
+    network: xhttp
+    sni: dl.kaspersky.com
+    servername: dl.kaspersky.com
+    reality-opts:
+      public-key: Nnpwm8dqFl9dlMJmg0M9G11vmgCKzNagFTn4tH4sWy4
+      short-id: ''
+      spider-x: ''
+    client-fingerprint: chrome
   - name: 🇩🇪_德国_110
     type: vless
     server: 89.125.168.45
@@ -2943,19 +1377,20 @@ proxies:
       short-id: fc10
       spider-x: ''
     client-fingerprint: firefox
-  - name: US美国(mibei77.com 米贝节点分享)_29
+  - name: ⚡ b2n.ir/v2ray-configs | 127
     type: vless
-    server: 94.156.116.165
-    port: 14407
-    uuid: 948fac3c-42bf-41a6-a5f9-704d36ff0d8d
+    server: 91.197.3.43
+    port: 52463
+    uuid: 22696950-587f-42c0-af24-c1ffab17d0cd
     tls: true
-    network: ws
-    sni: snippet.danfeng.theworkpc.com
-    servername: snippet.danfeng.theworkpc.com
-    ws-opts:
-      path: /danfeng
-      headers:
-        Host: snippet.danfeng.theworkpc.com
+    network: tcp
+    sni: yahoo.com
+    servername: yahoo.com
+    reality-opts:
+      public-key: zOv4BhJVbINHdcULln0vQ_6sxKiGjJPj4uyMttX9pWo
+      short-id: cdaed92e1d0c
+      spider-x: /
+    client-fingerprint: random
   - name: 🇵🇱_波兰_200
     type: vless
     server: 94.183.209.43
@@ -2997,30 +1432,6 @@ proxies:
       short-id: bd8a588cebc3395a
       spider-x: ''
     client-fingerprint: firefox
-  - name: US美国(mibei77.com 米贝节点分享)_30
-    type: vless
-    server: cdn.tzpro.xyz
-    port: 80
-    uuid: f2083aa4-f27d-43da-81cf-8bab31730400
-    tls: false
-    network: ws
-    ws-opts:
-      path: /?ed=2048
-      headers:
-        Host: germany.vipserver14.workers.dev
-  - name: _未知_2
-    type: vless
-    server: cf.cloudflare.182682.xyz
-    port: 443
-    uuid: 69ab6d73-6db3-1c80-4eb6-2b91420c3944
-    tls: true
-    network: ws
-    sni: 6745d1ce.cloudorg.ccwu.cc
-    servername: 6745d1ce.cloudorg.ccwu.cc
-    ws-opts:
-      path: /socks5=4b2c7676:6f0f4cbba5bb@38.111.30.111:26433
-      headers:
-        Host: 6745d1ce.cloudorg.ccwu.cc
   - name: 🇫🇮_芬兰_125
     type: vless
     server: fin3.o4ka-internet.com
@@ -3036,17 +1447,6 @@ proxies:
       short-id: 5629431325884ff0
       spider-x: ''
     client-fingerprint: random
-  - name: 🇺🇸_美国_8
-    type: vless
-    server: mx2.tehrantolidi.ir
-    port: 80
-    uuid: dfe13f5a-9ce4-44fc-be96-1067bbf9202d
-    tls: false
-    network: ws
-    ws-opts:
-      path: /site
-      headers:
-        Host: cdn123.global.ssl.fastly.net
   - name: 🇳🇱_荷兰_137
     type: vless
     server: nl6.o4ka-internet.com
@@ -3073,98 +1473,29 @@ proxies:
       path: /
       headers:
         Host: pl4.lckdwn.ru
-  - name: RU俄罗斯(mibei77.com 米贝节点分享)_2
-    type: vless
-    server: ru2.mambo-jambo.ru
-    port: 49169
-    uuid: 801ddf0d-5b03-4a1d-a7b0-211458015187
-    tls: false
-    network: ws
-    ws-opts:
-      path: /
-      headers:
-        Host: ru2.mambo-jambo.ru
-  - name: 🇩🇪_德国_2
-    type: vless
-    server: s725.ccgfw.top
-    port: 443
-    uuid: f81b7cb0-70c6-3d1a-9b30-c95b1227f6ed
-    flow: xtls-rprx-vision
-    tls: true
-    network: tcp
-    sni: u710297ua16es725.ccgfw.top
-    servername: u710297ua16es725.ccgfw.top
-  - name: _未知_3
-    type: vless
-    server: saas.sin.fan
-    port: 443
-    uuid: 69ab6d73-6db3-1c80-4eb6-2b91420c3944
-    tls: true
-    network: ws
-    sni: 6745d1ce.cloudorg.ccwu.cc
-    servername: 6745d1ce.cloudorg.ccwu.cc
-    ws-opts:
-      path: /socks5=4b2c7676:6f0f4cbba5bb@38.111.30.111:26433
-      headers:
-        Host: 6745d1ce.cloudorg.ccwu.cc
-  - name: 土耳其+V2CROSS.COM
-    type: vless
-    server: sb1.artinnet.shop
-    port: 443
-    uuid: bef7acd0-8b81-431d-bcce-a76c3da658ae
-    tls: true
-    network: tcp
-    sni: w.wiki
-    servername: w.wiki
-    reality-opts:
-      public-key: xyMx8lBZ6dn2EO6G3Alt_7bQueu_eZgQ4kZEbMFXL3E
-      short-id: ce
-      spider-x: /XzJUSkVgcj0tycU
-    client-fingerprint: chrome
-  - name: US美国(mibei77.com 米贝节点分享)_31_2
-    type: vless
-    server: wangcai157.cloudflare.182682.xyz
-    port: 8880
-    uuid: 7890ce31-9a25-4fd4-90e7-80e5823ff510
-    tls: false
-    network: ws
-    sni: Telegram-channel-WangCai2
-    servername: Telegram-channel-WangCai2
-    ws-opts:
-      path: /Telegram🇨🇳@WangCai2/?ed=2560
-      headers:
-        Host: frejd.11258.workers.dev
-  - name: US美国(mibei77.com 米贝节点分享)_32
-    type: vless
-    server: www.speedtest.net
-    port: 80
-    uuid: 026d15a6-0b97-4883-a229-ec4325afb0de
-    tls: false
-    network: ws
-    sni: www.speedtest.net
-    servername: www.speedtest.net
-    ws-opts:
-      path: /eyJqdW5rIjoiV25Ed09oeVp4TU8iLCJwcm90b2NvbCI6InZsIiwibW9kZSI6InByb3h5aXAiLCJwYW5lbElQcyI6W119
-      headers:
-        Host: 023.electrocellco-cf-023.workers.dev
-  - name: US美国(mibei77.com 米贝节点分享)_33
+  - name: DE 🇩🇪 | @Raydikalx | EFF254
     type: vmess
-    server: 103.181.164.145
-    port: 54022
-    uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
+    server: 142.132.178.99
+    port: 443
+    uuid: 5f72f180-b21b-4b7a-8484-240759012604
+    alterId: 0
+    cipher: auto
+    tls: true
+    network: ws
+    ws-opts:
+      path: /5f72f180-b21b-4b7a-8484-240759096785
+      headers:
+        Host: apjhdggyx.com
+    servername: apjhdggyx.com
+  - name: SG 🇸🇬 | @Raydikalx | 8EEE09
+    type: vmess
+    server: 149.88.23.202
+    port: 18000
+    uuid: f8c8dc3d-0d37-46b0-8b34-a7232882fcfe
     alterId: 0
     cipher: auto
     tls: false
-    network: tcp
-  - name: 🇺🇸 US美国(mibei77.com 米贝节点分享)
-    type: vmess
-    server: 103.181.164.237
-    port: 34114
-    uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
-    alterId: 64
-    cipher: auto
-    tls: false
-    network: tcp
+    network: raw
   - name: '[pojiezhiyuanjun/freev2]美国(油管:破解资源君2.0)'
     type: vmess
     server: 152.67.218.38
@@ -3191,28 +1522,32 @@ proxies:
       path: /
       headers:
         Host: 156.245.232.239
-  - name: US 🇺🇸 | @Raydikalx | A8A9F5
+  - name: 未知65
     type: vmess
-    server: 157.254.227.163
-    port: 443
-    uuid: eba24d1d-0c2b-4b67-862f-cae68626f3fa
-    alterId: 0
-    cipher: auto
-    tls: true
-    network: ws
-    ws-opts:
-      path: /cae68626f3fa
-      headers:
-        Host: 157.254.227.163
-  - name: 未知72 800.7KB/s
-    type: vmess
-    server: 178.83.45.29
-    port: 38998
-    uuid: 48422300-458f-4dbb-b0f5-96f45450ab9f
+    server: 185.143.234.120
+    port: 80
+    uuid: b831381d-6324-4d53-ad4f-8cda48b30811
     alterId: 0
     cipher: auto
     tls: false
-    network: tcp
+    network: ws
+    ws-opts:
+      path: /graphql
+      headers:
+        Host: koochehpas.com
+  - name: 🇫🇮 荷蘭
+    type: vmess
+    server: 185.246.152.159
+    port: 443
+    uuid: 5f72f180-b21b-4b7a-8484-240759012604
+    alterId: 0
+    cipher: auto
+    tls: false
+    network: ws
+    ws-opts:
+      path: /5f72f180-b21b-4b7a-8484-240759096785
+      headers:
+        Host: apjhdggyx.com
   - name: 🇹🇷_土耳其_211
     type: vmess
     server: 193.111.78.106
@@ -3226,145 +1561,64 @@ proxies:
       path: /
       headers:
         Host: 193.111.78.106
-  - name: US美国(mibei77.com 米贝节点分享)_34
+  - name: KR 🇰🇷 | @Raydikalx | 168118
     type: vmess
-    server: 2001:bc8:32d7:225::1
-    port: 23456
-    uuid: bd48e0ac-e90e-4451-a4f2-abf061cfb890
+    server: 217.142.138.61
+    port: 80
+    uuid: ac1b933d-afff-4487-93ef-f57130a55dff
     alterId: 0
     cipher: auto
     tls: false
-    network: ws
-    ws-opts:
-      path: /alvin9999.com
-      headers:
-        Host: www.bing.com
-  - name: RU俄罗斯(mibei77.com 米贝节点分享)_3
+    network: tcp
+  - name: 🇺🇸US-23.224.101.102-0951
     type: vmess
-    server: 2001:bc8:32d7:302::10
-    port: 44579
-    uuid: 8e34e170-13ae-4892-9d20-05962acc9f84
-    alterId: 0
-    cipher: auto
-    tls: false
-    network: ws
-    ws-opts:
-      path: /?BIA_TELEGRAM@AZARBAYJAB1_AZARBAYJAB1_AZARBAYJAB1_AZARBAYJAB1
-      headers:
-        Host: AZERB.NET
-  - name: US美国(mibei77.com 米贝节点分享)_35
-    type: vmess
-    server: 2001:bc8:32d7:302::11
-    port: 44579
-    uuid: 8e34e170-13ae-4892-9d20-05962acc9f84
-    alterId: 0
-    cipher: auto
-    tls: false
-    network: ws
-    ws-opts:
-      path: /?BIA_TELEGRAM@AZARBAYJAB1_AZARBAYJAB1_AZARBAYJAB1_AZARBAYJAB1?ed=2560
-      headers:
-        Host: TABRIZ.NET
-  - name: FR法国(mibei77.com 米贝节点分享)
-    type: vmess
-    server: 2001:bc8:32d7:302::14
-    port: 44579
-    uuid: 8e34e170-13ae-4892-9d20-05962acc9f84
-    alterId: 0
-    cipher: auto
-    tls: false
-    network: ws
-    ws-opts:
-      path: /?BIA_TELEGRAM@AZARBAYJAB1_AZARBAYJAB1_AZARBAYJAB1_AZARBAYJAB1?ed=2560
-      headers:
-        Host: TABRIZ.NET
-  - name: FR法国(mibei77.com 米贝节点分享)_2
-    type: vmess
-    server: 2001:bc8:32d7:302::15
-    port: 44579
-    uuid: 8e34e170-13ae-4892-9d20-05962acc9f84
-    alterId: 0
-    cipher: auto
-    tls: false
-    network: ws
-    ws-opts:
-      path: /?BIA_TELEGRAM@AZARBAYJAB1_AZARBAYJAB1_AZARBAYJAB1_AZARBAYJAB1
-      headers:
-        Host: TURK.NET
-  - name: US美国(mibei77.com 米贝节点分享)_36
-    type: vmess
-    server: 2001:bc8:32d7:302::16
-    port: 44579
-    uuid: 8e34e170-13ae-4892-9d20-05962acc9f84
-    alterId: 0
-    cipher: auto
-    tls: false
-    network: ws
-    ws-opts:
-      path: /?BIA_TELEGRAM@AZARBAYJAB1_AZARBAYJAB1_AZARBAYJAB1_AZARBAYJAB1
-      headers:
-        Host: AZERB.NET
-  - name: US美国(mibei77.com 米贝节点分享)_37
-    type: vmess
-    server: 2001:bc8:32d7:302::17
-    port: 44579
-    uuid: 8e34e170-13ae-4892-9d20-05962acc9f84
-    alterId: 0
-    cipher: auto
-    tls: false
-    network: ws
-    ws-opts:
-      path: /?BIA_TELEGRAM@AZARBAYJAB1_AZARBAYJAB1_AZARBAYJAB1_AZARBAYJAB1
-      headers:
-        Host: AZERB.NET
-  - name: 🇫🇷FR-217.182.76.202-6880
-    type: vmess
-    server: 217.182.76.202
+    server: 23.224.101.102
     port: 443
-    uuid: 2e68015f-a8b2-4893-a7a3-4edb19b178d9
+    uuid: 946ba5df-5771-4873-a3cb-892378526147
+    alterId: 64
+    cipher: auto
+    tls: true
+    network: ws
+    ws-opts:
+      path: /footers
+      headers:
+        Host: 23.224.101.102
+  - name: HK 🇭🇰 | @Raydikalx | 6A2C61
+    type: vmess
+    server: 366-1095.rabbitpro-in-3.com
+    port: 27121
+    uuid: e351d6d8-c167-3e07-8fda-3f2f4ec0760b
+    alterId: 0
+    cipher: auto
+    tls: false
+    network: tcp
+  - name: KZ 🇰🇿 | @Raydikalx | 5BA69D
+    type: vmess
+    server: 38.107.234.57
+    port: 80
+    uuid: 567f4be5-12ab-42e1-b8d9-db6fd1fdd31c
+    alterId: 0
+    cipher: auto
+    tls: false
+    network: ws
+    ws-opts:
+      path: /vmess/
+      headers:
+        Host: 38.107.234.57
+  - name: HK 🇭🇰 | @Raydikalx | CD4FFD
+    type: vmess
+    server: 47.242.79.198
+    port: 443
+    uuid: f23bb427c1f94373876c2f43e9f790f3
     alterId: 0
     cipher: auto
     tls: true
     network: ws
     ws-opts:
-      path: /
+      path: /ws-vmess
       headers:
-        Host: 217.182.76.202
-  - name: US美国(mibei77.com 米贝节点分享)_38
-    type: vmess
-    server: 2a14:7584:d0a2::a
-    port: 23456
-    uuid: bd48e0ac-e90e-4451-a4f2-abf061cfb890
-    alterId: 0
-    cipher: auto
-    tls: false
-    network: ws
-    ws-opts:
-      path: /alvin9999.com
-      headers:
-        Host: www.bing.com
-  - name: US 🇺🇸 | @Raydikalx | 2B97CF
-    type: vmess
-    server: 38.110.1.246
-    port: 18000
-    uuid: f8c8dc3d-0d37-46b0-8b34-a7232882fcfe
-    alterId: 0
-    cipher: auto
-    tls: false
-    network: raw
-  - name: 🇺🇸US-13.248.169.48-4116
-    type: vmess
-    server: 422wkl.fans8.xyz
-    port: 443
-    uuid: 7f4ff2e1-c08f-35bd-afe7-4a6a386907aa
-    alterId: 2
-    cipher: auto
-    tls: true
-    network: ws
-    ws-opts:
-      path: /
-      headers:
-        Host: 422wkl.fans8.xyz
+        Host: ejOMsxPtP19APyGL.v.3dns.vip
+    servername: ejOMsxPtP19APyGL.v.3dns.vip
   - name: 🇭🇰_香港_196
     type: vmess
     server: 47.243.39.251
@@ -3378,59 +1632,91 @@ proxies:
       path: /
       headers:
         Host: 47.243.39.251
-  - name: HK14 89.3KB/s
+  - name: 🇺🇸US-47.254.17.235-6701
     type: vmess
-    server: 47.244.120.197
-    port: 23026
-    uuid: b9de1bc9-baa7-41ac-86f7-ccd59695cb21
-    alterId: 0
-    cipher: auto
-    tls: false
-    network: ws
-    ws-opts:
-      path: /arki
-      headers:
-        Host: 47.244.120.197
-  - name: HK 🇭🇰 | @Raydikalx | 0C98CE
-    type: vmess
-    server: 47.244.120.197
-    port: 36703
-    uuid: 45b83519-9c4f-4052-a11b-02e017b636d4
-    alterId: 0
-    cipher: auto
-    tls: false
-    network: ws
-    ws-opts:
-      path: /arki?ed=2048
-      headers:
-        Host: 47.244.120.197
-  - name: MY 🇲🇾 | @Raydikalx | E7C7DE
-    type: vmess
-    server: 47.250.45.234
-    port: 43063
-    uuid: c77f48f5-4be3-4461-b52b-49998e7b897b
-    alterId: 0
-    cipher: auto
-    tls: false
-    network: ws
-    ws-opts:
-      path: /arki
-      headers:
-        Host: 47.250.45.234
-  - name: 🇺🇸US-13.248.169.48-4220
-    type: vmess
-    server: 527hk1.fans8.xyz
+    server: 47.254.17.235
     port: 80
-    uuid: 7f4ff2e1-c08f-35bd-afe7-4a6a386907aa
-    alterId: 2
+    uuid: 2caa5a0e-519b-4503-80d4-5363193e5018
+    alterId: 0
+    cipher: auto
+    tls: false
+    network: ws
+    ws-opts:
+      path: /Ogl9djGbo2NTAt3Ovj1NvwjJ
+      headers:
+        Host: 47.254.17.235
+  - name: 🇺🇸US-47.254.17.235-6700
+    type: vmess
+    server: 47.254.17.235
+    port: 443
+    uuid: 2caa5a0e-519b-4503-80d4-5363193e5018
+    alterId: 0
     cipher: auto
     tls: true
     network: ws
     ws-opts:
-      path: /
+      path: /Ogl9djGbo2NTAt3Ovj1NvwjJ
       headers:
-        Host: 527hk1.fans8.xyz
-  - name: GB英国(mibei77.com 米贝节点分享)_2_2
+        Host: 47.254.17.235
+  - name: 🇺🇸US-51.81.220.34-3510
+    type: vmess
+    server: 51.81.220.34
+    port: 80
+    uuid: 0842be25-d718-491a-bca8-5e9d080150e6
+    alterId: 0
+    cipher: auto
+    tls: false
+    network: ws
+    ws-opts:
+      path: /vmess
+      headers:
+        Host: 51.81.220.34
+  - name: PH 🇵🇭 | @Raydikalx | 957376
+    type: vmess
+    server: 61.245.11.60
+    port: 80
+    uuid: a3e3a710-79f8-4ae0-b83c-607aab40d197
+    alterId: 0
+    cipher: auto
+    tls: false
+    network: ws
+    ws-opts:
+      path: /vmess/
+      headers:
+        Host: 61.245.11.60
+  - name: HK 🇭🇰 | @Raydikalx | E1BBC0
+    type: vmess
+    server: 6jdvarazgu3qqr6q.v.3dns.vip
+    port: 443
+    uuid: f23bb427c1f94373876c2f43e9f790f3
+    alterId: 0
+    cipher: auto
+    tls: true
+    network: ws
+    ws-opts:
+      path: /ws-vmess
+      headers:
+        Host: 6JDvArazgU3qQR6Q.v.3dns.vip
+  - name: HK 🇭🇰 | @Raydikalx | 68E977
+    type: vmess
+    server: 8.210.147.92
+    port: 46512
+    uuid: a77727c6-0b19-4894-95bc-7a9f4dff1e84
+    alterId: 0
+    cipher: auto
+    tls: false
+    network: tcp
+  - name: US 🇺🇸 | @Raydikalx | 4E8CA4
+    type: vmess
+    server: 82.198.246.37
+    port: 180
+    uuid: d13fc2f5-3e05-4795-81eb-44143a09e552
+    alterId: 0
+    cipher: auto
+    tls: false
+    network: tcp
+    servername: fra5.chasem2026sud.com
+  - name: US 🇺🇸 | @Raydikalx | E4DC87
     type: vmess
     server: 82.198.246.97
     port: 180
@@ -3439,37 +1725,121 @@ proxies:
     cipher: auto
     tls: false
     network: tcp
-  - name: ES 🇪🇸 | @Raydikalx | EBEC1F
+  - name: 🇮🇷_IR_伊朗
     type: vmess
-    server: 85.90.217.42
-    port: 22324
-    uuid: 04621bae-ab36-11ec-b909-0242ac120002
+    server: 94.182.88.61
+    port: 2078
+    uuid: 8c207682-e007-4a0d-88a3-68b8638b3d10
     alterId: 0
     cipher: auto
     tls: false
     network: tcp
-  - name: DE 🇩🇪 | @Raydikalx | 698C3F
+  - name: DE 🇩🇪 | @Raydikalx | 977A2E
     type: vmess
-    server: Chdxgih.viranix.ir
+    server: Fyfghgg.viranix.ir
     port: 1080
-    uuid: fe8309ad-d38c-4020-9ea5-817a6d2f9930
+    uuid: 576b1be6-a3e7-4c40-8ec7-0a406d6eead8
     alterId: 0
     cipher: auto
     tls: false
     network: tcp
-  - name: 🇯🇵 VMESS-美国>日本-NF解锁日本地区非自制剧-ChatGPT-YouTube-t1.620720.xyz:8443
+  - name: 🇲🇽 墨西哥
     type: vmess
-    server: t1.620720.xyz
-    port: 8443
-    uuid: 516d8a7a-3f0b-41d3-bad0-246116381516
+    server: cindy50.ceoiii.com
+    port: 36801
+    uuid: a6ab6513-6ec3-327f-a068-b89fe72954b8
+    alterId: 0
+    cipher: auto
+    tls: false
+    network: ws
+    ws-opts:
+      path: /hls/cctv5phd.m3u8
+      headers:
+        Host: ajax.microsoft.com
+  - name: 🇺🇸 US美國
+    type: vmess
+    server: cindy52.ceoiii.com
+    port: 36803
+    uuid: a6ab6513-6ec3-327f-a068-b89fe72954b8
+    alterId: 0
+    cipher: auto
+    tls: false
+    network: ws
+    ws-opts:
+      path: /hls/cctv5phd.m3u8
+      headers:
+        Host: ajax.microsoft.com
+  - name: DE 🇩🇪 | @Raydikalx | F330F0
+    type: vmess
+    server: deapp.jisuyun.top
+    port: 2053
+    uuid: 9a1a05d9-69be-45d3-e326-c6621edf7b31
     alterId: 0
     cipher: auto
     tls: true
     network: ws
     ws-opts:
-      path: /
+      path: /devm
       headers:
-        Host: t1.620720.xyz
+        Host: deapp.jisuyun.top
+  - name: 🇺🇸_美国_158
+    type: vmess
+    server: guanwang.awsno.com
+    port: 443
+    uuid: 6a89a215-22bf-4bd7-9642-b95b2e09583a
+    alterId: 0
+    cipher: auto
+    tls: true
+    network: tcp
+  - name: HK 🇭🇰 | @Raydikalx | 614D44
+    type: vmess
+    server: m01c7b2z26dtqgee.v.3dns.vip
+    port: 443
+    uuid: f23bb427c1f94373876c2f43e9f790f3
+    alterId: 0
+    cipher: auto
+    tls: true
+    network: ws
+    ws-opts:
+      path: /ws-vmess
+      headers:
+        Host: m01c7b2z26dtqgee.v.3dns.vip
+  - name: HK 🇭🇰 | @Raydikalx | D92730
+    type: vmess
+    server: qtkdr8jxe3wefxjm.v.3dns.vip
+    port: 443
+    uuid: f23bb427c1f94373876c2f43e9f790f3
+    alterId: 0
+    cipher: auto
+    tls: true
+    network: ws
+    ws-opts:
+      path: /ws-vmess
+      headers:
+        Host: qTKDR8jXE3wEFxJM.v.3dns.vip
+    servername: qTKDR8jXE3wEFxJM.v.3dns.vip
+  - name: SG 🇸🇬 | @Raydikalx | C43E45
+    type: vmess
+    server: select-us.ddnskunlun.com
+    port: 9028
+    uuid: a8bcce43-abda-315b-8e81-e3e65bcb3d07
+    alterId: 0
+    cipher: auto
+    tls: false
+    network: tcp
+  - name: SG 🇸🇬 | @Raydikalx | 53F711
+    type: vmess
+    server: sylva53.ceoiii.com
+    port: 36824
+    uuid: 4f198ea9-311e-3dcf-910c-896de6cb160b
+    alterId: 0
+    cipher: auto
+    tls: false
+    network: ws
+    ws-opts:
+      path: /hls/cctv5phd.m3u8
+      headers:
+        Host: ajax.microsoft.com
   - name: 🇭🇰_香港_144
     type: vmess
     server: v10.hdacd.com
@@ -3479,16 +1849,7 @@ proxies:
     cipher: auto
     tls: false
     network: tcp
-  - name: HK香港(mibei77.com 米贝节点分享)_2
-    type: vmess
-    server: v12.hdacd.com
-    port: 30812
-    uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-    alterId: 0
-    cipher: auto
-    tls: false
-    network: tcp
-  - name: US美国(mibei77.com 米贝节点分享)_39
+  - name: 🇸🇬_新加坡_146
     type: vmess
     server: v24.hdacd.com
     port: 30824
@@ -3497,7 +1858,7 @@ proxies:
     cipher: auto
     tls: false
     network: tcp
-  - name: US美国(mibei77.com 米贝节点分享)_40
+  - name: 🇸🇬_新加坡_136
     type: vmess
     server: v29.hdacd.com
     port: 30829
@@ -3510,15 +1871,6 @@ proxies:
     type: vmess
     server: v35.hdacd.com
     port: 30835
-    uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-    alterId: 2
-    cipher: auto
-    tls: false
-    network: tcp
-  - name: US美国(mibei77.com 米贝节点分享)_41
-    type: vmess
-    server: v36.hdacd.com
-    port: 30836
     uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
     alterId: 2
     cipher: auto
@@ -3560,23 +1912,9 @@ proxies:
     cipher: auto
     tls: false
     network: tcp
-  - name: SG新加坡(mibei77.com 米贝节点分享)
+  - name: HK 4.2KB/s
     type: vmess
-    server: vc.fly.dev
-    port: 443
-    uuid: 35379219-6535-4f2e-a4fe-3e44f61e0eee
-    alterId: 32
-    cipher: auto
-    tls: true
-    network: ws
-    ws-opts:
-      path: /vc
-      headers:
-        Host: vc.fly.dev
-    servername: vc.fly.dev
-  - name: HK9 29.6KB/s
-    type: vmess
-    server: zudssgtmrqg9lpvi.v.3dns.vip
+    server: wwafj5lhl6bi8au9.v.3dns.vip
     port: 443
     uuid: f23bb427c1f94373876c2f43e9f790f3
     alterId: 0
@@ -3586,5 +1924,19 @@ proxies:
     ws-opts:
       path: /ws-vmess
       headers:
-        Host: zUDssgTMRqg9LpvI.v.3dns.vip
-    servername: zUDssgTMRqg9LpvI.v.3dns.vip
+        Host: wwafj5LHl6bI8aU9.v.3dns.vip
+    servername: wwafj5LHl6bI8aU9.v.3dns.vip
+  - name: 🇺🇸US-23.22.144.165-4219
+    type: vmess
+    server: xr-1.herokuapp.com
+    port: 443
+    uuid: 17af76e1-a5d7-41ab-ae87-b48f185075d1
+    alterId: 0
+    cipher: auto
+    tls: true
+    network: ws
+    ws-opts:
+      path: /17af76e1-a5d7-41ab-ae87-b48f185075d1-vmess
+      headers:
+        Host: xr-1.herokuapp.com
+    servername: xr-1.herokuapp.com
