@@ -69,7 +69,19 @@ def commit_verified_json(owner, repo, token, verified):
 
 def handler(event, context):
     _ensure_xray_executable()
-    txt = requests.get(NODE_URL, timeout=30).text
+    r = requests.get(NODE_URL, timeout=30)
+    r.raise_for_status()
+    txt = r.text
+    # 最小 sanity：确认返回内容确为节点订阅，避免把 GitHub 的 HTML 错误页
+    # （404/502 等）静默当成节点源、产出空 verified.json 还报“成功”。
+    _looks_like_nodes = ("proxies:" in txt) or any(
+        s in txt for s in ("vmess://", "vless://", "trojan://", "ss://", "hysteria")
+    )
+    if not _looks_like_nodes:
+        raise RuntimeError(
+            f"[verify] NODE_SOURCE_URL 返回内容不像节点订阅 "
+            f"(HTTP {r.status_code}, len={len(txt)}); 中止以免静默空验"
+        )
     nodes = parse_clash_yaml(txt)
     with concurrent.futures.ThreadPoolExecutor(max_workers=CONCURRENCY) as ex:
         results = list(ex.map(_verify_one, nodes))

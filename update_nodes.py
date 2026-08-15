@@ -458,8 +458,10 @@ def probe_proxy_handshake(ip: str, port: int, proto: str, sni: str = "") -> Tupl
             with socket.create_connection((addr, port), timeout=timeout) as _sock:
                 pass
             return True, "tcp_ok", time.time() - start
-    except Exception:
-        return False, "prescreen_pass", 0.0
+    except Exception as e:
+        # 任何异常（超时/DNS/连接拒绝/TLS 错误）都属“握手未通过”，必须标为失败，
+        # 绝不能用 "prescreen_pass" 这类带 pass 字样的标签（易误导为通过预筛）。
+        return False, f"prescreen_fail:{type(e).__name__}", 0.0
 def test_node_final(ip: str, port: int, proto: str) -> Tuple[bool, float, bool, str, float]:
     port = validate_port(port)
     if not ip or is_private_ip(ip):
