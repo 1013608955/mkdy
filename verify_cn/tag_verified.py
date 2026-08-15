@@ -4,7 +4,7 @@
         节点名与 verified.json 一一对应）
 - 输出：s-verified.yaml —— 原订阅全部节点，已验证通过的节点名加 ✅ 前缀；
         同时把 proxy-groups 里对这些节点的显式引用一并改名，保证分组不失效。
-- 不直接改写 s-clash.yaml（它由 CI 每小时经 SubConverter 重生成，会被覆盖）。
+- 不直接改写 s-clash.yaml（它由 CI 每小时经 merge_subs.py 重生成，会被覆盖）。
 
 环境变量（均可选）：
   SRC_YAML  源订阅，默认仓库根 s-clash.yaml

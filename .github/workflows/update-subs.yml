@@ -41,7 +41,7 @@ jobs:
           pip install requests pyyaml beautifulsoup4
 
       # ---- 三个抓取脚本（源站可能不稳定，单源失败不影响整体合并） ----
-      - name: 抓取 tuijianvpn 订阅 -> s.txt
+      - name: 抓取 tuijianvpn 推荐订阅链接 -> latest_tuijian.txt
         continue-on-error: true
         run: python fetch_tuijian.py
 

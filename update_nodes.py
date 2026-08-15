@@ -426,7 +426,7 @@ def probe_proxy_handshake(ip: str, port: int, proto: str, sni: str = "") -> Tupl
     """GitHub(US)侧代理端点可达性探测 —— 仅作【评分信号】，绝不硬过滤。
 
     背景（评审§5.1）：GitHub 运行于境外网络，无法验证'该节点能否从中国绕过 GFW'。
-    真正的可用性应在【客户端 url-test】验证（CI 已通过 SubConverter 注入
+    真正的可用性应在【客户端 url-test】验证（建议在客户端配置
     url_test=https://cp.cloudflare.com/generate_204）。本函数只探测'从 GitHub 网络能否
     与该代理端点建立握手'，用于给'境外可达'节点小幅加分。
 
@@ -486,7 +486,7 @@ def test_node_final(ip: str, port: int, proto: str) -> Tuple[bool, float, bool, 
         thresh = CONFIG["detection"]["rt_thresholds"].get(proto, {"min": 0.02, "max": 9})
         if avg_rt < thresh["min"] or avg_rt > thresh["max"]:
             return False, avg_rt, False, "rt_abnormal", stability
-        # 注：真实"能否从中国绕过GFW"的可用性应在【客户端 url-test】验证（CI 已通过 SubConverter 注入
+        # 注：真实"能否从中国绕过GFW"的可用性应在【客户端 url-test】验证（建议配置
         # url_test=cloudflare generate_204）；此处仅做 GitHub 侧 TCP 连通粗筛，不构成质量评分。
         # GitHub 侧代理握手探测已移到 process_single_node_final 中（probe_proxy_handshake），
         # 仅作评分信号（outside_ok），不在此处做硬过滤，避免误杀节点。
