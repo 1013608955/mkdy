@@ -42,6 +42,16 @@ def _wait_port(port, timeout=10):
     return False
 
 
+def _read_tail(path, n=400):
+    """读取 xray stderr 末尾用于诊断（失败时不报错）。"""
+    try:
+        with open(path, "r", encoding="utf-8", errors="replace") as f:
+            data = f.read()
+        return data[-n:].replace("\n", " ")
+    except OSError:
+        return ""
+
+
 def _extract_ws(p, node):
     # 提取 clash 的 ws-opts（path / headers.Host）
     node["network"] = p.get("network", "tcp")
@@ -62,7 +72,10 @@ def _stream_settings(node, tls_default=False):
         }
     if tls:
         ss["security"] = "tls"
-        ss["tlsSettings"] = {"serverName": node.get("sni") or node.get("server")}
+        tls_settings = {"serverName": node.get("sni") or node.get("server")}
+        if node.get("skip_cert_verify"):
+            tls_settings["insecure"] = True
+        ss["tlsSettings"] = tls_settings
     # grpc / reality / shadowtls 等高级流控此处未覆盖，按需扩展
     return ss
 
@@ -115,13 +128,18 @@ def run_xray_chain(xray_bin, node, target_url, timeout, local_port):
         except OSError:
             pass
     cfg_path = f"/tmp/xray_{local_port}.json"
+    err_path = f"/tmp/xray_{local_port}.err"
     with open(cfg_path, "w", encoding="utf-8") as f:
         json.dump(cfg, f)
-    proc = subprocess.Popen([xray_bin, "run", "-c", cfg_path],
-                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    try:
+        with open(err_path, "w", encoding="utf-8") as ef:
+            proc = subprocess.Popen([xray_bin, "run", "-c", cfg_path],
+                                    stdout=subprocess.DEVNULL, stderr=ef)
+    except Exception as e:  # noqa: BLE001
+        return False, 0.0, f"xray_spawn_failed: {type(e).__name__}: {e}"
     try:
         if not _wait_port(local_port, timeout=6):
-            return False, 0.0, "xray_listen_timeout"
+            return False, 0.0, f"xray_listen_timeout | {_read_tail(err_path)}"
         proxies = {"http": f"socks5h://127.0.0.1:{local_port}",
                    "https": f"socks5h://127.0.0.1:{local_port}"}
         start = time.time()
@@ -129,17 +147,18 @@ def run_xray_chain(xray_bin, node, target_url, timeout, local_port):
                          headers={"User-Agent": "Mozilla/5.0"})
         return r.status_code < 400, time.time() - start, f"http {r.status_code}"
     except Exception as e:  # noqa: BLE001
-        return False, 0.0, f"{type(e).__name__}: {e}"
+        return False, 0.0, f"{type(e).__name__}: {e} | xray:{_read_tail(err_path)}"
     finally:
         proc.terminate()
         try:
             proc.wait(timeout=5)
         except Exception:  # noqa: BLE001
             proc.kill()
-        try:
-            os.remove(cfg_path)
-        except OSError:
-            pass
+        for p in (cfg_path, err_path):
+            try:
+                os.remove(p)
+            except OSError:
+                pass
 
 
 def run_socks5_chain(node, target_url, timeout):
@@ -203,7 +222,8 @@ def parse_clash_yaml(text):
             node["password"] = p.get("password")
             node["sni"] = p.get("sni") or p.get("server")
         elif t in ("ss", "shadowsocks"):
-            node["method"] = p.get("method")
+            # Clash 用 cipher 字段表示加密方式（非 method）
+            node["method"] = p.get("method") or p.get("cipher")
             node["password"] = p.get("password")
         elif t in ("hysteria", "hysteria2", "hy2"):
             node["password"] = p.get("password") or p.get("auth")
@@ -211,5 +231,7 @@ def parse_clash_yaml(text):
         elif t == "socks5":
             node["username"] = p.get("username")
             node["password"] = p.get("password")
+        if t in ("vmess", "vless", "trojan"):
+            node["skip_cert_verify"] = bool(p.get("skip-cert-verify", False))
         out.append(node)
     return out

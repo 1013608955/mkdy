@@ -29,6 +29,15 @@ TIMEOUT = int(os.environ.get("TIMEOUT", "8"))
 API = "https://api.github.com"
 
 
+def _ensure_xray_executable():
+    """FC 上传的二进制在 Linux 上可能丢失可执行位，运行时补上；Windows 忽略。"""
+    try:
+        if os.path.exists(XRAY):
+            os.chmod(XRAY, 0o755)
+    except OSError:
+        pass
+
+
 def _verify_one(node):
     ok, lat, det = verify_through_proxy(node, TARGET, TIMEOUT, XRAY)
     return {"name": node.get("name"), "proto": node.get("proto"),
@@ -59,6 +68,7 @@ def commit_verified_json(owner, repo, token, verified):
 
 
 def handler(event, context):
+    _ensure_xray_executable()
     txt = requests.get(NODE_URL, timeout=30).text
     nodes = parse_clash_yaml(txt)
     with concurrent.futures.ThreadPoolExecutor(max_workers=CONCURRENCY) as ex:
@@ -71,5 +81,11 @@ def handler(event, context):
         "nodes": results,
     }
     if TOKEN:
-        commit_verified_json(OWNER, REPO, TOKEN, verified)
+        code = commit_verified_json(OWNER, REPO, TOKEN, verified)
+        print(f"[verify] committed verified.json -> HTTP {code}")
+    # 控制台日志可自诊断：打印失败原因分布
+    from collections import Counter
+    dc = Counter(r["detail"] for r in results)
+    print(f"[verify] {verified['ok']}/{len(results)} ok; "
+          f"target={TARGET}; details=" + "; ".join(f"{k}×{v}" for k, v in dc.most_common()))
     return {"nodes": len(results), "ok": verified["ok"]}
