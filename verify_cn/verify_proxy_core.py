@@ -90,17 +90,32 @@ def build_xray_config(node, local_port):
         vnext = {"address": node["server"], "port": int(node["port"]),
                  "users": [{"id": node["uuid"], "security": node.get("cipher", "auto"), "level": 0}]}
         ob = {"protocol": "vmess", "settings": {"vnext": [vnext]}}
-        ob.update(_stream_settings(node))
+        ob["streamSettings"] = _stream_settings(node)
     elif proto == "vless":
         vnext = {"address": node["server"], "port": int(node["port"]),
-                 "users": [{"id": node["uuid"], "level": 0, "flow": node.get("flow", "")}]}
+                 "users": [{"id": node["uuid"], "level": 0, "encryption": "none",
+                            "flow": node.get("flow", "")}]}
         ob = {"protocol": "vless", "settings": {"vnext": [vnext]}}
-        ob.update(_stream_settings(node))
+        ob["streamSettings"] = _stream_settings(node)
+        # vless + reality：用 realitySettings 覆盖 tls（reality 与 tls 互斥）
+        if node.get("reality"):
+            r = node["reality"]
+            ss = ob["streamSettings"]
+            ss["security"] = "reality"
+            ss.pop("tlsSettings", None)
+            ss["realitySettings"] = {
+                "show": False,
+                "serverName": node.get("sni") or node.get("server"),
+                "publicKey": r.get("public_key") or "",
+                "shortId": r.get("short_id") or "",
+                "spiderX": r.get("spider_x") or "/",
+                "fingerprint": r.get("fingerprint") or "chrome",
+            }
     elif proto == "trojan":
         ob = {"protocol": "trojan",
               "settings": {"servers": [{"address": node["server"], "port": int(node["port"]),
                                          "password": node["password"]}]}}
-        ob.update(_stream_settings(node, tls_default=True))
+        ob["streamSettings"] = _stream_settings(node, tls_default=True)
     elif proto in ("ss", "shadowsocks"):
         ob = {"protocol": "shadowsocks",
               "settings": {"servers": [{"address": node["server"], "port": int(node["port"]),
@@ -218,6 +233,16 @@ def parse_clash_yaml(text):
             _extract_ws(p, node)
             node["tls"] = bool(p.get("tls", False))
             node["sni"] = p.get("servername") or p.get("sni") or p.get("server")
+            # reality（vless+reality 节点必须翻译到 xray realitySettings，否则验证必失败）
+            ro = p.get("reality-opts") or {}
+            if ro:
+                node["reality"] = {
+                    "public_key": ro.get("public-key") or ro.get("pbk") or "",
+                    "short_id": ro.get("short-id") or ro.get("sid") or "",
+                    "spider_x": ro.get("spider-x") or ro.get("spx") or "/",
+                    "fingerprint": p.get("client-fingerprint")
+                    or ro.get("fingerprint") or "",
+                }
         elif t == "trojan":
             node["password"] = p.get("password")
             node["sni"] = p.get("sni") or p.get("server")

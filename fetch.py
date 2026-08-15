@@ -4,6 +4,7 @@ import base64
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 import time
+import yaml
 
 # 核心配置（明确每个网站的YAML输出文件）
 HEADERS = {
@@ -191,12 +192,47 @@ def download_nodes(source):
         print(f"   ❌ 处理 [{source[:50]}...] 失败：{e}")
         return []
 
+def make_proxy_names_unique(proxies):
+    """兜底确保 Clash proxy name 唯一（源站 YAML 常含重复 name，会导致下游
+    Clash/Clash Verge 因 duplicate name 拒绝加载）。同名重复追加 _2/_3/...，
+    空名回填为可读默认。返回原地修改后的列表。"""
+    counts = {}
+    for p in proxies:
+        if not isinstance(p, dict):
+            continue
+        name = (p.get("name") or "").strip()
+        if not name:
+            name = f"{p.get('type', 'node')}_{p.get('server', '')}:{p.get('port', 0)}"
+            p["name"] = name
+        if name in counts:
+            counts[name] += 1
+            p["name"] = f"{name}_{counts[name]}"
+        else:
+            counts[name] = 1
+    return proxies
+
+
 def download_and_save_yaml(yaml_url, output_file, site_name):
-    """下载指定YAML链接并保存到专属文件，返回是否成功"""
+    """下载指定YAML链接并保存到专属文件，返回是否成功。
+    写盘前先对 proxies 做 name 唯一化（双保险：上游去脏，
+    即使源站 YAML 含重复 name 也不会污染下游合并产物）。"""
     try:
         resp = requests.get(yaml_url, headers=HEADERS, timeout=20)
         resp.raise_for_status()
         yaml_content = resp.text.strip()
+        # 解析 -> 去重 name -> 回写，避免源站脏 YAML 直接落地
+        try:
+            doc = yaml.safe_load(yaml_content)
+            if isinstance(doc, dict):
+                proxies = doc.get("proxies") or []
+                if proxies:
+                    make_proxy_names_unique(proxies)
+                    yaml_content = yaml.safe_dump(
+                        doc, allow_unicode=True, sort_keys=False,
+                        default_flow_style=False)
+        except Exception as e:
+            # 解析失败则原样保存，不阻断抓取
+            print(f"⚠️ [{site_name}] YAML 解析/去重失败，原样保存：{e}")
         # 保存到该网站专属的YAML文件
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(yaml_content)
