@@ -1,0 +1,50 @@
+# 验证节点打标（verify-tag）
+# 读取 verify_cn/verified.json，在 Clash 订阅里给「已验证可用」节点加 ✅ 前缀，
+# 输出独立的 s-verified.yaml（不覆盖被 CI 每小时重生成的 s-clash.yaml）。
+name: 验证节点打标（verify-tag）
+
+on:
+  schedule:
+    - cron: '15 * * * *'      # 每小时 :15，晚于 FC 整点探测 + CI 生成订阅
+  workflow_dispatch:         # 保留手动触发
+  push:
+    paths:
+      - 'verify_cn/verified.json'   # FC 直写回仓库时立即打标
+
+# 与「节点更新 + Clash配置转换」共用并发组，避免同一仓库并行推送互相 non-fast-forward 拒绝
+concurrency:
+  group: mkdy-nodes-clash
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: 检出
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}   # 复用仓库已有的 PAT（具备 push 权限）
+          fetch-depth: 1
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 安装依赖
+        run: pip install pyyaml
+
+      - name: 打标（生成 s-verified.yaml）
+        run: python verify_cn/tag_verified.py
+
+      - name: 提交 s-verified.yaml
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add s-verified.yaml
+          git commit -m "chore: 更新已验证节点标记" || echo "无变化，跳过"
+          git push

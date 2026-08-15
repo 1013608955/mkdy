@@ -1,0 +1,46 @@
+# 阿里云函数计算 FC —— Serverless 部署描述（Serverless Devs / s 工具）
+# 部署：安装 Serverless Devs CLI 后，在此目录执行 `s deploy`
+# 说明：
+#   - region 选中国区即可（cn-hangzhou / cn-shanghai / cn-beijing ...）
+#   - codeUri 为 ./ ，部署时整个目录（含 xray 二进制）会被打包上传
+#   - 定时器默认每小时整点（UTC），见下方 cronExpression 注释
+edition: 3.0.0
+name: mkdy-verify
+access: default
+
+resources:
+  mkdy_verify_fn:
+    component: devsapp/fc
+    props:
+      region: cn-hangzhou
+      service:
+        name: mkdy-verify-svc
+        description: 中国出口代理节点真实链路验证
+      function:
+        name: verify
+        runtime: python3.10
+        codeUri: ./
+        handler: index.handler
+        memorySize: 256
+        timeout: 600
+        environmentVariables:
+          GITHUB_OWNER: "1013608955"
+          GITHUB_REPO: "mkdy"
+          NODE_SOURCE_URL: "https://raw.githubusercontent.com/1013608955/mkdy/main/s-clash.yaml"
+          TARGET_URL: "https://www.google.com/generate_204"
+          XRAY_BIN: "/code/xray"
+          CONCURRENCY: "8"
+          TIMEOUT: "8"
+          # 最小权限 fine-grained PAT（仅本仓库 contents:write），通过 s 工具的变量注入
+          GITHUB_TOKEN: "{{env.GITHUB_TOKEN}}"
+      # 定时触发器：6 段 cron（秒 分 时 日 月 周），时区为 UTC
+      #   "0 0 * * * *" = 每小时 0 分 0 秒（UTC）
+      #   想在北京时间整点跑：UTC = 北京-8，例如北京时间 08:00 = UTC 00:00，
+      #   或直接在 FC 控制台把触发器时区改为 Asia/Shanghai 后用 "0 0 * * * *"
+      triggers:
+        - name: timer
+          type: timer
+          config:
+            payload: ""
+            cronExpression: "0 0 * * * *"
+            enable: true
