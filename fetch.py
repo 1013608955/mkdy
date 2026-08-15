@@ -36,25 +36,44 @@ def get_latest_article_url(site):
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, 'html.parser')
         article_candidates = []
-        today = datetime.now().strftime("%Y%m%d")
-        yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y%m%d")
-        recent_dates = [today, yesterday]  # 近2天的日期
-
         if site_name == "米贝77":
-            # 【修复点1】放宽筛选：只要链接含近2天日期，且是文章链接（即使标题无关键词）
+            # 米贝77 现用 WordPress 伪静态，文章URL形如 https://www.mibei77.com/574.html，
+            # href 中【不再含】YYYYMMDD 日期；发布日期写在标题里，如「2026年08月15日免费精选节点205条」。
+            # 旧逻辑靠 href 含今日/昨日日期筛选 → 永远匹配不到，故报“未找到近2天的最新文章”。
+            # 新逻辑：从标题解析出 (年,月,日) → 近2天（含今天+昨天）优先；过期或无日期的节点文作兜底，
+            # 避免站点偶发断更时整轮抓取失败。
+            today = datetime.now()
+            recent_cutoff = today - timedelta(days=2)  # 含今天、昨天
+            dated, undated = [], []
+            seen_href = set()
             for a in soup.find_all('a', href=True):
                 href = a['href']
-                text = a.get_text(strip=True) + (a.get('title', ''))
-                # 条件：链接是http开头 + 含近2天日期 + （标题有关键词 或 链接含订阅相关后缀）
-                if (href.startswith("http") 
-                    and any(d in href for d in recent_dates)
-                    and (("节点" in text or "订阅" in text or "免费" in text) 
-                         or any(suffix in href for suffix in [".txt", ".yaml"]))):
-                    article_candidates.append((href, text))
-            # 按链接排序取最新
-            if article_candidates:
-                article_candidates.sort(key=lambda x: x[0], reverse=True)
-                latest_url, latest_title = article_candidates[0]
+                if not re.search(r'/(\d+)\.html$', href):
+                    continue
+                if href in seen_href:
+                    continue
+                seen_href.add(href)
+                text = (a.get_text(strip=True) + " " + a.get('title', '')).strip()
+                if not ("节点" in text or "订阅" in text or "免费" in text):
+                    continue
+                m = re.search(r'(\d{4})年(\d{1,2})月(\d{1,2})日', text)
+                art_date = None
+                if m:
+                    try:
+                        art_date = datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+                    except ValueError:
+                        art_date = None
+                if art_date is not None and art_date >= recent_cutoff:
+                    dated.append((art_date, href, text))
+                else:
+                    undated.append((art_date or datetime.min, href, text))
+            pool = dated if dated else undated
+            if pool:
+                pool.sort(key=lambda x: x[0], reverse=True)
+                latest_date, latest_url, latest_title = pool[0]
+                if not dated:
+                    _d = latest_date.strftime('%Y-%m-%d') if latest_date != datetime.min else "无日期"
+                    print(f"⚠️ [{site_name}] 近2天无新文章，退化取最新节点文（{_d}）")
                 print(f"✅ [{site_name}] 找到最新文章：{latest_title}")
                 print(f"   链接：{latest_url}")
                 return latest_url
