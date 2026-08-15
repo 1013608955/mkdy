@@ -11,9 +11,9 @@ on:
     paths:
       - 'verify_cn/verified.json'   # FC 直写回仓库时立即打标
 
-# 与「节点更新 + Clash配置转换」共用并发组，避免同一仓库并行推送互相 non-fast-forward 拒绝
+# 与「订阅合并（单源）」共用并发组，避免两者同时推送 main 导致 non-fast-forward 拒绝
 concurrency:
-  group: mkdy-nodes-clash
+  group: mkdy-subs
   cancel-in-progress: false
 
 permissions:

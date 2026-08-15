@@ -1,0 +1,72 @@
+# 订阅合并（单源 / 方案 B）
+# 取代旧的三段式工作流：update-tuijian.yml + update-nodes-and-clash.yml + mibei77.yml
+# 以及它们依赖的 SubConverter/Docker。
+#
+# 现在：单个工作流，每小时拉取全部源 -> 本地纯 Python 合并去重 -> 只提交 s-clash.yaml。
+# 仓库最终只保留两个订阅文件：s-clash.yaml（全量，喂给 verify_cn）+ s-verified.yaml（打标，由 verify-tag.yml 产出）。
+name: 订阅合并（单源）
+
+on:
+  schedule:
+    - cron: '0 */1 * * *'      # 每小时整点
+  workflow_dispatch:           # 允许手动触发
+
+# 与 verify-tag.yml 共用并发组，避免两者同时推送 main 导致 non-fast-forward 拒绝
+concurrency:
+  group: mkdy-subs
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 检出仓库（带 PAT 写权限）
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          fetch-depth: 1
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests pyyaml beautifulsoup4
+
+      # ---- 三个抓取脚本（源站可能不稳定，单源失败不影响整体合并） ----
+      - name: 抓取 tuijianvpn 订阅 -> s.txt
+        continue-on-error: true
+        run: python fetch_tuijian.py
+
+      - name: 抓取节点更新 -> s1.txt
+        continue-on-error: true
+        run: python update_nodes.py
+
+      - name: 抓取米贝77/Datiya -> s2.txt + s2-clash-1/2.yaml
+        continue-on-error: true
+        run: python fetch.py
+
+      # ---- 合并去重：所有源 -> 单个 s-clash.yaml ----
+      - name: 合并去重生成 s-clash.yaml
+        run: python merge_subs.py
+
+      - name: 提交并推送 s-clash.yaml
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # 只提交合并产物，其余临时文件（s.txt/s1.txt/s2.txt/s2-clash-*.yaml 等）不入库
+          git add s-clash.yaml
+          if git diff --cached --quiet; then
+            echo "[INFO] s-clash.yaml 无变化，跳过推送"
+          else
+            git commit -m "chore: 合并订阅 $(date +'%Y-%m-%d %H:%M UTC')"
+            git push
+            echo "[INFO] s-clash.yaml 已更新并推送"
+          fi
