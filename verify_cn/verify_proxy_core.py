@@ -128,8 +128,12 @@ def build_xray_config(node, local_port):
             ob["streamSettings"] = {"tlsSettings": {"serverName": node["sni"]}}
     else:
         return None
+    # 目标域名交给节点侧解析（domainStrategy=AsIs）：避免 xray 在国内用被污染的
+    # 8.8.8.8 解析 google/cloudflare 等；节点 server 若为域名，则用下方 dns(AliDNS) 解析。
+    ob["domainStrategy"] = "AsIs"
     return {"inbounds": [inbound],
             "outbounds": [ob, {"protocol": "freedom", "tag": "direct"}],
+            "dns": {"servers": ["223.5.5.5", "114.114.114.114"]},
             "log": {"loglevel": "warning"}}
 
 

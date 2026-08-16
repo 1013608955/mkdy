@@ -23,9 +23,17 @@ NODE_URL = os.environ.get(
     f"https://raw.githubusercontent.com/{OWNER}/{REPO}/main/s-clash.yaml",
 )
 TARGET = os.environ.get("TARGET_URL", "https://www.google.com/generate_204")
+# 兜底目标：google 单点可能被节点侧/特定 CDN 拦，任一能通即算节点可用，
+# 更贴近“客户端能上网”的判定（避免 google 单点误杀可用节点）。
+FALLBACK_TARGETS = [
+    "https://www.cloudflare.com/cdn-cgi/trace",
+    "https://api.ipify.org?format=json",
+]
 XRAY = os.environ.get("XRAY_BIN", "/code/xray")
 CONCURRENCY = int(os.environ.get("CONCURRENCY", "8"))
-TIMEOUT = int(os.environ.get("TIMEOUT", "8"))
+# 默认 15s：免费节点从 FC 机房链路多一跳，8s 偏紧易误杀慢但活的节点
+# （FC 函数超时 600s，211 节点并发 8 最坏 ~27 轮×15s≈405s，余量充足）。
+TIMEOUT = int(os.environ.get("TIMEOUT", "15"))
 API = "https://api.github.com"
 
 
@@ -39,9 +47,22 @@ def _ensure_xray_executable():
 
 
 def _verify_one(node):
-    ok, lat, det = verify_through_proxy(node, TARGET, TIMEOUT, XRAY)
+    """对单节点依次尝试 主目标 + 兜底目标，任一通即算 ok。
+    返回里 detail 标注命中哪个目标（便于事后审计误杀）。"""
+    targets = [TARGET] + FALLBACK_TARGETS
+    primary_err = None
+    for i, t in enumerate(targets):
+        ok, lat, det = verify_through_proxy(node, t, TIMEOUT, XRAY)
+        if i == 0:
+            primary_err = det
+        if ok:
+            return {"name": node.get("name"), "proto": node.get("proto"),
+                    "ok": True, "latency": round(lat, 3),
+                    "detail": f"ok via {t} ({det})"}
+    # 全部目标失败：保留主目标(google)的错误做头条，便于区分“彻底死”vs“仅 google 不通”
     return {"name": node.get("name"), "proto": node.get("proto"),
-            "ok": ok, "latency": round(lat, 3), "detail": det}
+            "ok": False, "latency": 0.0,
+            "detail": f"all_targets_fail(primary={primary_err})"}
 
 
 def commit_verified_json(owner, repo, token, verified):
