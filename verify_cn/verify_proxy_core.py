@@ -13,18 +13,57 @@
 import os
 import sys
 
-# 无服务器运行时（华为云 FunctionGraph 等）可能不会把代码目录可靠地加入
-# sys.path，或存在系统级同名 socks 模块遮蔽 PySocks。这里强制把代码目录放到
-# sys.path[0] 并显式 import socks，确保 urllib3 后续惰性 import socks 时拿到的是
-# 我们自带的 PySocks——否则会报 "Missing dependencies for SOCKS support"。
-_HERE = os.path.dirname(os.path.abspath(__file__))
-if _HERE not in sys.path:
-    sys.path.insert(0, _HERE)
-try:
-    import socks  # noqa: F401  PySocks，SOCKS5 代理验证必需
-except ImportError:
-    print("[verify] ⚠️ PySocks(socks) 无法导入，SOCKS5 验证将失败："
-          "Missing dependencies for SOCKS support")
+import importlib.util
+
+# 同 index.py：按候选目录带路径显式加载 PySocks(socks.py) 并注册到 sys.modules，
+# 赶在 urllib3 惰性 import socks 之前，避免 FunctionGraph 下报
+# "Missing dependencies for SOCKS support"。
+def _ensure_pysocks():
+    if "socks" in sys.modules and hasattr(sys.modules["socks"], "PROXY_TYPE_SOCKS5"):
+        return
+    roots = [os.path.dirname(os.path.abspath(__file__))]
+    for _env in ("RUNTIME_CODE_ROOT", "RUNTIME_CODE_DIR"):
+        _v = os.environ.get(_env)
+        if _v:
+            roots.append(_v)
+    roots += ["/opt/function/code", "/code", "/opt/function/code/code"]
+    _seen = set()
+    for _r in roots:
+        if not _r or _r in _seen:
+            continue
+        _seen.add(_r)
+        _p = os.path.join(_r, "socks.py")
+        if not os.path.exists(_p):
+            continue
+        try:
+            _spec = importlib.util.spec_from_file_location("socks", _p)
+            _mod = importlib.util.module_from_spec(_spec)
+            sys.modules["socks"] = _mod
+            _spec.loader.exec_module(_mod)
+            if hasattr(_mod, "PROXY_TYPE_SOCKS5"):
+                print(f"[verify] PySocks loaded from {_p}")
+                return
+            print(f"[verify] {_p} 非 PySocks（缺 PROXY_TYPE_SOCKS5），跳过")
+            del sys.modules["socks"]
+        except Exception as _e:  # noqa: BLE001
+            print(f"[verify] PySocks 从 {_p} 加载失败：{_e!r}")
+    for _d in list(sys.path):
+        _p = os.path.join(_d, "socks.py")
+        if os.path.exists(_p):
+            try:
+                _spec = importlib.util.spec_from_file_location("socks", _p)
+                _mod = importlib.util.module_from_spec(_spec)
+                sys.modules["socks"] = _mod
+                _spec.loader.exec_module(_mod)
+                if hasattr(_mod, "PROXY_TYPE_SOCKS5"):
+                    print(f"[verify] PySocks loaded from (sys.path) {_p}")
+                    return
+            except Exception:  # noqa: BLE001
+                pass
+    print("[verify] ⚠️ PySocks 未能加载，SOCKS5 验证将报 Missing dependencies for SOCKS support")
+
+
+_ensure_pysocks()
 
 import json
 import time
