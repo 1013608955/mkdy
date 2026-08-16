@@ -1,5 +1,5 @@
 # s-verified.yaml — 仅含中国出口(FC)验证通过的节点 + clash_template 规则模版
-# 来源 verified.json: 21 个 ok → 匹配 21（漂移跳过 0）
+# 来源 verified.json: 21 个 ok → 匹配 5（漂移跳过 16）
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -45,77 +45,29 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_3
-  - HK 🇭🇰 | @Raydikalx | B5AE6B
-  - 🇳🇱_NL_荷兰
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
-  - 🇺🇸_美国_158
-  - 🇳🇱_荷兰_201
-  - 电报群：https://t.me/vvkj11
-  - 🇫🇮_芬兰_184
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_4
-  - '[1808.ga]香港  | 线路定制：@QS00008'
-  - 🇱🇹_立陶宛_194
-  - 🇳🇱_荷兰_137
-  - HK12
   - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
-  - 美国+麻省理工学院
+  - 电报群：https://t.me/vvkj11
   - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - 🇵🇱_波兰_173
   - 🇩🇪_DE_德国
-  - 🇭🇰_香港_196
-  - 🇩🇪_德国_115
-  - HK 🇭🇰 | @Raydikalx | DE5D40
+  - '[1808.ga]香港  | 线路定制：@QS00008'
 - name: 自动选择
   type: url-test
   proxies:
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_3
-  - HK 🇭🇰 | @Raydikalx | B5AE6B
-  - 🇳🇱_NL_荷兰
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
-  - 🇺🇸_美国_158
-  - 🇳🇱_荷兰_201
-  - 电报群：https://t.me/vvkj11
-  - 🇫🇮_芬兰_184
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_4
-  - '[1808.ga]香港  | 线路定制：@QS00008'
-  - 🇱🇹_立陶宛_194
-  - 🇳🇱_荷兰_137
-  - HK12
   - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
-  - 美国+麻省理工学院
+  - 电报群：https://t.me/vvkj11
   - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - 🇵🇱_波兰_173
   - 🇩🇪_DE_德国
-  - 🇭🇰_香港_196
-  - 🇩🇪_德国_115
-  - HK 🇭🇰 | @Raydikalx | DE5D40
+  - '[1808.ga]香港  | 线路定制：@QS00008'
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_3
-  - HK 🇭🇰 | @Raydikalx | B5AE6B
-  - 🇳🇱_NL_荷兰
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
-  - 🇺🇸_美国_158
-  - 🇳🇱_荷兰_201
-  - 电报群：https://t.me/vvkj11
-  - 🇫🇮_芬兰_184
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_4
-  - '[1808.ga]香港  | 线路定制：@QS00008'
-  - 🇱🇹_立陶宛_194
-  - 🇳🇱_荷兰_137
-  - HK12
   - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
-  - 美国+麻省理工学院
+  - 电报群：https://t.me/vvkj11
   - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - 🇵🇱_波兰_173
   - 🇩🇪_DE_德国
-  - 🇭🇰_香港_196
-  - 🇩🇪_德国_115
-  - HK 🇭🇰 | @Raydikalx | DE5D40
+  - '[1808.ga]香港  | 线路定制：@QS00008'
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -636,44 +588,28 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: 🇺🇸_US_美国->🇹🇭_TH_泰国_3
-  type: vless
-  server: 18.238.109.17
+- name: '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
+  type: ss
+  server: 54.36.174.140
   port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-- name: HK 🇭🇰 | @Raydikalx | B5AE6B
-  type: vmess
-  server: nycqg19zkwacpm1b.v.3dns.vip
-  port: 443
-  uuid: f23bb427-c1f9-4373-876c-2f43e9f790f3
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /ws-vmess
-    headers:
-      Host: NYcQg19zkwaCPM1B.v.3dns.vip
-- name: 🇳🇱_NL_荷兰
+  cipher: chacha20-ietf-poly1305
+  password: ytw2awn
+- name: 电报群：https://t.me/vvkj11
   type: vless
-  server: france3.spaidan.ir
-  port: 35974
-  uuid: c7333a4e-b8c9-44d4-aee6-f73bfe203902
-  tls: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: france3.spaidan.ir
-- name: 🇺🇸_US_美国->🇹🇭_TH_泰国_2
+  server: 91.124.19.38
+  port: 443
+  uuid: 2cb6b4d9-0c74-45e2-a4fb-645bb8ac532a
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: nl6.o4ka-internet.com
+  servername: nl6.o4ka-internet.com
+  reality-opts:
+    public-key: V2JprbR_aJkS7uX6anyU3nrswGxdvDQT2HpY4WnzuC8
+    short-id: 5629431325884ff0
+    spider-x: ''
+  client-fingerprint: firefox
+- name: 🇺🇸_US_美国->🇹🇭_TH_泰国
   type: vless
   server: 52.84.199.28
   port: 443
@@ -686,59 +622,9 @@ proxies:
     path: /
     headers:
       Host: d1yxsk0zprgivr.cloudfront.net
-- name: 🇺🇸_美国_158
-  type: vmess
-  server: guanwang.awsno.com
-  port: 443
-  uuid: 6a89a215-22bf-4bd7-9642-b95b2e09583a
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: tcp
-- name: 🇳🇱_荷兰_201
+- name: 🇩🇪_DE_德国
   type: vless
-  server: 185.109.48.13
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-- name: 电报群：https://t.me/vvkj11
-  type: vless
-  server: 78.159.247.253
-  port: 2027
-  uuid: 851ed0d8-a37b-452d-8ef2-5b6c2d28a060
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: storage.yandex.net
-  servername: storage.yandex.net
-  reality-opts:
-    public-key: ISa-DZOI4LRRb9DHMFYm5oFqBXDjYzz0hVWUfWvzLmo
-    short-id: 8d3293f0066e129a
-    spider-x: ''
-  client-fingerprint: firefox
-- name: 🇫🇮_芬兰_184
-  type: vless
-  server: 65.109.12.58
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-- name: 🇺🇸_US_美国->🇹🇭_TH_泰国_4
-  type: vless
-  server: 18.238.109.26
+  server: 108.138.26.70
   port: 443
   uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
@@ -762,143 +648,3 @@ proxies:
     path: /
     headers:
       Host: n1747624260.4u9ma.icu
-- name: 🇱🇹_立陶宛_194
-  type: vless
-  server: 185.237.185.182
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-- name: 🇳🇱_荷兰_137
-  type: vless
-  server: nl6.o4ka-internet.com
-  port: 443
-  uuid: 2cb6b4d9-0c74-45e2-a4fb-645bb8ac532a
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: nl6.o4ka-internet.com
-  servername: nl6.o4ka-internet.com
-  reality-opts:
-    public-key: V2JprbR_aJkS7uX6anyU3nrswGxdvDQT2HpY4WnzuC8
-    short-id: 5629431325884ff0
-    spider-x: ''
-  client-fingerprint: random
-- name: HK12
-  type: vmess
-  server: 47.83.19.148
-  port: 443
-  uuid: f23bb427c1f94373876c2f43e9f790f3
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /ws-vmess
-    headers:
-      Host: 6jdvarazgu3qqr6q.v.3dns.vip
-  servername: 6jdvarazgu3qqr6q.v.3dns.vip
-- name: '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
-  type: ss
-  server: 54.36.174.140
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: ytw2awn
-- name: 美国+麻省理工学院
-  type: vless
-  server: 18.239.134.69
-  port: 80
-  uuid: de27291c-15a9-4256-9ba7-ad517569877e
-  tls: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: d2e1v87ko56lyw.cloudfront.net:assets.opensignal.com
-- name: 🇺🇸_US_美国->🇹🇭_TH_泰国
-  type: vless
-  server: 18.154.132.116
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-- name: 🇵🇱_波兰_173
-  type: vless
-  server: 31.133.0.70
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-- name: 🇩🇪_DE_德国
-  type: vless
-  server: 108.138.26.70
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-- name: 🇭🇰_香港_196
-  type: vmess
-  server: 47.243.39.251
-  port: 32913
-  uuid: 47506713-508e-441a-bb02-56eb679b4dc9
-  alterId: 0
-  cipher: auto
-  tls: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: 47.243.39.251
-- name: 🇩🇪_德国_115
-  type: vless
-  server: bel-03.node.lumixnet.com
-  port: 443
-  uuid: 8645697d-51c1-4e90-aca5-ba63a0392f11
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: bel-03.node.lumixnet.com
-  servername: bel-03.node.lumixnet.com
-  reality-opts:
-    public-key: vEXgvoW9iQo6iiKT71cNt1CC3cAB4IWswAn-cScDz1A
-    short-id: bd8a588cebc3395a
-    spider-x: ''
-  client-fingerprint: firefox
-- name: HK 🇭🇰 | @Raydikalx | DE5D40
-  type: vmess
-  server: 47.83.207.148
-  port: 443
-  uuid: f23bb427c1f94373876c2f43e9f790f3
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /ws-vmess
-    headers:
-      Host: vah4urdzl3jdx5r2.v.3dns.vip
-  servername: vah4urdzl3jdx5r2.v.3dns.vip
