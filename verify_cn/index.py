@@ -102,6 +102,7 @@ def _fetch_node_source():
         candidates += [
             f"https://ghproxy.net/{NODE_URL}",
             NODE_URL.replace("raw.githubusercontent.com", "raw.gitmirror.com"),
+            NODE_URL.replace("raw.githubusercontent.com", "raw.kkgithub.com"),
             f"https://cdn.jsdelivr.net/gh/{OWNER}/{REPO}@main/s-clash.yaml",
         ]
     last_err = None
@@ -128,24 +129,35 @@ def _fetch_node_source():
 
 
 def handler(event, context):
-    _ensure_xray_executable()
-    txt = _fetch_node_source()
-    nodes = parse_clash_yaml(txt)
-    with concurrent.futures.ThreadPoolExecutor(max_workers=CONCURRENCY) as ex:
-        results = list(ex.map(_verify_one, nodes))
-    verified = {
-        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "target": TARGET,
-        "count": len(results),
-        "ok": sum(1 for r in results if r["ok"]),
-        "nodes": results,
-    }
-    if TOKEN:
-        code = commit_verified_json(OWNER, REPO, TOKEN, verified)
-        print(f"[verify] committed verified.json -> HTTP {code}")
-    # 控制台日志可自诊断：打印失败原因分布
-    from collections import Counter
-    dc = Counter(r["detail"] for r in results)
-    print(f"[verify] {verified['ok']}/{len(results)} ok; "
-          f"target={TARGET}; details=" + "; ".join(f"{k}×{v}" for k, v in dc.most_common()))
-    return {"nodes": len(results), "ok": verified["ok"]}
+    # 整体包一层 try/except：FC 默认对未捕获异常只显示“返回结果为空”，
+    # 无法定位真因。改为返回带 traceback 的 JSON，便于下次直接看到失败点。
+    try:
+        _ensure_xray_executable()
+        txt = _fetch_node_source()
+        nodes = parse_clash_yaml(txt)
+        if not nodes:
+            return {"error": "解析节点源得到 0 个节点（节点源为空或格式异常）",
+                    "ok": 0, "count": 0}
+        with concurrent.futures.ThreadPoolExecutor(max_workers=CONCURRENCY) as ex:
+            results = list(ex.map(_verify_one, nodes))
+        verified = {
+            "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "target": TARGET,
+            "count": len(results),
+            "ok": sum(1 for r in results if r["ok"]),
+            "nodes": results,
+        }
+        if TOKEN:
+            code = commit_verified_json(OWNER, REPO, TOKEN, verified)
+            print(f"[verify] committed verified.json -> HTTP {code}")
+        # 控制台日志可自诊断：打印失败原因分布
+        from collections import Counter
+        dc = Counter(r["detail"] for r in results)
+        print(f"[verify] {verified['ok']}/{len(results)} ok; "
+              f"target={TARGET}; details=" + "; ".join(f"{k}×{v}" for k, v in dc.most_common()))
+        return {"nodes": len(results), "ok": verified["ok"]}
+    except Exception as e:
+        import traceback
+        tb = traceback.format_exc()
+        print(f"[verify][ERROR]\n{tb}")
+        return {"error": str(e), "traceback": tb, "ok": 0, "count": 0}
