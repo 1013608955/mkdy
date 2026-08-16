@@ -1,5 +1,5 @@
 # s-verified.yaml — 仅含中国出口(FC)验证通过的节点 + clash_template 规则模版
-# 来源 verified.json: 21 个 ok → 匹配 6（漂移跳过 15）
+# 来源 verified.json: 21 个 ok → 匹配 5（漂移跳过 16）
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -46,18 +46,16 @@ proxy-groups:
   - 自动选择
   - 故障转移
   - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - 美国+麻省理工学院
   - '[1808.ga]香港  | 线路定制：@QS00008'
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
-  - 🇩🇪_DE_德国
   - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
   - 电报群：https://t.me/vvkj11
 - name: 自动选择
   type: url-test
   proxies:
   - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - 美国+麻省理工学院
   - '[1808.ga]香港  | 线路定制：@QS00008'
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
-  - 🇩🇪_DE_德国
   - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
   - 电报群：https://t.me/vvkj11
   url: http://www.gstatic.com/generate_204
@@ -66,9 +64,8 @@ proxy-groups:
   type: fallback
   proxies:
   - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - 美国+麻省理工学院
   - '[1808.ga]香港  | 线路定制：@QS00008'
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
-  - 🇩🇪_DE_德国
   - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
   - 电报群：https://t.me/vvkj11
   url: http://www.gstatic.com/generate_204
@@ -604,6 +601,19 @@ proxies:
     path: /
     headers:
       Host: d1yxsk0zprgivr.cloudfront.net
+- name: 美国+麻省理工学院
+  type: vless
+  server: 18.238.109.26
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
 - name: '[1808.ga]香港  | 线路定制：@QS00008'
   type: vmess
   server: n1747624260.4u9ma.icu
@@ -617,29 +627,6 @@ proxies:
     path: /
     headers:
       Host: n1747624260.4u9ma.icu
-- name: 🇺🇸_US_美国->🇹🇭_TH_泰国_2
-  type: vless
-  server: 18.238.109.26
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-- name: 🇩🇪_DE_德国
-  type: vless
-  server: 64.188.112.82
-  port: 443
-  uuid: d4d4d103-5074-47e9-96e6-5431f4e35c57
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: nodefulcrum.mooo.com
-  servername: nodefulcrum.mooo.com
 - name: '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
   type: ss
   server: 54.36.174.140
