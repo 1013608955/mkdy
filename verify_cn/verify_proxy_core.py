@@ -11,6 +11,21 @@
 本文件不依赖任何云平台 SDK，可直接用于阿里云 FC / 腾讯云 SCF / 本地。
 """
 import os
+import sys
+
+# 无服务器运行时（华为云 FunctionGraph 等）可能不会把代码目录可靠地加入
+# sys.path，或存在系统级同名 socks 模块遮蔽 PySocks。这里强制把代码目录放到
+# sys.path[0] 并显式 import socks，确保 urllib3 后续惰性 import socks 时拿到的是
+# 我们自带的 PySocks——否则会报 "Missing dependencies for SOCKS support"。
+_HERE = os.path.dirname(os.path.abspath(__file__))
+if _HERE not in sys.path:
+    sys.path.insert(0, _HERE)
+try:
+    import socks  # noqa: F401  PySocks，SOCKS5 代理验证必需
+except ImportError:
+    print("[verify] ⚠️ PySocks(socks) 无法导入，SOCKS5 验证将失败："
+          "Missing dependencies for SOCKS support")
+
 import json
 import time
 import socket

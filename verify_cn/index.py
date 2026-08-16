@@ -6,6 +6,15 @@
 3. 生成 verified.json 并写回仓库（用最小权限 fine-grained PAT）。
 """
 import os
+import sys
+
+# 同 verify_proxy_core：强制代码目录进 sys.path[0]，避免 FunctionGraph 运行时
+# 不把代码目录入 path / 系统 socks 模块遮蔽 PySocks 导致 SOCKS5 验证报
+# "Missing dependencies for SOCKS support"。
+_HERE = os.path.dirname(os.path.abspath(__file__))
+if _HERE not in sys.path:
+    sys.path.insert(0, _HERE)
+
 import time
 import json
 import base64
