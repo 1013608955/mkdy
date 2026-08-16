@@ -1,21 +1,24 @@
-"""build_package.py — 把 verify_cn 打成可直接上传阿里云 FC 的代码包。
+"""build_package.py — verify_cn 打成可直接上传 FunctionGraph 的代码包 + 依赖包。
 
-产物：verify_cn/deploy.zip（不经临时目录，直接写 zip，避免 Windows 上删目录触发安全拦截）
-解压到 /code 后的结构：
-  index.py
-  verify_proxy_core.py
-  requirements.txt
-  xray                       (Linux x86_64 二进制，强制 0o755)
-  requests/  yaml/  socks.py  ...  (来自 _wheels 的 manylinux 轮子，合并到根)
+FunctionGraph 部署分两部分（与阿里云 FC 不同）：
+- 代码包（deploy.zip）：仅 index.py / verify_proxy_core.py / requirements.txt / xray
+  → 传到“代码”入口。
+- 依赖包（deploy_deps.zip）：requests / urllib3 / certifi / charset_normalizer /
+  idna / PyYAML / PySocks（私有依赖包）→ 控制台“函数依赖包”添加并挂到函数上，
+  其内容会自动加进 PYTHONPATH。
+
+代码包不放 Python 库——扁平打到 /opt/function 下不会被运行时识别为 sys.path 目录，
+导致 import 失败（Missing dependencies for SOCKS support 等）。
 """
 import os
 import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 WHEELS = os.path.join(HERE, "_wheels")
-OUT = os.path.join(HERE, "deploy.zip")
 XRAY_SRC = os.path.join(HERE, "xray")
 CODE_FILES = ["index.py", "verify_proxy_core.py", "requirements.txt"]
+CODE_OUT = os.path.join(HERE, "deploy.zip")
+DEPS_OUT = os.path.join(HERE, "deploy_deps.zip")
 
 
 def _mode_from_zip(zinfo):
@@ -35,11 +38,36 @@ def add_file(zf, full, arcname, mode):
         add_bytes(zf, f.read(), arcname, mode)
 
 
-def main():
-    if os.path.exists(OUT):
-        os.remove(OUT)
-    with zipfile.ZipFile(OUT, "w", zipfile.ZIP_DEFLATED) as z:
-        # 1) 合并所有 manylinux 轮子到 zip 根
+def _make_code_zip():
+    if os.path.exists(CODE_OUT):
+        os.remove(CODE_OUT)
+    with zipfile.ZipFile(CODE_OUT, "w", zipfile.ZIP_DEFLATED) as z:
+        for cf in CODE_FILES:
+            src = os.path.join(HERE, cf)
+            if os.path.exists(src):
+                add_file(z, src, cf, 0o644)
+                print(f"[code]  {cf}")
+            else:
+                print(f"[warn] missing {cf}")
+        if os.path.exists(XRAY_SRC):
+            add_file(z, XRAY_SRC, "xray", 0o755)
+            print("[xray]  xray -> 0o755")
+        else:
+            print("[ERROR] xray 二进制缺失！")
+    size = os.path.getsize(CODE_OUT)
+    print(f"[done]  {CODE_OUT}  ({size/1024/1024:.1f} MB)")
+    with zipfile.ZipFile(CODE_OUT) as z:
+        names = z.namelist()
+        ext = (z.getinfo("xray").external_attr >> 16) & 0xFFFF
+        print(f"[check] xray mode = {oct(ext)}  exec={'Y' if ext & 0o100 else 'N'}")
+        for f in CODE_FILES + ["xray"]:
+            print(f"[check] {f}: {'OK' if f in names else 'MISSING'}")
+
+
+def _make_deps_zip():
+    if os.path.exists(DEPS_OUT):
+        os.remove(DEPS_OUT)
+    with zipfile.ZipFile(DEPS_OUT, "w", zipfile.ZIP_DEFLATED) as z:
         for fn in sorted(os.listdir(WHEELS)):
             if not fn.endswith(".whl"):
                 continue
@@ -52,33 +80,21 @@ def main():
                     if rel.startswith("platlib/") or rel.startswith("purelib/"):
                         rel = rel.split("/", 1)[1]
                     add_bytes(z, wz.read(name), rel, _mode_from_zip(wz.getinfo(name)))
-        # 2) 代码文件
-        for cf in CODE_FILES:
-            src = os.path.join(HERE, cf)
-            if os.path.exists(src):
-                add_file(z, src, cf, 0o644)
-                print(f"[code]  {cf}")
-            else:
-                print(f"[warn] missing {cf}")
-        # 3) xray 二进制：强制 0o755
-        if os.path.exists(XRAY_SRC):
-            add_file(z, XRAY_SRC, "xray", 0o755)
-            print("[xray]  xray -> 0o755")
-        else:
-            print("[ERROR] xray 二进制缺失！")
-    size = os.path.getsize(OUT)
-    print(f"[done]  {OUT}  ({size/1024/1024:.1f} MB)")
-
-    # 自检
-    with zipfile.ZipFile(OUT) as z:
+    size = os.path.getsize(DEPS_OUT)
+    print(f"[done]  {DEPS_OUT}  ({size/1024/1024:.1f} MB)")
+    with zipfile.ZipFile(DEPS_OUT) as z:
         names = z.namelist()
-        ext = (z.getinfo("xray").external_attr >> 16) & 0xFFFF
-        print(f"[check] xray mode = {oct(ext)}  exec={'Y' if ext & 0o100 else 'N'}")
-        for pkg in ["requests/__init__.py", "yaml/__init__.py",
-                    "socks.py", "index.py", "verify_proxy_core.py"]:
+        for pkg in ["requests/__init__.py", "yaml/__init__.py", "socks.py",
+                    "urllib3/__init__.py", "charset_normalizer/__init__.py"]:
             print(f"[check] {pkg}: {'OK' if pkg in names else 'MISSING'}")
         so = [x for x in names if x.endswith(".so")]
         print(f"[check] .so bundled: {len(so)}  e.g. {so[:3]}")
+
+
+def main():
+    _make_code_zip()
+    print()
+    _make_deps_zip()
 
 
 if __name__ == "__main__":

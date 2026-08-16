@@ -11,65 +11,13 @@
 本文件不依赖任何云平台 SDK，可直接用于阿里云 FC / 腾讯云 SCF / 本地。
 """
 import os
-import sys
-
-import importlib.util
-
-# 同 index.py：按候选目录带路径显式加载 PySocks(socks.py) 并注册到 sys.modules，
-# 赶在 urllib3 惰性 import socks 之前，避免 FunctionGraph 下报
-# "Missing dependencies for SOCKS support"。
-def _ensure_pysocks():
-    if "socks" in sys.modules and hasattr(sys.modules["socks"], "PROXY_TYPE_SOCKS5"):
-        return
-    roots = [os.path.dirname(os.path.abspath(__file__))]
-    for _env in ("RUNTIME_CODE_ROOT", "RUNTIME_CODE_DIR"):
-        _v = os.environ.get(_env)
-        if _v:
-            roots.append(_v)
-    roots += ["/opt/function/code", "/code", "/opt/function/code/code"]
-    _seen = set()
-    for _r in roots:
-        if not _r or _r in _seen:
-            continue
-        _seen.add(_r)
-        _p = os.path.join(_r, "socks.py")
-        if not os.path.exists(_p):
-            continue
-        try:
-            _spec = importlib.util.spec_from_file_location("socks", _p)
-            _mod = importlib.util.module_from_spec(_spec)
-            sys.modules["socks"] = _mod
-            _spec.loader.exec_module(_mod)
-            if hasattr(_mod, "PROXY_TYPE_SOCKS5"):
-                print(f"[verify] PySocks loaded from {_p}")
-                return
-            print(f"[verify] {_p} 非 PySocks（缺 PROXY_TYPE_SOCKS5），跳过")
-            del sys.modules["socks"]
-        except Exception as _e:  # noqa: BLE001
-            print(f"[verify] PySocks 从 {_p} 加载失败：{_e!r}")
-    for _d in list(sys.path):
-        _p = os.path.join(_d, "socks.py")
-        if os.path.exists(_p):
-            try:
-                _spec = importlib.util.spec_from_file_location("socks", _p)
-                _mod = importlib.util.module_from_spec(_spec)
-                sys.modules["socks"] = _mod
-                _spec.loader.exec_module(_mod)
-                if hasattr(_mod, "PROXY_TYPE_SOCKS5"):
-                    print(f"[verify] PySocks loaded from (sys.path) {_p}")
-                    return
-            except Exception:  # noqa: BLE001
-                pass
-    print("[verify] ⚠️ PySocks 未能加载，SOCKS5 验证将报 Missing dependencies for SOCKS support")
-
-
-_ensure_pysocks()
-
 import json
 import time
 import socket
 import subprocess
 
+import requests
+import yaml
 import requests
 import yaml
 

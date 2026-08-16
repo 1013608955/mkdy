@@ -13,9 +13,11 @@
 ## 一、前置条件
 
 1. 华为云账号，已实名（函数工作流在 `cn-south-1` 华南-广州）。
-2. 本机已生成 `verify_cn/deploy.zip`（部署包，14.4MB，含 xray + 依赖 + 代码）。
-   - 路径：`C:/Users/Admin/.openclaw/workspace/mkdy/verify_cn/deploy.zip`
-   - 若需重建：`python verify_cn/build_package.py`（需先有 `verify_cn/xray` 与 `verify_cn/_wheels/`）。
+2. 本机已生成两份部署包（**代码包 + 依赖包分离**）：
+   - `verify_cn/deploy.zip`（~13MB）：仅代码 + xray，**不含 Python 库**。
+   - `verify_cn/deploy_deps.zip`（~1.4MB）：requests / urllib3 / certifi / charset_normalizer / idna / PyYAML / PySocks，纯 Python 库打平。
+   - 路径：`C:/Users/Admin/.openclaw/workspace/mkdy/verify_cn/`
+   - 重建：`python verify_cn/build_package.py`（需先有 `verify_cn/xray` 与 `verify_cn/_wheels/`）。
 3. GitHub **fine-grained PAT**（仅授权 `1013608955/mkdy` 仓库的 `Contents: write`），
    用于函数回写 `verify_cn/verified.json`。
 
@@ -36,16 +38,27 @@
 
 ---
 
-## 三、上传部署包
+## 三、上传依赖包 + 代码包
+
+**重要**：FunctionGraph 运行时**不会**把代码目录加入 `sys.path`——扁平打包的 Python 库
+（`requests/`、`socks.py` 等）放在代码包根目录会导致 `import socks` 失败、urllib3 报
+“Missing dependencies for SOCKS support”。Python 库必须通过**私有依赖包**上传，
+运行时才会自动加入 `PYTHONPATH`。
+
+### 步骤 A：上传私有依赖包（先做）
+
+1. 左侧菜单 **函数依赖包** → **私有依赖包** → **添加依赖包**。
+2. 选择 **本地上传 ZIP**，上传 `verify_cn/deploy_deps.zip`（1.4MB）。
+3. 运行时选择 **Python 3.10**，点击 **创建**。
+4. 创建后回到函数详情 → **依赖包管理**，把刚创建的依赖包**挂到本函数**。
+
+### 步骤 B：上传代码包
 
 1. 进入函数详情 → **代码** 标签页。
-2. 点击 **上传** → **本地 ZIP**，选择本机 `verify_cn/deploy.zip`。
-3. 上传后确认代码根目录出现：`index.py`、`verify_proxy_core.py`、`xray`、
-   `requests/`、`yaml/`、`socks.py` 等。
-4. 点击**部署**（Deploy）。
-
-> 华为云会把 zip 解压到 `/opt/function/code`，并自动把该目录加入 Python `sys.path`，
-> 因此 `import verify_proxy_core` / `import requests` 都能找到。
+2. 点击 **上传** → **本地 ZIP**，选择 `verify_cn/deploy.zip`（13MB）。
+3. 上传后确认代码根目录只有：`index.py`、`verify_proxy_core.py`、`xray`。
+   （**不应**再有 `requests/`、`yaml/`、`socks.py`——那些在依赖包目录里。）
+4. 点击 **部署**（Deploy）。
 
 ---
 
@@ -126,7 +139,8 @@ https://ghproxy.net/https://raw.githubusercontent.com/1013608955/mkdy/main/s-cla
 |---|---|---|
 | 代码目录 | `/code` | `/opt/function/code`（由 `RUNTIME_CODE_ROOT` 暴露） |
 | 入口 | `handler(event, context)` | 同左（完全一致） |
-| 部署包 | 标准 zip，`s deploy` 或控制台上传 | 标准 zip，控制台上传 |
+| 部署包 | 标准 zip，`s deploy` 或控制台上传 | **代码包 + 依赖包拆分**：代码 13MB（仅代码 + xray）+ 依赖 1.4MB（私有依赖包） |
+| 依赖管理 | 扁平打进代码 zip | **私有依赖包**分别上传，运行时自动加 PYTHONPATH（代码目录不会被加） |
 | 定时触发 | `s.yaml` timer / 控制台 | 定时触发器，`@every 1h` 或 `0 0 * * * *` |
 | 二进制执行 | 支持（/code/xray） | 支持（/opt/function/code/xray，subprocess 可执行） |
 | 出口 | 阿里云 cn-hangzhou 机房 IP | 华为云 cn-south-1 机房 IP |
