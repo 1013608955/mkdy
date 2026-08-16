@@ -29,7 +29,17 @@ FALLBACK_TARGETS = [
     "https://www.cloudflare.com/cdn-cgi/trace",
     "https://api.ipify.org?format=json",
 ]
-XRAY = os.environ.get("XRAY_BIN", "/code/xray")
+# xray 二进制路径：
+#  - 华为云 FunctionGraph 代码目录由 RUNTIME_CODE_ROOT 暴露（=/opt/function/code）
+#  - 阿里云 FC 代码在 /code
+#  - 本地调试：以上默认路径不存在时，回退到脚本所在目录
+_CODE_ROOT = os.environ.get("RUNTIME_CODE_ROOT") or "/code"
+_DEFAULT_XRAY = os.path.join(_CODE_ROOT, "xray")
+if not os.path.exists(_DEFAULT_XRAY):
+    _ALT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "xray")
+    if os.path.exists(_ALT):
+        _DEFAULT_XRAY = _ALT
+XRAY = os.environ.get("XRAY_BIN", _DEFAULT_XRAY)
 CONCURRENCY = int(os.environ.get("CONCURRENCY", "8"))
 # 默认 8s（按用户要求改回；FC 函数超时 600s 余量充足）。
 # 注：15s 仍可由 env TIMEOUT 覆盖；多目标兜底+阿里DNS已保留以降误杀。

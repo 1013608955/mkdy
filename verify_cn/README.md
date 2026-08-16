@@ -1,7 +1,10 @@
 # mkdy 中国出口验证探针（verify_cn）
 
-在中国大陆网络出口（阿里云函数计算 FC）上对代理节点做**真实链路验证**，
+在中国大陆网络出口（阿里云函数计算 FC / **华为云函数工作流 FunctionGraph**）上对代理节点做**真实链路验证**，
 产出 `已验证可用` 结论，回写仓库 `verify_cn/verified.json`。
+
+> 华为云部署指南见 [`HUAWEI_DEPLOY.md`](./HUAWEI_DEPLOY.md)（华南-广州 cn-south-1，从零手动部署约 2 分钟）。
+> 阿里云 FC 部署见 `s.yaml`（Serverless Devs）。
 
 ## 原理
 
@@ -19,7 +22,8 @@
 
 - `verify_proxy_core.py`：平台无关核心（`parse_clash_yaml` / `verify_through_proxy` / `build_xray_config`）。
 - `index.py`：FC 入口 `handler(event, context)`，拉节点 → 并发验证 → 写回 `verified.json`。
-- `s.yaml`：Serverless Devs 部署描述（含定时触发器）。
+- `s.yaml`：阿里云 Serverless Devs 部署描述（含定时触发器）。
+- `HUAWEI_DEPLOY.md`：华为云 FunctionGraph 控制台手动部署指南（华南-广州 cn-south-1）。
 - `requirements.txt`：Python 依赖。
 - `verified.json`：函数运行后**由其自身经 GitHub Contents API 直写**回仓库的结果（运行时生成，需配置 fine-grained PAT；非 GitHub Actions 代写）。
 
@@ -29,7 +33,7 @@
    - 下载 `xray-linux-64.zip`（与 FC 运行时同架构：x86_64 / amd64）。
    - 解压出 `xray` 可执行文件，放到本目录（`verify_cn/xray`），确保有执行权限
      （`chmod +x xray`）。部署时它会随 `codeUri: ./` 一起打包进函数。
-   - 函数内默认路径 `XRAY_BIN=/code/xray`（FC 把代码解包到 `/code`）。
+   - 函数内 xray 路径由代码自动探测：华为云 `RUNTIME_CODE_ROOT=/opt/function/code` → `/opt/function/code/xray`；阿里云 FC → `/code/xray`；本地 → 脚本同目录。**无需手动配置**，通过 `XRAY_BIN` 环境变量可覆盖。
    - 若 FC 基础镜像缺个别动态库，换用 `xray-linux-64-v8` 或自行 `ldd` 排查。
 
 2. **申请最小权限 Token**：
