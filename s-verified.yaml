@@ -46,28 +46,28 @@ proxy-groups:
   - 自动选择
   - 故障转移
   - 电报群：https://t.me/vvkj11
-  - 🇩🇪_DE_德国
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
   - '[1808.ga]香港  | 线路定制：@QS00008'
+  - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
 - name: 自动选择
   type: url-test
   proxies:
   - 电报群：https://t.me/vvkj11
-  - 🇩🇪_DE_德国
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
   - '[1808.ga]香港  | 线路定制：@QS00008'
+  - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
   - 电报群：https://t.me/vvkj11
-  - 🇩🇪_DE_德国
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
   - '[1808.ga]香港  | 线路定制：@QS00008'
+  - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -603,38 +603,6 @@ proxies:
     short-id: 5629431325884ff0
     spider-x: ''
   client-fingerprint: firefox
-- name: 🇩🇪_DE_德国
-  type: vless
-  server: 108.138.26.70
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-- name: 🇺🇸_US_美国->🇹🇭_TH_泰国
-  type: vless
-  server: 18.238.109.26
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-- name: '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
-  type: ss
-  server: 54.36.174.140
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: ytw2awn
 - name: '[1808.ga]香港  | 线路定制：@QS00008'
   type: vmess
   server: n1747624260.4u9ma.icu
@@ -648,3 +616,35 @@ proxies:
     path: /
     headers:
       Host: n1747624260.4u9ma.icu
+- name: '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
+  type: ss
+  server: 54.36.174.140
+  port: 443
+  cipher: chacha20-ietf-poly1305
+  password: ytw2awn
+- name: 🇺🇸_US_美国->🇹🇭_TH_泰国
+  type: vless
+  server: 52.84.199.28
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+- name: 🇺🇸_US_美国->🇹🇭_TH_泰国_2
+  type: vless
+  server: 18.238.109.26
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
