@@ -45,15 +45,18 @@ def get_latest_article_url(site):
             today = datetime.now()
             recent_cutoff = today - timedelta(days=2)  # 含今天、昨天
             dated, undated = [], []
-            seen_href = set()
+            # 同一文章URL常出现多次：缩略图<a><img>无文本、标题<a>有文本、评论<a#respond>。
+            # 若用 set 去重会固定第一个（空文本）版本，导致标题关键词/日期匹配失败 → 报“未找到”。
+            # 改为按 href 收集、保留【文本最长】的版本（即带完整标题的那一个）。
+            href_texts = {}
             for a in soup.find_all('a', href=True):
                 href = a['href']
                 if not re.search(r'/(\d+)\.html$', href):
                     continue
-                if href in seen_href:
-                    continue
-                seen_href.add(href)
                 text = (a.get_text(strip=True) + " " + a.get('title', '')).strip()
+                if href not in href_texts or len(text) > len(href_texts[href]):
+                    href_texts[href] = text
+            for href, text in href_texts.items():
                 if not ("节点" in text or "订阅" in text or "免费" in text):
                     continue
                 m = re.search(r'(\d{4})年(\d{1,2})月(\d{1,2})日', text)

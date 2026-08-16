@@ -15,8 +15,8 @@ Clash 订阅 `s-clash.yaml`；另有部署在阿里云函数计算（FC）的 `v
 3. `fetch.py` —— 爬取米贝77 / Datiya 等网站，产出 `s2.txt`（整文件 base64 节点）
    与 `s2-clash-1.yaml` / `s2-clash-2.yaml`（已是 Clash YAML）。
 4. `merge_subs.py` —— 把以上源（文件缺失自动跳过）解析为 Clash proxies、按
-   `(type, server, port, 密钥, cipher)` 去重、排序，写出干净的 `s-clash.yaml`
-   （仅含 `proxies:` 列表）。
+   `(type, server, port, 密钥, cipher)` 去重、排序，套用 `clash_template.yaml`
+   规则模版，写出含 `proxy-groups` / `rules` / `dns` 的**完整** `s-clash.yaml`。
 
 > 中间文件 `s.txt` / `s1.txt` / `s2.txt` / `s2-clash-*.yaml` 均为**运行期临时产物，
 > 不入库**；仓库最终只保留两个订阅产物：`s-clash.yaml`（全量，喂给 verify_cn）与
@@ -27,7 +27,7 @@ Clash 订阅 `s-clash.yaml`；另有部署在阿里云函数计算（FC）的 `v
 
 - **全量节点**（Clash YAML，v2rayN / Clash / NekoBox 等直接订阅）：
   `https://raw.githubusercontent.com/1013608955/mkdy/main/s-clash.yaml`
-- **已验证可用**（中国出口链路实测通过，节点名带 ✅ 前缀）：
+- **已验证可用**（仅含中国出口链路实测通过的节点，已套用规则模版）：
   `https://raw.githubusercontent.com/1013608955/mkdy/main/s-verified.yaml`
 
 > 说明：旧版 base64 单文件订阅（`s.txt` / `s1.txt` / `s2.txt`）已移除。v2rayN 等客户端
@@ -40,8 +40,9 @@ Clash 订阅 `s-clash.yaml`；另有部署在阿里云函数计算（FC）的 `v
 - 读取 `s-clash.yaml` 的 `proxies`（通过环境变量 `NODE_SOURCE_URL` 指定，默认即该文件）；
 - 借助内置 xray，以每个节点为出口 SOCKS 代理，实测能否从中国网络连通目标；
 - 把逐节点结果（含诊断 `detail`）写入 `verify_cn/verified.json`（经 GitHub Contents API 回写仓库）；
-- `verify-tag.yml` 触发 `tag_verified.py`：读 `verified.json` + `s-clash.yaml` → 给通过节点
-  名加 ✅ 前缀，输出 `s-verified.yaml`，并同步改写 proxy-groups 里的引用。
+- `verify-tag.yml` 触发 `tag_verified.py`：读 `verified.json` + `s-clash.yaml` + `clash_template.yaml`
+  → 筛出验证通过（ok=true）的节点，套用「短期」规则模版（`proxy-groups` / `rules` / `dns`），
+  输出**仅含验证通过节点**的完整 `s-verified.yaml`（无需手动挑 ✅）。
 
 ## ⚠️ 验证边界（重要）
 
