@@ -261,7 +261,9 @@ def dns_resolve(domain: str) -> Tuple[bool, List[str]]:
 # 默认不调用（无 IPINFO_TOKEN 时直接返回 unknown，仅损失住宅/机房细分加分，不影响主筛选）；
 # 配置 token 时串行化并在单次运行配额内查询，杜绝超时/限流拖垮 CI。
 _IPINFO_LOCK = threading.Lock()
-_IPINFO_QUOTA = {"used": 0, "cap": 100}
+# P2：免费 token 每月 5 万次但并发限流严、单次 300ms+，默认不开启；开 token 时
+# 单次运行最多查 50 个，其余回退 unknown，避免 ipinfo 拖垮 CI 的 10 分钟超时窗口。
+_IPINFO_QUOTA = {"used": 0, "cap": 50}
 
 @lru_cache(maxsize=1000)
 def get_ip_type(ip: str) -> str:
@@ -422,13 +424,20 @@ def parse_node(line: str) -> Tuple[Optional[Dict], str]:
                 return None, "" # 解析失败也返回空 proto
     return None, "" # 未知协议
 # ========== 检测函数（优化后）==========
-def probe_proxy_handshake(ip: str, port: int, proto: str, sni: str = "") -> Tuple[bool, str, float]:
+def probe_proxy_handshake(ip: str, port: int, proto: str, sni: str = "",
+                          use_tls: bool = True) -> Tuple[bool, str, float]:
     """GitHub(US)侧代理端点可达性探测 —— 仅作【评分信号】，绝不硬过滤。
 
     背景（评审§5.1）：GitHub 运行于境外网络，无法验证'该节点能否从中国绕过 GFW'。
     真正的可用性应在【客户端 url-test】验证（建议在客户端配置
     url_test=https://cp.cloudflare.com/generate_204）。本函数只探测'从 GitHub 网络能否
     与该代理端点建立握手'，用于给'境外可达'节点小幅加分。
+
+    修复P0：TLS 握手仅用于 security_type 为 tls/reality 的节点（由调用方经 use_tls 传入）。
+    之前 vmess 的 non-TLS 节点（security_type=none/aead）也被强制走 TLS 握手，
+    必然握手失败 → prescreen_fail → 白白丢掉 http_valid(+8) 加分。
+    修复P1：ss 节点 TCP 建连成功后额外做 1 次静默探测（真 ss 服务端不会主动发言）；
+    若立刻收到数据/EOF，判定为疑似伪节点（仅降信号，不做硬过滤）。
 
     降级保护：任何异常 / 超时 / 中国 IP 一律回退（返回 False，但节点不淘汰），
     仅当握手确实成功时返回 (True, ...)，用于加分。绝不误杀。"""
@@ -442,8 +451,8 @@ def probe_proxy_handshake(ip: str, port: int, proto: str, sni: str = "") -> Tupl
         return False, "cn_skip", 0.0
     timeout = min((CONFIG["detection"]["tcp_timeout"].get(proto, 5) or 5) + 2, 8)
     try:
-        if proto in ("trojan", "vless", "vmess"):
-            # TLS 握手探测（Trojan/tls 类真实可达性；Reality 也走 TLS）
+        if use_tls and proto in ("trojan", "vless", "vmess"):
+            # TLS 握手探测（Trojan/tls/reality 类真实可达性）
             ctx = ssl.create_default_context()
             ctx.check_hostname = False
             ctx.verify_mode = ssl.CERT_NONE
@@ -453,10 +462,20 @@ def probe_proxy_handshake(ip: str, port: int, proto: str, sni: str = "") -> Tupl
                     _tls.do_handshake()
             return True, "tls_ok", time.time() - start
         else:
-            # ss / hysteria 等：TCP 连通性退化探测（无 TLS 语义）
+            # ss / hysteria / non-TLS vmess 等：TCP 连通性退化探测（无 TLS 语义）
             start = time.time()
             with socket.create_connection((addr, port), timeout=timeout) as _sock:
-                pass
+                if proto == "ss":
+                    # P1：伪节点识别。真 ss 服务端在客户端发动前不发言、不关闭连接；
+                    # 建连后立刻收到数据(非 ss 服务 banner)或 EOF(立即关连) → 疑似伪节点。
+                    _sock.settimeout(1.5)
+                    try:
+                        _b = _sock.recv(1)
+                    except socket.timeout:
+                        pass  # 正常：ss 静默等待客户端发动
+                    else:
+                        _reason = "ss_eof" if _b == b"" else "ss_banner"
+                        return False, f"prescreen_suspect:{_reason}", 0.0
             return True, "tcp_ok", time.time() - start
     except Exception as e:
         # 任何异常（超时/DNS/连接拒绝/TLS 错误）都属“握手未通过”，必须标为失败，
@@ -534,7 +553,9 @@ def process_single_node_final(node: Union[str, Dict]) -> Tuple[Optional[str], Di
     if not ok:
         return None, {}, 0
     # 修复B2：GitHub 侧代理握手探测，仅作评分信号（outside_ok），绝不据此过滤
-    outside_ok, outside_detail, _ = probe_proxy_handshake(address, port, proto, domain)
+    # 修复P0：仅 security_type 为 tls/reality 的节点做 TLS 握手，non-TLS 节点走 TCP 探测
+    use_tls = security_type in ("tls", "reality")
+    outside_ok, outside_detail, _ = probe_proxy_handshake(address, port, proto, domain, use_tls)
     score = calculate_node_score(proto, security_type, port, dns_ok, outside_ok, rt, is_cn, stability, ip_type)
     # 修复B1：此处不再按单节点自身分数算阈值过滤（原逻辑等于失效）；统一在 process_nodes_final 基于全体分布算一次动态阈值
     node_info = {
@@ -543,7 +564,7 @@ def process_single_node_final(node: Union[str, Dict]) -> Tuple[Optional[str], Di
         "outside_ok": outside_ok, "is_cn": is_cn, "stability": stability, "ip_type": ip_type,
         "source_url": node.get("source_url", "") if isinstance(node, dict) else ""
     }
-    LOG.info(f"✅ 通过预筛（{score}分） {address}:{port} ({proto}) RT:{rt:.2f}s 稳定性:{stability:.0%} outside:{outside_detail}")
+    LOG.debug(f"✅ 通过预筛（{score}分） {address}:{port} ({proto}) RT:{rt:.2f}s 稳定性:{stability:.0%} outside:{outside_detail}")
     return raw_line, node_info, score
 # ========== 去重（优化后）==========
 def dedup_nodes_final(nodes: List[Dict]) -> List[Dict]:
