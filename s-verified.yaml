@@ -1,5 +1,5 @@
 # s-verified.yaml — 仅含中国出口(FC)验证通过的节点 + clash_template 规则模版
-# 来源 verified.json: 21 个 ok → 匹配 3（漂移跳过 18）
+# 来源 verified.json: 21 个 ok → 匹配 4（漂移跳过 17）
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -45,23 +45,26 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - '[1808.ga]香港  | 线路定制：@QS00008'
   - 电报群：https://t.me/vvkj11
   - 🇩🇪_DE_德国
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - '[1808.ga]香港  | 线路定制：@QS00008'
 - name: 自动选择
   type: url-test
   proxies:
-  - '[1808.ga]香港  | 线路定制：@QS00008'
   - 电报群：https://t.me/vvkj11
   - 🇩🇪_DE_德国
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - '[1808.ga]香港  | 线路定制：@QS00008'
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - '[1808.ga]香港  | 线路定制：@QS00008'
   - 电报群：https://t.me/vvkj11
   - 🇩🇪_DE_德国
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - '[1808.ga]香港  | 线路定制：@QS00008'
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -582,19 +585,6 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: '[1808.ga]香港  | 线路定制：@QS00008'
-  type: vmess
-  server: n1747624260.4u9ma.icu
-  port: 443
-  uuid: eee8cb72-7eab-4034-a308-ed06cb07e003
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: n1747624260.4u9ma.icu
 - name: 电报群：https://t.me/vvkj11
   type: vless
   server: 91.124.19.38
@@ -620,3 +610,29 @@ proxies:
   network: tcp
   sni: nodefulcrum.mooo.com
   servername: nodefulcrum.mooo.com
+- name: 🇺🇸_US_美国->🇹🇭_TH_泰国
+  type: vless
+  server: 18.238.109.26
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+- name: '[1808.ga]香港  | 线路定制：@QS00008'
+  type: vmess
+  server: n1747624260.4u9ma.icu
+  port: 443
+  uuid: eee8cb72-7eab-4034-a308-ed06cb07e003
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: n1747624260.4u9ma.icu
