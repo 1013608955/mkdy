@@ -35,6 +35,10 @@ CONCURRENCY = int(os.environ.get("CONCURRENCY", "8"))
 # 注：15s 仍可由 env TIMEOUT 覆盖；多目标兜底+阿里DNS已保留以降误杀。
 TIMEOUT = int(os.environ.get("TIMEOUT", "8"))
 API = "https://api.github.com"
+HEADERS = {"User-Agent": "Mozilla/5.0 (verify-cn)"}
+# 节点源拉取超时（独立于节点验证 TIMEOUT）：raw.githubusercontent.com 在中国大陆
+# 常被墙/极慢，命中后会等到超时再切镜像；20s 是“可达则快、不可达不过久等”的折中。
+NODE_FETCH_TIMEOUT = int(os.environ.get("NODE_FETCH_TIMEOUT", "20"))
 
 
 def _ensure_xray_executable():
@@ -88,21 +92,44 @@ def commit_verified_json(owner, repo, token, verified):
     return r.status_code
 
 
+def _fetch_node_source():
+    """拉取节点源，带镜像兜底。FC 在中国大陆，直连 raw.githubusercontent.com
+    常被墙/超时（GFW 对 raw.github 不稳定），故依次尝试 原URL + ghproxy /
+    gitmirror / jsDelivr 镜像，返回首个可用的 YAML 文本；每个候选都做
+    “是否像节点订阅”的 sanity 校验，避免把镜像的错误页当成节点源。"""
+    candidates = [NODE_URL]
+    if "raw.githubusercontent.com" in NODE_URL:
+        candidates += [
+            f"https://ghproxy.net/{NODE_URL}",
+            NODE_URL.replace("raw.githubusercontent.com", "raw.gitmirror.com"),
+            f"https://cdn.jsdelivr.net/gh/{OWNER}/{REPO}@main/s-clash.yaml",
+        ]
+    last_err = None
+    for url in candidates:
+        try:
+            r = requests.get(url, timeout=NODE_FETCH_TIMEOUT, headers=HEADERS)
+            r.raise_for_status()
+            txt = r.text
+            _ok = ("proxies:" in txt) or any(
+                s in txt for s in ("vmess://", "vless://", "trojan://", "ss://", "hysteria"))
+            if not _ok:
+                print(f"[verify] ⚠️ {url} 返回内容不像节点订阅，跳过")
+                continue
+            print(f"[verify] 节点源拉取成功：{url} ({len(txt)} bytes)")
+            return txt
+        except Exception as e:
+            last_err = e
+            print(f"[verify] 节点源拉取失败 {url}: {e}")
+    raise RuntimeError(
+        f"[verify] 所有节点源候选均失败（末错：{last_err}）；"
+        f"raw.githubusercontent.com 在中国大陆常被墙，可在 FC 环境变量 "
+        f"NODE_SOURCE_URL 直接改为镜像地址（如 https://ghproxy.net/...）"
+    )
+
+
 def handler(event, context):
     _ensure_xray_executable()
-    r = requests.get(NODE_URL, timeout=30)
-    r.raise_for_status()
-    txt = r.text
-    # 最小 sanity：确认返回内容确为节点订阅，避免把 GitHub 的 HTML 错误页
-    # （404/502 等）静默当成节点源、产出空 verified.json 还报“成功”。
-    _looks_like_nodes = ("proxies:" in txt) or any(
-        s in txt for s in ("vmess://", "vless://", "trojan://", "ss://", "hysteria")
-    )
-    if not _looks_like_nodes:
-        raise RuntimeError(
-            f"[verify] NODE_SOURCE_URL 返回内容不像节点订阅 "
-            f"(HTTP {r.status_code}, len={len(txt)}); 中止以免静默空验"
-        )
+    txt = _fetch_node_source()
     nodes = parse_clash_yaml(txt)
     with concurrent.futures.ThreadPoolExecutor(max_workers=CONCURRENCY) as ex:
         results = list(ex.map(_verify_one, nodes))
