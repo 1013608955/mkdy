@@ -45,29 +45,29 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - 美国+麻省理工学院
-  - '[1808.ga]香港  | 线路定制：@QS00008'
   - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
   - 电报群：https://t.me/vvkj11
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - 🇩🇪_DE_德国
+  - '[1808.ga]香港  | 线路定制：@QS00008'
 - name: 自动选择
   type: url-test
   proxies:
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - 美国+麻省理工学院
-  - '[1808.ga]香港  | 线路定制：@QS00008'
   - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
   - 电报群：https://t.me/vvkj11
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - 🇩🇪_DE_德国
+  - '[1808.ga]香港  | 线路定制：@QS00008'
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - 美国+麻省理工学院
-  - '[1808.ga]香港  | 线路定制：@QS00008'
   - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
   - 电报群：https://t.me/vvkj11
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - 🇩🇪_DE_德国
+  - '[1808.ga]香港  | 线路定制：@QS00008'
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -588,6 +588,27 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
+- name: '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
+  type: ss
+  server: 54.36.174.140
+  port: 443
+  cipher: chacha20-ietf-poly1305
+  password: ytw2awn
+- name: 电报群：https://t.me/vvkj11
+  type: vless
+  server: 91.124.19.38
+  port: 443
+  uuid: 2cb6b4d9-0c74-45e2-a4fb-645bb8ac532a
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: nl6.o4ka-internet.com
+  servername: nl6.o4ka-internet.com
+  reality-opts:
+    public-key: V2JprbR_aJkS7uX6anyU3nrswGxdvDQT2HpY4WnzuC8
+    short-id: 5629431325884ff0
+    spider-x: ''
+  client-fingerprint: firefox
 - name: 🇺🇸_US_美国->🇹🇭_TH_泰国
   type: vless
   server: 52.84.199.28
@@ -601,9 +622,9 @@ proxies:
     path: /
     headers:
       Host: d1yxsk0zprgivr.cloudfront.net
-- name: 美国+麻省理工学院
+- name: 🇩🇪_DE_德国
   type: vless
-  server: 18.238.109.26
+  server: 108.138.26.70
   port: 443
   uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
@@ -627,24 +648,3 @@ proxies:
     path: /
     headers:
       Host: n1747624260.4u9ma.icu
-- name: '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
-  type: ss
-  server: 54.36.174.140
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: ytw2awn
-- name: 电报群：https://t.me/vvkj11
-  type: vless
-  server: 91.124.19.38
-  port: 443
-  uuid: 2cb6b4d9-0c74-45e2-a4fb-645bb8ac532a
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: nl6.o4ka-internet.com
-  servername: nl6.o4ka-internet.com
-  reality-opts:
-    public-key: V2JprbR_aJkS7uX6anyU3nrswGxdvDQT2HpY4WnzuC8
-    short-id: 5629431325884ff0
-    spider-x: ''
-  client-fingerprint: firefox
