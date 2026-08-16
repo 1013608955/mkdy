@@ -426,36 +426,49 @@ def main():
     # 5) 稳定排序（便于 diff）
     merged.sort(key=lambda n: (n.get("type", ""), n.get("server", ""), int(n.get("port") or 0)))
 
-    # 6) 写出（仅 proxies 列表，兼容 v2rayN 与 verify_cn）
-    # 注意：header 只放注释，proxies: 由下方 dump 产出，避免重复 key。
+    # 6) 写出（完整 Clash 配置：mode + dns + proxies + proxy-groups + rules）
+    #    加载 clash_template.yaml 模版，把 __ALL_PROXIES__ 占位符替换为实际节点名，
+    #    使 s-clash.yaml 成为可直接导入 Clash/Clash Verge 的完整配置（不再是裸 proxies 列表）。
+    template_path = os.path.join(base, "clash_template.yaml")
+    if not os.path.exists(template_path):
+        print(f"[merge][WARN] 模版文件 {template_path} 不存在，退化为仅 proxies 输出", file=sys.stderr)
+        body = yaml.safe_dump({"proxies": merged}, allow_unicode=True, sort_keys=False, default_flow_style=False)
+        out_path = os.path.join(base, args.out)
+        with open(out_path, "w", encoding="utf-8") as f:
+            f.write(body)
+        print(f"[merge] 原始 {len(nodes)} 条 -> 去重后 {len(merged)} 条 -> {args.out} (无模版)")
+        return
+
+    with open(template_path, encoding="utf-8") as f:
+        doc = yaml.safe_load(f) or {}
+
+    # 注入实际节点
+    all_names = [p["name"] for p in merged]
+    doc["proxies"] = merged
+
+    # 把 proxy-groups 里的 __ALL_PROXIES__ 占位符展开为全部节点名
+    for g in doc.get("proxy-groups", []) or []:
+        plist = g.get("proxies")
+        if isinstance(plist, list):
+            new_list = []
+            for item in plist:
+                if item == "__ALL_PROXIES__":
+                    new_list.extend(all_names)
+                else:
+                    new_list.append(item)
+            g["proxies"] = new_list
+
     header = (
-        "# Auto-merged subscription (mkdy)\n"
+        "# Auto-merged subscription (mkdy) — full Clash config with rules\n"
         f"# sources: {', '.join(TXT_SOURCES)} + {', '.join(YAML_SOURCES)}\n"
-        f"# raw={len(nodes)} unique={len(merged)}\n"
-    )
-    body = yaml.safe_dump(
-        {"proxies": merged},
-        allow_unicode=True,
-        sort_keys=False,
-        default_flow_style=False,
+        f"# raw={len(nodes)} unique={len(merged)} groups={len(doc.get('proxy-groups', []))} rules={len(doc.get('rules', []))}\n"
     )
     out_path = os.path.join(base, args.out)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(header)
-        # 重新缩进 proxies 下的序列项，确保兼容性
-        lines = body.splitlines()
-        final = []
-        for i, ln in enumerate(lines):
-            if i == 0 and ln == "proxies:":
-                final.append(ln)
-            elif ln.startswith("- "):
-                final.append("  " + ln)
-            else:
-                # 续行（属于上一个列表项）保持 4 格缩进
-                final.append("  " + ln if ln else ln)
-        f.write("\n".join(final) + "\n")
+        yaml.safe_dump(doc, f, allow_unicode=True, sort_keys=False, default_flow_style=False, width=10000)
 
-    print(f"[merge] 原始 {len(nodes)} 条 -> 去重后 {len(merged)} 条 -> {args.out}")
+    print(f"[merge] 原始 {len(nodes)} 条 -> 去重后 {len(merged)} 条 -> {args.out} (含规则层)")
 
 
 if __name__ == "__main__":
