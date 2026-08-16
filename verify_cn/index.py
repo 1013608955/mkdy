@@ -31,9 +31,9 @@ FALLBACK_TARGETS = [
 ]
 XRAY = os.environ.get("XRAY_BIN", "/code/xray")
 CONCURRENCY = int(os.environ.get("CONCURRENCY", "8"))
-# 默认 15s：免费节点从 FC 机房链路多一跳，8s 偏紧易误杀慢但活的节点
-# （FC 函数超时 600s，211 节点并发 8 最坏 ~27 轮×15s≈405s，余量充足）。
-TIMEOUT = int(os.environ.get("TIMEOUT", "15"))
+# 默认 8s（按用户要求改回；FC 函数超时 600s 余量充足）。
+# 注：15s 仍可由 env TIMEOUT 覆盖；多目标兜底+阿里DNS已保留以降误杀。
+TIMEOUT = int(os.environ.get("TIMEOUT", "8"))
 API = "https://api.github.com"
 
 
