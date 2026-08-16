@@ -45,25 +45,25 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - '[1808.ga]香港  | 线路定制：@QS00008'
   - 🇩🇪_DE_德国
+  - '[1808.ga]香港  | 线路定制：@QS00008'
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
   - 电报群：https://t.me/vvkj11
 - name: 自动选择
   type: url-test
   proxies:
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - '[1808.ga]香港  | 线路定制：@QS00008'
   - 🇩🇪_DE_德国
+  - '[1808.ga]香港  | 线路定制：@QS00008'
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
   - 电报群：https://t.me/vvkj11
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - '[1808.ga]香港  | 线路定制：@QS00008'
   - 🇩🇪_DE_德国
+  - '[1808.ga]香港  | 线路定制：@QS00008'
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
   - 电报群：https://t.me/vvkj11
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -585,9 +585,9 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: 🇺🇸_US_美国->🇹🇭_TH_泰国
+- name: 🇩🇪_DE_德国
   type: vless
-  server: 52.84.199.28
+  server: 108.138.26.70
   port: 443
   uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
@@ -611,9 +611,9 @@ proxies:
     path: /
     headers:
       Host: n1747624260.4u9ma.icu
-- name: 🇩🇪_DE_德国
+- name: 🇺🇸_US_美国->🇹🇭_TH_泰国
   type: vless
-  server: 108.138.26.70
+  server: 52.84.199.28
   port: 443
   uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
