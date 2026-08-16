@@ -45,29 +45,29 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - '[1808.ga]香港  | 线路定制：@QS00008'
-  - 🇩🇪_DE_德国
   - 电报群：https://t.me/vvkj11
+  - 🇩🇪_DE_德国
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
+  - '[1808.ga]香港  | 线路定制：@QS00008'
 - name: 自动选择
   type: url-test
   proxies:
-  - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - '[1808.ga]香港  | 线路定制：@QS00008'
-  - 🇩🇪_DE_德国
   - 电报群：https://t.me/vvkj11
+  - 🇩🇪_DE_德国
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
+  - '[1808.ga]香港  | 线路定制：@QS00008'
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - '[1808.ga]香港  | 线路定制：@QS00008'
-  - 🇩🇪_DE_德国
   - 电报群：https://t.me/vvkj11
+  - 🇩🇪_DE_德国
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
+  - '[1808.ga]香港  | 线路定制：@QS00008'
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -588,48 +588,6 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
-  type: ss
-  server: 54.36.174.140
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: ytw2awn
-- name: 🇺🇸_US_美国->🇹🇭_TH_泰国
-  type: vless
-  server: 52.84.199.28
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-- name: '[1808.ga]香港  | 线路定制：@QS00008'
-  type: vmess
-  server: n1747624260.4u9ma.icu
-  port: 443
-  uuid: eee8cb72-7eab-4034-a308-ed06cb07e003
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: n1747624260.4u9ma.icu
-- name: 🇩🇪_DE_德国
-  type: vless
-  server: 64.188.112.82
-  port: 443
-  uuid: d4d4d103-5074-47e9-96e6-5431f4e35c57
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: nodefulcrum.mooo.com
-  servername: nodefulcrum.mooo.com
 - name: 电报群：https://t.me/vvkj11
   type: vless
   server: 91.124.19.38
@@ -645,3 +603,48 @@ proxies:
     short-id: 5629431325884ff0
     spider-x: ''
   client-fingerprint: firefox
+- name: 🇩🇪_DE_德国
+  type: vless
+  server: 108.138.26.70
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+- name: 🇺🇸_US_美国->🇹🇭_TH_泰国
+  type: vless
+  server: 18.238.109.26
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+- name: '[Rawdroid/Free-servers]法国+格拉沃利讷OVH数据中心'
+  type: ss
+  server: 54.36.174.140
+  port: 443
+  cipher: chacha20-ietf-poly1305
+  password: ytw2awn
+- name: '[1808.ga]香港  | 线路定制：@QS00008'
+  type: vmess
+  server: n1747624260.4u9ma.icu
+  port: 443
+  uuid: eee8cb72-7eab-4034-a308-ed06cb07e003
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: n1747624260.4u9ma.icu
