@@ -45,29 +45,29 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
+  - '[1808.ga]香港  | 线路定制：@QS00008'
+  - 🇩🇪_DE_德国
   - 电报群：https://t.me/vvkj11
   - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
-  - 🇩🇪_DE_德国
-  - '[1808.ga]香港  | 线路定制：@QS00008'
 - name: 自动选择
   type: url-test
   proxies:
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
+  - '[1808.ga]香港  | 线路定制：@QS00008'
+  - 🇩🇪_DE_德国
   - 电报群：https://t.me/vvkj11
   - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
-  - 🇩🇪_DE_德国
-  - '[1808.ga]香港  | 线路定制：@QS00008'
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
+  - '[1808.ga]香港  | 线路定制：@QS00008'
+  - 🇩🇪_DE_德国
   - 电报群：https://t.me/vvkj11
   - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
-  - 🇩🇪_DE_德国
-  - '[1808.ga]香港  | 线路定制：@QS00008'
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -588,6 +588,45 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
+- name: 🇺🇸_US_美国->🇹🇭_TH_泰国_2
+  type: vless
+  server: 18.238.109.26
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+- name: '[1808.ga]香港  | 线路定制：@QS00008'
+  type: vmess
+  server: n1747624260.4u9ma.icu
+  port: 443
+  uuid: eee8cb72-7eab-4034-a308-ed06cb07e003
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: n1747624260.4u9ma.icu
+- name: 🇩🇪_DE_德国
+  type: vless
+  server: 108.138.26.70
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
 - name: 电报群：https://t.me/vvkj11
   type: vless
   server: 91.124.19.38
@@ -616,42 +655,3 @@ proxies:
     path: /
     headers:
       Host: d1yxsk0zprgivr.cloudfront.net
-- name: 🇺🇸_US_美国->🇹🇭_TH_泰国_2
-  type: vless
-  server: 18.238.109.26
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-- name: 🇩🇪_DE_德国
-  type: vless
-  server: 108.138.26.70
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-- name: '[1808.ga]香港  | 线路定制：@QS00008'
-  type: vmess
-  server: n1747624260.4u9ma.icu
-  port: 443
-  uuid: eee8cb72-7eab-4034-a308-ed06cb07e003
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: n1747624260.4u9ma.icu
