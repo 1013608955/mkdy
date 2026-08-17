@@ -49,7 +49,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "[INFO] s-verified.yaml 无变化，跳过提交"
           else
-            git commit -m "chore: 更新已验证节点标记"
+            git commit -m "chore: 更新已验证节点标记 $(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M 北京时间')"
             # 防止与容器 run_local.py / update-subs.yml 并发推送竞争 main 导致 non-fast-forward 拒绝
             git fetch origin main
             git merge origin/main --no-edit --no-ff

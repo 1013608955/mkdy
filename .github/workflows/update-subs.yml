@@ -66,7 +66,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "[INFO] s-clash.yaml 无变化，跳过推送"
           else
-            git commit -m "chore: 合并订阅 $(date +'%Y-%m-%d %H:%M UTC')"
+            git commit -m "chore: 合并订阅 $(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M 北京时间')"
             # 防止与容器 run_local.py / verify-tag.yml 并发推送竞争 main 导致 non-fast-forward 拒绝
             git fetch origin main
             git merge origin/main --no-edit --no-ff
