@@ -62,7 +62,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # 只提交合并产物，其余临时文件（s.txt/s1.txt/s2.txt/s2-clash-*.yaml 等）不入库
-          git add s-clash.yaml
+          git add s-clash.yaml s-clash.txt
           if git diff --cached --quiet; then
             echo "[INFO] s-clash.yaml 无变化，跳过推送"
           else

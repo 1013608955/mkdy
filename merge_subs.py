@@ -25,7 +25,7 @@ import sys
 import yaml
 from urllib.parse import parse_qs, unquote
 from name_util import make_proxy_names_unique as make_names_unique
-from node_parse import parse_uri_to_struct  # H1: 统一解析器
+from node_parse import parse_uri_to_struct, struct_to_uri  # H1: 统一解析器 + 反向转换
 
 SCHEMES = (
     "vmess://", "vless://", "trojan://", "ss://", "ssr://",
@@ -178,7 +178,6 @@ def main():
         with open(out_path, "w", encoding="utf-8") as f:
             f.write(body)
         print(f"[merge] 原始 {len(nodes)} 条 -> 去重后 {len(merged)} 条 -> {args.out} (无模版)")
-        return
 
     with open(template_path, encoding="utf-8") as f:
         doc = yaml.safe_load(f) or {}
@@ -210,6 +209,17 @@ def main():
         yaml.safe_dump(doc, f, allow_unicode=True, sort_keys=False, default_flow_style=False, width=10000)
 
     print(f"[merge] 原始 {len(nodes)} 条 -> 去重后 {len(merged)} 条 -> {args.out} (含规则层)")
+
+    # 7) 写出 s-clash.txt（v2rayN 兼容订阅格式，每行一个 URI）
+    txt_out = os.path.join(base, "s-clash.txt")
+    lines = []
+    for nd in merged:
+        uri = struct_to_uri(nd)
+        if uri:
+            lines.append(uri)
+    with open(txt_out, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+    print(f"[merge] 写出 {len(lines)} 条 URI -> {txt_out}")
 
 
 if __name__ == "__main__":
