@@ -77,6 +77,7 @@ ensure_pkg(){
 ensure_pkg dbus
 ensure_pkg gnome-keyring
 ensure_pkg libsecret-tools   # 提供 secret-tool，用于诊断 secret-service 是否可用
+ensure_pkg expect            # 提供伪终端(pty) 喂 hdspace config（其 SK 读取需 tty）
 
 # 若还没有 D-Bus session，用 dbus-run-session 重跑整个脚本（最可靠：后续所有
 # hdspace 命令共享同一 session 的 keyring）；否则手动 dbus-launch。
@@ -110,9 +111,27 @@ else
   echo "[WARN] 未找到 gnome-keyring-daemon，keyring 后端不可用，hdspace 可能读不到凭据"
 fi
 
-# 交互式喂入 AK / SK / SK确认（官方：AK 一行，SK 两行含确认，不回显）
-echo "[keyring] hdspace config 写入 AK/SK…"
-printf '%s\n%s\n%s\n' "$AK" "$SK" "$SK" | "$HD" config 2>&1 | head -10 || true
+# hdspace config 以交互方式读取 AK/SK，且 SK 需二次确认（不回显）。
+# headless 无 tty 时管道喂入会因 ReadPassword 失败而写不进 keyring，
+# 必须用 expect 提供伪终端(pty) 才能正确读取。
+echo "[keyring] hdspace config 写入 AK/SK（expect 伪终端）…"
+if command -v expect >/dev/null 2>&1; then
+  cat > /tmp/feed_hdspace.exp <<'EXP'
+set timeout 60
+spawn $env(HD) config
+sleep 1
+send "$env(AK)\r"
+sleep 2
+send "$env(SK)\r"
+sleep 2
+send "$env(SK)\r"
+expect eof
+EXP
+  echo "[debug] hdspace config 交互输出:"; AK="$AK" SK="$SK" HD="$HD" expect /tmp/feed_hdspace.exp 2>&1 | head -40 || true
+else
+  echo "[WARN] 无 expect，回退管道（可能失败）"
+  printf '%s\n%s\n%s\n' "$AK" "$SK" "$SK" | "$HD" config 2>&1 | head -10 || true
+fi
 
 # 用只读的 devenv list 先验证凭据是否生效（失败则早退，不烧核时）
 if ! "$HD" devenv list >/dev/null 2>&1; then
