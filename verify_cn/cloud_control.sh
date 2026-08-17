@@ -93,42 +93,44 @@ if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
 fi
 echo "[debug] DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-<空>}"
 
-# 启动 keyring daemon 并提供 secrets 服务（headless 下用空口令解锁/创建 login keyring）。
+# 启动 keyring daemon 并提供 secrets 服务（headless 下用固定口令解锁/创建 login keyring）。
 # 关键：hdspace 用 99designs/keyring 的 secret-service 后端，存储时要求 default(=login)
 #       collection 已存在且已解锁；否则触发 GUI 解锁提示(SystemPrompter)→ headless 无显示→失败。
-# 经典 headless 做法：用空口令(< /dev/null)启动，login keyring 以空口令创建即常驻且已解锁，永不弹窗。
-# 必须 --daemonize 保持常驻；并轮询等待 org.freedesktop.secret 真正就绪后再继续。
+# 注意：gnome-keyring-daemon 启动较慢（实测 ~15s 才就绪），必须轮询足够久再继续，
+#       否则后续的 gdbus 别名修复会跳过、login collection 始终建不出来。
+KEYRING_PW="mkdy-ci-keyring"
 if command -v gnome-keyring-daemon >/dev/null 2>&1; then
-  echo "[keyring] 启动 gnome-keyring-daemon --daemonize --unlock（空口令，headless 常驻）…"
-  gnome-keyring-daemon --daemonize --unlock --components=secrets,ssh,pkcs11 >/tmp/keyring.env 2>/tmp/keyring.err </dev/null
-  # 轮询等待 secret-service 真正就绪（最多 ~15s）
-  for i in $(seq 1 30); do
+  echo "[keyring] 启动 gnome-keyring-daemon --daemonize --unlock（固定口令，headless 常驻）…"
+  printf '%s' "$KEYRING_PW" | gnome-keyring-daemon --daemonize --unlock --components=secrets,ssh,pkcs11 >/tmp/keyring.env 2>/tmp/keyring.err
+  # 轮询等待 secret-service 真正就绪（最多 ~40s，daemon 启动很慢）
+  READY=""
+  for i in $(seq 1 80); do
     if command -v gdbus >/dev/null 2>&1 && gdbus introspect --session --dest org.freedesktop.secret --object-path /org/freedesktop/secrets >/dev/null 2>&1; then
-      echo "[debug] secret-service 已就绪（轮询 ${i} 次）"; break
+      READY="yes"; echo "[debug] secret-service 已就绪（轮询 ${i} 次）"; break
     fi
     sleep 0.5
   done
   [ -s /tmp/keyring.env ] && eval "$(cat /tmp/keyring.env)" 2>/dev/null || true
   echo "[debug] gnome-keyring-daemon 进程:"; pgrep -a gnome-keyring-daemon 2>/dev/null | head -3 || echo "  (无进程在运行)"
   echo "[debug] keyring daemon stderr:"; sed -n '1,15p' /tmp/keyring.err 2>/dev/null
-  # 诊断 + 确保 default 别名指向已解锁的 login collection
-  if command -v gdbus >/dev/null 2>&1; then
-    if gdbus introspect --session --dest org.freedesktop.secret --object-path /org/freedesktop/secrets >/dev/null 2>&1; then
+  # 诊断 + 确保 default 别名指向已解锁的 login collection（gdbus 必须等 daemon 就绪后才执行）
+  if [ -n "$READY" ]; then
+    if command -v gdbus >/dev/null 2>&1; then
       echo "[debug] gdbus：创建 default collection 并别名指向 login、解锁…"
       gdbus call --session --dest org.freedesktop.secret --object-path /org/freedesktop/secrets --method org.freedesktop.Secret.Service.CreateCollection "{'org.freedesktop.Secret.Collection.Label': <'Login'>}" default 2>&1 | head -3 || true
       gdbus call --session --dest org.freedesktop.secret --object-path /org/freedesktop/secrets/collection/login --method org.freedesktop.Secret.Collection.Unlock 2>&1 | head -2 || true
       gdbus call --session --dest org.freedesktop.secret --object-path /org/freedesktop/secrets --method org.freedesktop.Secret.Service.SetAlias default /org/freedesktop/secrets/collection/login 2>&1 | head -2 || true
       echo "[debug] secret-service items:"; gdbus call --session --dest org.freedesktop.secret --object-path /org/freedesktop/secrets --method org.freedesktop.Secret.Service.SearchItems '{}' 2>&1 | head -2 || true
     else
-      echo "[WARN] secret-service 未就绪，跳过 gdbus 别名修复（daemon stderr 见上）"
+      echo "[WARN] 无 gdbus（libglib2.0-bin），跳过 default 别名修复"
+    fi
+    if command -v secret-tool >/dev/null 2>&1; then
+      echo "[debug] secret-tool 探针（写入/读取 default collection）…"
+      echo -n "ci-test-value" | secret-tool store --label=mkdy-ci-test mkdy_ci_test myvalue 2>&1 | head -3
+      echo -n "secret-tool 读回: "; secret-tool lookup mkdy_ci_test myvalue 2>&1 | head -3
     fi
   else
-    echo "[WARN] 无 gdbus（libglib2.0-bin），跳过 default 别名修复"
-  fi
-  if command -v secret-tool >/dev/null 2>&1; then
-    echo "[debug] secret-tool 探针（写入/读取 default collection）…"
-    echo -n "ci-test-value" | secret-tool store --label=mkdy-ci-test mkdy_ci_test myvalue 2>&1 | head -3
-    echo -n "secret-tool 读回: "; secret-tool lookup mkdy_ci_test myvalue 2>&1 | head -3
+    echo "[WARN] secret-service 在 40s 内未就绪，跳过 gdbus/secret-tool 修复（daemon stderr 见上）"
   fi
 else
   echo "[WARN] 未找到 gnome-keyring-daemon，keyring 后端不可用，hdspace 可能读不到凭据"
