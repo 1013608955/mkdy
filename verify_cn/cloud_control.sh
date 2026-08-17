@@ -82,7 +82,7 @@ ensure_pkg gnome-keyring
 if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
   if command -v dbus-run-session >/dev/null 2>&1; then
     echo "[keyring] 无 D-Bus session，用 dbus-run-session 重跑本脚本…"
-    exec dbus-run-session -- "$0" "$@"
+    exec dbus-run-session -- bash "$0" "$@"
   elif command -v dbus-launch >/dev/null 2>&1; then
     echo "[keyring] 启动 D-Bus session (dbus-launch)…"
     eval "$(dbus-launch --sh-syntax)"
