@@ -11,6 +11,10 @@ on:
         description: '忽略新鲜度阈值，强制拉起云容器验证一次'
         required: false
         default: 'false'
+      debug_keyring:
+        description: '仅验证 keyring 凭据后端可用即退出（不真开机，省核时）'
+        required: false
+        default: 'false'
 
 concurrency:
   group: verify-cn-cloud
@@ -36,4 +40,5 @@ jobs:
           HW_REGION:       ${{ secrets.HW_REGION }}
           VERIFY_MAX_AGE_MIN: ${{ vars.VERIFY_MAX_AGE_MIN }}
           FORCE:           ${{ github.event.inputs.force }}
+          CI_DEBUG_KEYRING: ${{ github.event.inputs.debug_keyring }}
         run: bash verify_cn/cloud_control.sh
