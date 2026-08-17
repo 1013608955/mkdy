@@ -1,0 +1,39 @@
+name: verify-cn-cloud
+
+on:
+  schedule:
+    # 每 15 分钟触发一次「看门狗」；是否真正开机由 cloud_control.sh 内的新鲜度阈值决定，
+    # 平时直接跳过，只有 verified.json 超过阈值（通常意味着本机也停了）才拉起云容器验证并关机。
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: '忽略新鲜度阈值，强制拉起云容器验证一次'
+        required: false
+        default: 'false'
+
+concurrency:
+  group: verify-cn-cloud
+  cancel-in-progress: false
+
+permissions:
+  contents: read   # 仅检出仓库；推送由容器内 GITHUB_PAT 完成
+
+jobs:
+  cloud-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Control Huawei Cloud dev env (start → verify → stop)
+        env:
+          HW_INSTANCE_ID:  ${{ secrets.HW_INSTANCE_ID }}
+          HW_AK:           ${{ secrets.HW_AK }}
+          HW_SK:           ${{ secrets.HW_SK }}
+          HW_GITHUB_PAT:   ${{ secrets.HW_GITHUB_PAT }}
+          HW_SSH_USER:     ${{ secrets.HW_SSH_USER }}
+          HW_REGION:       ${{ secrets.HW_REGION }}
+          VERIFY_MAX_AGE_MIN: ${{ vars.VERIFY_MAX_AGE_MIN }}
+          FORCE:           ${{ github.event.inputs.force }}
+        run: bash verify_cn/cloud_control.sh

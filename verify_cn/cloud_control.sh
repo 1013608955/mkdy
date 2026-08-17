@@ -1,0 +1,142 @@
+#!/usr/bin/env bash
+# cloud_control.sh —— 由 GitHub Actions 调用，控制华为云开发者空间容器做「开机 → 验证 → 关机」。
+#
+# 设计要点：
+#   * 仅当 verify_cn/verified.json 距上次推送超过 VERIFY_MAX_AGE_MIN（默认 180 分钟）才拉起容器，
+#     否则跳过（频繁触发但不实际开机 = 省核时）。本机每小时验证兜底，云容器只是「PC 关机备份出口」。
+#   * 开机后经隧道 + ssh-key-reset 拿私钥，SSH 进容器主动跑 run_local.py（运行时注入 GITHUB_PAT 推送），
+#     不依赖容器内 run_loop.sh 是否自启。
+#   * 脚本退出（含出错）时一定尝试关机，避免容器泄漏常开烧核时。
+#
+# 前置：仓库内已放置 Linux AMD 版 hdspace（verify_cn/bin/hdspace）；容器已用 cloud_init.sh 初始化过
+#       （/workspace/mkdy 仓库 + mihomo 已落持久盘）。
+#
+# 环境变量（由 GitHub Secrets / Variables 注入）：
+#   HW_INSTANCE_ID  实例 ID，如 DevEnvC_W4yNKt（必填）
+#   HW_AK / HW_SK   华为云访问密钥（必填）
+#   HW_GITHUB_PAT   细粒度 PAT（Contents:write），容器内推送用（必填）
+#   HW_SSH_USER     SSH 登录用户名，默认 developer（可选）
+#   HW_REGION       区域，默认 cn-north-4（可选）
+#   VERIFY_MAX_AGE_MIN  新鲜度阈值（分钟），默认 180（可选，建议用 repo variable）
+#   FORCE           任意非空值则忽略新鲜度强制跑一次（可选）
+#   HDSPACE_BIN     hdspace 二进制路径（可选，默认 $GITHUB_WORKSPACE/verify_cn/bin/hdspace）
+set -uo pipefail
+
+HD="${HDSPACE_BIN:-${GITHUB_WORKSPACE:-$(cd "$(dirname "$0")/.." && pwd)}/verify_cn/bin/hdspace}"
+INSTANCE_ID="${HW_INSTANCE_ID:?缺少 HW_INSTANCE_ID}"
+AK="${HW_AK:?缺少 HW_AK}"
+SK="${HW_SK:?缺少 HW_SK}"
+PAT="${HW_GITHUB_PAT:?缺少 HW_GITHUB_PAT}"
+SSH_USER="${HW_SSH_USER:-developer}"
+REGION="${HW_REGION:-cn-north-4}"
+MAX_AGE_MIN="${VERIFY_MAX_AGE_MIN:-180}"
+FORCE="${FORCE:-}"
+
+log(){ echo "==> $*"; }
+
+if [ ! -x "$HD" ]; then
+  echo "[ERROR] 未找到可执行 hdspace：$HD" >&2
+  echo "        请在本机把华为云开发者空间控制台下载的 Linux AMD 版 hdspace" >&2
+  echo "        放到 verify_cn/bin/hdspace 并提交到仓库。" >&2
+  exit 1
+fi
+chmod +x "$HD"
+
+log "配置 hdspace (AK/SK)…"
+for d in ~/.huawei_devspace ~/.config/hdspace ~/.hdspace; do
+  mkdir -p "$d"
+  cat > "$d/config.yaml" <<EOF
+access_key: $AK
+secret_key: $SK
+region: $REGION
+EOF
+done
+# 兼容交互式 config：管道喂入 AK / SK（SK 需输入两次）
+printf '%s\n%s\n%s\n' "$AK" "$SK" "$SK" | "$HD" config >/dev/null 2>&1 || true
+
+state_of(){
+  "$HD" devenv list 2>/dev/null | grep "$INSTANCE_ID" | grep -oE "Running|Ready|Stopping|Starting|Error" | head -1
+}
+
+# 验证新鲜度：verified.json 的最近一次提交时间
+REPO_ROOT="${GITHUB_WORKSPACE:-$(cd "$(dirname "$0")/.." && pwd)}"
+VF="$REPO_ROOT/verify_cn/verified.json"
+if [ -f "$VF" ]; then
+  LAST_EPOCH=$(git -C "$REPO_ROOT" log -1 --format=%ct -- "$VF" 2>/dev/null || echo 0)
+else
+  LAST_EPOCH=0
+fi
+NOW_EPOCH=$(date +%s)
+AGE_MIN=$(( (NOW_EPOCH - ${LAST_EPOCH:-0}) / 60 ))
+log "verified.json 距上次推送 ${AGE_MIN} 分钟（阈值 ${MAX_AGE_MIN}）"
+
+STATE="$(state_of)"
+log "容器当前状态: ${STATE:-未知}"
+
+# 决策：新鲜且无需强制 → 处理泄漏后退出
+if [ -z "$FORCE" ] && [ "$AGE_MIN" -lt "$MAX_AGE_MIN" ]; then
+  if [ "$STATE" = "Running" ]; then
+    log "验证尚新但容器在运行（疑似上轮未关机），执行关机以防泄漏核时。"
+    "$HD" devenv close --instance-id="$INSTANCE_ID" >/dev/null 2>&1 || "$HD" devenv stop --instance-id="$INSTANCE_ID" >/dev/null 2>&1 || true
+    sleep 60
+  else
+    log "验证仍新鲜（${AGE_MIN}m < ${MAX_AGE_MIN}m）且容器已关机，本次跳过（省核时）。"
+  fi
+  exit 0
+fi
+[ -n "$FORCE" ] && log "FORCE 模式：忽略新鲜度，强制执行一次验证。" \
+                 || log "验证已陈旧，需要拉起云容器重新验证。"
+
+# 确保开机
+if [ "$STATE" != "Running" ]; then
+  log "启动容器…"
+  "$HD" devenv start --instance-id="$INSTANCE_ID"
+  for i in $(seq 1 30); do
+    [ "$(state_of)" = "Running" ] && break
+    sleep 10
+  done
+  if [ "$(state_of)" != "Running" ]; then
+    echo "[ERROR] 容器未能进入 Running 状态" >&2; exit 1
+  fi
+fi
+log "容器已运行，建立 SSH 隧道（22 → 10022）…"
+"$HD" devenv start-tunnel --instance-id="$INSTANCE_ID" --local-port=10022 --remote-port=22 >/tmp/tunnel.log 2>&1 &
+TUN_PID=$!
+# 退出（含失败）一律关隧道 + 关机
+trap 'kill $TUN_PID 2>/dev/null; "$HD" devenv close --instance-id="$INSTANCE_ID" >/dev/null 2>&1 || "$HD" devenv stop --instance-id="$INSTANCE_ID" >/dev/null 2>&1 || true' EXIT
+sleep 8
+
+log "重置 SSH 密钥（每次开机后 authorized_keys 会被清空）…"
+"$HD" devenv ssh-key-reset --instance-id="$INSTANCE_ID" >/dev/null 2>&1 || true
+sleep 3
+
+KEY=""
+for tries in $(seq 1 10); do
+  KEY=$(ls -1 ~/.devenv/.ssh/IdentityFile/"$INSTANCE_ID" 2>/dev/null \
+     || ls -1 ~/.devenv/.ssh/IdentityFile/* 2>/dev/null | head -1)
+  [ -n "$KEY" ] && break
+  sleep 3
+done
+if [ -z "$KEY" ]; then
+  echo "[ERROR] 未找到 SSH 私钥（ssh-key-reset 后应在 ~/.devenv/.ssh/IdentityFile/）" >&2
+  exit 1
+fi
+chmod 600 "$KEY"
+log "使用私钥: $KEY"
+
+REMOTE_CMD="cd /workspace/mkdy && \
+ git config --global user.email verify@mkdy.local && \
+ git config --global user.name mkdy-verify-cloud && \
+ git config --global http.version HTTP/1.1 && \
+ git remote set-url --push origin https://${PAT}@github.com/1013608955/mkdy.git && \
+ git pull --ff-only origin main 2>&1 | tail -2 ; \
+ python3 -m pip install --quiet pyyaml 2>/dev/null || true ; \
+ python3 verify_cn/run_local.py"
+
+log "SSH 进容器执行验证（注入 GITHUB_PAT 推送）…"
+ssh -i "$KEY" -p 10022 \
+    -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=20 \
+    "$SSH_USER@127.0.0.1" "$REMOTE_CMD"
+RC=$?
+log "验证命令返回码: $RC"
+exit $RC

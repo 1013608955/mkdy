@@ -3,7 +3,8 @@
 GitHub Actions 每小时自动运行：从多个公开订阅源拉取节点 → 合并去重 → 产出**单一**
 Clash 订阅 `s-clash.yaml`；另有部署在华为云开发环境容器（中国网络出口）的 `verify_cn` 探针，
 实测「该节点能否从中国网络出口连通」，产出已验证子集 `s-verified.yaml`。本地 Windows
-定时任务作为第三重入口，PC 关机后云端验证仍照常每小时运行。
+定时任务作为第三重入口；华为云容器作为**第二重验证出口**，由 GitHub 定时按需拉起
+（默认仅在验证结果陈旧、通常意味着本机也关机时才开机），跑完自动关机以节省核时。
 
 ## 架构（方案 B：单合并工作流，纯 Python，无 SubConverter / 无 Docker）
 
@@ -49,9 +50,34 @@ Clash 订阅 `s-clash.yaml`；另有部署在华为云开发环境容器（中�
   （`proxy-groups` / `rules` / `dns`），输出**仅含验证通过节点**的完整
   `s-verified.yaml`（无需手动挑 ✅）。
 
-### 云端容器（主，PC 关机仍运行）
+### 云端容器（中国网络出口第二重验证，按需开关机省核时）
 
-- 实例 `DevEnvC_W4yNKt`（华为云开发环境 → 容器，ARM 2vCPU 4GiB，约 4000 运行小时额度）。
+实例 `DevEnvC_W4yNKt`（华为云开发环境 → 容器，ARM 2vCPU 4GiB，约 8000 核时额度）。
+有两种运行模式，**推荐用 GitHub 定时开关机模式**：
+
+**模式 A（推荐）：GitHub Actions 定时开关机 —— 省核时**
+
+`.github/workflows/verify-cn-cloud.yml`（`cron: */15 * * * *`，即每 15 分钟触发）调用
+`verify_cn/cloud_control.sh`：
+
+1. 检查 `verify_cn/verified.json` 距上次推送是否超过 `VERIFY_MAX_AGE_MIN`（默认 180 分钟）。
+   未超阈值 → **直接跳过、不开机**（本机每小时验证已兜底，云容器只在「本机也停了」时才真正开机）。
+2. 需要验证时：`hdspace devenv start` 开机 → 建隧道 → `ssh-key-reset` 拿私钥 →
+   SSH 进容器主动跑 `run_local.py`（运行时注入 `GITHUB_PAT` 推送）→ 跑完立即 `devenv close` 关机。
+3. 脚本退出（含出错）必走 `trap` 关机，避免容器泄漏常开烧核时。
+
+> 核时只按「开机时长 × vCPU」计费。该模式下容器每天实际开机仅约数十分钟，
+> 8000 核时可用极久；而 24/7 常开会以 48 核时/天速度消耗（约 5.5 个月耗尽）。
+
+**前置（不进仓库，在仓库 Settings 配置）：**
+- 把** Linux AMD 64 位**版 `hdspace` 放到 `verify_cn/bin/hdspace` 并提交（详见 `verify_cn/bin/README.md`）。
+- Secrets：`HW_AK`、`HW_SK`、`HW_INSTANCE_ID`(=DevEnvC_W4yNKt)、`HW_GITHUB_PAT`(细粒度 PAT，Contents:write)。
+- Secrets（可选）：`HW_SSH_USER`(默认 `developer`)、`HW_REGION`(默认 `cn-north-4`)。
+- Variables（可选）：`VERIFY_MAX_AGE_MIN`（新鲜度阈值/分钟，默认 180；`0`=每次都开机）。
+- 容器需先用 `cloud_init.sh` 初始化一次（落仓库 + mihomo 到持久盘 `/workspace/mkdy`）。
+
+**模式 B（旧，常开兜底）：控制台注入 PAT 常驻**
+
 - 控制台「环境变量（可选）」填 `GITHUB_PAT=ghp_你的PAT`（fine-grained PAT，仓库
   `Contents:write`），**重启容器**后注入 process env；`verify_cn/run_loop.sh` 每小时据此
   自动 `git pull` + 验证 + `git push`（推送触发 `verify-tag.yml` 产出 `s-verified.yaml`）。
@@ -60,8 +86,9 @@ Clash 订阅 `s-clash.yaml`；另有部署在华为云开发环境容器（中�
   `/workspace` 持久）。
 - 重部署 / 修复：`hdspace devenv start-tunnel --name=DevEnvC_W4yNKt --ports=10022:22`
   建立 SSH 隧道后 `ssh` 进容器，`bash verify_cn/cloud_init.sh` 一键重建。
-- 用到的交付物：`cloud_init.sh`（部署脚本）、`mkdy-verify.service` / `mkdy-verify.timer`
-  （systemd 模板，供有 systemd 的机器复用）、`cloud_README.md`（容器版排错）。
+
+**通用交付物：** `cloud_init.sh`（部署脚本）、`cloud_control.sh`（GitHub 模式控制脚本）、
+`mkdy-verify.service` / `mkdy-verify.timer`（systemd 模板）、`cloud_README.md`（容器版排错）。
 
 ### 本机定时任务（辅，每小时 :05）
 
