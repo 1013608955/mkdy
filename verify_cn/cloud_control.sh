@@ -76,8 +76,9 @@ ensure_pkg(){
 }
 ensure_pkg dbus
 ensure_pkg gnome-keyring
-ensure_pkg libsecret-tools   # 提供 secret-tool，用于诊断 secret-service 是否可用
+ensure_pkg libsecret-tools   # 提供 secret-tool，用于诊断/初始化 secret-service
 ensure_pkg expect            # 提供伪终端(pty) 喂 hdspace config（其 SK 读取需 tty）
+ensure_pkg libglib2.0-bin   # 提供 gdbus，用于把 default 别名指向已解锁的 login keyring
 
 # 若还没有 D-Bus session，用 dbus-run-session 重跑整个脚本（最可靠：后续所有
 # hdspace 命令共享同一 session 的 keyring）；否则手动 dbus-launch。
@@ -92,20 +93,33 @@ if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
 fi
 echo "[debug] DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-<空>}"
 
-# 启动 keyring daemon 并提供 secrets 服务（无交互，用固定口令解锁 headless keyring）
+# 启动 keyring daemon 并提供 secrets 服务（headless 下用固定口令解锁/创建 login keyring）。
+# 关键：hdspace 用 99designs/keyring 的 secret-service 后端，存储时要求 default(=login)
+#       collection 已存在且已解锁；否则会触发 GUI 解锁提示(SystemPrompter)→ headless 无显示→失败。
+#       secret-tool 走 session 兜底不弹窗，不能证明 default collection 已就绪，故需显式创建。
+KEYRING_PW="mkdy-ci-keyring"
 if command -v gnome-keyring-daemon >/dev/null 2>&1; then
-  echo "[keyring] 启动 gnome-keyring-daemon --daemonize --unlock (提供 secrets 服务)…"
-  printf 'mkdy-ci-keyring' | gnome-keyring-daemon --daemonize --unlock --components=secrets,ssh,pkcs11 >/tmp/keyring.log 2>&1
+  echo "[keyring] 启动 gnome-keyring-daemon --unlock (headless 固定口令)…"
+  # 不用 --daemonize：直接后台运行并从 stdin 读解锁口令（--daemonize 会让子进程 stdin 变 /dev/null 丢失口令）
+  printf '%s\n' "$KEYRING_PW" | gnome-keyring-daemon --unlock --components=secrets,ssh,pkcs11 >/tmp/keyring.env 2>&1 &
   sleep 6
-  echo "[debug] keyring daemon 日志:"; sed -n '1,30p' /tmp/keyring.log 2>/dev/null
-  echo "[debug] gnome-keyring-daemon 进程:"; pgrep -a gnome-keyring-daemon 2>/dev/null | head -5 || echo "  (无进程在运行)"
-  # 用 secret-tool 诊断 secret-service 是否可用（能写即说明 keyring 后端正常）
+  [ -s /tmp/keyring.env ] && eval "$(cat /tmp/keyring.env)" 2>/dev/null || true
+  echo "[debug] keyring env:"; sed -n '1,6p' /tmp/keyring.env 2>/dev/null
+  echo "[debug] gnome-keyring-daemon 进程:"; pgrep -a gnome-keyring-daemon 2>/dev/null | head -3 || echo "  (无进程在运行)"
+  # 显式创建并解锁 login collection（secret-tool 直接写到 login，避免走 session 兜底）
   if command -v secret-tool >/dev/null 2>&1; then
-    echo "[debug] secret-tool 测试写入/读取 secret-service…"
-    echo -n "ci-test-value" | secret-tool store --label=mkdy-ci-test mkdy_ci_test myvalue 2>&1 | head -3
+    echo "[debug] secret-tool 写入 --collection=login（强制创建/解锁 login keyring）…"
+    echo -n "ci-test-value" | secret-tool store --label=mkdy-ci-test --collection=login mkdy_ci_test myvalue 2>&1 | head -3
     echo -n "secret-tool 读回: "; secret-tool lookup mkdy_ci_test myvalue 2>&1 | head -3
+  fi
+  # 把 default 别名指向已解锁的 login collection，并解锁它（让 99designs/keyring 的 default 解析正确）
+  if command -v gdbus >/dev/null 2>&1; then
+    echo "[debug] gdbus：解锁 login collection 并把 default 别名指向它…"
+    gdbus call --session --dest org.freedesktop.secret --object-path /org/freedesktop/secrets/collection/login --method org.freedesktop.Secret.Collection.Unlock 2>&1 | head -2 || true
+    gdbus call --session --dest org.freedesktop.secret --object-path /org/freedesktop/secrets --method org.freedesktop.Secret.Service.SetAlias default /org/freedesktop/secrets/collection/login 2>&1 | head -2 || true
+    echo "[debug] 当前 secret-service items:"; gdbus call --session --dest org.freedesktop.secret --object-path /org/freedesktop/secrets --method org.freedesktop.Secret.Service.SearchItems '{}' 2>&1 | head -2 || true
   else
-    echo "[debug] 无 secret-tool，跳过 secret-service 写入诊断"
+    echo "[WARN] 无 gdbus（libglib2.0-bin），跳过 default 别名修复"
   fi
 else
   echo "[WARN] 未找到 gnome-keyring-daemon，keyring 后端不可用，hdspace 可能读不到凭据"
