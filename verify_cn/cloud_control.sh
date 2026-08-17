@@ -111,27 +111,16 @@ else
   echo "[WARN] 未找到 gnome-keyring-daemon，keyring 后端不可用，hdspace 可能读不到凭据"
 fi
 
-# hdspace config 以交互方式读取 AK/SK，且 SK 需二次确认（不回显）。
-# headless 无 tty 时管道喂入会因 ReadPassword 失败而写不进 keyring，
-# 必须用 expect 提供伪终端(pty) 才能正确读取。
-echo "[keyring] hdspace config 写入 AK/SK（expect 伪终端）…"
-if command -v expect >/dev/null 2>&1; then
-  cat > /tmp/feed_hdspace.exp <<'EXP'
-set timeout 60
-spawn $env(HD) config
-sleep 1
-send "$env(AK)\r"
-sleep 2
-send "$env(SK)\r"
-sleep 2
-send "$env(SK)\r"
-expect eof
-EXP
-  echo "[debug] hdspace config 交互输出:"; AK="$AK" SK="$SK" HD="$HD" expect /tmp/feed_hdspace.exp 2>&1 | head -40 || true
-else
-  echo "[WARN] 无 expect，回退管道（可能失败）"
-  printf '%s\n%s\n%s\n' "$AK" "$SK" "$SK" | "$HD" config 2>&1 | head -10 || true
-fi
+# hdspace config 以交互方式读取 AK/SK（SK 需二次确认，不回显）。
+# headless 下需用伪终端(pty) 喂入。先打印 --help 探测非交互参数，
+# 再用 script 提供 pty 尝试写入，并完整捕获输出用于诊断。
+echo "[keyring] hdspace config 诊断 + 写入…"
+echo "--- hdspace config --help (探测非交互参数) ---"
+"$HD" config --help 2>&1 | head -25
+echo "--- 用 script 提供 pty 喂入 AK/SK/SK确认 ---"
+printf '%s\n%s\n%s\n' "$AK" "$SK" "$SK" | script -qec "$HD config" /dev/null >/tmp/hdspace_cfg.log 2>&1
+echo "script_exit=$?"
+sed -n '1,30p' /tmp/hdspace_cfg.log 2>/dev/null
 
 # 用只读的 devenv list 先验证凭据是否生效（失败则早退，不烧核时）
 if ! "$HD" devenv list >/dev/null 2>&1; then
