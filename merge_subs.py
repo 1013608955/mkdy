@@ -24,6 +24,7 @@ import sys
 
 import yaml
 from urllib.parse import parse_qs, unquote
+from name_util import make_proxy_names_unique as make_names_unique
 
 SCHEMES = (
     "vmess://", "vless://", "trojan://", "ss://", "ssr://",
@@ -362,29 +363,7 @@ def clean_node(p):
     return out
 
 
-def make_names_unique(nodes):
-    """兜底确保 name 唯一：同名重复追加 _2/_3/...，并把空名回填为可读默认。
-
-    触发场景：某些订阅源 URI 不带 #fragment，导致多个不同节点被解析为同一默认名
-    （如 "ss"），下游 Clash/Clash Verge 校验会因 duplicate name 拒绝加载。
-
-    实现要点（曾踩过的坑）：必须用「已占用名字集合」而非计数器。
-    计数器写法会把第 3 个同名节点改成 `X_3`，而上游本来就可能有一个节点叫
-    `X_3`（很多机场用 _N 后缀命名），两者撞车后 mihomo 直接 fatal 拒绝加载
-    整份订阅。故这里对生成的候选名循环递增直到不冲突，且新名也登记进集合。
-    """
-    used = set()
-    for n in nodes:
-        name = (n.get("name") or "").strip()
-        if not name:
-            name = f"{n.get('type', 'node')}_{n.get('server', '')}:{n.get('port', 0)}"
-        if name in used:
-            i = 2
-            while f"{name}_{i}" in used:
-                i += 1
-            name = f"{name}_{i}"
-        n["name"] = name
-        used.add(name)
+# make_names_unique 已抽到 name_util.py（见顶部 import 别名为 make_names_unique）。
 
 
 def main():

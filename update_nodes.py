@@ -2,6 +2,7 @@ import requests
 import re
 import socket
 import ssl
+import ipaddress
 import threading
 import base64
 import binascii
@@ -31,11 +32,12 @@ CONFIG: Dict = {
         {"url": "https://raw.githubusercontent.com/HakurouKen/free-node/main/public", "weight": 7},
         {"url": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub", "weight": 6}
     ],
-    "request": {"timeout": 15, "retry": 3, "retry_delay": 3, "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"},
+    "request": {"timeout": 15, "retry": 3, "retry_delay": 3, "allow_insecure": False, "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"},
     "github": {"token": os.getenv("GITHUB_TOKEN", ""), "interval": 0.5, "cache_ttl": 3600, "cache_expire_days": 7},
     "detection": {
         "tcp_timeout": {"vmess": 5, "vless": 5, "trojan": 5, "ss": 4, "hysteria": 6},
         "tcp_retry": 1, # 优化：从 3 → 2
+        "max_handshake_probe": 120,  # M5：握手探测总数封顶，超出的节点跳过探测（仅少加分）
         "thread_pool": 8,
         "dns": {"servers": ["223.5.5.5", "119.29.29.29", "8.8.8.8", "1.1.1.1"], "timeout": 4, "cache_size": 1000},
         "http_test": {
@@ -174,7 +176,31 @@ def is_cn_ip(ip: str) -> bool:
             return True
     return False
 def is_ip(addr: str) -> bool:
-    return bool(re.match(r'^\d{1,3}(\.\d{1,3}){3}$', addr))
+    """支持 IPv4 / IPv6 字面量；域名（及 None/空）返回 False。"""
+    if not addr:
+        return False
+    try:
+        ipaddress.ip_address(addr)
+        return True
+    except (ValueError, TypeError):
+        return False
+
+
+def _resolve_connect(host: str):
+    """把域名 / IP 解析为 (family, connect_host)，支持 IPv4/IPv6 字面量与域名。
+    返回 None 表示解析失败。family 仅用于原生 socket 建连（用 create_connection 时可忽略）。"""
+    if is_ip(host):
+        fam = socket.AF_INET6 if ":" in host else socket.AF_INET
+        return fam, host
+    try:
+        infos = socket.getaddrinfo(host, None, socket.AF_UNSPEC, socket.SOCK_STREAM)
+    except Exception:
+        return None
+    for fam, _, _, _, sockaddr in infos:  # 优先 IPv4
+        if fam == socket.AF_INET:
+            return socket.AF_INET, sockaddr[0]
+    fam, _, _, _, sockaddr = infos[0]
+    return fam, sockaddr[0]
 def _udp_resolve_a(domain: str, server: str, timeout: float) -> List[str]:
     """最小依赖的 UDP DNS A 记录查询（仅 IPv4）。超时或任何解析异常都抛给调用方回退。"""
     import struct
@@ -261,6 +287,10 @@ def dns_resolve(domain: str) -> Tuple[bool, List[str]]:
 # 默认不调用（无 IPINFO_TOKEN 时直接返回 unknown，仅损失住宅/机房细分加分，不影响主筛选）；
 # 配置 token 时串行化并在单次运行配额内查询，杜绝超时/限流拖垮 CI。
 _IPINFO_LOCK = threading.Lock()
+# 握手探测仅作评分信号，且单次失败会等到超时（最慢 ~8s），节点多时拖垮 CI。
+# 用全局计数器对探测总数封顶，超出部分直接 outside_ok=False（只少加分、不扣分）。
+_PROBE_LOCK = threading.Lock()
+_PROBE_COUNT = {"n": 0}
 # P2：免费 token 每月 5 万次但并发限流严、单次 300ms+，默认不开启；开 token 时
 # 单次运行最多查 50 个，其余回退 unknown，避免 ipinfo 拖垮 CI 的 10 分钟超时窗口。
 _IPINFO_QUOTA = {"used": 0, "cap": 50}
@@ -444,7 +474,10 @@ def probe_proxy_handshake(ip: str, port: int, proto: str, sni: str = "",
     if not ip or is_private_ip(ip):
         return False, "private", 0.0
     try:
-        addr = socket.gethostbyname(ip)
+        res = _resolve_connect(ip)
+        if res is None:
+            return False, "dns_fail", 0.0
+        _, addr = res
     except Exception:
         return False, "dns_fail", 0.0
     if is_cn_ip(addr):
@@ -486,7 +519,10 @@ def test_node_final(ip: str, port: int, proto: str) -> Tuple[bool, float, bool, 
     if not ip or is_private_ip(ip):
         return False, 0.0, False, "private_ip", 0.0
     try:
-        ip_addr = socket.gethostbyname(ip)
+        res = _resolve_connect(ip)
+        if res is None:
+            return False, 0.0, False, "dns_fail", 0.0
+        fam, ip_addr = res
         if is_cn_ip(ip_addr):
             return False, 0.0, False, "cn_ip", 0.0
         success = 0
@@ -494,7 +530,7 @@ def test_node_final(ip: str, port: int, proto: str) -> Tuple[bool, float, bool, 
         for _ in range(CONFIG["detection"]["tcp_retry"]):
             try:
                 start = time.time()
-                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                with socket.socket(fam, socket.SOCK_STREAM) as s:
                     s.settimeout(CONFIG["detection"]["tcp_timeout"].get(proto, 5))
                     if s.connect_ex((ip_addr, port)) == 0:
                         success += 1
@@ -554,8 +590,17 @@ def process_single_node_final(node: Union[str, Dict]) -> Tuple[Optional[str], Di
         return None, {}, 0
     # 修复B2：GitHub 侧代理握手探测，仅作评分信号（outside_ok），绝不据此过滤
     # 修复P0：仅 security_type 为 tls/reality 的节点做 TLS 握手，non-TLS 节点走 TCP 探测
+    # M5：全局封顶握手探测次数，超出部分跳过探测（outside_ok=False，不扣分）
     use_tls = security_type in ("tls", "reality")
-    outside_ok, outside_detail, _ = probe_proxy_handshake(address, port, proto, domain, use_tls)
+    do_probe = True
+    with _PROBE_LOCK:
+        if _PROBE_COUNT["n"] >= CONFIG["detection"].get("max_handshake_probe", 120):
+            do_probe = False
+        else:
+            _PROBE_COUNT["n"] += 1
+    outside_ok, outside_detail, _ = (False, "probe_skipped(cap)", 0.0)
+    if do_probe:
+        outside_ok, outside_detail, _ = probe_proxy_handshake(address, port, proto, domain, use_tls)
     score = calculate_node_score(proto, security_type, port, dns_ok, outside_ok, rt, is_cn, stability, ip_type)
     # 修复B1：此处不再按单节点自身分数算阈值过滤（原逻辑等于失效）；统一在 process_nodes_final 基于全体分布算一次动态阈值
     node_info = {
@@ -635,34 +680,22 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
   
     for retry in range(CONFIG["request"]["retry"]):
         try:
-            try:
-                resp = SESSION.get(
-                    url,
-                    timeout=CONFIG["request"]["timeout"],
-                    verify=True,  # 修复B5：默认校验证书，避免中间人攻击（MITM）
-                    headers={"Connection": "close"}
-                )
-            except requests.exceptions.SSLError as ssl_err:
-                LOG.warning(f"⚠️ 证书校验失败，降级为不校验（存在 MITM 风险）: {url} - {str(ssl_err)[:60]}")
-                resp = SESSION.get(
-                    url,
-                    timeout=CONFIG["request"]["timeout"],
-                    verify=False,
-                    headers={"Connection": "close"}
-                )
+            resp = SESSION.get(
+                url,
+                timeout=CONFIG["request"]["timeout"],
+                # 默认校验证书(verify=True)防 MITM；仅 allow_insecure=True 时降级为不校验
+                verify=(not CONFIG["request"].get("allow_insecure", False)),
+                headers={"Connection": "close"}
+            )
             resp.raise_for_status()
-          
             raw_content = resp.text
             if len(raw_content) < 100 and '404' not in raw_content:
                 raise ValueError(f"拉取内容过短（{len(raw_content)}字符），可能被截断")
-          
             LOG.debug(f"📝 拉取 {url} 原始内容长度：{len(raw_content)} 字符")
-          
             raw_lines_before_decode = raw_content.split('\n')
             filtered_before_decode = []
             comment_count_first = 0
             empty_line_count_first = 0
-          
             for l in raw_lines_before_decode:
                 stripped_line = l.strip()
                 if not stripped_line:
@@ -672,17 +705,13 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
                     comment_count_first += 1
                     continue
                 filtered_before_decode.append(l)
-          
             content_after_first_filter = '\n'.join(filtered_before_decode)
             LOG.info(f"📝 第一次过滤（解码前）：{url} 移除注释行{comment_count_first}行 | 空行{empty_line_count_first}行 | 剩余{len(filtered_before_decode)}行")
-          
             content = decode_b64_sub(content_after_first_filter)
-          
             raw_lines_after_decode = content.split('\n')
             lines = []
             comment_count_second = 0
             empty_line_count_second = 0
-          
             for l in raw_lines_after_decode:
                 stripped_line = l.strip()
                 if not stripped_line:
@@ -692,20 +721,20 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
                     comment_count_second += 1
                     continue
                 lines.append(stripped_line)
-          
             LOG.info(f"📝 第二次过滤（解码后）：{url} 移除注释行{comment_count_second}行 | 空行{empty_line_count_second}行 | 剩余{len(lines)}行")
             if lines:
                 LOG.debug(f"📝 {url} 有效节点示例（前3行）：{lines[:3]}")
-          
             try:
                 with open(cache_path, "w", encoding="utf-8") as f:
                     json.dump(lines, f, ensure_ascii=False)
                 LOG.debug(f"✅ 缓存写入 {cache_path} 成功")
             except OSError as e:
                 LOG.warning(f"⚠️ 缓存写入失败 {url}: {str(e)[:50]}")
-          
             LOG.info(f"✅ 拉取成功 {url}（权重{weight}），最终有效节点 {len(lines)} 条")
             return lines, weight
+        except requests.exceptions.SSLError as ssl_err:
+            LOG.error(f"❌ 证书校验失败（allow_insecure={CONFIG['request'].get('allow_insecure', False)}），跳过源 {url}: {str(ssl_err)[:60]}")
+            return [], weight
         except Exception as e:
             error_msg = str(e)[:80]
             if retry < CONFIG["request"]["retry"] - 1:
