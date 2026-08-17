@@ -97,11 +97,12 @@ if command -v gnome-keyring-daemon >/dev/null 2>&1; then
   printf 'mkdy-ci-keyring' | gnome-keyring-daemon --daemonize --unlock --components=secrets,ssh,pkcs11 >/tmp/keyring.log 2>&1
   sleep 6
   echo "[debug] keyring daemon 日志:"; sed -n '1,30p' /tmp/keyring.log 2>/dev/null
+  echo "[debug] gnome-keyring-daemon 进程:"; pgrep -a gnome-keyring-daemon 2>/dev/null | head -5 || echo "  (无进程在运行)"
   # 用 secret-tool 诊断 secret-service 是否可用（能写即说明 keyring 后端正常）
   if command -v secret-tool >/dev/null 2>&1; then
     echo "[debug] secret-tool 测试写入/读取 secret-service…"
-    echo -n "ci-test-value" | secret-tool store --label=mkdy-ci-test mkdy_ci_test attr test 2>&1 | head -3
-    echo -n "secret-tool 读回: "; secret-tool lookup mkdy_ci_test attr test 2>&1 | head -3
+    echo -n "ci-test-value" | secret-tool store --label=mkdy-ci-test mkdy_ci_test myvalue 2>&1 | head -3
+    echo -n "secret-tool 读回: "; secret-tool lookup mkdy_ci_test myvalue 2>&1 | head -3
   else
     echo "[debug] 无 secret-tool，跳过 secret-service 写入诊断"
   fi
