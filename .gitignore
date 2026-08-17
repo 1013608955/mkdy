@@ -5,8 +5,31 @@ __pycache__/
 # WorkBuddy 项目记忆目录（本地记忆，不入库）
 .workbuddy/
 
-# xray 二进制（FC 运行时用，单独下载，不入库；部署时打进函数包）
+# xray 二进制（运行时用，单独下载，不入库；云函数部署时打进函数包）
 verify_cn/xray
+verify_cn/xray.exe
+
+# 本机 runner：mihomo 二进制 + 运行日志（本地产物，不入库）
+verify_cn/mihomo.exe
+verify_cn/mihomo
+verify_cn/logs/
+
+# 云函数控制台 CDP 调试临时产物（一次性排查用，不入库）
+verify_cn/_cdp_*.py
+verify_cn/_click_at.py
+verify_cn/_diag_*.py
+verify_cn/_debug_*.png
+verify_cn/_shot*.png
+verify_cn/_u1.png
+verify_cn/b64.txt
+verify_cn/upload_body.json
+verify_cn/code_content.json
+verify_cn/code_data.json
+verify_cn/idx_js.txt
+verify_cn/vpc_js.txt
+verify_cn/vlibs/
+verify_cn/deploy_deps.zip
+analysis_tmp/
 
 # FC 构建产物（打进函数包的临时产物，体积大，不入库）
 verify_cn/_build/

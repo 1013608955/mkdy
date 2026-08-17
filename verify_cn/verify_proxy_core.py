@@ -11,14 +11,14 @@
 本文件不依赖任何云平台 SDK，可直接用于阿里云 FC / 腾讯云 SCF / 本地。
 """
 import os
+import sys
 import json
 import time
 import socket
 import subprocess
+import tempfile
+import urllib.request
 
-import requests
-import yaml
-import requests
 import yaml
 
 DEFAULT_TARGET = "https://www.google.com/generate_204"
@@ -42,6 +42,20 @@ def _wait_port(port, timeout=10):
         except OSError:
             time.sleep(0.2)
     return False
+
+
+def _tmp_path(name):
+    """跨平台临时文件路径。云函数(Linux)得到 /tmp/xxx，本机(Windows)得到 %TEMP%\\xxx。
+    原先硬编码 /tmp 在 Windows 上必然 FileNotFoundError。"""
+    return os.path.join(tempfile.gettempdir(), name)
+
+
+def _popen_kwargs():
+    """Windows 下隐藏 xray 控制台窗口：本机每小时定时跑时不会弹出几十个黑窗口。
+    Linux(云函数) 无此 flag，返回空 dict 保持原行为。"""
+    if sys.platform == "win32":
+        return {"creationflags": getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)}
+    return {}
 
 
 def _read_tail(path, n=400):
@@ -83,10 +97,12 @@ def _stream_settings(node, tls_default=False):
 
 
 def build_xray_config(node, local_port):
-    """把 clash 风格节点描述转换为 xray 配置（本地 SOCKS 入站 + 节点出战）。"""
+    """把 clash 风格节点描述转换为 xray 配置（本地 HTTP 入站 + 节点出战）。
+    HTTP 入站 + 标准库 urllib 走 HTTP 代理即可验证，零 PySocks 依赖。"""
     proto = (node.get("proto") or "").lower()
-    inbound = {"listen": "127.0.0.1", "port": local_port, "protocol": "socks",
-               "settings": {"udp": True}, "tag": "in-socks"}
+    inbound = {"listen": "127.0.0.1", "port": local_port, "protocol": "http",
+               "settings": {"accounts": [], "allowTransparent": False, "userLevel": 0},
+               "tag": "in-http"}
     ob = None
     if proto == "vmess":
         vnext = {"address": node["server"], "port": int(node["port"]),
@@ -128,6 +144,13 @@ def build_xray_config(node, local_port):
                                         "password": node.get("password") or node.get("auth")}]}}
         if node.get("sni"):
             ob["streamSettings"] = {"tlsSettings": {"serverName": node["sni"]}}
+    elif proto == "socks5":
+        users = []
+        if node.get("username"):
+            users = [{"user": node["username"], "pass": node.get("password", "")}]
+        ob = {"protocol": "socks",
+              "settings": {"servers": [{"address": node["server"], "port": int(node["port"]),
+                                        "users": users}]}}
     else:
         return None
     # 目标域名交给节点侧解析（domainStrategy=AsIs）：避免 xray 在国内用被污染的
@@ -148,25 +171,31 @@ def run_xray_chain(xray_bin, node, target_url, timeout, local_port):
             os.chmod(xray_bin, 0o755)
         except OSError:
             pass
-    cfg_path = f"/tmp/xray_{local_port}.json"
-    err_path = f"/tmp/xray_{local_port}.err"
+    cfg_path = _tmp_path(f"xray_{local_port}.json")
+    err_path = _tmp_path(f"xray_{local_port}.err")
     with open(cfg_path, "w", encoding="utf-8") as f:
         json.dump(cfg, f)
     try:
         with open(err_path, "w", encoding="utf-8") as ef:
             proc = subprocess.Popen([xray_bin, "run", "-c", cfg_path],
-                                    stdout=subprocess.DEVNULL, stderr=ef)
+                                    stdout=subprocess.DEVNULL, stderr=ef,
+                                    **_popen_kwargs())
     except Exception as e:  # noqa: BLE001
         return False, 0.0, f"xray_spawn_failed: {type(e).__name__}: {e}"
     try:
         if not _wait_port(local_port, timeout=6):
             return False, 0.0, f"xray_listen_timeout | {_read_tail(err_path)}"
-        proxies = {"http": f"socks5h://127.0.0.1:{local_port}",
-                   "https": f"socks5h://127.0.0.1:{local_port}"}
+        # 经 HTTP 代理（标准库 urllib，零 PySocks）
+        proxy = f"http://127.0.0.1:{local_port}"
+        handlers = [urllib.request.ProxyHandler(
+            {"http": proxy, "https": proxy})]
+        opener = urllib.request.build_opener(*handlers)
+        req = urllib.request.Request(target_url,
+            headers={"User-Agent": "Mozilla/5.0 (verify-cn)"})
         start = time.time()
-        r = requests.get(target_url, proxies=proxies, timeout=timeout,
-                         headers={"User-Agent": "Mozilla/5.0"})
-        return r.status_code < 400, time.time() - start, f"http {r.status_code}"
+        with opener.open(req, timeout=timeout) as resp:
+            code = resp.getcode()
+            return code < 400, time.time() - start, f"http {code}"
     except Exception as e:  # noqa: BLE001
         return False, 0.0, f"{type(e).__name__}: {e} | xray:{_read_tail(err_path)}"
     finally:
@@ -182,33 +211,17 @@ def run_xray_chain(xray_bin, node, target_url, timeout, local_port):
                 pass
 
 
-def run_socks5_chain(node, target_url, timeout):
-    auth = ""
-    if node.get("username"):
-        auth = f"{node['username']}:{node.get('password', '')}@"
-    proxies = {"http": f"socks5h://{auth}{node['server']}:{node['port']}",
-               "https": f"socks5h://{auth}{node['server']}:{node['port']}"}
-    try:
-        start = time.time()
-        r = requests.get(target_url, proxies=proxies, timeout=timeout,
-                         headers={"User-Agent": "Mozilla/5.0"})
-        return r.status_code < 400, time.time() - start, f"http {r.status_code}"
-    except Exception as e:  # noqa: BLE001
-        return False, 0.0, f"{type(e).__name__}: {e}"
-
-
 def verify_through_proxy(node, target_url=DEFAULT_TARGET, timeout=8,
                          xray_bin=None, local_port=None):
     """对单个节点做真实链路验证，返回 (ok, latency, detail)。
 
-    平台无关：socks5 走 pysocks；其余协议需 xray 二进制（见 XRAY_BIN）。
-    无 xray 时对非 socks5 协议返回 ("xray_not_configured", ...) 而非假阳性。
+    所有协议（含 socks5）统一经 xray 出战 + 本地 HTTP 入站，
+    验证端用标准库 urllib 走 HTTP 代理，零 PySocks 依赖。
+    无 xray 时返回 ("xray_not_configured", ...) 而非假阳性。
     """
     proto = (node.get("proto") or "").lower()
-    if proto == "socks5":
-        return run_socks5_chain(node, target_url, timeout)
     if proto in ("ss", "shadowsocks", "vmess", "vless", "trojan",
-                 "hysteria", "hysteria2", "hy2"):
+                 "hysteria", "hysteria2", "hy2", "socks5"):
         xb = xray_bin or os.environ.get(XRAY_BIN_ENV)
         if not xb or not os.path.exists(xb):
             return False, 0.0, "xray_not_configured"

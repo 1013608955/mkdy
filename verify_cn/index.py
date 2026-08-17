@@ -10,8 +10,9 @@ import time
 import json
 import base64
 import concurrent.futures
-
-import requests
+import urllib.request
+import urllib.error
+import traceback
 
 from verify_proxy_core import parse_clash_yaml, verify_through_proxy
 
@@ -29,17 +30,7 @@ FALLBACK_TARGETS = [
     "https://www.cloudflare.com/cdn-cgi/trace",
     "https://api.ipify.org?format=json",
 ]
-# xray 二进制路径：
-#  - 华为云 FunctionGraph 代码目录由 RUNTIME_CODE_ROOT 暴露（=/opt/function/code）
-#  - 阿里云 FC 代码在 /code
-#  - 本地调试：以上默认路径不存在时，回退到脚本所在目录
-_CODE_ROOT = os.environ.get("RUNTIME_CODE_ROOT") or "/code"
-_DEFAULT_XRAY = os.path.join(_CODE_ROOT, "xray")
-if not os.path.exists(_DEFAULT_XRAY):
-    _ALT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "xray")
-    if os.path.exists(_ALT):
-        _DEFAULT_XRAY = _ALT
-XRAY = os.environ.get("XRAY_BIN", _DEFAULT_XRAY)
+XRAY = os.environ.get("XRAY_BIN", "/code/xray")
 CONCURRENCY = int(os.environ.get("CONCURRENCY", "8"))
 # 默认 8s（按用户要求改回；FC 函数超时 600s 余量充足）。
 # 注：15s 仍可由 env TIMEOUT 覆盖；多目标兜底+阿里DNS已保留以降误杀。
@@ -79,6 +70,26 @@ def _verify_one(node):
             "detail": f"all_targets_fail(primary={primary_err})"}
 
 
+def _http_get(url, timeout=20, headers=None):
+    """标准库 HTTP GET。"""
+    hdrs = dict(HEADERS)
+    if headers:
+        hdrs.update(headers)
+    req = urllib.request.Request(url, headers=hdrs)
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return resp.getcode(), resp.read().decode("utf-8", errors="replace")
+
+
+def _http_put(url, data, headers=None):
+    """标准库 HTTP PUT。"""
+    hdrs = dict(HEADERS)
+    if headers:
+        hdrs.update(headers)
+    req = urllib.request.Request(url, data=data, headers=hdrs, method="PUT")
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        return resp.getcode()
+
+
 def commit_verified_json(owner, repo, token, verified):
     """把 verified.json PUT 回仓库（GitHub Contents API）。"""
     path = "verify_cn/verified.json"
@@ -87,10 +98,10 @@ def commit_verified_json(owner, repo, token, verified):
                "Accept": "application/vnd.github+json"}
     sha = None
     try:
-        r = requests.get(url, headers=headers, timeout=20)
-        if r.status_code == 200:
-            sha = r.json().get("sha")
-    except requests.RequestException:
+        code, txt = _http_get(url, headers=headers)
+        if code == 200:
+            sha = json.loads(txt).get("sha")
+    except (urllib.error.HTTPError, urllib.error.URLError):
         pass
     content = base64.b64encode(
         json.dumps(verified, ensure_ascii=False).encode("utf-8")).decode("ascii")
@@ -98,8 +109,8 @@ def commit_verified_json(owner, repo, token, verified):
             "content": content}
     if sha:
         body["sha"] = sha
-    r = requests.put(url, headers=headers, json=body, timeout=20)
-    return r.status_code
+    data = json.dumps(body).encode("utf-8")
+    return _http_put(url, data, headers={"Content-Type": "application/json", **headers})
 
 
 def _fetch_node_source():
@@ -118,9 +129,10 @@ def _fetch_node_source():
     last_err = None
     for url in candidates:
         try:
-            r = requests.get(url, timeout=NODE_FETCH_TIMEOUT, headers=HEADERS)
-            r.raise_for_status()
-            txt = r.text
+            code, txt = _http_get(url, timeout=NODE_FETCH_TIMEOUT)
+            if code >= 400:
+                last_err = f"HTTP {code} @ {url}"
+                continue
             _ok = ("proxies:" in txt) or any(
                 s in txt for s in ("vmess://", "vless://", "trojan://", "ss://", "hysteria"))
             if not _ok:
@@ -129,7 +141,7 @@ def _fetch_node_source():
             print(f"[verify] 节点源拉取成功：{url} ({len(txt)} bytes)")
             return txt
         except Exception as e:
-            last_err = e
+            last_err = f"{type(e).__name__}: {e} @ {url}"
             print(f"[verify] 节点源拉取失败 {url}: {e}")
     raise RuntimeError(
         f"[verify] 所有节点源候选均失败（末错：{last_err}）；"
