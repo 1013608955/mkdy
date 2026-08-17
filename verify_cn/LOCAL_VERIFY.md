@@ -29,7 +29,7 @@
 实测差异明显：xray 路线在 198 个节点里验出 21 个可用；mihomo 路线在 318 个节点里
 验出 30 个，其中包含 xray **完全无法验证**的 anytls / hysteria2 节点。
 
-> 那层手工协议翻译（`verify_proxy_core.py` 的 `build_xray_config`）也是历史 bug 温床
+> 那层手工协议翻译（xray outbound 的 `streamSettings` 映射）也是历史 bug 温床
 > ——`streamSettings` 曾被 flatten 到 outbound 顶层，导致所有 TLS 节点静默失效。
 
 ## 依赖
