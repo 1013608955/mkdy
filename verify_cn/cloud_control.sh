@@ -100,11 +100,11 @@ echo "[debug] DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-<空>}"
 #       否则后续 gdbus 别名修复会被跳过、login collection 始终建不出来。
 KEYRING_PW="mkdy-ci-keyring"
 if command -v gnome-keyring-daemon >/dev/null 2>&1; then
-  echo "[keyring] 启动 gnome-keyring-daemon --daemonize --unlock（固定口令，headless 常驻）…"
-  printf '%s' "$KEYRING_PW" | gnome-keyring-daemon --daemonize --unlock --components=secrets,ssh,pkcs11 >/tmp/keyring.env 2>/tmp/keyring.err
-  # 轮询等待 secret-service 真正就绪（最多 ~90s，daemon 启动很慢且不稳定）
+  echo "[keyring] 启动 gnome-keyring-daemon --daemonize --unlock（仅 secrets 组件，固定口令，headless 常驻）…"
+  printf '%s' "$KEYRING_PW" | gnome-keyring-daemon --daemonize --unlock --components=secrets >/tmp/keyring.env 2>/tmp/keyring.err
+  # 轮询等待 secret-service 真正就绪（最多 ~120s，本环境 daemon 启动极慢 ~95s）
   READY=""
-  for i in $(seq 1 180); do
+  for i in $(seq 1 240); do
     if command -v gdbus >/dev/null 2>&1 && gdbus introspect --session --dest org.freedesktop.secret --object-path /org/freedesktop/secrets >/dev/null 2>&1; then
       READY="yes"; echo "[debug] secret-service 已就绪（轮询 ${i} 次 / ~$((i/2))s）"; break
     fi
