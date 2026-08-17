@@ -1,5 +1,5 @@
 # s-verified.yaml — 仅含中国出口(FC)验证通过的节点 + clash_template 规则模版
-# 来源 verified.json: 21 个 ok → 匹配 5（漂移跳过 16）
+# 来源 verified.json: 21 个 ok → 匹配 3（漂移跳过 18）
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -46,28 +46,22 @@ proxy-groups:
   - 自动选择
   - 故障转移
   - 电报群：https://t.me/vvkj11
+  - HK 🇭🇰 | @Raydikalx | B5AE6B
   - '[1808.ga]香港  | 线路定制：@QS00008'
-  - 🇩🇪_DE_德国
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
 - name: 自动选择
   type: url-test
   proxies:
   - 电报群：https://t.me/vvkj11
+  - HK 🇭🇰 | @Raydikalx | B5AE6B
   - '[1808.ga]香港  | 线路定制：@QS00008'
-  - 🇩🇪_DE_德国
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
   - 电报群：https://t.me/vvkj11
+  - HK 🇭🇰 | @Raydikalx | B5AE6B
   - '[1808.ga]香港  | 线路定制：@QS00008'
-  - 🇩🇪_DE_德国
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国
-  - 🇺🇸_US_美国->🇹🇭_TH_泰国_2
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -603,6 +597,19 @@ proxies:
     short-id: 5629431325884ff0
     spider-x: ''
   client-fingerprint: firefox
+- name: HK 🇭🇰 | @Raydikalx | B5AE6B
+  type: vmess
+  server: nycqg19zkwacpm1b.v.3dns.vip
+  port: 443
+  uuid: f23bb427-c1f9-4373-876c-2f43e9f790f3
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /ws-vmess
+    headers:
+      Host: NYcQg19zkwaCPM1B.v.3dns.vip
 - name: '[1808.ga]香港  | 线路定制：@QS00008'
   type: vmess
   server: n1747624260.4u9ma.icu
@@ -616,42 +623,3 @@ proxies:
     path: /
     headers:
       Host: n1747624260.4u9ma.icu
-- name: 🇩🇪_DE_德国
-  type: vless
-  server: 108.138.26.70
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-- name: 🇺🇸_US_美国->🇹🇭_TH_泰国
-  type: vless
-  server: 52.84.199.28
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-- name: 🇺🇸_US_美国->🇹🇭_TH_泰国_2
-  type: vless
-  server: 18.238.109.26
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
