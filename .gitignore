@@ -36,3 +36,8 @@ analysis_tmp/
 verify_cn/_build/
 verify_cn/_wheels/
 verify_cn/deploy.zip
+
+# 容器/本机运行期敏感与临时产物（防误提交泄漏凭据 / 污染仓库）
+verify_cn/.env
+verify_cn/run_loop.sh
+.cache/

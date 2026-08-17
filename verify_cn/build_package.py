@@ -1,3 +1,4 @@
+# ⚠️ DEPRECATED — 本文件（FunctionGraph 打包脚本）已被 verify_cn/run_local.py（mihomo）取代，仅留作历史参考，请勿在新流程中使用。
 """build_package.py — verify_cn 打成可直接上传 FunctionGraph 的代码包 + 依赖包。
 
 FunctionGraph 部署分两部分（与阿里云 FC 不同）：

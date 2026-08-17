@@ -1,3 +1,4 @@
+# ⚠️ DEPRECATED — 本文件（FunctionGraph/FC 路线核心）已被 verify_cn/run_local.py（mihomo 真链探测）取代，仅留作历史参考，请勿在新流程中使用。
 """verify_proxy_core.py — 平台无关的代理节点真实链路验证核心。
 
 设计目标：在中国大陆网络出口（如阿里云 FC）上，真正把流量“通过节点”发出去，

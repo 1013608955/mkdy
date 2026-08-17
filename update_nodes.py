@@ -850,9 +850,10 @@ def process_nodes_final(unique_nodes: List[Dict]) -> Tuple[List[str], List[Dict]
     valid_lines_sorted = [node["line"] for node in valid_nodes_info]
   
     LOG.info(f"✅ 节点预筛完成（GitHub侧连通性粗筛，真实可用性请在客户端 url-test 验证）：共{len(valid_lines_sorted)}条（阈值{threshold}分）")
-    return valid_lines_sorted, valid_nodes_info
+    return valid_lines_sorted, valid_nodes_info, threshold
 def generate_final_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_lines: List[str],
-                        valid_nodes_info: List[Dict], start_time: float, source_records: Dict) -> None:
+                        valid_nodes_info: List[Dict], start_time: float, source_records: Dict,
+                        threshold: int = 40) -> None:
     excellent = [n for n in valid_nodes_info if n["score"] >= 90]
     good = [n for n in valid_nodes_info if 80 <= n["score"] < 90]
     qualified = [n for n in valid_nodes_info if 65 <= n["score"] < 80]
@@ -870,7 +871,7 @@ def generate_final_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_
         except OSError as e:
             LOG.error(f"❌ {desc}保存失败: {str(e)[:50]}")
   
-    save_nodes(valid_lines, 's1.txt', "所有有效节点（≥65分）")
+    save_nodes(valid_lines, 's1.txt', f"所有有效节点（动态阈值≥{threshold}分）")
   
     total_cost = time.time() - start_time
     avg_response_time = sum([n["response_time"] for n in valid_nodes_info]) / len(valid_nodes_info) if valid_nodes_info else 0
@@ -885,9 +886,10 @@ def generate_final_stats(all_nodes: List[Dict], unique_nodes: List[Dict], valid_
     LOG.info(f" ├─ 性能指标：平均响应 {avg_response_time:.2f}s | 平均稳定性 {avg_stability:.1%} | 境外握手通过率 {outside_ok_rate:.1f}% | 国内IP占比 {cn_ip_rate:.1f}%")
     LOG.info(f" └─ 总耗时：{total_cost:.2f} 秒 | 输出文件：s1.txt")
     # 新增来源统计
-    generate_source_stats(source_records, valid_nodes_info)
+    generate_source_stats(source_records, valid_nodes_info, threshold)
 # ========== 新增：各来源节点等级统计 ==========
-def generate_source_stats(source_records: Dict[str, Dict], valid_nodes_info: List[Dict]) -> None:
+def generate_source_stats(source_records: Dict[str, Dict], valid_nodes_info: List[Dict],
+                         threshold: int = 40) -> None:
     LOG.info("\n🏅 各数据源节点等级统计报告")
    
     # 统计每个来源的等级分布
@@ -902,7 +904,7 @@ def generate_source_stats(source_records: Dict[str, Dict], valid_nodes_info: Lis
         elif score >= 65:
             level = "合格 (65-79分)"
         else:
-            level = "低分 (<65分)" # 理论上不会出现，已过滤
+            level = f"低分 (<65分, 动态阈值{threshold})"
        
         if url not in source_stats:
             original = source_records.get(url, {}).get("original_count", 0)
@@ -969,7 +971,7 @@ def main() -> None:
   
     unique_nodes = dedup_nodes_final(all_nodes)
   
-    valid_lines, valid_nodes_info = process_nodes_final(unique_nodes)
+    valid_lines, valid_nodes_info, threshold = process_nodes_final(unique_nodes)
   
     generate_final_stats(all_nodes, unique_nodes, valid_lines, valid_nodes_info, start_time, source_records)
     try:

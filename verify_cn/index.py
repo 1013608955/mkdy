@@ -1,3 +1,4 @@
+# ⚠️ DEPRECATED — 本文件（阿里云/腾讯云 FC 函数路线）已被 verify_cn/run_local.py（mihomo 真链探测）取代，仅留作历史参考，请勿在新流程中使用。
 """index.py — 阿里云 FC 入口（也可用于腾讯云 SCF，只需改 handler 签名）。
 
 流程：
