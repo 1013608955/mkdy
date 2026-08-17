@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: 设置 Python
         uses: actions/setup-python@v5
@@ -67,6 +67,9 @@ jobs:
             echo "[INFO] s-clash.yaml 无变化，跳过推送"
           else
             git commit -m "chore: 合并订阅 $(date +'%Y-%m-%d %H:%M UTC')"
+            # 防止与容器 run_local.py / verify-tag.yml 并发推送竞争 main 导致 non-fast-forward 拒绝
+            git fetch origin main
+            git merge origin/main --no-edit --no-ff
             git push
             echo "[INFO] s-clash.yaml 已更新并推送"
           fi
