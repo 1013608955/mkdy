@@ -60,11 +60,30 @@ _NO_WINDOW = {"creationflags": getattr(subprocess, "CREATE_NO_WINDOW", 0)} \
 
 
 def _find_mihomo():
+    envp = os.environ.get("MIHOMO_BIN")
+    if envp and os.path.exists(envp):
+        return envp
     for name in ("mihomo.exe", "mihomo", "verge-mihomo.exe"):
         p = os.path.join(HERE, name)
         if os.path.exists(p):
             return p
     return None
+
+
+def _maybe_shutdown(after):
+    """可选：跑完即关机，省云开发环境核时。仅当 --shutdown-after 时触发。
+    需配合「外部定时开机」才有意义（否则容器关掉后下轮不会自动起）。"""
+    if not after:
+        return
+    print("[shutdown] --shutdown-after 已设，运行结束后关闭环境以节省核时…")
+    for cmd in (["sudo", "shutdown", "-h", "now"],
+                ["shutdown", "-h", "now"],
+                ["systemctl", "poweroff"]):
+        try:
+            subprocess.run(cmd, check=False)
+            return
+        except Exception:  # noqa: BLE001
+            continue
 
 
 def _free_port():
@@ -187,6 +206,8 @@ def main():
     ap.add_argument("--no-pull", action="store_true")
     ap.add_argument("--no-push", action="store_true")
     ap.add_argument("--no-fallback", action="store_true", help="跳过兜底目标复测")
+    ap.add_argument("--shutdown-after", action="store_true",
+                    help="跑完即关机（云环境省核时；需配合外部定时开机才有意义）")
     ap.add_argument("--source", default=SRC_YAML)
     args = ap.parse_args()
 
@@ -316,6 +337,7 @@ def main():
 
     if args.no_push:
         print("[push] --no-push，跳过推送。")
+        _maybe_shutdown(args.shutdown_after)
         return
     _git(["add", "verify_cn/verified.json"])
     code, out = _git(["commit", "-m",
@@ -328,6 +350,7 @@ def main():
         code, out = _git(["push", "origin", "main"], check=False)
         if code == 0:
             print("[push] 推送成功；GitHub 端 verify-tag 将自动打标产出 s-verified.yaml。")
+            _maybe_shutdown(args.shutdown_after)
             return
         print(f"[push] 第 {attempt+1} 次被拒，合并远端后重试…")
         _git(["fetch", "origin", "main"], check=False)

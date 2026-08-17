@@ -1,8 +1,9 @@
 # mkdy — 自动代理节点聚合 + 单 Clash 订阅 + 中国出口真实链路验证
 
 GitHub Actions 每小时自动运行：从多个公开订阅源拉取节点 → 合并去重 → 产出**单一**
-Clash 订阅 `s-clash.yaml`；另有部署在阿里云函数计算（FC）的 `verify_cn` 探针，
-实测「该节点能否从中国网络出口连通」，产出已验证子集 `s-verified.yaml`。
+Clash 订阅 `s-clash.yaml`；另有部署在华为云开发环境容器（中国网络出口）的 `verify_cn` 探针，
+实测「该节点能否从中国网络出口连通」，产出已验证子集 `s-verified.yaml`。本地 Windows
+定时任务作为第三重入口，PC 关机后云端验证仍照常每小时运行。
 
 ## 架构（方案 B：单合并工作流，纯 Python，无 SubConverter / 无 Docker）
 
@@ -35,14 +36,40 @@ Clash 订阅 `s-clash.yaml`；另有部署在阿里云函数计算（FC）的 `v
 
 ## 中国出口真实链路验证（verify_cn）
 
-`verify_cn/` 部署在阿里云函数计算（中国网络），与 GitHub CI（境外）形成互补：
+`verify_cn/` 部署在**华为云开发环境容器** `DevEnvC_W4yNKt`（鲲鹏 ARM 2vCPU 4GiB，
+中国网络出口），与 GitHub CI（境外）形成互补；另有**本机 Windows 定时任务**作为第三重入口。
+**PC 关机后云端容器验证仍照常每小时运行。**
 
-- 读取 `s-clash.yaml` 的 `proxies`（通过环境变量 `NODE_SOURCE_URL` 指定，默认即该文件）；
-- 借助内置 xray，以每个节点为出口 SOCKS 代理，实测能否从中国网络连通目标；
-- 把逐节点结果（含诊断 `detail`）写入 `verify_cn/verified.json`（经 GitHub Contents API 回写仓库）；
-- `verify-tag.yml` 触发 `tag_verified.py`：读 `verified.json` + `s-clash.yaml` + `clash_template.yaml`
-  → 筛出验证通过（ok=true）的节点，套用「短期」规则模版（`proxy-groups` / `rules` / `dns`），
-  输出**仅含验证通过节点**的完整 `s-verified.yaml`（无需手动挑 ✅）。
+- 读取 `s-clash.yaml` 的 `proxies`；
+- 借助容器内 `verify_cn/mihomo`（MetaCubeX/mihomo，按架构自动选 arm64/amd64，
+  真实链路探测），以每个节点为出口实测能否从中国网络连通目标；
+- 逐节点结果（含诊断 `detail`）写入 `verify_cn/verified.json`；
+- `verify-tag.yml` 触发 `tag_verified.py`：读 `verified.json` + `s-clash.yaml` +
+  `clash_template.yaml` → 筛出验证通过（ok=true）的节点，套用「短期」规则模版
+  （`proxy-groups` / `rules` / `dns`），输出**仅含验证通过节点**的完整
+  `s-verified.yaml`（无需手动挑 ✅）。
+
+### 云端容器（主，PC 关机仍运行）
+
+- 实例 `DevEnvC_W4yNKt`（华为云开发环境 → 容器，ARM 2vCPU 4GiB，约 4000 运行小时额度）。
+- 控制台「环境变量（可选）」填 `GITHUB_PAT=ghp_你的PAT`（fine-grained PAT，仓库
+  `Contents:write`），**重启容器**后注入 process env；`verify_cn/run_loop.sh` 每小时据此
+  自动 `git pull` + 验证 + `git push`（推送触发 `verify-tag.yml` 产出 `s-verified.yaml`）。
+  - 不填 PAT 也能跑，但只做本地验证、不推送。
+- 仓库必须落在数据盘 `/workspace/mkdy`（系统盘 `/root` 重启即丢；只有 EVS 挂载的
+  `/workspace` 持久）。
+- 重部署 / 修复：`hdspace devenv start-tunnel --name=DevEnvC_W4yNKt --ports=10022:22`
+  建立 SSH 隧道后 `ssh` 进容器，`bash verify_cn/cloud_init.sh` 一键重建。
+- 用到的交付物：`cloud_init.sh`（部署脚本）、`mkdy-verify.service` / `mkdy-verify.timer`
+  （systemd 模板，供有 systemd 的机器复用）、`cloud_README.md`（容器版排错）。
+
+### 本机定时任务（辅，每小时 :05）
+
+- `verify_cn/setup_schedule.ps1` 注册 Windows 任务计划 `mkdy-verify-local`，
+  每小时 :05 跑 `run_local.bat`（**隐藏窗口运行，无黑色 cmd 弹窗**），结果写
+  `verify_cn/logs/run.log`。
+- 重注册（改配置后）：`powershell -ExecutionPolicy Bypass -File verify_cn\setup_schedule.ps1`
+- 删除：`schtasks /delete /tn mkdy-verify-local /f`
 
 ## ⚠️ 验证边界（重要）
 
@@ -73,3 +100,5 @@ python merge_subs.py      # -> s-clash.yaml
 - 所有写仓库操作经 `secrets.PAT_TOKEN` + `permissions: contents: write`，
   且 `update-subs.yml` 与 `verify-tag.yml` 共用 `concurrency.group: mkdy-subs`，
   避免并发推送导致 non-fast-forward 拒绝。
+- 云端容器 / 本机定时任务的推送均使用 `GITHUB_PAT`（控制台环境变量或本机任务环境），
+  **不写入仓库、不提交**。

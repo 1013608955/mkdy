@@ -1,0 +1,11 @@
+[Unit]
+Description=mkdy node verification (cloud container)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@REPO_DIR@
+ExecStart=/usr/bin/python3 @REPO_DIR@/verify_cn/run_local.py
+# 若配合「外部定时开机 + 跑完即关」以最省核时，去掉下一行注释：
+# ExecStartPost=/sbin/shutdown -h now
