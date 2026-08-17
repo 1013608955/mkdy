@@ -58,32 +58,66 @@ done
 export HUAWEI_CLOUD_ACCESS_KEY_ID="$AK" HUAWEI_CLOUD_SECRET_ACCESS_KEY="$SK" \
        HUAWEI_ACCESS_KEY="$AK" HUAWEI_SECRET_KEY="$SK" AK="$AK" SK="$SK"
 
-# headless CI 无桌面密钥环，hdspace 默认用系统凭据存储会报
-# "failed to get system credentials: EOF / permission denied"。
-# 需先起 dbus + 解锁一个 keyring，再让 hdspace 把 AK/SK 存进去。
-if ! command -v gnome-keyring-daemon >/dev/null 2>&1 && command -v apt-get >/dev/null 2>&1; then
-  sudo apt-get update -qq >/dev/null 2>&1
-  sudo apt-get install -y -qq gnome-keyring dbus >/dev/null 2>&1
+# ---------- headless CI 凭据存储（keyring）----------
+# hdspace 把 AK/SK 存进系统凭据存储（Linux = D-Bus secret-service，
+# 由 gnome-keyring-daemon 提供）。headless 无桌面需手动起 dbus + keyring。
+ensure_pkg(){
+  local p="$1"
+  command -v "$p" >/dev/null 2>&1 && return 0
+  if command -v apt-get >/dev/null 2>&1; then
+    local SUDO=""
+    if command -v sudo >/dev/null 2>&1 && [ "$(id -u)" -ne 0 ]; then SUDO=sudo; fi
+    echo "[keyring] 安装 $p …"
+    $SUDO apt-get update -qq 2>&1 | tail -2
+    $SUDO apt-get install -y -qq "$p" 2>&1 | tail -5
+  else
+    echo "[WARN] 无 apt-get，无法安装 $p（keyring 可能不可用）"
+  fi
+}
+ensure_pkg dbus
+ensure_pkg gnome-keyring
+
+# 若还没有 D-Bus session，用 dbus-run-session 重跑整个脚本（最可靠：后续所有
+# hdspace 命令共享同一 session 的 keyring）；否则手动 dbus-launch。
+if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
+  if command -v dbus-run-session >/dev/null 2>&1; then
+    echo "[keyring] 无 D-Bus session，用 dbus-run-session 重跑本脚本…"
+    exec dbus-run-session -- "$0" "$@"
+  elif command -v dbus-launch >/dev/null 2>&1; then
+    echo "[keyring] 启动 D-Bus session (dbus-launch)…"
+    eval "$(dbus-launch --sh-syntax)"
+  fi
 fi
-if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ] && command -v dbus-launch >/dev/null 2>&1; then
-  eval "$(dbus-launch --sh-syntax)" 2>/dev/null || true
-fi
+echo "[debug] DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-<空>}"
+
+# 启动 keyring daemon 并提供 secrets 服务（无交互，用固定口令解锁 headless keyring）
 if command -v gnome-keyring-daemon >/dev/null 2>&1; then
-  # 解锁一个 keyring（无交互），供 hdspace 存/取系统凭据
-  echo -n "mkdy-ci-keyring" | gnome-keyring-daemon --unlock --components=secrets,ssh,pkcs11 >/dev/null 2>&1 &
-  sleep 2
+  echo "[keyring] 启动 gnome-keyring-daemon --unlock (提供 secrets 服务)…"
+  printf 'mkdy-ci-keyring' | gnome-keyring-daemon --unlock --components=secrets,ssh,pkcs11 >/tmp/keyring.log 2>&1 &
+  sleep 4
+  echo "[debug] keyring daemon 日志:"; sed -n '1,20p' /tmp/keyring.log 2>/dev/null
+else
+  echo "[WARN] 未找到 gnome-keyring-daemon，keyring 后端不可用，hdspace 可能读不到凭据"
 fi
-# 交互式喂入 AK / SK / SK确认
-printf '%s\n%s\n%s\n' "$AK" "$SK" "$SK" | "$HD" config >/dev/null 2>&1 || true
+
+# 交互式喂入 AK / SK / SK确认（官方：AK 一行，SK 两行含确认，不回显）
+echo "[keyring] hdspace config 写入 AK/SK…"
+printf '%s\n%s\n%s\n' "$AK" "$SK" "$SK" | "$HD" config 2>&1 | head -10 || true
 
 # 用只读的 devenv list 先验证凭据是否生效（失败则早退，不烧核时）
 if ! "$HD" devenv list >/dev/null 2>&1; then
   echo "[ERROR] hdspace 凭据未生效（devenv list 失败），疑似 keyring / AK-SK 问题。"
   echo "  DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-<空>}"
-  "$HD" devenv list 2>&1 | head -6
+  "$HD" devenv list 2>&1 | head -10
   exit 1
 fi
 log "hdspace 凭据 OK（devenv list 通过）"
+
+# 调试开关：仅验证 keyring 可用即退出，不真开机（省核时）。CI 调试用，平时不设。
+if [ -n "${CI_DEBUG_KEYRING:-}" ]; then
+  echo "[debug][CI_DEBUG_KEYRING] KEYRING_OK — 凭据后端可用，主动退出（不烧核时）。"
+  exit 0
+fi
 
 state_of(){
   "$HD" devenv list 2>/dev/null | grep "$INSTANCE_ID" | grep -oE "Running|Ready|Stopping|Starting|Error" | head -1
