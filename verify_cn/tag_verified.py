@@ -19,6 +19,7 @@ clash_template.yaml 规则模版，生成**仅含已验证节点**的完整 Clas
   VERIFIED_JSON     验证结果，默认 <workspace>/verify_cn/verified.json
   TEMPLATE_YAML     规则模版，默认 <workspace>/clash_template.yaml
   OUT_YAML          输出文件，默认 <workspace>/s-verified.yaml
+  OUT_TXT           v2rayN 订阅输出，默认 <workspace>/s-verified.txt
 """
 import json
 import os
@@ -26,11 +27,18 @@ import sys
 
 import yaml
 
+# 确保无论 tag_verified.py 被从哪个目录直接执行，都能 import 到仓库根的 node_parse.py
+# （python verify_cn/tag_verified.py 会把 sys.path[0] 设为 verify_cn/，需要显式补仓库根）
 REPO = os.environ.get("GITHUB_WORKSPACE", os.getcwd())
+if REPO not in sys.path:
+    sys.path.insert(0, REPO)
+from node_parse import struct_to_uri
+
 SRC = os.environ.get("SRC_YAML", os.path.join(REPO, "s-clash.yaml"))
 VERIFIED = os.environ.get("VERIFIED_JSON", os.path.join(REPO, "verify_cn", "verified.json"))
 TEMPLATE = os.environ.get("TEMPLATE_YAML", os.path.join(REPO, "clash_template.yaml"))
 OUT = os.environ.get("OUT_YAML", os.path.join(REPO, "s-verified.yaml"))
+OUT_TXT = os.environ.get("OUT_TXT", os.path.join(REPO, "s-verified.txt"))
 
 
 def load_ok(path):
@@ -107,6 +115,16 @@ def main():
 
     print(f"[tag] 验证通过 {len(ok)} → 匹配 {len(selected)}"
           f"（漂移跳过 {len(missing)}）→ 输出 {OUT}")
+
+    # 写出 s-verified.txt（v2rayN 兼容订阅格式，仅已打标节点）
+    lines = []
+    for nd in selected:
+        uri = struct_to_uri(nd)
+        if uri:
+            lines.append(uri)
+    with open(OUT_TXT, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+    print(f"[tag] 输出 {len(lines)} 条已验证 URI -> {OUT_TXT}")
 
 
 if __name__ == "__main__":

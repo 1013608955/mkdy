@@ -10,7 +10,7 @@
 import base64
 import json
 import re
-from urllib.parse import unquote, parse_qs
+from urllib.parse import unquote, parse_qs, quote
 
 # Clash 风格 AEAD 加密套件（用于派生 ss / vmess 的 security 语义）
 _AEAD_CIPHERS = ("aes-128-gcm", "aes-256-gcm", "chacha20-ietf-poly1305")
@@ -311,4 +311,103 @@ def parse_uri_to_struct(uri):
                 return parser(uri)
             except Exception:
                 return None
+    return None
+
+
+# --------------------------------------------------------------------------- #
+# 反向转换：Clash proxy dict -> 订阅 URI（v2rayN 兼容格式）
+# --------------------------------------------------------------------------- #
+def struct_to_uri(node: dict) -> str:
+    """把 Clash proxy dict 反向拼回 v2rayN 兼容的订阅 URI，失败返回 None。
+
+    node 的 keys 应与 parse_uri_to_struct 输出一致（type/server/port/uuid/password 等）。
+    """
+    t = (node.get("type") or "").lower()
+    server = node.get("server") or ""
+    port = node.get("port") or 0
+    name = (node.get("name") or "").strip() or f"{t}_{server}:{port}"
+
+    def _b64(s):
+        return base64.b64encode(s.encode()).decode()
+
+    def _q(*kvs):
+        """拼 query 参数，只取非空值。"""
+        parts = []
+        for k, v in kvs:
+            if v:
+                parts.append(f"{k}={quote(str(v))}")
+        return "?" + "&".join(parts) if parts else ""
+
+    if t == "vmess":
+        j = {
+            "v": "2",
+            "ps": name,
+            "add": server,
+            "port": port,
+            "id": node.get("uuid") or node.get("password", "x"),
+            "aid": str(node.get("alterId", 0) or 0),
+            "scy": node.get("cipher") or "auto",
+            "net": node.get("network") or "tcp",
+            "type": "none",
+            "host": (node.get("ws-opts") or {}).get("headers", {}).get("Host", ""),
+            "path": (node.get("ws-opts") or {}).get("path", ""),
+            "tls": "tls" if node.get("tls") else "",
+            "sni": node.get("sni") or node.get("servername", ""),
+        }
+        return "vmess://" + _b64(json.dumps(j, ensure_ascii=False))
+
+    if t == "vless":
+        query = _q(
+            ("security", node.get("security_scheme") or "none"),
+            ("type", node.get("network") or "tcp"),
+            ("sni", node.get("sni") or ""),
+            ("path", (node.get("ws-opts") or {}).get("path", "")),
+            ("host", (node.get("ws-opts") or {}).get("headers", {}).get("Host", "")),
+            ("flow", node.get("flow", "")),
+            ("pbk", (node.get("reality-opts") or {}).get("public-key", "")),
+            ("sid", (node.get("reality-opts") or {}).get("short-id", "")),
+            ("spx", (node.get("reality-opts") or {}).get("spider-x", "")),
+            ("fp", (node.get("reality-opts") or {}).get("fingerprint", "")),
+        )
+        return f"vless://{quote(node.get('uuid', 'x'))}@{server}:{port}{query}#{quote(name)}"
+
+    if t == "trojan":
+        query = _q(
+            ("security", node.get("security_scheme") or "tls"),
+            ("sni", node.get("sni") or ""),
+            ("type", node.get("network") or "tcp"),
+            ("allowInsecure", "1" if node.get("skip-cert-verify") else ""),
+        )
+        return f"trojan://{quote(node.get('password', 'x'))}@{server}:{port}{query}#{quote(name)}"
+
+    if t == "ss":
+        userinfo = f"{node.get('cipher', 'aes-256-gcm')}:{node.get('password', 'x')}"
+        plugin = node.get("plugin", "")
+        uri = f"ss://{_b64(userinfo)}@{server}:{port}"
+        if plugin:
+            uri += f"?plugin={quote(plugin)}"
+        uri += f"#{quote(name)}"
+        return uri
+
+    if t == "ssr":
+        raw = f"{node.get('cipher', 'aes-256-cfb')}:{node.get('password', 'x')}@{server}:{port}"
+        return f"ssr://{_b64(raw)}"
+
+    if t == "hysteria2":
+        query = _q(
+            ("insecure", "1" if node.get("skip-cert-verify") else ""),
+            ("sni", node.get("sni") or ""),
+        )
+        return f"hysteria2://{quote(node.get('password', 'x'))}@{server}:{port}{query}#{quote(name)}"
+
+    if t == "tuic":
+        query = _q(
+            ("uuid", node.get("uuid", "")),
+            ("congestion_control", "bbr"),
+            ("udp_relay_mode", "native"),
+            ("alpn", "h3"),
+            ("allow_insecure", "1" if node.get("skip-cert-verify") else ""),
+        )
+        return f"tuic://{quote(node.get('password', 'x'))}@{server}:{port}{query}#{quote(name)}"
+
     return None
