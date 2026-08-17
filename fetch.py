@@ -217,20 +217,24 @@ def download_nodes(source):
 def make_proxy_names_unique(proxies):
     """兜底确保 Clash proxy name 唯一（源站 YAML 常含重复 name，会导致下游
     Clash/Clash Verge 因 duplicate name 拒绝加载）。同名重复追加 _2/_3/...，
-    空名回填为可读默认。返回原地修改后的列表。"""
-    counts = {}
+    空名回填为可读默认。返回原地修改后的列表。
+
+    用「已占用名字集合」而非计数器：计数器会把第 3 个同名节点命名为 `X_3`，
+    可能撞上上游自带的 `X_3`（机场常用 _N 后缀），导致重名仍然漏出。"""
+    used = set()
     for p in proxies:
         if not isinstance(p, dict):
             continue
         name = (p.get("name") or "").strip()
         if not name:
             name = f"{p.get('type', 'node')}_{p.get('server', '')}:{p.get('port', 0)}"
-            p["name"] = name
-        if name in counts:
-            counts[name] += 1
-            p["name"] = f"{name}_{counts[name]}"
-        else:
-            counts[name] = 1
+        if name in used:
+            i = 2
+            while f"{name}_{i}" in used:
+                i += 1
+            name = f"{name}_{i}"
+        p["name"] = name
+        used.add(name)
     return proxies
 
 
