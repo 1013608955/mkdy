@@ -95,29 +95,30 @@ echo "[debug] DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-<空>}"
 
 # 启动 keyring daemon 并提供 secrets 服务（headless 下用固定口令解锁/创建 login keyring）。
 # 关键：hdspace 用 99designs/keyring 的 secret-service 后端，存储时要求 default(=login)
-#       collection 已存在且已解锁；否则会触发 GUI 解锁提示(SystemPrompter)→ headless 无显示→失败。
+#       collection 已存在且已解锁；否则触发 GUI 解锁提示(SystemPrompter)→ headless 无显示→失败。
 #       secret-tool 走 session 兜底不弹窗，不能证明 default collection 已就绪，故需显式创建。
+# 注意：必须 --daemonize（否则 daemon 在 stdin 关闭后退出，secret-service 随之消失）。
 KEYRING_PW="mkdy-ci-keyring"
 if command -v gnome-keyring-daemon >/dev/null 2>&1; then
-  echo "[keyring] 启动 gnome-keyring-daemon --unlock (headless 固定口令)…"
-  # 不用 --daemonize：直接后台运行并从 stdin 读解锁口令（--daemonize 会让子进程 stdin 变 /dev/null 丢失口令）
-  printf '%s\n' "$KEYRING_PW" | gnome-keyring-daemon --unlock --components=secrets,ssh,pkcs11 >/tmp/keyring.env 2>&1 &
+  echo "[keyring] 启动 gnome-keyring-daemon --daemonize --unlock（headless 固定口令，保持常驻）…"
+  printf '%s' "$KEYRING_PW" | gnome-keyring-daemon --daemonize --unlock --components=secrets,ssh,pkcs11 >/tmp/keyring.env 2>&1
   sleep 6
   [ -s /tmp/keyring.env ] && eval "$(cat /tmp/keyring.env)" 2>/dev/null || true
-  echo "[debug] keyring env:"; sed -n '1,6p' /tmp/keyring.env 2>/dev/null
   echo "[debug] gnome-keyring-daemon 进程:"; pgrep -a gnome-keyring-daemon 2>/dev/null | head -3 || echo "  (无进程在运行)"
-  # 显式创建并解锁 login collection（secret-tool 直接写到 login，避免走 session 兜底）
+  # 显式创建/解锁 login collection（secret-tool 直接写到 login，避免走 session 兜底）
   if command -v secret-tool >/dev/null 2>&1; then
-    echo "[debug] secret-tool 写入 --collection=login（强制创建/解锁 login keyring）…"
+    echo "[debug] secret-tool 写 --collection=login（创建/解锁 login keyring）…"
     echo -n "ci-test-value" | secret-tool store --label=mkdy-ci-test --collection=login mkdy_ci_test myvalue 2>&1 | head -3
     echo -n "secret-tool 读回: "; secret-tool lookup mkdy_ci_test myvalue 2>&1 | head -3
   fi
-  # 把 default 别名指向已解锁的 login collection，并解锁它（让 99designs/keyring 的 default 解析正确）
+  # 确保 default 别名指向已解锁的 login collection（让 99designs/keyring 的 default 解析正确）
   if command -v gdbus >/dev/null 2>&1; then
-    echo "[debug] gdbus：解锁 login collection 并把 default 别名指向它…"
+    echo "[debug] gdbus：创建 default collection 并别名指向 login、解锁…"
+    # 若 login 已由 --unlock 建立，这一步可能报“已存在”，忽略；否则创建并别名 default
+    gdbus call --session --dest org.freedesktop.secret --object-path /org/freedesktop/secrets --method org.freedesktop.Secret.Service.CreateCollection "{'org.freedesktop.Secret.Collection.Label': <'Login'>}" default 2>&1 | head -3 || true
     gdbus call --session --dest org.freedesktop.secret --object-path /org/freedesktop/secrets/collection/login --method org.freedesktop.Secret.Collection.Unlock 2>&1 | head -2 || true
     gdbus call --session --dest org.freedesktop.secret --object-path /org/freedesktop/secrets --method org.freedesktop.Secret.Service.SetAlias default /org/freedesktop/secrets/collection/login 2>&1 | head -2 || true
-    echo "[debug] 当前 secret-service items:"; gdbus call --session --dest org.freedesktop.secret --object-path /org/freedesktop/secrets --method org.freedesktop.Secret.Service.SearchItems '{}' 2>&1 | head -2 || true
+    echo "[debug] secret-service items:"; gdbus call --session --dest org.freedesktop.secret --object-path /org/freedesktop/secrets --method org.freedesktop.Secret.Service.SearchItems '{}' 2>&1 | head -2 || true
   else
     echo "[WARN] 无 gdbus（libglib2.0-bin），跳过 default 别名修复"
   fi
