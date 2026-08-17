@@ -2,9 +2,11 @@
 # cloud_control.sh —— 由 GitHub Actions 调用，控制华为云开发者空间容器做「开机 → 验证 → 关机」。
 #
 # 设计要点：
-#   * 仅当 verify_cn/verified.json 距上次推送超过 VERIFY_MAX_AGE_MIN（默认 180 分钟）才拉起容器，
-#     否则跳过（频繁触发但不实际开机 = 省核时）。本机每小时验证兜底，云容器只是「PC 关机备份出口」。
-#   * 开机后经隧道 + ssh-key-reset 拿私钥，SSH 进容器主动跑 run_local.py（运行时注入 GITHUB_PAT 推送），
+#   * VERIFY_MAX_AGE_MIN=0（默认）→ 每次 GitHub 定时触发都拉起容器验证；
+#     设为正整数（如 180）→ 仅当 verified.json 超过该分钟数未更新才开机（省核时，PC 关机备份模式）。
+#     注意：一次完整生命周期（开机 1–3 分 + 验证 ~15–30 分 + 关机 1–3 分）约 20–35 分钟，
+#     大于 15 分钟触发间隔，故「每次触发都验证」实际近乎连续运行（≈48 核时/天，省核时有限）。
+#   * 开机后经隧道 + ssh-key-reset 拿私钥，SSH 进容器主动跑 run_local.py（可选注入 GITHUB_PAT 推送），
 #     不依赖容器内 run_loop.sh 是否自启。
 #   * 脚本退出（含出错）时一定尝试关机，避免容器泄漏常开烧核时。
 #
@@ -14,10 +16,10 @@
 # 环境变量（由 GitHub Secrets / Variables 注入）：
 #   HW_INSTANCE_ID  实例 ID，如 DevEnvC_W4yNKt（必填）
 #   HW_AK / HW_SK   华为云访问密钥（必填）
-#   HW_GITHUB_PAT   细粒度 PAT（Contents:write），容器内推送用（必填）
-#   HW_SSH_USER     SSH 登录用户名，默认 developer（可选）
-#   HW_REGION       区域，默认 cn-north-4（可选）
-#   VERIFY_MAX_AGE_MIN  新鲜度阈值（分钟），默认 180（可选，建议用 repo variable）
+#   HW_GITHUB_PAT   细粒度 PAT（Contents:write），容器内推送用（可选：不填则依赖容器控制台 GITHUB_PAT 环境变量）
+#   HW_SSH_USER     SSH 登录用户名，默认 developer（可选，通常无需填）
+#   HW_REGION       区域，默认 cn-north-4（可选，实例在其它区域才需填）
+#   VERIFY_MAX_AGE_MIN  新鲜度阈值（分钟），默认 0=每次触发都验证（可选，建议用 repo variable 设置）
 #   FORCE           任意非空值则忽略新鲜度强制跑一次（可选）
 #   HDSPACE_BIN     hdspace 二进制路径（可选，默认 $GITHUB_WORKSPACE/verify_cn/bin/hdspace）
 set -uo pipefail
@@ -26,10 +28,10 @@ HD="${HDSPACE_BIN:-${GITHUB_WORKSPACE:-$(cd "$(dirname "$0")/.." && pwd)}/verify
 INSTANCE_ID="${HW_INSTANCE_ID:?缺少 HW_INSTANCE_ID}"
 AK="${HW_AK:?缺少 HW_AK}"
 SK="${HW_SK:?缺少 HW_SK}"
-PAT="${HW_GITHUB_PAT:?缺少 HW_GITHUB_PAT}"
+PAT="${HW_GITHUB_PAT:-}"   # 可选：空则依赖容器内控制台 GITHUB_PAT
 SSH_USER="${HW_SSH_USER:-developer}"
 REGION="${HW_REGION:-cn-north-4}"
-MAX_AGE_MIN="${VERIFY_MAX_AGE_MIN:-180}"
+MAX_AGE_MIN="${VERIFY_MAX_AGE_MIN:-0}"
 FORCE="${FORCE:-}"
 
 log(){ echo "==> $*"; }
@@ -74,7 +76,7 @@ STATE="$(state_of)"
 log "容器当前状态: ${STATE:-未知}"
 
 # 决策：新鲜且无需强制 → 处理泄漏后退出
-if [ -z "$FORCE" ] && [ "$AGE_MIN" -lt "$MAX_AGE_MIN" ]; then
+if [ -z "$FORCE" ] && [ "$MAX_AGE_MIN" -gt 0 ] && [ "$AGE_MIN" -lt "$MAX_AGE_MIN" ]; then
   if [ "$STATE" = "Running" ]; then
     log "验证尚新但容器在运行（疑似上轮未关机），执行关机以防泄漏核时。"
     "$HD" devenv close --instance-id="$INSTANCE_ID" >/dev/null 2>&1 || "$HD" devenv stop --instance-id="$INSTANCE_ID" >/dev/null 2>&1 || true
@@ -124,16 +126,24 @@ fi
 chmod 600 "$KEY"
 log "使用私钥: $KEY"
 
+# 推送令牌：优先用 HW_GITHUB_PAT；未提供则依赖容器内控制台 GITHUB_PAT 环境变量（不写死到 URL）
+if [ -n "$PAT" ]; then
+  PUSH_URL="https://${PAT}@github.com/1013608955/mkdy.git"
+  PUSH_SETUP="git remote set-url --push origin \"$PUSH_URL\" &&"
+else
+  PUSH_SETUP=""
+fi
 REMOTE_CMD="cd /workspace/mkdy && \
  git config --global user.email verify@mkdy.local && \
  git config --global user.name mkdy-verify-cloud && \
  git config --global http.version HTTP/1.1 && \
- git remote set-url --push origin https://${PAT}@github.com/1013608955/mkdy.git && \
+ ${PUSH_SETUP} \
  git pull --ff-only origin main 2>&1 | tail -2 ; \
+ echo \"[debug] 容器内 GITHUB_PAT 可见: \${GITHUB_PAT:+是}\${GITHUB_PAT:-否}\" ; \
  python3 -m pip install --quiet pyyaml 2>/dev/null || true ; \
  python3 verify_cn/run_local.py"
 
-log "SSH 进容器执行验证（注入 GITHUB_PAT 推送）…"
+log "SSH 进容器执行验证（推送令牌优先用 HW_GITHUB_PAT，否则依赖容器控制台 GITHUB_PAT）…"
 ssh -i "$KEY" -p 10022 \
     -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=20 \
     "$SSH_USER@127.0.0.1" "$REMOTE_CMD"
