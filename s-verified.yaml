@@ -1,5 +1,5 @@
 # s-verified.yaml — 仅含中国出口(FC)验证通过的节点 + clash_template 规则模版
-# 来源 verified.json: 14 个 ok → 匹配 14（漂移跳过 0）
+# 来源 verified.json: 14 个 ok → 匹配 11（漂移跳过 3）
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -46,55 +46,46 @@ proxy-groups:
   - 自动选择
   - 故障转移
   - DE德国(mibei77.com 米贝节点分享)_2
-  - 🇷🇺_俄罗斯_26
-  - US美国(mibei77.com 米贝节点分享)_5
   - KR韩国(mibei77.com 米贝节点分享)
-  - 🇳🇱_荷兰_361
   - HK香港(mibei77.com 米贝节点分享)
-  - US美国(mibei77.com 米贝节点分享)_8
-  - 香港|@ripaojiedian
-  - NL荷兰(mibei77.com 米贝节点分享)_5
-  - 🇨🇳_中国_72
   - SG新加坡(mibei77.com 米贝节点分享)_2_2
-  - HK香港(mibei77.com 米贝节点分享)_4
   - KR韩国(mibei77.com 米贝节点分享)_1
+  - HK香港(mibei77.com 米贝节点分享)_4
+  - 香港|@ripaojiedian
+  - US美国(mibei77.com 米贝节点分享)_5
+  - 🇷🇺_俄罗斯_26
   - 爱沙尼亚(mibei77.com 米贝节点分享)_1
+  - 🇳🇱_荷兰_361
 - name: 自动选择
   type: url-test
   proxies:
   - DE德国(mibei77.com 米贝节点分享)_2
-  - 🇷🇺_俄罗斯_26
-  - US美国(mibei77.com 米贝节点分享)_5
   - KR韩国(mibei77.com 米贝节点分享)
-  - 🇳🇱_荷兰_361
   - HK香港(mibei77.com 米贝节点分享)
-  - US美国(mibei77.com 米贝节点分享)_8
-  - 香港|@ripaojiedian
-  - NL荷兰(mibei77.com 米贝节点分享)_5
-  - 🇨🇳_中国_72
   - SG新加坡(mibei77.com 米贝节点分享)_2_2
-  - HK香港(mibei77.com 米贝节点分享)_4
   - KR韩国(mibei77.com 米贝节点分享)_1
+  - HK香港(mibei77.com 米贝节点分享)_4
+  - 香港|@ripaojiedian
+  - US美国(mibei77.com 米贝节点分享)_5
+  - 🇷🇺_俄罗斯_26
   - 爱沙尼亚(mibei77.com 米贝节点分享)_1
+  - 🇳🇱_荷兰_361
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
   - DE德国(mibei77.com 米贝节点分享)_2
-  - 🇷🇺_俄罗斯_26
-  - US美国(mibei77.com 米贝节点分享)_5
   - KR韩国(mibei77.com 米贝节点分享)
-  - 🇳🇱_荷兰_361
   - HK香港(mibei77.com 米贝节点分享)
-  - US美国(mibei77.com 米贝节点分享)_8
-  - 香港|@ripaojiedian
-  - NL荷兰(mibei77.com 米贝节点分享)_5
-  - 🇨🇳_中国_72
   - SG新加坡(mibei77.com 米贝节点分享)_2_2
-  - HK香港(mibei77.com 米贝节点分享)_4
   - KR韩国(mibei77.com 米贝节点分享)_1
+  - HK香港(mibei77.com 米贝节点分享)_4
+  - 香港|@ripaojiedian
+  - US美国(mibei77.com 米贝节点分享)_5
+  - 🇷🇺_俄罗斯_26
   - 爱沙尼亚(mibei77.com 米贝节点分享)_1
+  - 🇳🇱_荷兰_361
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -631,6 +622,78 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: forfreeuse.rtqa.ru
+- name: KR韩国(mibei77.com 米贝节点分享)
+  type: anytls
+  server: sivp555.ipad1el.com
+  port: 47901
+  password: 13f0acfa-38c1-4e82-a758-583aa31740df
+  sni: kr06.nyssl.cc
+  skip-cert-verify: true
+  tls: true
+  udp: true
+- name: HK香港(mibei77.com 米贝节点分享)
+  type: vless
+  server: 125.77.20.210
+  port: 13565
+  uuid: 65500794-99b4-0343-bd18-a12453257a2b
+  tls: false
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: 125.77.20.210
+  security_scheme: none
+  proto: vless
+  peer: 125.77.20.210
+- name: SG新加坡(mibei77.com 米贝节点分享)_2_2
+  type: anytls
+  server: sivp666.ipad1el.com
+  port: 60572
+  password: 13f0acfa-38c1-4e82-a758-583aa31740df
+  sni: yzhou015.jdvipkuai.cc
+  skip-cert-verify: true
+  tls: true
+  udp: true
+- name: KR韩国(mibei77.com 米贝节点分享)_1
+  type: anytls
+  server: yazhouany02.twzq59.cc
+  port: 47053
+  password: 13f0acfa-38c1-4e82-a758-583aa31740df
+  sni: xjp0202.asgg2026.vip
+  skip-cert-verify: true
+  tls: true
+  udp: true
+- name: HK香港(mibei77.com 米贝节点分享)_4
+  type: hysteria2
+  server: 8-210-142-69.liao.kdns.fr
+  port: 50160
+  password: c2601f6c59ed832f9129533608eea8eb
+  sni: 8-210-142-69.liao.kdns.fr
+  skip-cert-verify: true
+  udp: true
+- name: 香港|@ripaojiedian
+  type: vmess
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.hdacd.com
+  proto: vmess
+  peer: v10.hdacd.com
+- name: US美国(mibei77.com 米贝节点分享)_5
+  type: vless
+  server: 217.163.76.118
+  port: 2086
+  uuid: b7977b65-cfd8-4db9-a029-6ef014a4ae4a
+  tls: false
+  network: xhttp
+  security_scheme: none
+  proto: vless
+  peer: 217.163.76.118
 - name: 🇷🇺_俄罗斯_26
   type: vless
   server: begin.magazinetut.online
@@ -642,30 +705,15 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: begin.magazinetut.online
-- name: US美国(mibei77.com 米贝节点分享)_5
-  type: vless
-  server: www.true.th
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-  security_scheme: tls
-  proto: vless
-  peer: d1yxsk0zprgivr.cloudfront.net
-- name: KR韩国(mibei77.com 米贝节点分享)
-  type: anytls
-  server: sivp555.ipad1el.com
-  port: 47901
-  password: 13f0acfa-38c1-4e82-a758-583aa31740df
-  sni: kr06.nyssl.cc
+- name: 爱沙尼亚(mibei77.com 米贝节点分享)_1
+  type: hysteria2
+  server: 137.23.2.19
+  port: 20000
+  password: b42d90fa667942aebc734d60
+  sni: rmgyvpn.rest
   skip-cert-verify: true
-  tls: true
+  obfs: salamander
+  obfs-password: b42d90fa667942aebc734d60
   udp: true
 - name: 🇳🇱_荷兰_361
   type: vless
@@ -683,113 +731,3 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: forfreeuse.rtqa.ru
-- name: HK香港(mibei77.com 米贝节点分享)
-  type: vless
-  server: 125.77.20.210
-  port: 13565
-  uuid: 65500794-99b4-0343-bd18-a12453257a2b
-  tls: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: 125.77.20.210
-  security_scheme: none
-  proto: vless
-  peer: 125.77.20.210
-- name: US美国(mibei77.com 米贝节点分享)_8
-  type: vless
-  server: 199.232.78.159
-  port: 443
-  uuid: be42674a-296a-43d8-bf04-b8314d65ff63
-  tls: true
-  network: ws
-  sni: ssl.fastly.com
-  servername: ssl.fastly.com
-  ws-opts:
-    path: /TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER
-    headers:
-      Host: pane2.global.ssl.fastly.net
-  security_scheme: tls
-  proto: vless
-  peer: ssl.fastly.com
-- name: 香港|@ripaojiedian
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
-- name: NL荷兰(mibei77.com 米贝节点分享)_5
-  type: vless
-  server: 199.232.78.159
-  port: 443
-  uuid: fe4ca690-6fd9-4471-9a9f-94528084d180
-  tls: true
-  network: ws
-  sni: ssl.fastly.com
-  servername: ssl.fastly.com
-  ws-opts:
-    path: /TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER?ed=2053
-    headers:
-      Host: pan1.global.ssl.fastly.net
-  security_scheme: tls
-  proto: vless
-  peer: ssl.fastly.com
-- name: 🇨🇳_中国_72
-  type: vmess
-  server: v24.hdacd.com
-  port: 30824
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v24.hdacd.com
-  proto: vmess
-  peer: v24.hdacd.com
-- name: SG新加坡(mibei77.com 米贝节点分享)_2_2
-  type: anytls
-  server: sivp666.ipad1el.com
-  port: 60572
-  password: 13f0acfa-38c1-4e82-a758-583aa31740df
-  sni: yzhou015.jdvipkuai.cc
-  skip-cert-verify: true
-  tls: true
-  udp: true
-- name: HK香港(mibei77.com 米贝节点分享)_4
-  type: vless
-  server: jp.sofast.live
-  port: 52683
-  uuid: 399b6b23-cc40-4831-a494-61948e2df133
-  tls: false
-  network: tcp
-  security_scheme: none
-  proto: vless
-  peer: jp.sofast.live
-- name: KR韩国(mibei77.com 米贝节点分享)_1
-  type: anytls
-  server: yazhouany02.twzq59.cc
-  port: 47053
-  password: 13f0acfa-38c1-4e82-a758-583aa31740df
-  sni: xjp0202.asgg2026.vip
-  skip-cert-verify: true
-  tls: true
-  udp: true
-- name: 爱沙尼亚(mibei77.com 米贝节点分享)_1
-  type: hysteria2
-  server: 137.23.2.19
-  port: 20000
-  password: b42d90fa667942aebc734d60
-  sni: rmgyvpn.rest
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: b42d90fa667942aebc734d60
-  udp: true
