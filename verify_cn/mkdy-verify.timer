@@ -1,8 +1,8 @@
 [Unit]
-Description=Run mkdy node verification hourly at :05 (before GitHub verify-tag at :15)
+Description=Run mkdy node verification every 15 minutes (container stays always-on)
 
 [Timer]
-OnCalendar=*-*-* *:05:00
+OnCalendar=*-*-* *:00/15:00
 Persistent=true
 Unit=mkdy-verify.service
 

@@ -10,7 +10,7 @@
 #   A. 已克隆本仓库：  bash verify_cn/cloud_init.sh
 #   B. 空环境直通：    bash <(curl -fsSL https://ghproxy.net/https://raw.githubusercontent.com/1013608955/mkdy/main/verify_cn/cloud_init.sh)
 #
-# 设计：每小时 :05 自动跑 run_local.py 并推送 -> GitHub verify-tag 自动打标 s-verified.yaml。
+# 设计：每 15 分钟自动跑 run_local.py 并推送 -> GitHub verify-tag 自动打标 s-verified.yaml。
 # 容器常开即等价于「PC 关机也不中断」。想最省核时见末尾说明。
 set -euo pipefail
 
@@ -106,24 +106,24 @@ python3 -m pip install --quiet pyyaml 2>/dev/null \
 # 故这里在跑之前把 remote URL 改写为带 PAT 的地址（仅当 .env 提供了 PAT 才改）。
 RUN_CMD="cd $REPO_DIR && set -a; [ -f verify_cn/.env ] && . ./verify_cn/.env; set +a; [ -n \"\$GITHUB_PAT\" ] && git remote set-url --push origin https://\${GITHUB_PAT}@github.com/1013608955/mkdy.git; python3 verify_cn/run_local.py >> verify_cn/logs/run.log 2>&1"
 
-log "[6/6] 安装定时任务（每小时 :05）"
+log "[6/6] 安装定时任务（每 15 分钟）"
 if [ -d /run/systemd/system ]; then
   mkdir -p ~/.config/systemd/user
   sed "s|@REPO_DIR@|$REPO_DIR|g" "$REPO_DIR/verify_cn/mkdy-verify.service" > ~/.config/systemd/user/mkdy-verify.service
   sed "s|@REPO_DIR@|$REPO_DIR|g" "$REPO_DIR/verify_cn/mkdy-verify.timer"   > ~/.config/systemd/user/mkdy-verify.timer
   systemctl --user daemon-reload
   systemctl --user enable --now mkdy-verify.timer
-  echo "    systemd timer 已启用（每小时 :05）"
+  echo "    systemd timer 已启用（每 15 分钟）"
 else
   # 容器一般无 systemd；cron 在容器里也常不可用，故主用 nohup 后台循环
   # （容器常开即等价于定时任务，且不受 crond 是否存活影响）。先 sleep 1h 再跑，
   # 避免与下方「首次立即跑一次」并发。
   cat > "$REPO_DIR/verify_cn/run_loop.sh" <<'LOOP'
 #!/usr/bin/env bash
-# 每小时循环：优先用控制台注入的 process env GITHUB_PAT，未注入则 fallback 仓库内 .env。
+# 每 15 分钟循环：优先用控制台注入的 process env GITHUB_PAT，未注入则 fallback 仓库内 .env。
 # 仓库位于持久盘 /workspace（系统盘 /root 重启即丢），故路径硬编码。
 while true; do
-  sleep 3600
+  sleep 900
   cd /workspace/mkdy
   if [ -z "$GITHUB_PAT" ] && [ -f verify_cn/.env ]; then
     set -a; . ./verify_cn/.env; set +a
@@ -137,10 +137,10 @@ LOOP
   chmod +x "$REPO_DIR/verify_cn/run_loop.sh"
   nohup "$REPO_DIR/verify_cn/run_loop.sh" >/dev/null 2>&1 &
   disown 2>/dev/null || true
-  echo "    run_loop.sh 已在后台启动（首次 1h 后跑，之后每小时）"
+  echo "    run_loop.sh 已在后台启动（首次 15 分钟后跑，之后每 15 分钟）"
   # 若系统有可用 cron，也顺手写一份（不影响上面的循环）
   if command -v crontab >/dev/null 2>&1; then
-    ( crontab -l 2>/dev/null | grep -v 'run_local.py'; echo "5 * * * * $RUN_CMD" ) | crontab - 2>/dev/null \
+    ( crontab -l 2>/dev/null | grep -v 'run_local.py'; echo "*/15 * * * * $RUN_CMD" ) | crontab - 2>/dev/null \
       && echo "    （另：cron 也已写入）" || true
   fi
 fi
@@ -153,7 +153,7 @@ else
 fi
 
 echo
-log "完成。后续每小时 :05 自动验证并推送；GitHub verify-tag 自动打标 s-verified.yaml。"
+log "完成。后续每 15 分钟自动验证并推送；GitHub verify-tag 自动打标 s-verified.yaml。"
 log "查看日志： tail -f $REPO_DIR/verify_cn/logs/run.log"
 echo
 echo "【省核时进阶】若仅想跑几分钟/小时、其余时间关机："
