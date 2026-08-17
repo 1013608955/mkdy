@@ -76,6 +76,7 @@ ensure_pkg(){
 }
 ensure_pkg dbus
 ensure_pkg gnome-keyring
+ensure_pkg libsecret-tools   # 提供 secret-tool，用于诊断 secret-service 是否可用
 
 # 若还没有 D-Bus session，用 dbus-run-session 重跑整个脚本（最可靠：后续所有
 # hdspace 命令共享同一 session 的 keyring）；否则手动 dbus-launch。
@@ -92,10 +93,18 @@ echo "[debug] DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-<空>}"
 
 # 启动 keyring daemon 并提供 secrets 服务（无交互，用固定口令解锁 headless keyring）
 if command -v gnome-keyring-daemon >/dev/null 2>&1; then
-  echo "[keyring] 启动 gnome-keyring-daemon --unlock (提供 secrets 服务)…"
-  printf 'mkdy-ci-keyring' | gnome-keyring-daemon --unlock --components=secrets,ssh,pkcs11 >/tmp/keyring.log 2>&1 &
-  sleep 4
-  echo "[debug] keyring daemon 日志:"; sed -n '1,20p' /tmp/keyring.log 2>/dev/null
+  echo "[keyring] 启动 gnome-keyring-daemon --daemonize --unlock (提供 secrets 服务)…"
+  printf 'mkdy-ci-keyring' | gnome-keyring-daemon --daemonize --unlock --components=secrets,ssh,pkcs11 >/tmp/keyring.log 2>&1
+  sleep 6
+  echo "[debug] keyring daemon 日志:"; sed -n '1,30p' /tmp/keyring.log 2>/dev/null
+  # 用 secret-tool 诊断 secret-service 是否可用（能写即说明 keyring 后端正常）
+  if command -v secret-tool >/dev/null 2>&1; then
+    echo "[debug] secret-tool 测试写入/读取 secret-service…"
+    echo -n "ci-test-value" | secret-tool store --label=mkdy-ci-test mkdy_ci_test attr test 2>&1 | head -3
+    echo -n "secret-tool 读回: "; secret-tool lookup mkdy_ci_test attr test 2>&1 | head -3
+  else
+    echo "[debug] 无 secret-tool，跳过 secret-service 写入诊断"
+  fi
 else
   echo "[WARN] 未找到 gnome-keyring-daemon，keyring 后端不可用，hdspace 可能读不到凭据"
 fi
