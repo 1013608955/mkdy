@@ -1,5 +1,5 @@
 # s-verified.yaml — 仅含中国出口(FC)验证通过的节点 + clash_template 规则模版
-# 来源 verified.json: 30 个 ok → 匹配 24（漂移跳过 6）
+# 来源 verified.json: 30 个 ok → 匹配 21（漂移跳过 9）
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -45,86 +45,77 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - 🇺🇸_美国_292
-  - 泰国(mibei77.com 米贝节点分享)
-  - 🇩🇪_德国_8
-  - 免费VPN：https://tt.vg/FJOE2Mm
-  - KR韩国(mibei77.com 米贝节点分享)
-  - 🇱🇹_立陶宛_358
-  - 香港|@ripaojiedian
-  - 🇷🇺_俄罗斯_78
-  - HK香港(mibei77.com 米贝节点分享)_13
-  - US美国(mibei77.com 米贝节点分享)
-  - 🇩🇪_德国_20
+  - US美国(mibei77.com 米贝节点分享)_42
   - US美国(mibei77.com 米贝节点分享)_5
-  - 🇺🇸_美国_36
-  - 🇧🇬_保加利亚_13
-  - NL荷兰(mibei77.com 米贝节点分享)_2
-  - US美国(mibei77.com 米贝节点分享)_4
-  - 🇩🇪_DE_德国
-  - 🇩🇪_德国_19
+  - 🇭🇰_香港_96
+  - 🇷🇺_俄罗斯_78
   - 🇺🇸_美国_396
   - DE德国(mibei77.com 米贝节点分享)_2
-  - 🇩🇪_德国_90
-  - 🇳🇱_荷兰_365
+  - HK香港(mibei77.com 米贝节点分享)_13
+  - NL荷兰(mibei77.com 米贝节点分享)_2
+  - 🇺🇸_美国_292
+  - 🇧🇬_保加利亚_13
+  - US美国(mibei77.com 米贝节点分享)
+  - 🇩🇪_DE_德国
+  - 免费VPN：https://tt.vg/FJOE2Mm
+  - US美国(mibei77.com 米贝节点分享)_4
   - NL荷兰(mibei77.com 米贝节点分享)
-  - 🇩🇪_德国_87
+  - 🇺🇸_美国_36
+  - 香港|@ripaojiedian
+  - 泰国(mibei77.com 米贝节点分享)
+  - 🇱🇹_立陶宛_358
+  - 🇳🇱_荷兰_365
+  - KR韩国(mibei77.com 米贝节点分享)
 - name: 自动选择
   type: url-test
   proxies:
-  - 🇺🇸_美国_292
-  - 泰国(mibei77.com 米贝节点分享)
-  - 🇩🇪_德国_8
-  - 免费VPN：https://tt.vg/FJOE2Mm
-  - KR韩国(mibei77.com 米贝节点分享)
-  - 🇱🇹_立陶宛_358
-  - 香港|@ripaojiedian
-  - 🇷🇺_俄罗斯_78
-  - HK香港(mibei77.com 米贝节点分享)_13
-  - US美国(mibei77.com 米贝节点分享)
-  - 🇩🇪_德国_20
+  - US美国(mibei77.com 米贝节点分享)_42
   - US美国(mibei77.com 米贝节点分享)_5
-  - 🇺🇸_美国_36
-  - 🇧🇬_保加利亚_13
-  - NL荷兰(mibei77.com 米贝节点分享)_2
-  - US美国(mibei77.com 米贝节点分享)_4
-  - 🇩🇪_DE_德国
-  - 🇩🇪_德国_19
+  - 🇭🇰_香港_96
+  - 🇷🇺_俄罗斯_78
   - 🇺🇸_美国_396
   - DE德国(mibei77.com 米贝节点分享)_2
-  - 🇩🇪_德国_90
-  - 🇳🇱_荷兰_365
+  - HK香港(mibei77.com 米贝节点分享)_13
+  - NL荷兰(mibei77.com 米贝节点分享)_2
+  - 🇺🇸_美国_292
+  - 🇧🇬_保加利亚_13
+  - US美国(mibei77.com 米贝节点分享)
+  - 🇩🇪_DE_德国
+  - 免费VPN：https://tt.vg/FJOE2Mm
+  - US美国(mibei77.com 米贝节点分享)_4
   - NL荷兰(mibei77.com 米贝节点分享)
-  - 🇩🇪_德国_87
+  - 🇺🇸_美国_36
+  - 香港|@ripaojiedian
+  - 泰国(mibei77.com 米贝节点分享)
+  - 🇱🇹_立陶宛_358
+  - 🇳🇱_荷兰_365
+  - KR韩国(mibei77.com 米贝节点分享)
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - 🇺🇸_美国_292
-  - 泰国(mibei77.com 米贝节点分享)
-  - 🇩🇪_德国_8
-  - 免费VPN：https://tt.vg/FJOE2Mm
-  - KR韩国(mibei77.com 米贝节点分享)
-  - 🇱🇹_立陶宛_358
-  - 香港|@ripaojiedian
-  - 🇷🇺_俄罗斯_78
-  - HK香港(mibei77.com 米贝节点分享)_13
-  - US美国(mibei77.com 米贝节点分享)
-  - 🇩🇪_德国_20
+  - US美国(mibei77.com 米贝节点分享)_42
   - US美国(mibei77.com 米贝节点分享)_5
-  - 🇺🇸_美国_36
-  - 🇧🇬_保加利亚_13
-  - NL荷兰(mibei77.com 米贝节点分享)_2
-  - US美国(mibei77.com 米贝节点分享)_4
-  - 🇩🇪_DE_德国
-  - 🇩🇪_德国_19
+  - 🇭🇰_香港_96
+  - 🇷🇺_俄罗斯_78
   - 🇺🇸_美国_396
   - DE德国(mibei77.com 米贝节点分享)_2
-  - 🇩🇪_德国_90
-  - 🇳🇱_荷兰_365
+  - HK香港(mibei77.com 米贝节点分享)_13
+  - NL荷兰(mibei77.com 米贝节点分享)_2
+  - 🇺🇸_美国_292
+  - 🇧🇬_保加利亚_13
+  - US美国(mibei77.com 米贝节点分享)
+  - 🇩🇪_DE_德国
+  - 免费VPN：https://tt.vg/FJOE2Mm
+  - US美国(mibei77.com 米贝节点分享)_4
   - NL荷兰(mibei77.com 米贝节点分享)
-  - 🇩🇪_德国_87
+  - 🇺🇸_美国_36
+  - 香港|@ripaojiedian
+  - 泰国(mibei77.com 米贝节点分享)
+  - 🇱🇹_立陶宛_358
+  - 🇳🇱_荷兰_365
+  - KR韩国(mibei77.com 米贝节点分享)
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -645,139 +636,13 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: 🇺🇸_美国_292
+- name: US美国(mibei77.com 米贝节点分享)_42
   type: vless
-  server: 18.239.134.69
-  port: 80
-  uuid: de27291c-15a9-4256-9ba7-ad517569877e
+  server: 217.163.76.118
+  port: 2086
+  uuid: b7977b65-cfd8-4db9-a029-6ef014a4ae4a
   tls: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: d2e1v87ko56lyw.cloudfront.net:assets.opensignal.com
-- name: 泰国(mibei77.com 米贝节点分享)
-  type: vmess
-  server: www.true.th
-  port: 80
-  uuid: a150d554-e962-4632-829f-ee583ada3f95
-  alterId: 0
-  cipher: auto
-  tls: false
-  network: ws
-  ws-opts:
-    path: /htun
-    headers:
-      Host: d7pu5mzr9c4b0.cloudfront.net
-- name: 🇩🇪_德国_8
-  type: vless
-  server: 169.40.42.35
-  port: 443
-  uuid: d65cc14c-f53f-4fe2-b262-97856601319c
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: yahoo.com
-  servername: yahoo.com
-  reality-opts:
-    public-key: e2RLf57Li_-MDZGE9ss1BWPgP54mqRb5PfXhW2jcVVg
-    short-id: c39cc7310a
-    spider-x: ''
-  client-fingerprint: ios
-- name: 免费VPN：https://tt.vg/FJOE2Mm
-  type: vless
-  server: 78.159.247.253
-  port: 2027
-  uuid: 851ed0d8-a37b-452d-8ef2-5b6c2d28a060
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: storage.yandex.net
-  servername: storage.yandex.net
-  reality-opts:
-    public-key: ISa-DZOI4LRRb9DHMFYm5oFqBXDjYzz0hVWUfWvzLmo
-    short-id: 8d3293f0066e129a
-    spider-x: ''
-  client-fingerprint: chrome
-- name: KR韩国(mibei77.com 米贝节点分享)
-  type: anytls
-  server: sivp555.ipad1el.com
-  port: 47901
-  password: 13f0acfa-38c1-4e82-a758-583aa31740df
-  sni: kr06.nyssl.cc
-  skip-cert-verify: true
-  tls: true
-  udp: true
-- name: 🇱🇹_立陶宛_358
-  type: vless
-  server: 185.237.185.182
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-- name: 香港|@ripaojiedian
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-- name: 🇷🇺_俄罗斯_78
-  type: vless
-  server: id.tutdesignstudio.site
-  port: 8443
-  uuid: b9125df6-2a60-4643-bcba-a5f78cb663a7
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-- name: HK香港(mibei77.com 米贝节点分享)_13
-  type: trojan
-  server: 104.16.174.14
-  port: 443
-  password: humanity
-  tls: true
-  network: ws
-  sni: www.ignitelimit.com
-  ws-opts:
-    path: /assignment
-    headers:
-      Host: www.ignitelimit.com
-- name: US美国(mibei77.com 米贝节点分享)
-  type: vless
-  server: 91.193.58.125
-  port: 2053
-  uuid: a1de0630-5786-48a0-84f6-dc6f2de10d6d
-  tls: true
-  network: ws
-  sni: vlso5.1d.mom
-  servername: vlso5.1d.mom
-  ws-opts:
-    path: /
-    headers:
-      Host: vlso5.1d.mom
-- name: 🇩🇪_德国_20
-  type: vless
-  server: 169.40.42.229
-  port: 443
-  uuid: d65cc14c-f53f-4fe2-b262-97856601319c
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: yahoo.com
-  servername: yahoo.com
-  reality-opts:
-    public-key: e2RLf57Li_-MDZGE9ss1BWPgP54mqRb5PfXhW2jcVVg
-    short-id: c39cc7310a
-    spider-x: ''
-  client-fingerprint: ios
+  network: xhttp
 - name: US美国(mibei77.com 米贝节点分享)_5
   type: vless
   server: www.true.th
@@ -791,88 +656,22 @@ proxies:
     path: /
     headers:
       Host: d1yxsk0zprgivr.cloudfront.net
-- name: 🇺🇸_美国_36
+- name: 🇭🇰_香港_96
+  type: trojan
+  server: 2c.fast9988.com
+  port: 50887
+  password: 6ec301428255a78a1d826988d86cc87e
+  tls: true
+  network: tcp
+  sni: www.nintendogames.net
+- name: 🇷🇺_俄罗斯_78
   type: vless
-  server: 31.76.69.40
-  port: 443
-  uuid: 423b1d79-08c4-403f-9d5e-c541f791b55f
+  server: id.tutdesignstudio.site
+  port: 8443
+  uuid: b9125df6-2a60-4643-bcba-a5f78cb663a7
   flow: xtls-rprx-vision
   tls: true
   network: tcp
-  sni: eu-central.cendora.ru
-  servername: eu-central.cendora.ru
-  reality-opts:
-    public-key: b-Cm9hX-3UHsS1L_lnUB6AMjuKhlN1IDdBbZ506itjI
-    short-id: 00bca5982f82d083
-    spider-x: ''
-  client-fingerprint: qq
-- name: 🇧🇬_保加利亚_13
-  type: vless
-  server: 195.123.226.114
-  port: 443
-  uuid: 423b1d79-08c4-403f-9d5e-c541f791b55f
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: eu-central.cendora.ru
-  servername: eu-central.cendora.ru
-  reality-opts:
-    public-key: b-Cm9hX-3UHsS1L_lnUB6AMjuKhlN1IDdBbZ506itjI
-    short-id: 00bca5982f82d083
-    spider-x: ''
-  client-fingerprint: firefox
-- name: NL荷兰(mibei77.com 米贝节点分享)_2
-  type: vless
-  server: 188.164.248.72
-  port: 2083
-  uuid: 5b06a1b1-8839-4969-874a-3b501528275b
-  tls: true
-  network: ws
-  sni: jcxjcnasvip.jcdenas.top
-  servername: jcxjcnasvip.jcdenas.top
-  ws-opts:
-    path: /
-    headers:
-      Host: jcxjcnasvip.jcdenas.top
-- name: US美国(mibei77.com 米贝节点分享)_4
-  type: vless
-  server: 50.62.195.4
-  port: 80
-  uuid: e382b6dd-2dac-49c5-b16f-1cd0a6b73bf2
-  tls: false
-  network: ws
-  ws-opts:
-    path: /pyip=Telegram🇨🇳+@WangCai2
-    headers:
-      Host: raspy-feather-12ec.137-257.workers.dev
-- name: 🇩🇪_DE_德国
-  type: vless
-  server: 108.138.26.70
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-- name: 🇩🇪_德国_19
-  type: vless
-  server: 169.40.42.231
-  port: 443
-  uuid: d65cc14c-f53f-4fe2-b262-97856601319c
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: yahoo.com
-  servername: yahoo.com
-  reality-opts:
-    public-key: e2RLf57Li_-MDZGE9ss1BWPgP54mqRb5PfXhW2jcVVg
-    short-id: c39cc7310a
-    spider-x: ''
-  client-fingerprint: ios
 - name: 🇺🇸_美国_396
   type: vless
   server: 52.84.199.57
@@ -899,34 +698,109 @@ proxies:
     path: /
     headers:
       Host: forfreeuse.rtqa.ru
-- name: 🇩🇪_德国_90
-  type: vless
-  server: 169.40.42.74
+- name: HK香港(mibei77.com 米贝节点分享)_13
+  type: trojan
+  server: 104.16.174.14
   port: 443
-  uuid: d65cc14c-f53f-4fe2-b262-97856601319c
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: yahoo.com
-  servername: yahoo.com
-  reality-opts:
-    public-key: e2RLf57Li_-MDZGE9ss1BWPgP54mqRb5PfXhW2jcVVg
-    short-id: c39cc7310a
-    spider-x: ''
-  client-fingerprint: ios
-- name: 🇳🇱_荷兰_365
-  type: vless
-  server: 185.109.48.13
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
+  password: humanity
   tls: true
   network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
+  sni: www.ignitelimit.com
+  ws-opts:
+    path: /assignment
+    headers:
+      Host: www.ignitelimit.com
+- name: NL荷兰(mibei77.com 米贝节点分享)_2
+  type: vless
+  server: 188.164.248.72
+  port: 2083
+  uuid: 5b06a1b1-8839-4969-874a-3b501528275b
+  tls: true
+  network: ws
+  sni: jcxjcnasvip.jcdenas.top
+  servername: jcxjcnasvip.jcdenas.top
   ws-opts:
     path: /
     headers:
-      Host: forfreeuse.rtqa.ru
+      Host: jcxjcnasvip.jcdenas.top
+- name: 🇺🇸_美国_292
+  type: vless
+  server: 18.239.134.69
+  port: 80
+  uuid: de27291c-15a9-4256-9ba7-ad517569877e
+  tls: false
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: d2e1v87ko56lyw.cloudfront.net:assets.opensignal.com
+- name: 🇧🇬_保加利亚_13
+  type: vless
+  server: 195.123.226.114
+  port: 443
+  uuid: 423b1d79-08c4-403f-9d5e-c541f791b55f
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: eu-central.cendora.ru
+  servername: eu-central.cendora.ru
+  reality-opts:
+    public-key: b-Cm9hX-3UHsS1L_lnUB6AMjuKhlN1IDdBbZ506itjI
+    short-id: 00bca5982f82d083
+    spider-x: ''
+  client-fingerprint: firefox
+- name: US美国(mibei77.com 米贝节点分享)
+  type: vless
+  server: 91.193.58.125
+  port: 2053
+  uuid: a1de0630-5786-48a0-84f6-dc6f2de10d6d
+  tls: true
+  network: ws
+  sni: vlso5.1d.mom
+  servername: vlso5.1d.mom
+  ws-opts:
+    path: /
+    headers:
+      Host: vlso5.1d.mom
+- name: 🇩🇪_DE_德国
+  type: vless
+  server: 108.138.26.70
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+- name: 免费VPN：https://tt.vg/FJOE2Mm
+  type: vless
+  server: 78.159.247.253
+  port: 2027
+  uuid: 851ed0d8-a37b-452d-8ef2-5b6c2d28a060
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: storage.yandex.net
+  servername: storage.yandex.net
+  reality-opts:
+    public-key: ISa-DZOI4LRRb9DHMFYm5oFqBXDjYzz0hVWUfWvzLmo
+    short-id: 8d3293f0066e129a
+    spider-x: ''
+  client-fingerprint: chrome
+- name: US美国(mibei77.com 米贝节点分享)_4
+  type: vless
+  server: 50.62.195.4
+  port: 80
+  uuid: e382b6dd-2dac-49c5-b16f-1cd0a6b73bf2
+  tls: false
+  network: ws
+  ws-opts:
+    path: /pyip=Telegram🇨🇳+@WangCai2
+    headers:
+      Host: raspy-feather-12ec.137-257.workers.dev
 - name: NL荷兰(mibei77.com 米贝节点分享)
   type: vless
   server: 195.63.141.201
@@ -941,18 +815,75 @@ proxies:
     short-id: 96bb8b53
     spider-x: ''
   client-fingerprint: edge
-- name: 🇩🇪_德国_87
+- name: 🇺🇸_美国_36
   type: vless
-  server: 169.40.42.89
+  server: 31.76.69.40
   port: 443
-  uuid: d65cc14c-f53f-4fe2-b262-97856601319c
+  uuid: 423b1d79-08c4-403f-9d5e-c541f791b55f
   flow: xtls-rprx-vision
   tls: true
   network: tcp
-  sni: yahoo.com
-  servername: yahoo.com
+  sni: eu-central.cendora.ru
+  servername: eu-central.cendora.ru
   reality-opts:
-    public-key: e2RLf57Li_-MDZGE9ss1BWPgP54mqRb5PfXhW2jcVVg
-    short-id: c39cc7310a
+    public-key: b-Cm9hX-3UHsS1L_lnUB6AMjuKhlN1IDdBbZ506itjI
+    short-id: 00bca5982f82d083
     spider-x: ''
-  client-fingerprint: ios
+  client-fingerprint: qq
+- name: 香港|@ripaojiedian
+  type: vmess
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+- name: 泰国(mibei77.com 米贝节点分享)
+  type: vmess
+  server: www.true.th
+  port: 80
+  uuid: a150d554-e962-4632-829f-ee583ada3f95
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: ws
+  ws-opts:
+    path: /htun
+    headers:
+      Host: d7pu5mzr9c4b0.cloudfront.net
+- name: 🇱🇹_立陶宛_358
+  type: vless
+  server: 185.237.185.182
+  port: 2053
+  uuid: c7e9c591-2764-423a-afca-efbd010fd396
+  tls: true
+  network: ws
+  sni: forfreeuse.rtqa.ru
+  servername: forfreeuse.rtqa.ru
+  ws-opts:
+    path: /
+    headers:
+      Host: forfreeuse.rtqa.ru
+- name: 🇳🇱_荷兰_365
+  type: vless
+  server: 185.109.48.13
+  port: 2053
+  uuid: c7e9c591-2764-423a-afca-efbd010fd396
+  tls: true
+  network: ws
+  sni: forfreeuse.rtqa.ru
+  servername: forfreeuse.rtqa.ru
+  ws-opts:
+    path: /
+    headers:
+      Host: forfreeuse.rtqa.ru
+- name: KR韩国(mibei77.com 米贝节点分享)
+  type: anytls
+  server: sivp555.ipad1el.com
+  port: 47901
+  password: 13f0acfa-38c1-4e82-a758-583aa31740df
+  sni: kr06.nyssl.cc
+  skip-cert-verify: true
+  tls: true
+  udp: true
