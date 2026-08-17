@@ -7,8 +7,6 @@
 # Usage:  powershell -ExecutionPolicy Bypass -File setup_schedule.ps1
 # Remove: schtasks /delete /tn mkdy-verify-local /f
 
-$ErrorActionPreference = "Stop"
-
 $here = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $bat  = Join-Path $here "run_local.bat"
 $name = "mkdy-verify-local"
@@ -16,15 +14,17 @@ $name = "mkdy-verify-local"
 if (-not (Test-Path $bat)) { throw "run_local.bat not found: $bat" }
 
 # Remove any previous registration so the hidden-window config is always applied.
+# The task may not exist on first run -> ignore the error (don't abort the script).
+$prev = $ErrorActionPreference
+$ErrorActionPreference = 'SilentlyContinue'
 schtasks /delete /tn $name /f 2>$null
+$ErrorActionPreference = $prev
 
-# /sc hourly /mo 1 /st 00:05  ->  runs at :05 past every hour.
-# Rationale: GitHub verify-tag.yml is scheduled at :15, so the local probe
-# (~3 min) finishes first; the push also triggers verify-tag immediately.
-# The whole thing is launched from a hidden PowerShell so no black cmd window pops up.
-$psArgs = "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass " + `
-          "-Command ""Start-Process -FilePath '$bat' -WindowStyle Hidden -Wait"""
-schtasks /create /tn $name /tr "powershell.exe $psArgs" /sc hourly /mo 1 /st 00:05 /f
+# Build a single-quoted -Command so there are NO nested double quotes.
+# $bat has no spaces, so single quotes around it are safe.
+$psCommand = "Start-Process -FilePath '$bat' -WindowStyle Hidden -Wait"
+$tr = "powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command $psCommand"
+schtasks /create /tn $name /tr "$tr" /sc hourly /mo 1 /st 00:05 /f
 if ($LASTEXITCODE -ne 0) { throw "schtasks create failed ($LASTEXITCODE)" }
 
 Write-Output ""

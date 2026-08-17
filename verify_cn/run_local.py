@@ -357,7 +357,9 @@ def main():
         # 用 FETCH_HEAD 而非 origin/main：本仓库 origin/main 跟踪引用偶发 stuck 在旧
         # commit（packed-refs/CRLF 老问题，git update-ref 也修不动）。FETCH_HEAD 由
         # 上面的 fetch 现写，永远是最新真实 tip，避免把陈旧引用合进历史。
-        mc, mo = _git(["merge", "--no-edit", "FETCH_HEAD"], check=False)
+        # -X ours：verify_cn/verified.json 每次整体重写，多验证器并发推送时必冲突，
+        # 取"本地刚实测的最新结果"才正确（本机/云端双验证器场景）。
+        mc, mo = _git(["merge", "--no-edit", "-X", "ours", "FETCH_HEAD"], check=False)
         if mc != 0:
             print(f"[push][ERROR] 合并 origin/main 失败（需人工处理）：{mo}",
                   file=sys.stderr)
