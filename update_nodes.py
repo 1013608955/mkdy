@@ -19,6 +19,7 @@ from functools import lru_cache
 import urllib3
 from typing import Dict, List, Tuple, Optional, Union
 import json
+import yaml
 # ========== 配置与初始化 ==========
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # 核心配置（已应用所有优化）
@@ -62,17 +63,7 @@ CONFIG: Dict = {
     },
     "filter": {
         "private_ip": re.compile(r"^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[0-1])\.|127\.|0\.0\.0\.0)"),
-        "cn_ip_ranges": [
-            re.compile(r"^1\.0\.16\."), re.compile(r"^1\.0\.64\."), re.compile(r"^101\."),
-            re.compile(r"^103\."), re.compile(r"^112\."), re.compile(r"^113\."),  # 103.96/103.106 确为CN，原负向预查误将其当境外，已修正
-            re.compile(r"^120\."), re.compile(r"^121\."), re.compile(r"^122\."), re.compile(r"^123\."),
-            re.compile(r"^139\."), re.compile(r"^140\."), re.compile(r"^141\."), re.compile(r"^150\."),
-            re.compile(r"^151\."), re.compile(r"^163\."),             re.compile(r"^171\."),
-            re.compile(r"^173\."), re.compile(r"^174\."), re.compile(r"^180\."), re.compile(r"^181\."),  # 172.32+ 多非CN，原正则将整段误判为CN；172.16/12 已由 private_ip 覆盖
-            re.compile(r"^182\."), re.compile(r"^183\."), re.compile(r"^184\."), re.compile(r"^190\."),
-            re.compile(r"^202\."), re.compile(r"^203\."), re.compile(r"^210\."), re.compile(r"^211\."),
-            re.compile(r"^220\."), re.compile(r"^221\."), re.compile(r"^222\."), re.compile(r"^223\.")
-        ],
+        # cn_ip_ranges 已弃用：is_cn_ip 改为基于 cn_ranges.txt 的 CIDR 成员判定（见 _load_cn_ranges）
         "ports": range(1, 65535),
         "max_remark_bytes": 200,
         "DEFAULT_PORT": 443,
@@ -110,6 +101,54 @@ def init_logger() -> logging.Logger:
         logger.addHandler(handler)
     return logger
 LOG = init_logger()
+
+# ---------- CONFIG 外部化 ----------
+# 日常修改请在 config.yaml 进行；其顶层字段会覆盖下方内联默认（config.yaml 为权威来源）。
+# 内联 CONFIG 作为兜底，保证 config.yaml 缺失时模块仍可导入/运行。
+def _load_cn_ranges(path: str = None) -> Tuple:
+    """加载 CN CIDR 列表（离线成员判定 is_cn_ip）。由 tools/gen_cn_ranges.py 生成 cn_ranges.txt。"""
+    if path is None:
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cn_ranges.txt")
+    nets = []
+    try:
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                try:
+                    nets.append(ipaddress.ip_network(line, strict=False))
+                except ValueError:
+                    continue
+    except FileNotFoundError:
+        LOG.warning(f"⚠️ 未找到 {path}，is_cn_ip 退化为仅 private_ip 判定（CN 段不全）")
+    return tuple(nets)
+
+
+def _overlay_config_file() -> None:
+    """若存在 config.yaml，则用其顶层字段覆盖内联默认配置。"""
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.yaml")
+    try:
+        with open(p, encoding="utf-8") as f:
+            data = yaml.safe_load(f) or {}
+        if isinstance(data, dict):
+            for k, v in data.items():
+                CONFIG[k] = v
+    except FileNotFoundError:
+        LOG.info("ℹ️ 未找到 config.yaml，使用内联默认配置")
+    except Exception as e:  # noqa: BLE001
+        LOG.warning(f"⚠️ 解析 config.yaml 失败：{str(e)[:80]}，使用内联默认配置")
+    # 正则无法序列化进 YAML，统一在代码中保证存在且为编译对象
+    CONFIG.setdefault("filter", {})
+    CONFIG["filter"]["private_ip"] = re.compile(
+        r"^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[0-1])\.|127\.|0\.0\.0\.0)"
+    )
+    CONFIG["filter"].pop("cn_ip_ranges", None)  # 旧字段：is_cn_ip 已改用 cn_ranges.txt
+
+
+_overlay_config_file()
+CN_RANGES = _load_cn_ranges()
+
 # 全局会话
 def init_session() -> requests.Session:
     sess = requests.Session()
@@ -160,7 +199,8 @@ def decode_b64_sub(text: str) -> str:
         try:
             decoded = b64_safe_decode(clean)
             if '\n' in decoded:
-                LOG.info(log_msg(f"✅ Base64解码成功，约{decoded.count('\n')+1}节点"))
+                node_cnt = decoded.count("\n") + 1
+                LOG.info(log_msg(f"✅ Base64解码成功，约{node_cnt}节点"))
                 return decoded
         except Exception:
             pass
@@ -170,10 +210,16 @@ def decode_b64_sub(text: str) -> str:
 def is_private_ip(ip: str) -> bool:
     return bool(ip and CONFIG["filter"]["private_ip"].match(ip))
 def is_cn_ip(ip: str) -> bool:
+    """判断 IP 是否属于中国（基于 cn_ranges.txt 的离线 CIDR 成员判定）。
+    域名（非法 IP 字面量）一律返回 False；私有地址由 is_private_ip 处理。"""
     if not ip or is_private_ip(ip):
         return False
-    for pat in CONFIG["filter"]["cn_ip_ranges"]:
-        if pat.match(ip):
+    try:
+        addr = ipaddress.ip_address(ip)
+    except ValueError:
+        return False
+    for net in CN_RANGES:
+        if addr.version == net.version and addr in net:
             return True
     return False
 def is_ip(addr: str) -> bool:
@@ -189,19 +235,21 @@ def is_ip(addr: str) -> bool:
 
 def _resolve_connect(host: str):
     """把域名 / IP 解析为 (family, connect_host)，支持 IPv4/IPv6 字面量与域名。
-    返回 None 表示解析失败。family 仅用于原生 socket 建连（用 create_connection 时可忽略）。"""
+    返回 None 表示解析失败。family 仅用于原生 socket 建连（用 create_connection 时可忽略）。
+
+    域名解析复用 dns_resolve：它已封装「UDP 优先 + 系统解析器回退」且带超时（线程 join(timeout)），
+    结果经 lru_cache 复用，避免：(1) 裸 socket.getaddrinfo 无超时导致 worker 永久阻塞；
+    (2) 与 dns_resolve 重复解析。dns_resolve 返回的 IP 已过滤私有/中国地址。"""
     if is_ip(host):
         fam = socket.AF_INET6 if ":" in host else socket.AF_INET
         return fam, host
-    try:
-        infos = socket.getaddrinfo(host, None, socket.AF_UNSPEC, socket.SOCK_STREAM)
-    except Exception:
+    # 域名：委托 dns_resolve（带超时 + 缓存，详见其注释）
+    ok, ips = dns_resolve(host)
+    if not ok or not ips:
         return None
-    for fam, _, _, _, sockaddr in infos:  # 优先 IPv4
-        if fam == socket.AF_INET:
-            return socket.AF_INET, sockaddr[0]
-    fam, _, _, _, sockaddr = infos[0]
-    return fam, sockaddr[0]
+    ip = ips[0]
+    fam = socket.AF_INET6 if ":" in ip else socket.AF_INET
+    return fam, ip
 def _udp_resolve_a(domain: str, server: str, timeout: float) -> List[str]:
     """最小依赖的 UDP DNS A 记录查询（仅 IPv4）。超时或任何解析异常都抛给调用方回退。"""
     import struct

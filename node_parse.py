@@ -211,29 +211,43 @@ def _parse_ss(uri: str):
 def _parse_ssr(uri: str):
     b = uri[len("ssr://"):]
     d = b64decode(b)
-    if not d or "@" not in d:
+    if not d:
         return None
+    # 标准 SSR：base64( server:port:protocol:method:obfs:base64(password)/?obfsparam=&protoparam=&remarks= )
+    # 注意：标准 SSR 不含 '@'，主机与端口都在冒号分隔头里
+    head, _, params = d.partition("/")
     try:
-        head, params = d.split("/", 1)
+        server, port, protocol, method, obfs, pass_b64 = head.split(":", 5)
     except ValueError:
-        head, params = d, ""
-    try:
-        user, hostport = head.split("@", 1)
-        method, password = user.split(":", 1)
-        hp = hostport.rsplit(":", 1)
-        server, port = hp[0], int(hp[1])
-    except Exception:
         return None
+    password = b64decode(pass_b64)
+    if not password:
+        password = pass_b64  # 非标准：密码未二次 base64，原样保留
     node = {
         "name": f"ssr_{server}:{port}",
         "type": "ssr",
         "server": server,
-        "port": port,
+        "port": int(port),
+        "protocol": protocol or "origin",
         "cipher": method,
+        "obfs": obfs or "plain",
         "password": password,
-        "protocol": "origin",
-        "obfs": "plain",
     }
+    if params:
+        params = params[1:] if params.startswith("?") else params
+        qd = parse_qs(params)
+        def _gp(k):
+            v = qd.get(k, [""])[0]
+            return b64decode(v) if v else ""
+        obfsparam = _gp("obfsparam")
+        protoparam = _gp("protoparam")
+        remarks = _gp("remarks")
+        if obfsparam:
+            node["obfsparam"] = obfsparam
+        if protoparam:
+            node["protoparam"] = protoparam
+        if remarks:
+            node["name"] = remarks
     node["security_scheme"] = None
     node["proto"] = "ssr"
     node["peer"] = server
@@ -260,6 +274,21 @@ def _parse_hysteria(uri: str):
         node["sni"] = sni
     if qget("insecure") == "1":
         node["skip-cert-verify"] = True
+    obfs = qget("obfs")
+    if obfs:
+        node["obfs"] = obfs
+        obfs_pw = qget("obfs-password")
+        if obfs_pw:
+            node["obfs-password"] = obfs_pw
+    pin = qget("pinSHA256")
+    if pin:
+        node["pinSHA256"] = pin
+    alpn = qget("alpn")
+    if alpn:
+        node["alpn"] = alpn
+    mport = qget("mport")
+    if mport:
+        node["mport"] = mport
     tls_on = qget("tls") != "0"  # 默认开启
     node["tls"] = tls_on
     node["security_scheme"] = "tls" if tls_on else "none"
@@ -283,10 +312,18 @@ def _parse_tuic(uri: str):
         "port": port,
         "password": unquote(user),
         "uuid": qget("uuid"),
+        "congestion_control": qget("congestion_control") or "",
+        "udp_relay_mode": qget("udp_relay_mode") or "",
+        "alpn": qget("alpn") or "",
     }
+    sni = qget("sni")
+    if sni:
+        node["sni"] = sni
+    if qget("allow_insecure") == "1" or qget("allowInsecure") == "1":
+        node["skip-cert-verify"] = True
     node["security_scheme"] = None
     node["proto"] = "tuic"
-    node["peer"] = server
+    node["peer"] = sni or server
     return node
 
 
@@ -390,22 +427,43 @@ def struct_to_uri(node: dict) -> str:
         return uri
 
     if t == "ssr":
-        raw = f"{node.get('cipher', 'aes-256-cfb')}:{node.get('password', 'x')}@{server}:{port}"
-        return f"ssr://{_b64(raw)}"
+        # 标准 SSR：base64( server:port:protocol:method:obfs:base64(password)/?obfsparam=&protoparam=&remarks= )
+        head = "{}:{}:{}:{}:{}:{}".format(
+            server, port,
+            node.get("protocol", "origin"),
+            node.get("cipher", "aes-256-cfb"),
+            node.get("obfs", "plain"),
+            _b64(node.get("password", "")),
+        )
+        params = []
+        if node.get("obfsparam"):
+            params.append("obfsparam=" + _b64(node["obfsparam"]))
+        if node.get("protoparam"):
+            params.append("protoparam=" + _b64(node["protoparam"]))
+        if name:
+            params.append("remarks=" + _b64(name))
+        tail = ("/?" + "&".join(params)) if params else ""
+        return "ssr://" + _b64(head + tail)
 
     if t == "hysteria2":
         query = _q(
             ("insecure", "1" if node.get("skip-cert-verify") else ""),
             ("sni", node.get("sni") or ""),
+            ("obfs", node.get("obfs") or ""),
+            ("obfs-password", node.get("obfs-password") or ""),
+            ("pinSHA256", node.get("pinSHA256") or ""),
+            ("alpn", node.get("alpn") or ""),
+            ("mport", node.get("mport") or ""),
         )
         return f"hysteria2://{quote(node.get('password', 'x'))}@{server}:{port}{query}#{quote(name)}"
 
     if t == "tuic":
         query = _q(
-            ("uuid", node.get("uuid", "")),
-            ("congestion_control", "bbr"),
-            ("udp_relay_mode", "native"),
-            ("alpn", "h3"),
+            ("uuid", node.get("uuid") or ""),
+            ("congestion_control", node.get("congestion_control") or ""),
+            ("udp_relay_mode", node.get("udp_relay_mode") or ""),
+            ("alpn", node.get("alpn") or ""),
+            ("sni", node.get("sni") or ""),
             ("allow_insecure", "1" if node.get("skip-cert-verify") else ""),
         )
         return f"tuic://{quote(node.get('password', 'x'))}@{server}:{port}{query}#{quote(name)}"

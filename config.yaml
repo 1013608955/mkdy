@@ -1,0 +1,137 @@
+# update_nodes.py 配置（外部化）
+# 任意顶层键都会覆盖 update_nodes.py 内联默认（overlay 语义，见 _overlay_config_file）。
+# private_ip 正则在代码中编译，不在此文件（YAML 无法表达正则对象）。
+# 日常调参改本文件即可，无需改代码。
+
+sources:
+- url: https://raw.githubusercontent.com/1013608955/mkdy/main/s2.txt
+  weight: 10
+- url: https://raw.githubusercontent.com/ripaojiedian/freenode/main/sub
+  weight: 7
+- url: https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/super-sub.txt
+  weight: 5
+- url: https://raw.githubusercontent.com/mfuu/v2ray/master/v2ray
+  weight: 6
+- url: https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt
+  weight: 4
+- url: https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt
+  weight: 8
+- url: https://raw.githubusercontent.com/HakurouKen/free-node/main/public
+  weight: 7
+- url: https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub
+  weight: 6
+request:
+  timeout: 15
+  retry: 3
+  retry_delay: 3
+  allow_insecure: false
+  ua: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
+    Chrome/120.0.0.0 Safari/537.36
+github:
+  token: ''
+  interval: 0.5
+  cache_ttl: 3600
+  cache_expire_days: 7
+detection:
+  tcp_timeout:
+    vmess: 5
+    vless: 5
+    trojan: 5
+    ss: 4
+    hysteria: 6
+  tcp_retry: 1
+  max_handshake_probe: 120
+  thread_pool: 8
+  dns:
+    servers:
+    - 223.5.5.5
+    - 119.29.29.29
+    - 8.8.8.8
+    - 1.1.1.1
+    timeout: 4
+    cache_size: 1000
+  http_test:
+    timeout: 10
+    targets:
+    - http://www.google.com/generate_204
+    - https://api.github.com/
+    - http://httpbin.org/ip
+    - https://api.ipify.org?format=json
+    fallback: http://baidu.com
+  score_threshold: 40
+  rt_thresholds:
+    vmess:
+      min: 0.02
+      max: 12
+    vless:
+      min: 0.02
+      max: 12
+    trojan:
+      min: 0.02
+      max: 12
+    ss:
+      min: 0.02
+      max: 12
+    hysteria:
+      min: 0.01
+      max: 12
+filter:
+  max_remark_bytes: 200
+  DEFAULT_PORT: 443
+  SS_DEFAULT_CIPHER: aes-256-gcm
+  SS_VALID_CIPHERS:
+  - aes-256-gcm
+  - aes-128-gcm
+  - chacha20-ietf-poly1305
+  - aes-256-cfb
+  - aes-128-cfb
+  score_rules:
+    protocol:
+      vless: 20
+      trojan: 18
+      vmess: 18
+      hysteria: 15
+      ss: 12
+      other: 0
+    security:
+      reality: 10
+      tls: 15
+      aead: 10
+      none: 5
+    port:
+      443: 10
+      8443: 8
+      80: 7
+      465: 7
+      9443: 7
+      other: 5
+    response_speed:
+      vmess:
+        fast: 8
+        normal: 4
+        slow: 0
+      vless:
+        fast: 9
+        normal: 4
+        slow: 0
+      trojan:
+        fast: 8
+        normal: 4
+        slow: 0
+      ss:
+        fast: 7
+        normal: 3
+        slow: 0
+      hysteria:
+        fast: 10
+        normal: 5
+        slow: 1
+    dns_valid: 8
+    http_valid: 8
+    cn_ip: -5
+    response_time_abnormal: -20
+    stability: 5
+    ip_type:
+      residential: 15
+      dc: 10
+      unknown: 5

@@ -41,3 +41,6 @@ verify_cn/deploy.zip
 verify_cn/.env
 verify_cn/run_loop.sh
 .cache/
+
+# 生成 cn_ranges.txt 时的临时下载缓存（APNIC delegated 源文件，体积大，重新生成时再拉取）
+tools/_*.txt
