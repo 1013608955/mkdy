@@ -1,5 +1,5 @@
 # s-verified.yaml — 仅含中国出口(FC)验证通过的节点 + clash_template 规则模版
-# 来源 verified.json: 15 个 ok → 匹配 15（漂移跳过 0）
+# 来源 verified.json: 16 个 ok → 匹配 16（漂移跳过 0）
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -45,59 +45,62 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - KR韩国(mibei77.com 米贝节点分享)_1
   - 泰国(mibei77.com 米贝节点分享)
-  - NL荷兰(mibei77.com 米贝节点分享)
-  - KR韩国(mibei77.com 米贝节点分享)_2
-  - 🇺🇸_美国_340
-  - 🇺🇸_美国_300
-  - '[peasoft/NoMoreWalls]🇭🇰HK_1|4.7MB/s'
-  - US美国(mibei77.com 米贝节点分享)_2
-  - US美国(mibei77.com 米贝节点分享)_82
-  - SG新加坡(mibei77.com 米贝节点分享)_2_2
-  - 🇷🇺_RU_俄罗斯->🇵🇱_PL_波兰
   - KR韩国(mibei77.com 米贝节点分享)
-  - US美国(mibei77.com 米贝节点分享)_4
-  - 🇯🇵_日本_19
+  - 🇺🇸_美国_301
+  - US美国(mibei77.com 米贝节点分享)_82
   - SG新加坡(mibei77.com 米贝节点分享)_2
+  - KR韩国(mibei77.com 米贝节点分享)_1
+  - US美国(mibei77.com 米贝节点分享)
+  - 🇺🇸_美国_300
+  - NL荷兰(mibei77.com 米贝节点分享)
+  - US美国(mibei77.com 米贝节点分享)_2
+  - '[peasoft/NoMoreWalls]🇭🇰HK_1|4.7MB/s'
+  - 🇭🇰 香港
+  - 🇺🇸_美国_334
+  - SG新加坡(mibei77.com 米贝节点分享)_2_2
+  - 🇺🇸_美国_340
+  - KR韩国(mibei77.com 米贝节点分享)_2
 - name: 自动选择
   type: url-test
   proxies:
-  - KR韩国(mibei77.com 米贝节点分享)_1
   - 泰国(mibei77.com 米贝节点分享)
-  - NL荷兰(mibei77.com 米贝节点分享)
-  - KR韩国(mibei77.com 米贝节点分享)_2
-  - 🇺🇸_美国_340
-  - 🇺🇸_美国_300
-  - '[peasoft/NoMoreWalls]🇭🇰HK_1|4.7MB/s'
-  - US美国(mibei77.com 米贝节点分享)_2
-  - US美国(mibei77.com 米贝节点分享)_82
-  - SG新加坡(mibei77.com 米贝节点分享)_2_2
-  - 🇷🇺_RU_俄罗斯->🇵🇱_PL_波兰
   - KR韩国(mibei77.com 米贝节点分享)
-  - US美国(mibei77.com 米贝节点分享)_4
-  - 🇯🇵_日本_19
+  - 🇺🇸_美国_301
+  - US美国(mibei77.com 米贝节点分享)_82
   - SG新加坡(mibei77.com 米贝节点分享)_2
+  - KR韩国(mibei77.com 米贝节点分享)_1
+  - US美国(mibei77.com 米贝节点分享)
+  - 🇺🇸_美国_300
+  - NL荷兰(mibei77.com 米贝节点分享)
+  - US美国(mibei77.com 米贝节点分享)_2
+  - '[peasoft/NoMoreWalls]🇭🇰HK_1|4.7MB/s'
+  - 🇭🇰 香港
+  - 🇺🇸_美国_334
+  - SG新加坡(mibei77.com 米贝节点分享)_2_2
+  - 🇺🇸_美国_340
+  - KR韩国(mibei77.com 米贝节点分享)_2
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - KR韩国(mibei77.com 米贝节点分享)_1
   - 泰国(mibei77.com 米贝节点分享)
-  - NL荷兰(mibei77.com 米贝节点分享)
-  - KR韩国(mibei77.com 米贝节点分享)_2
-  - 🇺🇸_美国_340
-  - 🇺🇸_美国_300
-  - '[peasoft/NoMoreWalls]🇭🇰HK_1|4.7MB/s'
-  - US美国(mibei77.com 米贝节点分享)_2
-  - US美国(mibei77.com 米贝节点分享)_82
-  - SG新加坡(mibei77.com 米贝节点分享)_2_2
-  - 🇷🇺_RU_俄罗斯->🇵🇱_PL_波兰
   - KR韩国(mibei77.com 米贝节点分享)
-  - US美国(mibei77.com 米贝节点分享)_4
-  - 🇯🇵_日本_19
+  - 🇺🇸_美国_301
+  - US美国(mibei77.com 米贝节点分享)_82
   - SG新加坡(mibei77.com 米贝节点分享)_2
+  - KR韩国(mibei77.com 米贝节点分享)_1
+  - US美国(mibei77.com 米贝节点分享)
+  - 🇺🇸_美国_300
+  - NL荷兰(mibei77.com 米贝节点分享)
+  - US美国(mibei77.com 米贝节点分享)_2
+  - '[peasoft/NoMoreWalls]🇭🇰HK_1|4.7MB/s'
+  - 🇭🇰 香港
+  - 🇺🇸_美国_334
+  - SG新加坡(mibei77.com 米贝节点分享)_2_2
+  - 🇺🇸_美国_340
+  - KR韩国(mibei77.com 米贝节点分享)_2
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -618,15 +621,6 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: KR韩国(mibei77.com 米贝节点分享)_1
-  type: anytls
-  server: yazhouany02.twzq59.cc
-  port: 47053
-  password: 13f0acfa-38c1-4e82-a758-583aa31740df
-  sni: xjp0202.asgg2026.vip
-  skip-cert-verify: true
-  tls: true
-  udp: true
 - name: 泰国(mibei77.com 米贝节点分享)
   type: vmess
   server: www.true.th
@@ -644,6 +638,89 @@ proxies:
   sni: d7pu5mzr9c4b0.cloudfront.net
   proto: vmess
   peer: d7pu5mzr9c4b0.cloudfront.net
+- name: KR韩国(mibei77.com 米贝节点分享)
+  type: anytls
+  server: sivp555.ipad1el.com
+  port: 47901
+  password: 13f0acfa-38c1-4e82-a758-583aa31740df
+  sni: kr06.nyssl.cc
+  skip-cert-verify: true
+  tls: true
+  udp: true
+- name: 🇺🇸_美国_301
+  type: vless
+  server: 54.240.174.87
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+  security_scheme: tls
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
+- name: US美国(mibei77.com 米贝节点分享)_82
+  type: hysteria2
+  server: 166-0-16-52.liao.kdns.fr
+  port: 50160
+  password: 6f65680b8d4de72e9f7c030e92e27a32
+  sni: 166-0-16-52.liao.kdns.fr
+  skip-cert-verify: true
+  udp: true
+- name: SG新加坡(mibei77.com 米贝节点分享)_2
+  type: anytls
+  server: sivp666.ipad1el.com
+  port: 60572
+  password: 13f0acfa-38c1-4e82-a758-583aa31740df
+  sni: yzhou015.jdvipkuai.cc
+  skip-cert-verify: true
+  tls: true
+  udp: true
+- name: KR韩国(mibei77.com 米贝节点分享)_1
+  type: anytls
+  server: yazhouany02.twzq59.cc
+  port: 47053
+  password: 13f0acfa-38c1-4e82-a758-583aa31740df
+  sni: xjp0202.asgg2026.vip
+  skip-cert-verify: true
+  tls: true
+  udp: true
+- name: US美国(mibei77.com 米贝节点分享)
+  type: vless
+  server: 208.103.161.32
+  port: 443
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  tls: true
+  network: ws
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
+  ws-opts:
+    path: /sg-melbi_/
+    headers:
+      Host: josni.hoyes.cloudns.ch
+  security_scheme: tls
+  proto: vless
+  peer: josni.hoyes.cloudns.ch
+- name: 🇺🇸_美国_300
+  type: vless
+  server: 18.239.83.112
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+  security_scheme: tls
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
 - name: NL荷兰(mibei77.com 米贝节点分享)
   type: vless
   server: 199.232.78.159
@@ -660,34 +737,9 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: ssl.fastly.com
-- name: KR韩国(mibei77.com 米贝节点分享)_2
-  type: anytls
-  server: svip.skycon808.com
-  port: 60005
-  password: 13f0acfa-38c1-4e82-a758-583aa31740df
-  sni: xjp18.2uuzhe.com
-  skip-cert-verify: true
-  tls: true
-  udp: true
-- name: 🇺🇸_美国_340
+- name: US美国(mibei77.com 米贝节点分享)_2
   type: vless
-  server: 18.238.109.17
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-  security_scheme: tls
-  proto: vless
-  peer: d1yxsk0zprgivr.cloudfront.net
-- name: 🇺🇸_美国_300
-  type: vless
-  server: 18.239.83.112
+  server: www.true.th
   port: 443
   uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
@@ -718,9 +770,18 @@ proxies:
   sni: 407a2bc6d452ff93e6d7b73078539d9e.mobgslb.tbcache.com
   proto: vmess
   peer: 407a2bc6d452ff93e6d7b73078539d9e.mobgslb.tbcache.com
-- name: US美国(mibei77.com 米贝节点分享)_2
+- name: 🇭🇰 香港
+  server: v10.hdacd.com
+  port: 30807
+  type: vmess
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  skip-cert-verify: false
+- name: 🇺🇸_美国_334
   type: vless
-  server: www.true.th
+  server: 18.244.214.28
   port: 443
   uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
@@ -734,14 +795,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: d1yxsk0zprgivr.cloudfront.net
-- name: US美国(mibei77.com 米贝节点分享)_82
-  type: hysteria2
-  server: 166-0-16-52.liao.kdns.fr
-  port: 50160
-  password: 6f65680b8d4de72e9f7c030e92e27a32
-  sni: 166-0-16-52.liao.kdns.fr
-  skip-cert-verify: true
-  udp: true
 - name: SG新加坡(mibei77.com 米贝节点分享)_2_2
   type: anytls
   server: yzany01.jdoanst2026.com
@@ -751,61 +804,28 @@ proxies:
   skip-cert-verify: true
   tls: true
   udp: true
-- name: 🇷🇺_RU_俄罗斯->🇵🇱_PL_波兰
+- name: 🇺🇸_美国_340
   type: vless
-  server: 194.87.234.219
+  server: 18.238.109.17
   port: 443
-  uuid: 28af86fc-34fa-4b4e-b96f-041a1b687823
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: nbb--6566d244.vpn.partners
-  servername: nbb--6566d244.vpn.partners
-  security_scheme: tls
-  proto: vless
-  peer: nbb--6566d244.vpn.partners
-- name: KR韩国(mibei77.com 米贝节点分享)
-  type: anytls
-  server: sivp555.ipad1el.com
-  port: 47901
-  password: 13f0acfa-38c1-4e82-a758-583aa31740df
-  sni: kr06.nyssl.cc
-  skip-cert-verify: true
-  tls: true
-  udp: true
-- name: US美国(mibei77.com 米贝节点分享)_4
-  type: vless
-  server: 104.18.37.228
-  port: 443
-  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
   network: ws
-  sni: josni.hoyes.cloudns.ch
-  servername: josni.hoyes.cloudns.ch
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
   ws-opts:
-    path: /sg-melbi
+    path: /
     headers:
-      Host: josni.hoyes.cloudns.ch
+      Host: d1yxsk0zprgivr.cloudfront.net
   security_scheme: tls
   proto: vless
-  peer: josni.hoyes.cloudns.ch
-- name: 🇯🇵_日本_19
-  type: trojan
-  server: exact-sawfish.rooster465.autos
-  port: 443
-  password: HC04361579
-  tls: true
-  network: tcp
-  sni: exact-sawfish.rooster465.autos
-  security_scheme: tls
-  proto: trojan
-  peer: exact-sawfish.rooster465.autos
-- name: SG新加坡(mibei77.com 米贝节点分享)_2
+  peer: d1yxsk0zprgivr.cloudfront.net
+- name: KR韩国(mibei77.com 米贝节点分享)_2
   type: anytls
-  server: sivp666.ipad1el.com
-  port: 60572
+  server: svip.skycon808.com
+  port: 60005
   password: 13f0acfa-38c1-4e82-a758-583aa31740df
-  sni: yzhou015.jdvipkuai.cc
+  sni: xjp18.2uuzhe.com
   skip-cert-verify: true
   tls: true
   udp: true
