@@ -1,5 +1,5 @@
 # s-verified.yaml — 仅含中国出口(FC)验证通过的节点 + clash_template 规则模版
-# 来源 verified.json: 16 个 ok → 匹配 16（漂移跳过 0）
+# 来源 verified.json: 16 个 ok → 匹配 13（漂移跳过 3）
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -45,62 +45,53 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - 🇺🇸_美国_340
-  - 🇺🇸_美国_300
-  - '[ermaozi/get_subscribe]🇨🇳_CN_中国->🇯🇵_JP_日本'
   - 🇪🇸_ES_西班牙
-  - 🇬🇧_GB_英国
-  - 🇺🇸_美国_301
-  - 🇮🇳_IN_印度
-  - 🇸🇬_SG_新加坡
+  - 🇺🇸_美国_300
   - US美国(mibei77.com 米贝节点分享)_82
+  - 🇺🇸_美国_334
+  - 🇺🇸_美国_340
+  - 🇳🇱_NL_荷兰->🇹🇭_TH_泰国
   - US美国(mibei77.com 米贝节点分享)_2
   - SG新加坡(mibei77.com 米贝节点分享)_2
-  - 🇺🇸_美国_334
-  - '[1808.ga]🇫🇷'
   - 泰国(mibei77.com 米贝节点分享)
-  - '[ermaozi/get_subscribe]🇨🇳_CN_中国->🇮🇪_IE_爱尔兰'
-  - 🇳🇱_NL_荷兰->🇹🇭_TH_泰国
+  - 🇺🇸_美国_301
+  - 🇸🇬_SG_新加坡
+  - 🇬🇧_GB_英国
+  - 🇮🇳_IN_印度
 - name: 自动选择
   type: url-test
   proxies:
-  - 🇺🇸_美国_340
-  - 🇺🇸_美国_300
-  - '[ermaozi/get_subscribe]🇨🇳_CN_中国->🇯🇵_JP_日本'
   - 🇪🇸_ES_西班牙
-  - 🇬🇧_GB_英国
-  - 🇺🇸_美国_301
-  - 🇮🇳_IN_印度
-  - 🇸🇬_SG_新加坡
+  - 🇺🇸_美国_300
   - US美国(mibei77.com 米贝节点分享)_82
+  - 🇺🇸_美国_334
+  - 🇺🇸_美国_340
+  - 🇳🇱_NL_荷兰->🇹🇭_TH_泰国
   - US美国(mibei77.com 米贝节点分享)_2
   - SG新加坡(mibei77.com 米贝节点分享)_2
-  - 🇺🇸_美国_334
-  - '[1808.ga]🇫🇷'
   - 泰国(mibei77.com 米贝节点分享)
-  - '[ermaozi/get_subscribe]🇨🇳_CN_中国->🇮🇪_IE_爱尔兰'
-  - 🇳🇱_NL_荷兰->🇹🇭_TH_泰国
+  - 🇺🇸_美国_301
+  - 🇸🇬_SG_新加坡
+  - 🇬🇧_GB_英国
+  - 🇮🇳_IN_印度
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - 🇺🇸_美国_340
-  - 🇺🇸_美国_300
-  - '[ermaozi/get_subscribe]🇨🇳_CN_中国->🇯🇵_JP_日本'
   - 🇪🇸_ES_西班牙
-  - 🇬🇧_GB_英国
-  - 🇺🇸_美国_301
-  - 🇮🇳_IN_印度
-  - 🇸🇬_SG_新加坡
+  - 🇺🇸_美国_300
   - US美国(mibei77.com 米贝节点分享)_82
+  - 🇺🇸_美国_334
+  - 🇺🇸_美国_340
+  - 🇳🇱_NL_荷兰->🇹🇭_TH_泰国
   - US美国(mibei77.com 米贝节点分享)_2
   - SG新加坡(mibei77.com 米贝节点分享)_2
-  - 🇺🇸_美国_334
-  - '[1808.ga]🇫🇷'
   - 泰国(mibei77.com 米贝节点分享)
-  - '[ermaozi/get_subscribe]🇨🇳_CN_中国->🇮🇪_IE_爱尔兰'
-  - 🇳🇱_NL_荷兰->🇹🇭_TH_泰国
+  - 🇺🇸_美国_301
+  - 🇸🇬_SG_新加坡
+  - 🇬🇧_GB_英国
+  - 🇮🇳_IN_印度
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -621,22 +612,18 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: 🇺🇸_美国_340
-  type: vless
-  server: 18.238.109.17
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+- name: 🇪🇸_ES_西班牙
+  type: trojan
+  server: 172.233.107.18
+  port: 5575
+  password: fg20mtCFHy
   tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
+  network: tcp
+  sni: fgrsd.southbyte.xyz
+  skip-cert-verify: true
   security_scheme: tls
-  proto: vless
-  peer: d1yxsk0zprgivr.cloudfront.net
+  proto: trojan
+  peer: fgrsd.southbyte.xyz
 - name: 🇺🇸_美国_300
   type: vless
   server: 18.239.83.112
@@ -653,46 +640,17 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: d1yxsk0zprgivr.cloudfront.net
-- name: '[ermaozi/get_subscribe]🇨🇳_CN_中国->🇯🇵_JP_日本'
-  type: vmess
-  server: v6.hdacd.com
-  port: 30806
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v6.hdacd.com
-  proto: vmess
-  peer: v6.hdacd.com
-- name: 🇪🇸_ES_西班牙
-  type: trojan
-  server: 172.233.107.18
-  port: 5575
-  password: fg20mtCFHy
-  tls: true
-  network: tcp
-  sni: fgrsd.southbyte.xyz
+- name: US美国(mibei77.com 米贝节点分享)_82
+  type: hysteria2
+  server: 166-0-16-52.liao.kdns.fr
+  port: 50160
+  password: 6f65680b8d4de72e9f7c030e92e27a32
+  sni: 166-0-16-52.liao.kdns.fr
   skip-cert-verify: true
-  security_scheme: tls
-  proto: trojan
-  peer: fgrsd.southbyte.xyz
-- name: 🇬🇧_GB_英国
-  type: trojan
-  server: 104.248.167.79
-  port: 5624
-  password: fg20mtCFHy
-  tls: true
-  network: tcp
-  sni: dsgvc.southbyte.xyz
-  skip-cert-verify: true
-  security_scheme: tls
-  proto: trojan
-  peer: dsgvc.southbyte.xyz
-- name: 🇺🇸_美国_301
+  udp: true
+- name: 🇺🇸_美国_334
   type: vless
-  server: 54.240.174.87
+  server: 18.244.214.28
   port: 443
   uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
@@ -706,40 +664,38 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: d1yxsk0zprgivr.cloudfront.net
-- name: 🇮🇳_IN_印度
-  type: trojan
-  server: 157.245.99.215
-  port: 5750
-  password: fg20mtCFHy
-  tls: true
-  network: tcp
-  sni: inyct.southbyte.xyz
-  skip-cert-verify: true
-  security_scheme: tls
-  proto: trojan
-  peer: inyct.southbyte.xyz
-- name: 🇸🇬_SG_新加坡
+- name: 🇺🇸_美国_340
   type: vless
-  server: paid.sshehi.ggff.net
+  server: 18.238.109.17
   port: 443
-  uuid: 49c86212-ae0b-430e-9abb-244e715b533f
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
   network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
   ws-opts:
     path: /
     headers:
-      Host: paid.sshehi.ggff.net
+      Host: d1yxsk0zprgivr.cloudfront.net
   security_scheme: tls
   proto: vless
-  peer: paid.sshehi.ggff.net
-- name: US美国(mibei77.com 米贝节点分享)_82
-  type: hysteria2
-  server: 166-0-16-52.liao.kdns.fr
-  port: 50160
-  password: 6f65680b8d4de72e9f7c030e92e27a32
-  sni: 166-0-16-52.liao.kdns.fr
-  skip-cert-verify: true
-  udp: true
+  peer: d1yxsk0zprgivr.cloudfront.net
+- name: 🇳🇱_NL_荷兰->🇹🇭_TH_泰国
+  type: vless
+  server: 18.239.83.52
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+  security_scheme: tls
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
 - name: US美国(mibei77.com 米贝节点分享)_2
   type: vless
   server: www.true.th
@@ -765,35 +721,6 @@ proxies:
   skip-cert-verify: true
   tls: true
   udp: true
-- name: 🇺🇸_美国_334
-  type: vless
-  server: 18.244.214.28
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-  security_scheme: tls
-  proto: vless
-  peer: d1yxsk0zprgivr.cloudfront.net
-- name: '[1808.ga]🇫🇷'
-  type: vmess
-  server: v35.hdacd.com
-  port: 30835
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v35.hdacd.com
-  proto: vmess
-  peer: v35.hdacd.com
 - name: 泰国(mibei77.com 米贝节点分享)
   type: vmess
   server: www.true.th
@@ -811,22 +738,9 @@ proxies:
   sni: d7pu5mzr9c4b0.cloudfront.net
   proto: vmess
   peer: d7pu5mzr9c4b0.cloudfront.net
-- name: '[ermaozi/get_subscribe]🇨🇳_CN_中国->🇮🇪_IE_爱尔兰'
-  type: vmess
-  server: v4.hdacd.com
-  port: 30804
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v4.hdacd.com
-  proto: vmess
-  peer: v4.hdacd.com
-- name: 🇳🇱_NL_荷兰->🇹🇭_TH_泰国
+- name: 🇺🇸_美国_301
   type: vless
-  server: 18.239.83.52
+  server: 54.240.174.87
   port: 443
   uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
@@ -840,3 +754,41 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: d1yxsk0zprgivr.cloudfront.net
+- name: 🇸🇬_SG_新加坡
+  type: vless
+  server: paid.sshehi.ggff.net
+  port: 443
+  uuid: 49c86212-ae0b-430e-9abb-244e715b533f
+  tls: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: paid.sshehi.ggff.net
+  security_scheme: tls
+  proto: vless
+  peer: paid.sshehi.ggff.net
+- name: 🇬🇧_GB_英国
+  type: trojan
+  server: 104.248.167.79
+  port: 5624
+  password: fg20mtCFHy
+  tls: true
+  network: tcp
+  sni: dsgvc.southbyte.xyz
+  skip-cert-verify: true
+  security_scheme: tls
+  proto: trojan
+  peer: dsgvc.southbyte.xyz
+- name: 🇮🇳_IN_印度
+  type: trojan
+  server: 157.245.99.215
+  port: 5750
+  password: fg20mtCFHy
+  tls: true
+  network: tcp
+  sni: inyct.southbyte.xyz
+  skip-cert-verify: true
+  security_scheme: tls
+  proto: trojan
+  peer: inyct.southbyte.xyz
