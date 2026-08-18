@@ -45,61 +45,61 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - 🇳🇱_NL_荷兰->🇹🇭_TH_泰国
-  - 🇱🇻 拉脱维亚(mibei77.com 米贝节点分享)
-  - 🇪🇸_ES_西班牙
-  - 🇺🇸_美国_340
-  - 🇺🇸_美国_237
-  - NL荷兰(mibei77.com 米贝节点分享)
-  - 🇺🇸_美国_301
   - 香港|@ripaojiedian
+  - 🇱🇻 拉脱维亚(mibei77.com 米贝节点分享)
   - 🇸🇬_SG_新加坡
-  - '[peasoft/NoMoreWalls]🇭🇰HK_16|2.7MB/s'
-  - 泰国(mibei77.com 米贝节点分享)
-  - 🇺🇸_美国_334
-  - 🇮🇳_IN_印度
-  - US美国(mibei77.com 米贝节点分享)_2
   - 🇺🇸_美国_300
+  - '[peasoft/NoMoreWalls]🇭🇰HK_16|2.7MB/s'
+  - 🇺🇸_美国_237
+  - 🇳🇱_NL_荷兰->🇹🇭_TH_泰国
+  - 🇺🇸_美国_334
+  - 🇺🇸_美国_301
+  - KR韩国(mibei77.com 米贝节点分享)
+  - NL荷兰(mibei77.com 米贝节点分享)
+  - 🇮🇳_IN_印度
+  - 泰国(mibei77.com 米贝节点分享)
+  - 🇺🇸_美国_340
+  - 🇪🇸_ES_西班牙
   - 🇬🇧_GB_英国
 - name: 自动选择
   type: url-test
   proxies:
-  - 🇳🇱_NL_荷兰->🇹🇭_TH_泰国
-  - 🇱🇻 拉脱维亚(mibei77.com 米贝节点分享)
-  - 🇪🇸_ES_西班牙
-  - 🇺🇸_美国_340
-  - 🇺🇸_美国_237
-  - NL荷兰(mibei77.com 米贝节点分享)
-  - 🇺🇸_美国_301
   - 香港|@ripaojiedian
+  - 🇱🇻 拉脱维亚(mibei77.com 米贝节点分享)
   - 🇸🇬_SG_新加坡
-  - '[peasoft/NoMoreWalls]🇭🇰HK_16|2.7MB/s'
-  - 泰国(mibei77.com 米贝节点分享)
-  - 🇺🇸_美国_334
-  - 🇮🇳_IN_印度
-  - US美国(mibei77.com 米贝节点分享)_2
   - 🇺🇸_美国_300
+  - '[peasoft/NoMoreWalls]🇭🇰HK_16|2.7MB/s'
+  - 🇺🇸_美国_237
+  - 🇳🇱_NL_荷兰->🇹🇭_TH_泰国
+  - 🇺🇸_美国_334
+  - 🇺🇸_美国_301
+  - KR韩国(mibei77.com 米贝节点分享)
+  - NL荷兰(mibei77.com 米贝节点分享)
+  - 🇮🇳_IN_印度
+  - 泰国(mibei77.com 米贝节点分享)
+  - 🇺🇸_美国_340
+  - 🇪🇸_ES_西班牙
   - 🇬🇧_GB_英国
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - 🇳🇱_NL_荷兰->🇹🇭_TH_泰国
-  - 🇱🇻 拉脱维亚(mibei77.com 米贝节点分享)
-  - 🇪🇸_ES_西班牙
-  - 🇺🇸_美国_340
-  - 🇺🇸_美国_237
-  - NL荷兰(mibei77.com 米贝节点分享)
-  - 🇺🇸_美国_301
   - 香港|@ripaojiedian
+  - 🇱🇻 拉脱维亚(mibei77.com 米贝节点分享)
   - 🇸🇬_SG_新加坡
-  - '[peasoft/NoMoreWalls]🇭🇰HK_16|2.7MB/s'
-  - 泰国(mibei77.com 米贝节点分享)
-  - 🇺🇸_美国_334
-  - 🇮🇳_IN_印度
-  - US美国(mibei77.com 米贝节点分享)_2
   - 🇺🇸_美国_300
+  - '[peasoft/NoMoreWalls]🇭🇰HK_16|2.7MB/s'
+  - 🇺🇸_美国_237
+  - 🇳🇱_NL_荷兰->🇹🇭_TH_泰国
+  - 🇺🇸_美国_334
+  - 🇺🇸_美国_301
+  - KR韩国(mibei77.com 米贝节点分享)
+  - NL荷兰(mibei77.com 米贝节点分享)
+  - 🇮🇳_IN_印度
+  - 泰国(mibei77.com 米贝节点分享)
+  - 🇺🇸_美国_340
+  - 🇪🇸_ES_西班牙
   - 🇬🇧_GB_英国
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -621,22 +621,19 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: 🇳🇱_NL_荷兰->🇹🇭_TH_泰国
-  type: vless
-  server: 18.239.83.52
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-  security_scheme: tls
-  proto: vless
-  peer: d1yxsk0zprgivr.cloudfront.net
+- name: 香港|@ripaojiedian
+  type: vmess
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.hdacd.com
+  proto: vmess
+  peer: v10.hdacd.com
 - name: 🇱🇻 拉脱维亚(mibei77.com 米贝节点分享)
   type: vmess
   server: 185.246.152.159
@@ -654,93 +651,6 @@ proxies:
   sni: apjhdggyx.com
   proto: vmess
   peer: apjhdggyx.com
-- name: 🇪🇸_ES_西班牙
-  type: trojan
-  server: 172.233.107.18
-  port: 5575
-  password: fg20mtCFHy
-  tls: true
-  network: tcp
-  sni: fgrsd.southbyte.xyz
-  skip-cert-verify: true
-  security_scheme: tls
-  proto: trojan
-  peer: fgrsd.southbyte.xyz
-- name: 🇺🇸_美国_340
-  type: vless
-  server: 18.238.109.17
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-  security_scheme: tls
-  proto: vless
-  peer: d1yxsk0zprgivr.cloudfront.net
-- name: 🇺🇸_美国_237
-  type: vless
-  server: 18.239.134.69
-  port: 80
-  uuid: de27291c-15a9-4256-9ba7-ad517569877e
-  tls: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: d2e1v87ko56lyw.cloudfront.net:assets.opensignal.com
-  security_scheme: none
-  proto: vless
-  peer: 18.239.134.69
-- name: NL荷兰(mibei77.com 米贝节点分享)
-  type: vless
-  server: 199.232.78.159
-  port: 443
-  uuid: fe4ca690-6fd9-4471-9a9f-94528084d180
-  tls: true
-  network: ws
-  sni: ssl.fastly.com
-  servername: ssl.fastly.com
-  ws-opts:
-    path: /TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER?ed=2053
-    headers:
-      Host: pan1.global.ssl.fastly.net
-  security_scheme: tls
-  proto: vless
-  peer: ssl.fastly.com
-- name: 🇺🇸_美国_301
-  type: vless
-  server: 54.240.174.87
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-  security_scheme: tls
-  proto: vless
-  peer: d1yxsk0zprgivr.cloudfront.net
-- name: 香港|@ripaojiedian
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
 - name: 🇸🇬_SG_新加坡
   type: vless
   server: paid.sshehi.ggff.net
@@ -755,6 +665,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: paid.sshehi.ggff.net
+- name: 🇺🇸_美国_300
+  type: vless
+  server: 18.239.83.112
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+  security_scheme: tls
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
 - name: '[peasoft/NoMoreWalls]🇭🇰HK_16|2.7MB/s'
   type: vmess
   server: planb.mojcn.com.linuxlh.xin
@@ -773,6 +699,105 @@ proxies:
   sni: 407a2bc6d452ff93e6d7b73078539d9e.mobgslb.tbcache.com
   proto: vmess
   peer: 407a2bc6d452ff93e6d7b73078539d9e.mobgslb.tbcache.com
+- name: 🇺🇸_美国_237
+  type: vless
+  server: 18.239.134.69
+  port: 80
+  uuid: de27291c-15a9-4256-9ba7-ad517569877e
+  tls: false
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: d2e1v87ko56lyw.cloudfront.net:assets.opensignal.com
+  security_scheme: none
+  proto: vless
+  peer: 18.239.134.69
+- name: 🇳🇱_NL_荷兰->🇹🇭_TH_泰国
+  type: vless
+  server: 18.239.83.52
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+  security_scheme: tls
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
+- name: 🇺🇸_美国_334
+  type: vless
+  server: 18.244.214.28
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+  security_scheme: tls
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
+- name: 🇺🇸_美国_301
+  type: vless
+  server: 54.240.174.87
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+  security_scheme: tls
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
+- name: KR韩国(mibei77.com 米贝节点分享)
+  type: anytls
+  server: sivp555.ipad1el.com
+  port: 47901
+  password: 13f0acfa-38c1-4e82-a758-583aa31740df
+  sni: kr06.nyssl.cc
+  skip-cert-verify: true
+  tls: true
+  udp: true
+- name: NL荷兰(mibei77.com 米贝节点分享)
+  type: vless
+  server: 199.232.78.159
+  port: 443
+  uuid: fe4ca690-6fd9-4471-9a9f-94528084d180
+  tls: true
+  network: ws
+  sni: ssl.fastly.com
+  servername: ssl.fastly.com
+  ws-opts:
+    path: /TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER?ed=2053
+    headers:
+      Host: pan1.global.ssl.fastly.net
+  security_scheme: tls
+  proto: vless
+  peer: ssl.fastly.com
+- name: 🇮🇳_IN_印度
+  type: trojan
+  server: 157.245.99.215
+  port: 5750
+  password: fg20mtCFHy
+  tls: true
+  network: tcp
+  sni: inyct.southbyte.xyz
+  skip-cert-verify: true
+  security_scheme: tls
+  proto: trojan
+  peer: inyct.southbyte.xyz
 - name: 泰国(mibei77.com 米贝节点分享)
   type: vmess
   server: www.true.th
@@ -790,9 +815,9 @@ proxies:
   sni: d7pu5mzr9c4b0.cloudfront.net
   proto: vmess
   peer: d7pu5mzr9c4b0.cloudfront.net
-- name: 🇺🇸_美国_334
+- name: 🇺🇸_美国_340
   type: vless
-  server: 18.244.214.28
+  server: 18.238.109.17
   port: 443
   uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
@@ -806,50 +831,18 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: d1yxsk0zprgivr.cloudfront.net
-- name: 🇮🇳_IN_印度
+- name: 🇪🇸_ES_西班牙
   type: trojan
-  server: 157.245.99.215
-  port: 5750
+  server: 172.233.107.18
+  port: 5575
   password: fg20mtCFHy
   tls: true
   network: tcp
-  sni: inyct.southbyte.xyz
+  sni: fgrsd.southbyte.xyz
   skip-cert-verify: true
   security_scheme: tls
   proto: trojan
-  peer: inyct.southbyte.xyz
-- name: US美国(mibei77.com 米贝节点分享)_2
-  type: vless
-  server: www.true.th
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-  security_scheme: tls
-  proto: vless
-  peer: d1yxsk0zprgivr.cloudfront.net
-- name: 🇺🇸_美国_300
-  type: vless
-  server: 18.239.83.112
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-  security_scheme: tls
-  proto: vless
-  peer: d1yxsk0zprgivr.cloudfront.net
+  peer: fgrsd.southbyte.xyz
 - name: 🇬🇧_GB_英国
   type: trojan
   server: 104.248.167.79
