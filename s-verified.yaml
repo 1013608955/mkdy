@@ -45,50 +45,50 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - 香港|@ripaojiedian
-  - US美国(mibei77.com 米贝节点分享)_60
-  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
-  - 🇺🇸_美国_264
-  - US美国(mibei77.com 米贝节点分享)_62
-  - GB英国(mibei77.com 米贝节点分享)_1
-  - 🇺🇸_美国_193
-  - 🇺🇸_美国_266
-  - 🇺🇸_美国_268
-  - 🇩🇪_德国_97
-  - US美国(mibei77.com 米贝节点分享)_29
   - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - 🇺🇸_美国_193
+  - 香港|@ripaojiedian
+  - 🇺🇸_美国_268
+  - GB英国(mibei77.com 米贝节点分享)_1
+  - 🇺🇸_美国_264
+  - 🇺🇸_美国_266
+  - 🇩🇪_德国_97
+  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
+  - US美国(mibei77.com 米贝节点分享)_60
+  - US美国(mibei77.com 米贝节点分享)_29
+  - US美国(mibei77.com 米贝节点分享)_62
 - name: 自动选择
   type: url-test
   proxies:
-  - 香港|@ripaojiedian
-  - US美国(mibei77.com 米贝节点分享)_60
-  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
-  - 🇺🇸_美国_264
-  - US美国(mibei77.com 米贝节点分享)_62
-  - GB英国(mibei77.com 米贝节点分享)_1
-  - 🇺🇸_美国_193
-  - 🇺🇸_美国_266
-  - 🇺🇸_美国_268
-  - 🇩🇪_德国_97
-  - US美国(mibei77.com 米贝节点分享)_29
   - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - 🇺🇸_美国_193
+  - 香港|@ripaojiedian
+  - 🇺🇸_美国_268
+  - GB英国(mibei77.com 米贝节点分享)_1
+  - 🇺🇸_美国_264
+  - 🇺🇸_美国_266
+  - 🇩🇪_德国_97
+  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
+  - US美国(mibei77.com 米贝节点分享)_60
+  - US美国(mibei77.com 米贝节点分享)_29
+  - US美国(mibei77.com 米贝节点分享)_62
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - 香港|@ripaojiedian
-  - US美国(mibei77.com 米贝节点分享)_60
-  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
-  - 🇺🇸_美国_264
-  - US美国(mibei77.com 米贝节点分享)_62
-  - GB英国(mibei77.com 米贝节点分享)_1
-  - 🇺🇸_美国_193
-  - 🇺🇸_美国_266
-  - 🇺🇸_美国_268
-  - 🇩🇪_德国_97
-  - US美国(mibei77.com 米贝节点分享)_29
   - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - 🇺🇸_美国_193
+  - 香港|@ripaojiedian
+  - 🇺🇸_美国_268
+  - GB英国(mibei77.com 米贝节点分享)_1
+  - 🇺🇸_美国_264
+  - 🇺🇸_美国_266
+  - 🇩🇪_德国_97
+  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
+  - US美国(mibei77.com 米贝节点分享)_60
+  - US美国(mibei77.com 米贝节点分享)_29
+  - US美国(mibei77.com 米贝节点分享)_62
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -609,46 +609,9 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: 香港|@ripaojiedian
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
-- name: US美国(mibei77.com 米贝节点分享)_60
-  type: trojan
-  server: 198.41.223.96
-  port: 443
-  password: humanity
-  tls: true
-  network: ws
-  sni: www.ignitelimit.com
-  ws-opts:
-    path: /assignment
-    headers:
-      Host: www.ignitelimit.com
-  security_scheme: tls
-  proto: trojan
-  peer: www.ignitelimit.com
-- name: '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
-  type: ss
-  server: 45.8.158.176
-  port: 10801
-  cipher: aes-256-gcm
-  password: 1eadd4e4a37b6601
-  security_scheme: aead
-  proto: ss
-  peer: 45.8.158.176
-- name: 🇺🇸_美国_264
+- name: 🇺🇸_US_美国->🇹🇭_TH_泰国
   type: vless
-  server: 54.240.174.87
+  server: 18.238.217.65
   port: 443
   uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
@@ -662,21 +625,51 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: d1yxsk0zprgivr.cloudfront.net
-- name: US美国(mibei77.com 米贝节点分享)_62
-  type: trojan
-  server: 104.16.174.44
+- name: 🇺🇸_美国_193
+  type: vless
+  server: 108.138.26.70
   port: 443
-  password: humanity
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
   network: ws
-  sni: www.ignitelimit.com
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
   ws-opts:
-    path: /assignment
+    path: /
     headers:
-      Host: www.ignitelimit.com
+      Host: d1yxsk0zprgivr.cloudfront.net
   security_scheme: tls
-  proto: trojan
-  peer: www.ignitelimit.com
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
+- name: 香港|@ripaojiedian
+  type: vmess
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.hdacd.com
+  proto: vmess
+  peer: v10.hdacd.com
+- name: 🇺🇸_美国_268
+  type: vless
+  server: 18.154.132.94
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+  security_scheme: tls
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
 - name: GB英国(mibei77.com 米贝节点分享)_1
   type: hysteria2
   server: 31.76.70.78
@@ -685,9 +678,9 @@ proxies:
   sni: quic.tyr-agentstvo.tech
   skip-cert-verify: true
   udp: true
-- name: 🇺🇸_美国_193
+- name: 🇺🇸_美国_264
   type: vless
-  server: 108.138.26.70
+  server: 54.240.174.87
   port: 443
   uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
@@ -717,22 +710,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: d1yxsk0zprgivr.cloudfront.net
-- name: 🇺🇸_美国_268
-  type: vless
-  server: 18.154.132.94
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-  security_scheme: tls
-  proto: vless
-  peer: d1yxsk0zprgivr.cloudfront.net
 - name: 🇩🇪_德国_97
   type: vless
   server: 194.154.30.154
@@ -749,6 +726,30 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: forfreeuse.rtqa.ru
+- name: '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
+  type: ss
+  server: 45.8.158.176
+  port: 10801
+  cipher: aes-256-gcm
+  password: 1eadd4e4a37b6601
+  security_scheme: aead
+  proto: ss
+  peer: 45.8.158.176
+- name: US美国(mibei77.com 米贝节点分享)_60
+  type: trojan
+  server: 198.41.223.96
+  port: 443
+  password: humanity
+  tls: true
+  network: ws
+  sni: www.ignitelimit.com
+  ws-opts:
+    path: /assignment
+    headers:
+      Host: www.ignitelimit.com
+  security_scheme: tls
+  proto: trojan
+  peer: www.ignitelimit.com
 - name: US美国(mibei77.com 米贝节点分享)_29
   type: trojan
   server: 104.18.152.204
@@ -764,19 +765,18 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: www.ignitelimit.com
-- name: 🇺🇸_US_美国->🇹🇭_TH_泰国
-  type: vless
-  server: 18.238.217.65
+- name: US美国(mibei77.com 米贝节点分享)_62
+  type: trojan
+  server: 104.16.174.44
   port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  password: humanity
   tls: true
   network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
+  sni: www.ignitelimit.com
   ws-opts:
-    path: /
+    path: /assignment
     headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
+      Host: www.ignitelimit.com
   security_scheme: tls
-  proto: vless
-  peer: d1yxsk0zprgivr.cloudfront.net
+  proto: trojan
+  peer: www.ignitelimit.com
