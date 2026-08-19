@@ -45,29 +45,29 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - US美国(mibei77.com 米贝节点分享)_57
-  - 🇩🇪_德国_97
-  - 香港|@ripaojiedian
-  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
   - US美国(mibei77.com 米贝节点分享)_28
+  - 香港|@ripaojiedian
+  - 🇩🇪_德国_97
+  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
+  - US美国(mibei77.com 米贝节点分享)_57
 - name: 自动选择
   type: url-test
   proxies:
-  - US美国(mibei77.com 米贝节点分享)_57
-  - 🇩🇪_德国_97
-  - 香港|@ripaojiedian
-  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
   - US美国(mibei77.com 米贝节点分享)_28
+  - 香港|@ripaojiedian
+  - 🇩🇪_德国_97
+  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
+  - US美国(mibei77.com 米贝节点分享)_57
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - US美国(mibei77.com 米贝节点分享)_57
-  - 🇩🇪_德国_97
-  - 香港|@ripaojiedian
-  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
   - US美国(mibei77.com 米贝节点分享)_28
+  - 香港|@ripaojiedian
+  - 🇩🇪_德国_97
+  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
+  - US美国(mibei77.com 米贝节点分享)_57
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -588,22 +588,35 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: US美国(mibei77.com 米贝节点分享)_57
+- name: US美国(mibei77.com 米贝节点分享)_28
   type: vless
   server: 199.232.78.159
   port: 443
-  uuid: e0454af2-6fe9-4983-a55d-05e1da202602
+  uuid: fe4ca690-6fd9-4471-9a9f-94528084d180
   tls: true
   network: ws
   sni: ssl.fastly.com
   servername: ssl.fastly.com
   ws-opts:
-    path: /
+    path: /TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER?ed=2053
     headers:
-      Host: lsjaoijji.global.ssl.fastly.neT
+      Host: pan1.global.ssl.fastly.net
   security_scheme: tls
   proto: vless
   peer: ssl.fastly.com
+- name: 香港|@ripaojiedian
+  type: vmess
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.hdacd.com
+  proto: vmess
+  peer: v10.hdacd.com
 - name: 🇩🇪_德国_97
   type: vless
   server: 194.154.30.154
@@ -620,19 +633,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: forfreeuse.rtqa.ru
-- name: 香港|@ripaojiedian
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
 - name: '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
   type: ss
   server: 45.8.158.176
@@ -642,19 +642,19 @@ proxies:
   security_scheme: aead
   proto: ss
   peer: 45.8.158.176
-- name: US美国(mibei77.com 米贝节点分享)_28
+- name: US美国(mibei77.com 米贝节点分享)_57
   type: vless
   server: 199.232.78.159
   port: 443
-  uuid: fe4ca690-6fd9-4471-9a9f-94528084d180
+  uuid: e0454af2-6fe9-4983-a55d-05e1da202602
   tls: true
   network: ws
   sni: ssl.fastly.com
   servername: ssl.fastly.com
   ws-opts:
-    path: /TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER?ed=2053
+    path: /
     headers:
-      Host: pan1.global.ssl.fastly.net
+      Host: lsjaoijji.global.ssl.fastly.neT
   security_scheme: tls
   proto: vless
   peer: ssl.fastly.com
