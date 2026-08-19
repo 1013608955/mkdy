@@ -1,5 +1,5 @@
 # s-verified.yaml — 仅含中国出口(FC)验证通过的节点 + clash_template 规则模版
-# 来源 verified.json: 14 个 ok → 匹配 14（漂移跳过 0）
+# 来源 verified.json: 16 个 ok → 匹配 16（漂移跳过 0）
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -45,56 +45,62 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - 美国+麻省理工学院
   - 🇺🇸_美国_268
-  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
-  - 香港|@ripaojiedian
-  - US美国(mibei77.com 米贝节点分享)_28
+  - US美国(mibei77.com 米贝节点分享)_59
   - 🇺🇸_美国_193
-  - 🇺🇸_美国_264
+  - HK香港(mibei77.com 米贝节点分享)
+  - 🇩🇪_德国_97
+  - 🇺🇸_美国_267
+  - GB英国(mibei77.com 米贝节点分享)_1
+  - 香港|@ripaojiedian
+  - 美国+麻省理工学院
   - US美国(mibei77.com 米贝节点分享)_58
   - 🇺🇸_US_美国_2
-  - GB英国(mibei77.com 米贝节点分享)_1
-  - 🇩🇪_德国_97
-  - 🇺🇸_美国_266
-  - HK香港(mibei77.com 米贝节点分享)
+  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
+  - US美国(mibei77.com 米贝节点分享)_28
   - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - 🇺🇸_美国_264
+  - 🇺🇸_美国_266
 - name: 自动选择
   type: url-test
   proxies:
-  - 美国+麻省理工学院
   - 🇺🇸_美国_268
-  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
-  - 香港|@ripaojiedian
-  - US美国(mibei77.com 米贝节点分享)_28
+  - US美国(mibei77.com 米贝节点分享)_59
   - 🇺🇸_美国_193
-  - 🇺🇸_美国_264
+  - HK香港(mibei77.com 米贝节点分享)
+  - 🇩🇪_德国_97
+  - 🇺🇸_美国_267
+  - GB英国(mibei77.com 米贝节点分享)_1
+  - 香港|@ripaojiedian
+  - 美国+麻省理工学院
   - US美国(mibei77.com 米贝节点分享)_58
   - 🇺🇸_US_美国_2
-  - GB英国(mibei77.com 米贝节点分享)_1
-  - 🇩🇪_德国_97
-  - 🇺🇸_美国_266
-  - HK香港(mibei77.com 米贝节点分享)
+  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
+  - US美国(mibei77.com 米贝节点分享)_28
   - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - 🇺🇸_美国_264
+  - 🇺🇸_美国_266
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - 美国+麻省理工学院
   - 🇺🇸_美国_268
-  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
-  - 香港|@ripaojiedian
-  - US美国(mibei77.com 米贝节点分享)_28
+  - US美国(mibei77.com 米贝节点分享)_59
   - 🇺🇸_美国_193
-  - 🇺🇸_美国_264
+  - HK香港(mibei77.com 米贝节点分享)
+  - 🇩🇪_德国_97
+  - 🇺🇸_美国_267
+  - GB英国(mibei77.com 米贝节点分享)_1
+  - 香港|@ripaojiedian
+  - 美国+麻省理工学院
   - US美国(mibei77.com 米贝节点分享)_58
   - 🇺🇸_US_美国_2
-  - GB英国(mibei77.com 米贝节点分享)_1
-  - 🇩🇪_德国_97
-  - 🇺🇸_美国_266
-  - HK香港(mibei77.com 米贝节点分享)
+  - '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
+  - US美国(mibei77.com 米贝节点分享)_28
   - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - 🇺🇸_美国_264
+  - 🇺🇸_美国_266
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -615,22 +621,6 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: 美国+麻省理工学院
-  type: vless
-  server: 18.238.109.26
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-  security_scheme: tls
-  proto: vless
-  peer: d1yxsk0zprgivr.cloudfront.net
 - name: 🇺🇸_美国_268
   type: vless
   server: 18.154.132.94
@@ -647,44 +637,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: d1yxsk0zprgivr.cloudfront.net
-- name: '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
-  type: ss
-  server: 45.8.158.176
-  port: 10801
-  cipher: aes-256-gcm
-  password: 1eadd4e4a37b6601
-  security_scheme: aead
-  proto: ss
-  peer: 45.8.158.176
-- name: 香港|@ripaojiedian
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
-- name: US美国(mibei77.com 米贝节点分享)_28
+- name: US美国(mibei77.com 米贝节点分享)_59
   type: vless
-  server: 199.232.78.159
+  server: www.true.th
   port: 443
-  uuid: fe4ca690-6fd9-4471-9a9f-94528084d180
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
   network: ws
-  sni: ssl.fastly.com
-  servername: ssl.fastly.com
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
   ws-opts:
-    path: /TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER?ed=2053
+    path: /
     headers:
-      Host: pan1.global.ssl.fastly.net
+      Host: d1yxsk0zprgivr.cloudfront.net
   security_scheme: tls
   proto: vless
-  peer: ssl.fastly.com
+  peer: d1yxsk0zprgivr.cloudfront.net
 - name: 🇺🇸_美国_193
   type: vless
   server: 108.138.26.70
@@ -701,9 +669,78 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: d1yxsk0zprgivr.cloudfront.net
-- name: 🇺🇸_美国_264
+- name: HK香港(mibei77.com 米贝节点分享)
   type: vless
-  server: 54.240.174.87
+  server: 104.17.123.101
+  port: 2083
+  uuid: 73bcd72f-9545-4cb8-8daf-7d004501880d
+  tls: true
+  network: ws
+  sni: wzknb.pages.dev
+  servername: wzknb.pages.dev
+  ws-opts:
+    path: /proxyip=167.253.153.215
+    headers:
+      Host: wzknb.pages.dev
+  security_scheme: tls
+  proto: vless
+  peer: wzknb.pages.dev
+- name: 🇩🇪_德国_97
+  type: vless
+  server: 194.154.30.154
+  port: 443
+  uuid: c7e9c591-2764-423a-afca-efbd010fd396
+  tls: true
+  network: ws
+  sni: forfreeuse.rtqa.ru
+  servername: forfreeuse.rtqa.ru
+  ws-opts:
+    path: /
+    headers:
+      Host: forfreeuse.rtqa.ru
+  security_scheme: tls
+  proto: vless
+  peer: forfreeuse.rtqa.ru
+- name: 🇺🇸_美国_267
+  type: vless
+  server: 18.154.132.111
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+  security_scheme: tls
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
+- name: GB英国(mibei77.com 米贝节点分享)_1
+  type: hysteria2
+  server: 31.76.70.78
+  port: 8443
+  password: 74fbbe74-906d-45a8-a27c-a85fc758bc9f
+  sni: quic.tyr-agentstvo.tech
+  skip-cert-verify: true
+  udp: true
+- name: 香港|@ripaojiedian
+  type: vmess
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.hdacd.com
+  proto: vmess
+  peer: v10.hdacd.com
+- name: 美国+麻省理工学院
+  type: vless
+  server: 18.238.109.26
   port: 443
   uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
@@ -747,33 +784,34 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 40.160.69.112
-- name: GB英国(mibei77.com 米贝节点分享)_1
-  type: hysteria2
-  server: 31.76.70.78
-  port: 8443
-  password: 74fbbe74-906d-45a8-a27c-a85fc758bc9f
-  sni: quic.tyr-agentstvo.tech
-  skip-cert-verify: true
-  udp: true
-- name: 🇩🇪_德国_97
+- name: '[ermaozi/get_subscribe]🇷🇺_RU_俄罗斯'
+  type: ss
+  server: 45.8.158.176
+  port: 10801
+  cipher: aes-256-gcm
+  password: 1eadd4e4a37b6601
+  security_scheme: aead
+  proto: ss
+  peer: 45.8.158.176
+- name: US美国(mibei77.com 米贝节点分享)_28
   type: vless
-  server: 194.154.30.154
+  server: 199.232.78.159
   port: 443
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
+  uuid: fe4ca690-6fd9-4471-9a9f-94528084d180
   tls: true
   network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
+  sni: ssl.fastly.com
+  servername: ssl.fastly.com
   ws-opts:
-    path: /
+    path: /TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER?ed=2053
     headers:
-      Host: forfreeuse.rtqa.ru
+      Host: pan1.global.ssl.fastly.net
   security_scheme: tls
   proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: 🇺🇸_美国_266
+  peer: ssl.fastly.com
+- name: 🇺🇸_US_美国->🇹🇭_TH_泰国
   type: vless
-  server: 18.244.214.27
+  server: 18.238.217.65
   port: 443
   uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
@@ -787,25 +825,25 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: d1yxsk0zprgivr.cloudfront.net
-- name: HK香港(mibei77.com 米贝节点分享)
+- name: 🇺🇸_美国_264
   type: vless
-  server: 104.17.123.101
-  port: 2083
-  uuid: 73bcd72f-9545-4cb8-8daf-7d004501880d
+  server: 54.240.174.87
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
   network: ws
-  sni: wzknb.pages.dev
-  servername: wzknb.pages.dev
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
   ws-opts:
-    path: /proxyip=167.253.153.215
+    path: /
     headers:
-      Host: wzknb.pages.dev
+      Host: d1yxsk0zprgivr.cloudfront.net
   security_scheme: tls
   proto: vless
-  peer: wzknb.pages.dev
-- name: 🇺🇸_US_美国->🇹🇭_TH_泰国
+  peer: d1yxsk0zprgivr.cloudfront.net
+- name: 🇺🇸_美国_266
   type: vless
-  server: 18.238.217.65
+  server: 18.244.214.27
   port: 443
   uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
   tls: true
