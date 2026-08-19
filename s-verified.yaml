@@ -1,5 +1,5 @@
 # s-verified.yaml — 仅含中国出口(FC)验证通过的节点 + clash_template 规则模版
-# 来源 verified.json: 11 个 ok → 匹配 11（漂移跳过 0）
+# 来源 verified.json: 14 个 ok → 匹配 14（漂移跳过 0）
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -45,47 +45,56 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - US美国(mibei77.com 米贝节点分享)_29
-  - GB英国(mibei77.com 米贝节点分享)_1
   - US美国(mibei77.com 米贝节点分享)_59
-  - US美国(mibei77.com 米贝节点分享)_23
-  - 🇩🇪_德国_97
-  - 🇷🇺_RU_俄罗斯
-  - DE 🇩🇪 | @Raydikalx | 9CD654
-  - US美国(mibei77.com 米贝节点分享)_61
-  - 🇸🇬_新加坡_271
+  - US美国(mibei77.com 米贝节点分享)_29
   - 🇦🇺_澳大利亚_31
   - 🇫🇷_法国_47
+  - 🇩🇪_德国_97
+  - US美国(mibei77.com 米贝节点分享)_61
+  - 🇸🇬_新加坡_271
+  - US美国(mibei77.com 米贝节点分享)
+  - SG新加坡(mibei77.com 米贝节点分享)
+  - 🇷🇺_RU_俄罗斯
+  - HK香港(mibei77.com 米贝节点分享)
+  - 🇺🇸_美国_264
+  - US美国(mibei77.com 米贝节点分享)_23
+  - GB英国(mibei77.com 米贝节点分享)_1
 - name: 自动选择
   type: url-test
   proxies:
-  - US美国(mibei77.com 米贝节点分享)_29
-  - GB英国(mibei77.com 米贝节点分享)_1
   - US美国(mibei77.com 米贝节点分享)_59
-  - US美国(mibei77.com 米贝节点分享)_23
-  - 🇩🇪_德国_97
-  - 🇷🇺_RU_俄罗斯
-  - DE 🇩🇪 | @Raydikalx | 9CD654
-  - US美国(mibei77.com 米贝节点分享)_61
-  - 🇸🇬_新加坡_271
+  - US美国(mibei77.com 米贝节点分享)_29
   - 🇦🇺_澳大利亚_31
   - 🇫🇷_法国_47
+  - 🇩🇪_德国_97
+  - US美国(mibei77.com 米贝节点分享)_61
+  - 🇸🇬_新加坡_271
+  - US美国(mibei77.com 米贝节点分享)
+  - SG新加坡(mibei77.com 米贝节点分享)
+  - 🇷🇺_RU_俄罗斯
+  - HK香港(mibei77.com 米贝节点分享)
+  - 🇺🇸_美国_264
+  - US美国(mibei77.com 米贝节点分享)_23
+  - GB英国(mibei77.com 米贝节点分享)_1
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - US美国(mibei77.com 米贝节点分享)_29
-  - GB英国(mibei77.com 米贝节点分享)_1
   - US美国(mibei77.com 米贝节点分享)_59
-  - US美国(mibei77.com 米贝节点分享)_23
-  - 🇩🇪_德国_97
-  - 🇷🇺_RU_俄罗斯
-  - DE 🇩🇪 | @Raydikalx | 9CD654
-  - US美国(mibei77.com 米贝节点分享)_61
-  - 🇸🇬_新加坡_271
+  - US美国(mibei77.com 米贝节点分享)_29
   - 🇦🇺_澳大利亚_31
   - 🇫🇷_法国_47
+  - 🇩🇪_德国_97
+  - US美国(mibei77.com 米贝节点分享)_61
+  - 🇸🇬_新加坡_271
+  - US美国(mibei77.com 米贝节点分享)
+  - SG新加坡(mibei77.com 米贝节点分享)
+  - 🇷🇺_RU_俄罗斯
+  - HK香港(mibei77.com 米贝节点分享)
+  - 🇺🇸_美国_264
+  - US美国(mibei77.com 米贝节点分享)_23
+  - GB英国(mibei77.com 米贝节点分享)_1
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -606,30 +615,6 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: US美国(mibei77.com 米贝节点分享)_29
-  type: vless
-  server: 199.232.78.159
-  port: 443
-  uuid: fe4ca690-6fd9-4471-9a9f-94528084d180
-  tls: true
-  network: ws
-  sni: ssl.fastly.com
-  servername: ssl.fastly.com
-  ws-opts:
-    path: /TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER?ed=2053
-    headers:
-      Host: pan1.global.ssl.fastly.net
-  security_scheme: tls
-  proto: vless
-  peer: ssl.fastly.com
-- name: GB英国(mibei77.com 米贝节点分享)_1
-  type: hysteria2
-  server: 31.76.70.78
-  port: 8443
-  password: 74fbbe74-906d-45a8-a27c-a85fc758bc9f
-  sni: quic.tyr-agentstvo.tech
-  skip-cert-verify: true
-  udp: true
 - name: US美国(mibei77.com 米贝节点分享)_59
   type: vless
   server: 199.232.78.159
@@ -646,16 +631,50 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: ssl.fastly.com
-- name: US美国(mibei77.com 米贝节点分享)_23
+- name: US美国(mibei77.com 米贝节点分享)_29
   type: vless
-  server: 157.137.219.244
-  port: 62145
-  uuid: 8fb65472-5957-4f64-ba2d-b5812b2f155a
-  tls: false
-  network: tcp
-  security_scheme: none
+  server: 199.232.78.159
+  port: 443
+  uuid: fe4ca690-6fd9-4471-9a9f-94528084d180
+  tls: true
+  network: ws
+  sni: ssl.fastly.com
+  servername: ssl.fastly.com
+  ws-opts:
+    path: /TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER?ed=2053
+    headers:
+      Host: pan1.global.ssl.fastly.net
+  security_scheme: tls
   proto: vless
-  peer: 157.137.219.244
+  peer: ssl.fastly.com
+- name: 🇦🇺_澳大利亚_31
+  type: trojan
+  server: 170.64.161.111
+  port: 5843
+  password: fg20mtCFHy
+  tls: true
+  network: tcp
+  sni: geasd.southbyte.xyz
+  security_scheme: tls
+  proto: trojan
+  peer: geasd.southbyte.xyz
+- name: 🇫🇷_法国_47
+  type: vmess
+  server: planb.mojcn.com.linuxlh.xin
+  port: 16632
+  uuid: 0c657913-e593-4893-9555-f88478c33a4b
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: f784fdb75e4fc8a478c10d9acff513d3.mobgslb.tbcache.com
+  security_scheme: none
+  sni: f784fdb75e4fc8a478c10d9acff513d3.mobgslb.tbcache.com
+  proto: vmess
+  peer: f784fdb75e4fc8a478c10d9acff513d3.mobgslb.tbcache.com
 - name: 🇩🇪_德国_97
   type: vless
   server: 194.154.30.154
@@ -672,32 +691,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: forfreeuse.rtqa.ru
-- name: 🇷🇺_RU_俄罗斯
-  type: ss
-  server: 45.8.158.176
-  port: 10801
-  cipher: aes-256-gcm
-  password: 1eadd4e4a37b6601
-  security_scheme: aead
-  proto: ss
-  peer: 45.8.158.176
-- name: DE 🇩🇪 | @Raydikalx | 9CD654
-  type: vmess
-  server: 194.164.192.16
-  port: 443
-  uuid: 5f72f180-b21b-4b7a-8484-240759012604
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /5f72f180-b21b-4b7a-8484-240759096785
-    headers:
-      Host: apjhdggyx.com
-  security_scheme: tls
-  sni: apjhdggyx.com
-  proto: vmess
-  peer: apjhdggyx.com
 - name: US美国(mibei77.com 米贝节点分享)_61
   type: vless
   server: www.true.th
@@ -732,31 +725,94 @@ proxies:
   sni: singapore01.zgjok.com
   proto: vmess
   peer: singapore01.zgjok.com
-- name: 🇦🇺_澳大利亚_31
-  type: trojan
-  server: 170.64.161.111
-  port: 5843
-  password: fg20mtCFHy
+- name: US美国(mibei77.com 米贝节点分享)
+  type: vless
+  server: 208.103.161.32
+  port: 443
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
   tls: true
-  network: tcp
-  sni: geasd.southbyte.xyz
-  security_scheme: tls
-  proto: trojan
-  peer: geasd.southbyte.xyz
-- name: 🇫🇷_法国_47
-  type: vmess
-  server: planb.mojcn.com.linuxlh.xin
-  port: 16632
-  uuid: 0c657913-e593-4893-9555-f88478c33a4b
-  alterId: 0
-  cipher: auto
-  tls: false
   network: ws
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
+  ws-opts:
+    path: /sg-melbi_/
+    headers:
+      Host: josni.hoyes.cloudns.ch
+  security_scheme: tls
+  proto: vless
+  peer: josni.hoyes.cloudns.ch
+- name: SG新加坡(mibei77.com 米贝节点分享)
+  type: vless
+  server: 172.66.44.97
+  port: 443
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  tls: true
+  network: ws
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
+  ws-opts:
+    path: /sg-melbi
+    headers:
+      Host: josni.hoyes.cloudns.ch
+  security_scheme: tls
+  proto: vless
+  peer: josni.hoyes.cloudns.ch
+- name: 🇷🇺_RU_俄罗斯
+  type: ss
+  server: 45.8.158.176
+  port: 10801
+  cipher: aes-256-gcm
+  password: 1eadd4e4a37b6601
+  security_scheme: aead
+  proto: ss
+  peer: 45.8.158.176
+- name: HK香港(mibei77.com 米贝节点分享)
+  type: vless
+  server: 104.17.123.101
+  port: 2083
+  uuid: 73bcd72f-9545-4cb8-8daf-7d004501880d
+  tls: true
+  network: ws
+  sni: wzknb.pages.dev
+  servername: wzknb.pages.dev
+  ws-opts:
+    path: /proxyip=167.253.153.215
+    headers:
+      Host: wzknb.pages.dev
+  security_scheme: tls
+  proto: vless
+  peer: wzknb.pages.dev
+- name: 🇺🇸_美国_264
+  type: vless
+  server: 54.240.174.87
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
   ws-opts:
     path: /
     headers:
-      Host: f784fdb75e4fc8a478c10d9acff513d3.mobgslb.tbcache.com
+      Host: d1yxsk0zprgivr.cloudfront.net
+  security_scheme: tls
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
+- name: US美国(mibei77.com 米贝节点分享)_23
+  type: vless
+  server: 157.137.219.244
+  port: 62145
+  uuid: 8fb65472-5957-4f64-ba2d-b5812b2f155a
+  tls: false
+  network: tcp
   security_scheme: none
-  sni: f784fdb75e4fc8a478c10d9acff513d3.mobgslb.tbcache.com
-  proto: vmess
-  peer: f784fdb75e4fc8a478c10d9acff513d3.mobgslb.tbcache.com
+  proto: vless
+  peer: 157.137.219.244
+- name: GB英国(mibei77.com 米贝节点分享)_1
+  type: hysteria2
+  server: 31.76.70.78
+  port: 8443
+  password: 74fbbe74-906d-45a8-a27c-a85fc758bc9f
+  sni: quic.tyr-agentstvo.tech
+  skip-cert-verify: true
+  udp: true
