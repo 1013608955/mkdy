@@ -1,5 +1,5 @@
 # s-verified.yaml — 仅含中国出口(FC)验证通过的节点 + clash_template 规则模版
-# 来源 verified.json: 8 个 ok → 匹配 8（漂移跳过 0）
+# 来源 verified.json: 15 个 ok → 匹配 15（漂移跳过 0）
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -45,38 +45,59 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - US美国(mibei77.com 米贝节点分享)_8
-  - US美国(mibei77.com 米贝节点分享)_29
-  - US美国(mibei77.com 米贝节点分享)_7
-  - 🇩🇪_德国_97
-  - 香港|@ripaojiedian
-  - '[peasoft/NoMoreWalls]🇩🇪DE_1|4.5MB/s'
   - US美国(mibei77.com 米贝节点分享)_61
+  - 🇺🇸_美国_266
+  - US美国(mibei77.com 米贝节点分享)_29
+  - 🇺🇸_美国_193
   - 俄罗斯+新西伯利亚justhost
+  - 🇩🇪_德国_97
+  - US美国(mibei77.com 米贝节点分享)_8
+  - 美国+麻省理工学院
+  - 香港|@ripaojiedian
+  - 🇺🇸_美国_268
+  - 🇺🇸_美国_264
+  - US美国(mibei77.com 米贝节点分享)_63
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - US美国(mibei77.com 米贝节点分享)_7
+  - '[peasoft/NoMoreWalls]🇩🇪DE_1|4.5MB/s'
 - name: 自动选择
   type: url-test
   proxies:
-  - US美国(mibei77.com 米贝节点分享)_8
-  - US美国(mibei77.com 米贝节点分享)_29
-  - US美国(mibei77.com 米贝节点分享)_7
-  - 🇩🇪_德国_97
-  - 香港|@ripaojiedian
-  - '[peasoft/NoMoreWalls]🇩🇪DE_1|4.5MB/s'
   - US美国(mibei77.com 米贝节点分享)_61
+  - 🇺🇸_美国_266
+  - US美国(mibei77.com 米贝节点分享)_29
+  - 🇺🇸_美国_193
   - 俄罗斯+新西伯利亚justhost
+  - 🇩🇪_德国_97
+  - US美国(mibei77.com 米贝节点分享)_8
+  - 美国+麻省理工学院
+  - 香港|@ripaojiedian
+  - 🇺🇸_美国_268
+  - 🇺🇸_美国_264
+  - US美国(mibei77.com 米贝节点分享)_63
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - US美国(mibei77.com 米贝节点分享)_7
+  - '[peasoft/NoMoreWalls]🇩🇪DE_1|4.5MB/s'
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - US美国(mibei77.com 米贝节点分享)_8
-  - US美国(mibei77.com 米贝节点分享)_29
-  - US美国(mibei77.com 米贝节点分享)_7
-  - 🇩🇪_德国_97
-  - 香港|@ripaojiedian
-  - '[peasoft/NoMoreWalls]🇩🇪DE_1|4.5MB/s'
   - US美国(mibei77.com 米贝节点分享)_61
+  - 🇺🇸_美国_266
+  - US美国(mibei77.com 米贝节点分享)_29
+  - 🇺🇸_美国_193
   - 俄罗斯+新西伯利亚justhost
+  - 🇩🇪_德国_97
+  - US美国(mibei77.com 米贝节点分享)_8
+  - 美国+麻省理工学院
+  - 香港|@ripaojiedian
+  - 🇺🇸_美国_268
+  - 🇺🇸_美国_264
+  - US美国(mibei77.com 米贝节点分享)_63
+  - 🇺🇸_US_美国->🇹🇭_TH_泰国
+  - US美国(mibei77.com 米贝节点分享)_7
+  - '[peasoft/NoMoreWalls]🇩🇪DE_1|4.5MB/s'
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -597,90 +618,6 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: US美国(mibei77.com 米贝节点分享)_8
-  type: vless
-  server: 104.18.32.47
-  port: 80
-  uuid: 4cafebe8-8242-4238-bfea-0f26bd05accc
-  tls: false
-  network: ws
-  ws-opts:
-    path: /9l0cLBbNxDqTOtNd
-    headers:
-      Host: worker3.hevebam556.workers.dev
-  security_scheme: none
-  proto: vless
-  peer: 104.18.32.47
-- name: US美国(mibei77.com 米贝节点分享)_29
-  type: vless
-  server: 199.232.78.159
-  port: 443
-  uuid: fe4ca690-6fd9-4471-9a9f-94528084d180
-  tls: true
-  network: ws
-  sni: ssl.fastly.com
-  servername: ssl.fastly.com
-  ws-opts:
-    path: /TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER?ed=2053
-    headers:
-      Host: pan1.global.ssl.fastly.net
-  security_scheme: tls
-  proto: vless
-  peer: ssl.fastly.com
-- name: US美国(mibei77.com 米贝节点分享)_7
-  type: vless
-  server: v2ray.l3.pub
-  port: 443
-  uuid: 1d37c236-fb54-4703-981c-b8237d1e25d3
-  tls: true
-  network: ws
-  sni: v2ray.l3.pub
-  servername: v2ray.l3.pub
-  ws-opts:
-    path: /
-    headers:
-      Host: v2ray.l3.pub
-  security_scheme: tls
-  proto: vless
-  peer: v2ray.l3.pub
-- name: 🇩🇪_德国_97
-  type: vless
-  server: 194.154.30.154
-  port: 443
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-  security_scheme: tls
-  proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: 香港|@ripaojiedian
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
-- name: '[peasoft/NoMoreWalls]🇩🇪DE_1|4.5MB/s'
-  type: ss
-  server: 52.59.195.252
-  port: 443
-  cipher: aes-256-cfb
-  password: amazonskr05
-  security_scheme: none
-  proto: ss
-  peer: 52.59.195.252
 - name: US美国(mibei77.com 米贝节点分享)_61
   type: vless
   server: 199.232.78.159
@@ -697,6 +634,54 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: ssl.fastly.com
+- name: 🇺🇸_美国_266
+  type: vless
+  server: 18.244.214.27
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+  security_scheme: tls
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
+- name: US美国(mibei77.com 米贝节点分享)_29
+  type: vless
+  server: 199.232.78.159
+  port: 443
+  uuid: fe4ca690-6fd9-4471-9a9f-94528084d180
+  tls: true
+  network: ws
+  sni: ssl.fastly.com
+  servername: ssl.fastly.com
+  ws-opts:
+    path: /TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER?ed=2053
+    headers:
+      Host: pan1.global.ssl.fastly.net
+  security_scheme: tls
+  proto: vless
+  peer: ssl.fastly.com
+- name: 🇺🇸_美国_193
+  type: vless
+  server: 108.138.26.70
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+  security_scheme: tls
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
 - name: 俄罗斯+新西伯利亚justhost
   type: ss
   server: 45.8.158.176
@@ -706,3 +691,151 @@ proxies:
   security_scheme: aead
   proto: ss
   peer: 45.8.158.176
+- name: 🇩🇪_德国_97
+  type: vless
+  server: 194.154.30.154
+  port: 443
+  uuid: c7e9c591-2764-423a-afca-efbd010fd396
+  tls: true
+  network: ws
+  sni: forfreeuse.rtqa.ru
+  servername: forfreeuse.rtqa.ru
+  ws-opts:
+    path: /
+    headers:
+      Host: forfreeuse.rtqa.ru
+  security_scheme: tls
+  proto: vless
+  peer: forfreeuse.rtqa.ru
+- name: US美国(mibei77.com 米贝节点分享)_8
+  type: vless
+  server: 104.18.32.47
+  port: 80
+  uuid: 4cafebe8-8242-4238-bfea-0f26bd05accc
+  tls: false
+  network: ws
+  ws-opts:
+    path: /9l0cLBbNxDqTOtNd
+    headers:
+      Host: worker3.hevebam556.workers.dev
+  security_scheme: none
+  proto: vless
+  peer: 104.18.32.47
+- name: 美国+麻省理工学院
+  type: vless
+  server: 18.239.83.112
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+  security_scheme: tls
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
+- name: 香港|@ripaojiedian
+  type: vmess
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.hdacd.com
+  proto: vmess
+  peer: v10.hdacd.com
+- name: 🇺🇸_美国_268
+  type: vless
+  server: 18.154.132.94
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+  security_scheme: tls
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
+- name: 🇺🇸_美国_264
+  type: vless
+  server: 54.240.174.87
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+  security_scheme: tls
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
+- name: US美国(mibei77.com 米贝节点分享)_63
+  type: vless
+  server: www.true.th
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+  security_scheme: tls
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
+- name: 🇺🇸_US_美国->🇹🇭_TH_泰国
+  type: vless
+  server: 18.238.217.65
+  port: 443
+  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  tls: true
+  network: ws
+  sni: d1yxsk0zprgivr.cloudfront.net
+  servername: d1yxsk0zprgivr.cloudfront.net
+  ws-opts:
+    path: /
+    headers:
+      Host: d1yxsk0zprgivr.cloudfront.net
+  security_scheme: tls
+  proto: vless
+  peer: d1yxsk0zprgivr.cloudfront.net
+- name: US美国(mibei77.com 米贝节点分享)_7
+  type: vless
+  server: v2ray.l3.pub
+  port: 443
+  uuid: 1d37c236-fb54-4703-981c-b8237d1e25d3
+  tls: true
+  network: ws
+  sni: v2ray.l3.pub
+  servername: v2ray.l3.pub
+  ws-opts:
+    path: /
+    headers:
+      Host: v2ray.l3.pub
+  security_scheme: tls
+  proto: vless
+  peer: v2ray.l3.pub
+- name: '[peasoft/NoMoreWalls]🇩🇪DE_1|4.5MB/s'
+  type: ss
+  server: 52.59.195.252
+  port: 443
+  cipher: aes-256-cfb
+  password: amazonskr05
+  security_scheme: none
+  proto: ss
+  peer: 52.59.195.252
