@@ -1,5 +1,5 @@
 # s-verified.yaml — 仅含中国出口(FC)验证通过的节点 + clash_template 规则模版
-# 来源 verified.json: 20 个 ok → 匹配 20（漂移跳过 0）
+# 来源 verified.json: 14 个 ok → 匹配 12（漂移跳过 2）
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -45,74 +45,50 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - 🇳🇱_荷兰_103
-  - 🇩🇪_DE_德国->🇫🇮_FI_芬兰
-  - 芬兰(mibei77.com 米贝节点分享)_6
-  - US美国(mibei77.com 米贝节点分享)_2
-  - 芬兰(mibei77.com 米贝节点分享)_14
-  - 芬兰(mibei77.com 米贝节点分享)_11
-  - 美国+Amazon数据中心
-  - 香港|@ripaojiedian
-  - 芬兰(mibei77.com 米贝节点分享)_5
-  - 🇺🇸US-38.246.226.240-0491
-  - RU俄罗斯(mibei77.com 米贝节点分享)
-  - PL波兰(mibei77.com 米贝节点分享)
-  - 芬兰(mibei77.com 米贝节点分享)_13
-  - 🇳🇱_荷兰_135
-  - 芬兰(mibei77.com 米贝节点分享)_10
-  - US美国(mibei77.com 米贝节点分享)_36
-  - 🇺🇸_美国_87
   - 🇳🇱_荷兰_136
-  - 美国纽约州水牛城+ColoCrossing数据中心
+  - 🇺🇸US-38.246.226.240-0491
+  - 香港|@ripaojiedian
   - US美国(mibei77.com 米贝节点分享)_38
+  - 🇩🇪_DE_德国->🇫🇮_FI_芬兰
+  - 芬兰(mibei77.com 米贝节点分享)_14
+  - RU俄罗斯(mibei77.com 米贝节点分享)
+  - 🇷🇺_俄罗斯_193
+  - 🇳🇱_荷兰_135
+  - 🇺🇸_美国_87
+  - 芬兰(mibei77.com 米贝节点分享)_11
+  - US美国(mibei77.com 米贝节点分享)_36
 - name: 自动选择
   type: url-test
   proxies:
-  - 🇳🇱_荷兰_103
-  - 🇩🇪_DE_德国->🇫🇮_FI_芬兰
-  - 芬兰(mibei77.com 米贝节点分享)_6
-  - US美国(mibei77.com 米贝节点分享)_2
-  - 芬兰(mibei77.com 米贝节点分享)_14
-  - 芬兰(mibei77.com 米贝节点分享)_11
-  - 美国+Amazon数据中心
-  - 香港|@ripaojiedian
-  - 芬兰(mibei77.com 米贝节点分享)_5
-  - 🇺🇸US-38.246.226.240-0491
-  - RU俄罗斯(mibei77.com 米贝节点分享)
-  - PL波兰(mibei77.com 米贝节点分享)
-  - 芬兰(mibei77.com 米贝节点分享)_13
-  - 🇳🇱_荷兰_135
-  - 芬兰(mibei77.com 米贝节点分享)_10
-  - US美国(mibei77.com 米贝节点分享)_36
-  - 🇺🇸_美国_87
   - 🇳🇱_荷兰_136
-  - 美国纽约州水牛城+ColoCrossing数据中心
+  - 🇺🇸US-38.246.226.240-0491
+  - 香港|@ripaojiedian
   - US美国(mibei77.com 米贝节点分享)_38
+  - 🇩🇪_DE_德国->🇫🇮_FI_芬兰
+  - 芬兰(mibei77.com 米贝节点分享)_14
+  - RU俄罗斯(mibei77.com 米贝节点分享)
+  - 🇷🇺_俄罗斯_193
+  - 🇳🇱_荷兰_135
+  - 🇺🇸_美国_87
+  - 芬兰(mibei77.com 米贝节点分享)_11
+  - US美国(mibei77.com 米贝节点分享)_36
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - 🇳🇱_荷兰_103
-  - 🇩🇪_DE_德国->🇫🇮_FI_芬兰
-  - 芬兰(mibei77.com 米贝节点分享)_6
-  - US美国(mibei77.com 米贝节点分享)_2
-  - 芬兰(mibei77.com 米贝节点分享)_14
-  - 芬兰(mibei77.com 米贝节点分享)_11
-  - 美国+Amazon数据中心
-  - 香港|@ripaojiedian
-  - 芬兰(mibei77.com 米贝节点分享)_5
-  - 🇺🇸US-38.246.226.240-0491
-  - RU俄罗斯(mibei77.com 米贝节点分享)
-  - PL波兰(mibei77.com 米贝节点分享)
-  - 芬兰(mibei77.com 米贝节点分享)_13
-  - 🇳🇱_荷兰_135
-  - 芬兰(mibei77.com 米贝节点分享)_10
-  - US美国(mibei77.com 米贝节点分享)_36
-  - 🇺🇸_美国_87
   - 🇳🇱_荷兰_136
-  - 美国纽约州水牛城+ColoCrossing数据中心
+  - 🇺🇸US-38.246.226.240-0491
+  - 香港|@ripaojiedian
   - US美国(mibei77.com 米贝节点分享)_38
+  - 🇩🇪_DE_德国->🇫🇮_FI_芬兰
+  - 芬兰(mibei77.com 米贝节点分享)_14
+  - RU俄罗斯(mibei77.com 米贝节点分享)
+  - 🇷🇺_俄罗斯_193
+  - 🇳🇱_荷兰_135
+  - 🇺🇸_美国_87
+  - 芬兰(mibei77.com 米贝节点分享)_11
+  - US美国(mibei77.com 米贝节点分享)_36
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -633,134 +609,9 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: 🇳🇱_荷兰_103
+- name: 🇳🇱_荷兰_136
   type: vless
-  server: 167.172.32.216
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-  security_scheme: tls
-  proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: 🇩🇪_DE_德国->🇫🇮_FI_芬兰
-  type: vless
-  server: 194.154.30.154
-  port: 443
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-  security_scheme: tls
-  proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: 芬兰(mibei77.com 米贝节点分享)_6
-  type: vless
-  server: 62.84.102.169
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-  security_scheme: tls
-  proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: US美国(mibei77.com 米贝节点分享)_2
-  type: vless
-  server: 208.103.161.32
-  port: 443
-  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
-  tls: true
-  network: ws
-  sni: josni.hoyes.cloudns.ch
-  servername: josni.hoyes.cloudns.ch
-  ws-opts:
-    path: /sg-melbi_/
-    headers:
-      Host: josni.hoyes.cloudns.ch
-  security_scheme: tls
-  proto: vless
-  peer: josni.hoyes.cloudns.ch
-- name: 芬兰(mibei77.com 米贝节点分享)_14
-  type: vless
-  server: 51.15.127.20
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-  security_scheme: tls
-  proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: 芬兰(mibei77.com 米贝节点分享)_11
-  type: vless
-  server: 104.194.134.129
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-  security_scheme: tls
-  proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: 美国+Amazon数据中心
-  type: vless
-  server: 18.154.132.94
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-  security_scheme: tls
-  proto: vless
-  peer: d1yxsk0zprgivr.cloudfront.net
-- name: 香港|@ripaojiedian
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
-- name: 芬兰(mibei77.com 米贝节点分享)_5
-  type: vless
-  server: 79.132.143.192
+  server: 134.209.205.250
   port: 2053
   uuid: c7e9c591-2764-423a-afca-efbd010fd396
   tls: true
@@ -787,6 +638,66 @@ proxies:
   sni: 38.246.226.240
   proto: vmess
   peer: 38.246.226.240
+- name: 香港|@ripaojiedian
+  type: vmess
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.hdacd.com
+  proto: vmess
+  peer: v10.hdacd.com
+- name: US美国(mibei77.com 米贝节点分享)_38
+  type: trojan
+  server: 104.18.152.229
+  port: 443
+  password: humanity
+  tls: true
+  network: ws
+  sni: www.ignitelimit.com
+  ws-opts:
+    path: /assignment
+    headers:
+      Host: www.ignitelimit.com
+  security_scheme: tls
+  proto: trojan
+  peer: www.ignitelimit.com
+- name: 🇩🇪_DE_德国->🇫🇮_FI_芬兰
+  type: vless
+  server: 194.154.30.154
+  port: 443
+  uuid: c7e9c591-2764-423a-afca-efbd010fd396
+  tls: true
+  network: ws
+  sni: forfreeuse.rtqa.ru
+  servername: forfreeuse.rtqa.ru
+  ws-opts:
+    path: /
+    headers:
+      Host: forfreeuse.rtqa.ru
+  security_scheme: tls
+  proto: vless
+  peer: forfreeuse.rtqa.ru
+- name: 芬兰(mibei77.com 米贝节点分享)_14
+  type: vless
+  server: 51.15.127.20
+  port: 2053
+  uuid: c7e9c591-2764-423a-afca-efbd010fd396
+  tls: true
+  network: ws
+  sni: forfreeuse.rtqa.ru
+  servername: forfreeuse.rtqa.ru
+  ws-opts:
+    path: /
+    headers:
+      Host: forfreeuse.rtqa.ru
+  security_scheme: tls
+  proto: vless
+  peer: forfreeuse.rtqa.ru
 - name: RU俄罗斯(mibei77.com 米贝节点分享)
   type: vless
   server: 51.250.4.141
@@ -803,38 +714,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: cloudflare.vhub.pro
-- name: PL波兰(mibei77.com 米贝节点分享)
+- name: 🇷🇺_俄罗斯_193
   type: vless
-  server: api.fuck-you.dyn.site.fwqfw783rg2dad.website
-  port: 443
-  uuid: 5ca83936-136d-4314-8453-4ba10a86cf60
-  tls: true
-  network: ws
-  sni: api.fuck-you.dyn.site.fwqfw783rg2dad.website
-  servername: api.fuck-you.dyn.site.fwqfw783rg2dad.website
-  ws-opts:
-    path: /websocket
-    headers:
-      Host: api.fuck-you.dyn.site.fwqfw783rg2dad.website
-  security_scheme: tls
-  proto: vless
-  peer: api.fuck-you.dyn.site.fwqfw783rg2dad.website
-- name: 芬兰(mibei77.com 米贝节点分享)_13
-  type: vless
-  server: 93.115.19.15
+  server: 72.56.236.219
   port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
+  uuid: fd3ff7be-f277-494b-a651-c210b93f2c19
   tls: true
   network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
+  sni: usa1.wba-pn.ru
+  servername: usa1.wba-pn.ru
   ws-opts:
     path: /
     headers:
-      Host: forfreeuse.rtqa.ru
+      Host: usa1.wba-pn.ru
   security_scheme: tls
   proto: vless
-  peer: forfreeuse.rtqa.ru
+  peer: usa1.wba-pn.ru
 - name: 🇳🇱_荷兰_135
   type: vless
   server: 31.59.94.24
@@ -851,9 +746,20 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: forfreeuse.rtqa.ru
-- name: 芬兰(mibei77.com 米贝节点分享)_10
+- name: 🇺🇸_美国_87
+  type: trojan
+  server: 128.14.148.84
+  port: 5531
+  password: fg20mtCFHy
+  tls: true
+  network: tcp
+  sni: ycgsc.southbyte.xyz
+  security_scheme: tls
+  proto: trojan
+  peer: ycgsc.southbyte.xyz
+- name: 芬兰(mibei77.com 米贝节点分享)_11
   type: vless
-  server: 188.166.70.25
+  server: 104.194.134.129
   port: 2053
   uuid: c7e9c591-2764-423a-afca-efbd010fd396
   tls: true
@@ -868,74 +774,17 @@ proxies:
   proto: vless
   peer: forfreeuse.rtqa.ru
 - name: US美国(mibei77.com 米贝节点分享)_36
-  type: vless
-  server: www.true.th
+  type: trojan
+  server: 104.18.152.175
   port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
+  password: humanity
   tls: true
   network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
+  sni: www.ignitelimit.com
   ws-opts:
-    path: /
+    path: /assignment
     headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-  security_scheme: tls
-  proto: vless
-  peer: d1yxsk0zprgivr.cloudfront.net
-- name: 🇺🇸_美国_87
-  type: trojan
-  server: 128.14.148.84
-  port: 5531
-  password: fg20mtCFHy
-  tls: true
-  network: tcp
-  sni: ycgsc.southbyte.xyz
+      Host: www.ignitelimit.com
   security_scheme: tls
   proto: trojan
-  peer: ycgsc.southbyte.xyz
-- name: 🇳🇱_荷兰_136
-  type: vless
-  server: 134.209.205.250
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-  security_scheme: tls
-  proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: 美国纽约州水牛城+ColoCrossing数据中心
-  type: vless
-  server: s737.freessr.bid
-  port: 18443
-  uuid: 41f4cb15-5a3f-3934-89fe-b4177146adf4
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: u643766uf346dfdes709.gogocs.xyz
-  servername: u643766uf346dfdes709.gogocs.xyz
-  security_scheme: tls
-  proto: vless
-  peer: u643766uf346dfdes709.gogocs.xyz
-- name: US美国(mibei77.com 米贝节点分享)_38
-  type: vless
-  server: 108.138.26.70
-  port: 443
-  uuid: 7ce54bb3-d612-4aa7-be08-089d3c461d53
-  tls: true
-  network: ws
-  sni: d1yxsk0zprgivr.cloudfront.net
-  servername: d1yxsk0zprgivr.cloudfront.net
-  ws-opts:
-    path: /
-    headers:
-      Host: d1yxsk0zprgivr.cloudfront.net
-  security_scheme: tls
-  proto: vless
-  peer: d1yxsk0zprgivr.cloudfront.net
+  peer: www.ignitelimit.com
