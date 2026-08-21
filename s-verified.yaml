@@ -53,10 +53,10 @@ proxy-groups:
   - ✅ 🇺🇸_US_美国_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)_3
   - ✅ 🇩🇪_德国_313
-  - ✅ 🇷🇺_俄罗斯_651
   - ✅ 🇷🇺_俄罗斯_309
   - ✅ 🇷🇺_俄罗斯_308
   - ✅ 🇷🇺_俄罗斯_400
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 芬兰(mibei77.com 米贝节点分享)_2
   - ✅ 🇳🇱_荷兰_390
   - ✅ 🇳🇱_荷兰_304
@@ -72,10 +72,10 @@ proxy-groups:
   - ✅ 🇺🇸_US_美国_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)_3
   - ✅ 🇩🇪_德国_313
-  - ✅ 🇷🇺_俄罗斯_651
   - ✅ 🇷🇺_俄罗斯_309
   - ✅ 🇷🇺_俄罗斯_308
   - ✅ 🇷🇺_俄罗斯_400
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 芬兰(mibei77.com 米贝节点分享)_2
   - ✅ 🇳🇱_荷兰_390
   - ✅ 🇳🇱_荷兰_304
@@ -93,10 +93,10 @@ proxy-groups:
   - ✅ 🇺🇸_US_美国_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)_3
   - ✅ 🇩🇪_德国_313
-  - ✅ 🇷🇺_俄罗斯_651
   - ✅ 🇷🇺_俄罗斯_309
   - ✅ 🇷🇺_俄罗斯_308
   - ✅ 🇷🇺_俄罗斯_400
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 芬兰(mibei77.com 米贝节点分享)_2
   - ✅ 🇳🇱_荷兰_390
   - ✅ 🇳🇱_荷兰_304
@@ -718,20 +718,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: forfreeuse.rtqa.ru
-- name: ✅ 🇷🇺_俄罗斯_651
-  type: vless
-  server: 194.26.229.157
-  port: 2200
-  uuid: c05888f0-4029-45c8-bea7-ea5eff564462
-  tls: false
-  network: ws
-  ws-opts:
-    path: /v1
-    headers:
-      Host: 194.26.229.157
-  security_scheme: none
-  proto: vless
-  peer: 194.26.229.157
 - name: ✅ 🇷🇺_俄罗斯_309
   type: vless
   server: 200.165.234.119
@@ -778,6 +764,22 @@ proxies:
   security_scheme: none
   proto: vless
   peer: live.ok.ru
+- name: ✅ US美国(mibei77.com 米贝节点分享)_3
+  type: vless
+  server: 208.103.161.32
+  port: 443
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  tls: true
+  network: ws
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
+  ws-opts:
+    path: /sg-melbi_/
+    headers:
+      Host: josni.hoyes.cloudns.ch
+  security_scheme: tls
+  proto: vless
+  peer: josni.hoyes.cloudns.ch
 - name: ✅ 芬兰(mibei77.com 米贝节点分享)_2
   type: vless
   server: 217.60.63.206
