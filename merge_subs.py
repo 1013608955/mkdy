@@ -138,6 +138,20 @@ def clean_node(p):
     return out
 
 
+def write_txt(txt_out, merged):
+    """写出 s-clash.txt（v2rayN 兼容订阅格式，每行一个 URI）。
+    目录不存在时自动创建，与 --out 的 yaml 同源同前缀。"""
+    os.makedirs(os.path.dirname(txt_out) or ".", exist_ok=True)
+    lines = []
+    for nd in merged:
+        uri = struct_to_uri(nd)
+        if uri:
+            lines.append(uri)
+    with open(txt_out, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+    LOG.info(f"[merge] 写出 {len(lines)} 条 URI -> {txt_out}")
+
+
 # make_names_unique 已抽到 name_util.py（见顶部 import 别名为 make_names_unique）。
 
 
@@ -202,15 +216,22 @@ def main():
     # 6) 写出（完整 Clash 配置：mode + dns + proxies + proxy-groups + rules）
     #    加载 clash_template.yaml 模版，把 __ALL_PROXIES__ 占位符替换为实际节点名，
     #    使 s-clash.yaml 成为可直接导入 Clash/Clash Verge 的完整配置（不再是裸 proxies 列表）。
+    #    统一基于 --out 计算 yaml / txt 输出路径：同源目录、同名前缀，目录自动创建，
+    #    避免此前 txt 固定落在 --base 根导致的语义不对称 / --out 带子目录时 FileNotFoundError。
+    out_path = os.path.join(base, args.out)
+    out_base = os.path.dirname(out_path) or base
+    out_stem = os.path.splitext(os.path.basename(args.out))[0] or "s-clash"
+    txt_out = os.path.join(out_base, out_stem + ".txt")
+    os.makedirs(out_base, exist_ok=True)
+
     template_path = os.path.join(base, "clash_template.yaml")
     if not os.path.exists(template_path):
         LOG.warning(f"[merge][WARN] 模版文件 {template_path} 不存在，退化为仅 proxies 输出")
         body = yaml.safe_dump({"proxies": merged}, allow_unicode=True, sort_keys=False, default_flow_style=False)
-        out_path = os.path.join(base, args.out)
         with open(out_path, "w", encoding="utf-8") as f:
             f.write(body)
         LOG.info(f"[merge] 原始 {len(nodes)} 条 -> 去重后 {len(merged)} 条 -> {args.out} (无模版)")
-        # 无模版时退化为仅 proxies 输出后即返回，避免下方 open(template_path) 触发 FileNotFoundError
+        write_txt(txt_out, merged)  # 无模版时仍产出 v2rayN 兼容 txt，保持两产物对称
         return
 
     with open(template_path, encoding="utf-8") as f:
@@ -237,23 +258,12 @@ def main():
         f"# sources: {', '.join(TXT_SOURCES)} + {', '.join(YAML_SOURCES)}\n"
         f"# raw={len(nodes)} unique={len(merged)} groups={len(doc.get('proxy-groups', []))} rules={len(doc.get('rules', []))}\n"
     )
-    out_path = os.path.join(base, args.out)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(header)
         yaml.safe_dump(doc, f, allow_unicode=True, sort_keys=False, default_flow_style=False, width=10000)
 
     LOG.info(f"[merge] 原始 {len(nodes)} 条 -> 去重后 {len(merged)} 条 -> {args.out} (含规则层)")
-
-    # 7) 写出 s-clash.txt（v2rayN 兼容订阅格式，每行一个 URI）
-    txt_out = os.path.join(base, "s-clash.txt")
-    lines = []
-    for nd in merged:
-        uri = struct_to_uri(nd)
-        if uri:
-            lines.append(uri)
-    with open(txt_out, "w", encoding="utf-8") as f:
-        f.write("\n".join(lines) + "\n")
-    LOG.info(f"[merge] 写出 {len(lines)} 条 URI -> {txt_out}")
+    write_txt(txt_out, merged)
 
 
 if __name__ == "__main__":

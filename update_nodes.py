@@ -600,7 +600,7 @@ def dedup_nodes_final(nodes: List[Dict]) -> List[Dict]:
     unique = []
     source_unique_count = {} # 新增：统计每个来源去重后剩余数量
    
-    nodes.sort(key=lambda x: x["weight"], reverse=True)
+    nodes.sort(key=lambda x: x.get("weight", 0), reverse=True)
     for node in nodes:
         cfg, proto = parse_node(node["line"])
         if cfg and proto:

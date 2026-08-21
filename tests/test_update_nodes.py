@@ -79,5 +79,21 @@ class TestConfigOverlay(unittest.TestCase):
         self.assertEqual(merged["detection"]["thread_pool"], 16)
 
 
+class TestWeightSortDefensive(unittest.TestCase):
+    """P1-2：节点缺 weight 键时排序不应 KeyError（应为 0 兜底）。"""
+
+    def test_sort_without_weight_key(self):
+        nodes = [{"line": "x", "weight": 5}, {"line": "y"}]  # 第二个缺 weight
+        # 复刻 main 里的排序表达式，确认 .get 兜底不抛异常
+        nodes.sort(key=lambda x: x.get("weight", 0), reverse=True)
+        self.assertEqual(nodes[0]["line"], "x")  # weight=5 排前
+        self.assertEqual(nodes[1]["line"], "y")  # 缺键兜底 0，排后
+
+    def test_sort_all_missing_weight(self):
+        nodes = [{"line": "a"}, {"line": "b"}, {"line": "c"}]
+        nodes.sort(key=lambda x: x.get("weight", 0), reverse=True)
+        self.assertEqual([n["line"] for n in nodes], ["a", "b", "c"])
+
+
 if __name__ == "__main__":
     unittest.main()

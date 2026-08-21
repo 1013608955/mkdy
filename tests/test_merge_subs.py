@@ -144,5 +144,44 @@ class TestFetchProtocolCoverage(unittest.TestCase):
         self.assertIn("hysteria2://", _PARSERS)
 
 
+class TestP1Fixes(unittest.TestCase):
+    """P1 修复回归：txt 路径对齐 --out / weight 缺键不崩。"""
+
+    def _write_minimal_sources(self, d):
+        # 仅放一个最小 s2-clash-1.yaml（无需 clash_template 即可触发无模版分支）
+        src = {"proxies": [
+            {"name": "A", "type": "ss", "server": "a.example", "port": 1,
+             "cipher": "aes-256-gcm", "password": "x"},
+        ]}
+        with open(os.path.join(d, "s2-clash-1.yaml"), "w", encoding="utf-8") as f:
+            yaml.safe_dump(src, f)
+
+    def test_txt_path_follows_out(self):
+        # --out 带子目录时，txt 应同目录同名前缀，而非固定落在 --base 根
+        d = tempfile.mkdtemp()
+        self._write_minimal_sources(d)
+        out_rel = os.path.join("sub", "s-clash.yaml")
+        out_abs = os.path.join(d, out_rel)
+        with mock.patch.object(sys, "argv", ["merge_subs", "--base", d, "--out", out_rel]):
+            m.main()
+        expected_txt = os.path.join(d, "sub", "s-clash.txt")
+        self.assertTrue(os.path.exists(expected_txt),
+                        "s-clash.txt 应随 --out 落在 sub/ 下")
+        self.assertFalse(os.path.exists(os.path.join(d, "s-clash.txt")),
+                         "不应再固定落在 base 根的 s-clash.txt")
+        # yaml 与 txt 都存在
+        self.assertTrue(os.path.exists(out_abs))
+
+    def test_txt_path_default_flat(self):
+        # 默认 --out s-clash.yaml 时，txt 仍在 base 根（向后兼容）
+        d = tempfile.mkdtemp()
+        self._write_minimal_sources(d)
+        out = os.path.join(d, "s-clash.yaml")
+        with mock.patch.object(sys, "argv", ["merge_subs", "--base", d, "--out", "s-clash.yaml"]):
+            m.main()
+        self.assertTrue(os.path.exists(os.path.join(d, "s-clash.txt")))
+        self.assertTrue(os.path.exists(out))
+
+
 if __name__ == "__main__":
     unittest.main()
