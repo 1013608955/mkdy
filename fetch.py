@@ -1,11 +1,14 @@
 import requests
 import re
 import base64
-from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 import time
 import yaml
 from name_util import make_proxy_names_unique
+# 可识别的节点协议前缀：以 node_parse._PARSERS 为单一事实来源，
+# 避免与解析层协议支持脱节（之前硬编码漏掉 tuic/ssr/hysteria2，静默丢节点）。
+from node_parse import _PARSERS
+_NODE_PREFIXES = tuple(_PARSERS.keys())
 
 # 核心配置（明确每个网站的YAML输出文件）
 HEADERS = {
@@ -35,6 +38,7 @@ def get_latest_article_url(site):
     try:
         resp = requests.get(home_url, headers=HEADERS, timeout=20)
         resp.raise_for_status()
+        from bs4 import BeautifulSoup  # 懒加载：仅在需要 HTML 解析时导入，缺包时不影响纯函数 download_nodes
         soup = BeautifulSoup(resp.text, 'html.parser')
         article_candidates = []
         if site_name == "米贝77":
@@ -118,6 +122,7 @@ def extract_sub_links(article_url, site_name):
         resp = requests.get(article_url, headers=HEADERS, timeout=20)
         resp.raise_for_status()
         text = resp.text
+        from bs4 import BeautifulSoup  # 懒加载（同 L41）
         soup = BeautifulSoup(text, 'html.parser')
 
         sub_links = set()  # .txt节点链接/Base64节点
@@ -188,10 +193,10 @@ def download_nodes(source):
             raw_content = base64.b64decode(source).decode('utf-8', errors='ignore').strip()
 
         nodes = []
-        # 提取明文节点（覆盖主流协议）
+        # 提取明文节点（协议前缀以 node_parse._PARSERS 为单一事实来源）
         for line in raw_content.split('\n'):
             line = line.strip()
-            if line.startswith(('vmess://', 'vless://', 'trojan://', 'ss://', 'hysteria://')):
+            if line.startswith(_NODE_PREFIXES):
                 nodes.append(line)
 
         # 若没有明文节点，尝试解析每行的Base64编码节点（部分网站的存储方式）
@@ -203,7 +208,7 @@ def download_nodes(source):
                         decoded = base64.b64decode(line, validate=True).decode('utf-8', errors='ignore')
                         for sub_line in decoded.split('\n'):
                             sub_line = sub_line.strip()
-                            if sub_line.startswith(('vmess://', 'vless://', 'trojan://')):
+                            if sub_line.startswith(_NODE_PREFIXES):
                                 nodes.append(sub_line)
                     except:
                         continue

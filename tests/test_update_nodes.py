@@ -57,6 +57,27 @@ class TestConfigOverlay(unittest.TestCase):
         # private_ip 正则必须在代码内编译（YAML 无法表达），且可用
         self.assertTrue(u.is_private_ip("10.0.0.1"))
 
+    def test_deep_merge_nested_preserves_other_keys(self):
+        # 嵌套合并：config.yaml 写 filter.request_timeout 不应整体替换内联 filter
+        # （否则 score_rules / private_ip 等会丢失，导致评分规则全丢、is_private_ip 崩溃）
+        base = {"filter": {"score_rules": ["a"], "private_ip": "RX"},
+                "request": {"timeout": 15}}
+        override = {"filter": {"request_timeout": 20}}
+        merged = u._deep_merge(dict(base), override)
+        self.assertEqual(merged["filter"]["score_rules"], ["a"])
+        self.assertEqual(merged["filter"]["private_ip"], "RX")
+        self.assertEqual(merged["filter"]["request_timeout"], 20)
+        # 顶层非 dict 值以 override 为准
+        self.assertEqual(merged["request"]["timeout"], 15)
+
+    def test_deep_merge_overrides_leaf(self):
+        base = {"detection": {"tcp_timeout": {"vmess": 5}, "thread_pool": 16}}
+        override = {"detection": {"tcp_timeout": {"vless": 6}}}
+        merged = u._deep_merge(dict(base), override)
+        self.assertEqual(merged["detection"]["tcp_timeout"]["vmess"], 5)
+        self.assertEqual(merged["detection"]["tcp_timeout"]["vless"], 6)
+        self.assertEqual(merged["detection"]["thread_pool"], 16)
+
 
 if __name__ == "__main__":
     unittest.main()

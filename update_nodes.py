@@ -125,15 +125,27 @@ def _load_cn_ranges(path: str = None) -> Tuple:
     return tuple(nets)
 
 
+def _deep_merge(base: dict, override: dict) -> dict:
+    """递归合并 override 到 base（不修改 base 以外的非 dict 值）。
+    dict 键逐一递归合并；非 dict 值以 override 为准。"""
+    for k, v in override.items():
+        if isinstance(v, dict) and isinstance(base.get(k), dict):
+            base[k] = _deep_merge(base[k], v)
+        else:
+            base[k] = v
+    return base
+
+
 def _overlay_config_file() -> None:
-    """若存在 config.yaml，则用其顶层字段覆盖内联默认配置。"""
+    """若存在 config.yaml，则用其字段递归合并覆盖内联默认配置。
+    采用嵌套合并语义：config.yaml 只需写要改的键；嵌套 dict（如 filter）
+    逐键合并，不会整体替换内联默认（避免写 filter: 时丢失 score_rules/private_ip 等）。"""
     p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.yaml")
     try:
         with open(p, encoding="utf-8") as f:
             data = yaml.safe_load(f) or {}
         if isinstance(data, dict):
-            for k, v in data.items():
-                CONFIG[k] = v
+            _deep_merge(CONFIG, data)
     except FileNotFoundError:
         LOG.info("ℹ️ 未找到 config.yaml，使用内联默认配置")
     except Exception as e:  # noqa: BLE001

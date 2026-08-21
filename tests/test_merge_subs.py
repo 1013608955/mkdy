@@ -113,5 +113,36 @@ class TestVerifiedMerge(unittest.TestCase):
         self.assertEqual(len(data.get("proxies", [])), 1)
 
 
+class TestFetchProtocolCoverage(unittest.TestCase):
+    """fetch.download_nodes 的协议识别应以 node_parse._PARSERS 为单一事实来源，
+    覆盖 tuic/ssr/hysteria2 等此前被硬编码漏掉的协议（避免静默丢节点）。"""
+
+    def _encode(self, lines):
+        import base64
+        return base64.b64encode("\n".join(lines).encode("utf-8")).decode("ascii")
+
+    def test_all_parser_protocols_extracted(self):
+        from node_parse import _PARSERS
+        import fetch
+        sample = []
+        for scheme in _PARSERS:
+            sample.append(scheme + "example.com:443?demo=1#node-" + scheme.split("://")[0])
+        src = self._encode(sample)
+        nodes = fetch.download_nodes(src)
+        # 每种协议都应被识别提取，无遗漏
+        self.assertEqual(len(nodes), len(_PARSERS),
+                         f"提取 {len(nodes)} 条，应 {len(_PARSERS)} 条（{list(_PARSERS)}）")
+        for scheme in _PARSERS:
+            self.assertTrue(any(n.startswith(scheme) for n in nodes),
+                            f"缺少协议 {scheme} 的提取")
+
+    def test_plaintext_prefixes_used(self):
+        # 与硬编码旧值对比，确认补充了此前缺失的协议
+        from node_parse import _PARSERS
+        self.assertIn("ssr://", _PARSERS)
+        self.assertIn("tuic://", _PARSERS)
+        self.assertIn("hysteria2://", _PARSERS)
+
+
 if __name__ == "__main__":
     unittest.main()
