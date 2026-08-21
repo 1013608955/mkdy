@@ -35,10 +35,17 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: 安装依赖
+      - name: 安装依赖（含测试依赖）
         run: |
           python -m pip install --upgrade pip
-          pip install requests pyyaml beautifulsoup4
+          pip install requests pyyaml beautifulsoup4 pytest
+
+      # ---- P0#4：运行单元测试（外部依赖全 mock，CI 不触真实网络） ----
+      - name: 运行单元测试（pytest 兼容 unittest 风格）
+        run: python -m pytest tests/ -q --tb=short
+        env:
+          IPINFO_TOKEN: ""
+          GITHUB_TOKEN: ""
 
       # ---- 三个抓取脚本（源站可能不稳定，单源失败不影响整体合并） ----
       - name: 抓取 tuijianvpn 推荐订阅链接 -> latest_tuijian.txt

@@ -356,6 +356,19 @@ _PROBE_COUNT = {"n": 0}
 # 单次运行最多查 50 个，其余回退 unknown，避免 ipinfo 拖垮 CI 的 10 分钟超时窗口。
 _IPINFO_QUOTA = {"used": 0, "cap": 50}
 
+
+def reset_state() -> None:
+    """P1#6：清空跨运行全局态，避免 CI/测试多次调用时状态泄漏。
+
+    - _PROBE_COUNT：握手探测计数器封顶后若不重置，后续运行再也探不到节点；
+    - _IPINFO_QUOTA：ipinfo 配额按单次运行计，跨运行累积会提前耗尽；
+    - lru_cache（dns_resolve/get_ip_type）：保留旧 IP 解析/类型结果会掩盖网络变化。
+    """
+    _PROBE_COUNT["n"] = 0
+    _IPINFO_QUOTA["used"] = 0
+    dns_resolve.cache_clear()
+    get_ip_type.cache_clear()
+
 @lru_cache(maxsize=1000)
 def get_ip_type(ip: str) -> str:
     if is_private_ip(ip) or is_cn_ip(ip):
@@ -469,9 +482,17 @@ def probe_proxy_handshake(ip: str, port: int, proto: str, sni: str = "",
     try:
         if use_tls and proto in ("trojan", "vless", "vmess"):
             # TLS 握手探测（Trojan/tls/reality 类真实可达性）
-            ctx = ssl.create_default_context()
-            ctx.check_hostname = False
-            ctx.verify_mode = ssl.CERT_NONE
+            # P0#2：默认严格校验证书（防 MITM 伪造可达节点骗取加分）；
+            # 仅当 config.yaml request.allow_insecure=true 时降级为不校验并告警。
+            allow_insecure = bool(CONFIG.get("request", {}).get("allow_insecure", False))
+            if allow_insecure:
+                ctx = ssl.create_default_context()
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
+                LOG.warning("[security] TLS 握手探测关闭证书校验（allow_insecure=true），"
+                            "存在被 MITM 伪造可达节点的风险！")
+            else:
+                ctx = ssl.create_default_context()  # 默认校验主机名+证书
             start = time.time()
             with socket.create_connection((addr, port), timeout=timeout) as sock:
                 with ctx.wrap_socket(sock, server_hostname=sni or addr) as _tls:
@@ -970,6 +991,7 @@ def generate_source_stats(source_records: Dict[str, Dict], valid_nodes_info: Lis
     LOG.info(f" ├─ 良好: {total_good} 条")
     LOG.info(f" └─ 合格: {total_qualified} 条")
 def main() -> None:
+    reset_state()  # P1#6：每次运行前清空全局态
     start_time = time.time()
     LOG.info(f"🚀 开始终极节点筛选（{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}）")
   

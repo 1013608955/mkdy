@@ -32,6 +32,7 @@ import json
 import time
 import shutil
 import socket
+import signal
 import argparse
 import tempfile
 import subprocess
@@ -268,9 +269,13 @@ def main():
 
     t0 = time.time()
     results = {}
-    with open(log_path, "w", encoding="utf-8") as lf:
-        proc = subprocess.Popen([mihomo, "-d", workdir, "-f", cfg_path],
-                                stdout=lf, stderr=subprocess.STDOUT, **_NO_WINDOW)
+
+    # P0#3：Popen 前置到 try 外，异常路径也能进 finally 回收；
+    # start_new_session=True 让 mihomo 独立进程组，便于整组 killpg 回收（含其 children）。
+    proc = subprocess.Popen([mihomo, "-d", workdir, "-f", cfg_path],
+                            stdout=open(log_path, "w", encoding="utf-8"),
+                            stderr=subprocess.STDOUT,
+                            start_new_session=True, **_NO_WINDOW)
     try:
         ver = wait_api(ctrl)
         if not ver:
@@ -306,11 +311,20 @@ def main():
             print(f"[round2] {len(failed)} 个节点主目标失败，用兜底目标复测…")
             _run_round(failed, FALLBACK_TARGET, "round2")
     finally:
-        proc.terminate()
+        # P0#3：优先 terminate，超时则整组强杀并等待回收，杜绝僵尸/孤儿进程残留占端口
         try:
+            proc.terminate()
             proc.wait(timeout=8)
         except Exception:  # noqa: BLE001
-            proc.kill()
+            try:
+                if proc.pid is not None:
+                    os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+            except Exception:  # noqa: BLE001
+                proc.kill()
+            try:
+                proc.wait(timeout=5)
+            except Exception:  # noqa: BLE001
+                pass
         shutil.rmtree(workdir, ignore_errors=True)
 
     ordered = [results[n] for n in names]

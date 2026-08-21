@@ -1,5 +1,6 @@
 import os
 import sys
+import ssl
 import socket
 import unittest
 from unittest import mock
@@ -93,6 +94,91 @@ class TestWeightSortDefensive(unittest.TestCase):
         nodes = [{"line": "a"}, {"line": "b"}, {"line": "c"}]
         nodes.sort(key=lambda x: x.get("weight", 0), reverse=True)
         self.assertEqual([n["line"] for n in nodes], ["a", "b", "c"])
+
+
+class TestTlsHandshakeProbe(unittest.TestCase):
+    """P0#2：probe_proxy_handshake 默认严格校验证书，防 MITM 伪造可达节点骗加分。"""
+
+    def _patch_connect(self, addr="1.2.3.4"):
+        return mock.patch.multiple(
+            u,
+            _resolve_connect=mock.Mock(return_value=(socket.AF_INET, addr)),
+            is_cn_ip=mock.Mock(return_value=False),
+            is_private_ip=mock.Mock(return_value=False),
+        )
+
+    def test_default_strict_verification(self):
+        # 默认 CONFIG.request.allow_insecure=false → 用校验上下文
+        captured = {}
+        tls_sock = mock.MagicMock()
+        tls_sock.do_handshake.return_value = None
+
+        def fake_create():
+            ctx = mock.MagicMock()
+            ctx.check_hostname = True
+            ctx.verify_mode = ssl.CERT_REQUIRED
+            ctx.wrap_socket.return_value = tls_sock
+            captured["ctx"] = ctx
+            return ctx
+
+        with self._patch_connect(), \
+             mock.patch.object(u.ssl, "create_default_context", side_effect=fake_create), \
+             mock.patch("socket.create_connection") as m_conn:
+            m_conn.return_value.__enter__ = lambda s: s
+            m_conn.return_value.__exit__ = lambda s, *a: None
+            ok, tag, _ = u.probe_proxy_handshake("1.2.3.4", 443, "trojan",
+                                                  use_tls=True, sni="x.com")
+        self.assertTrue(ok)
+        self.assertEqual(tag, "tls_ok")
+        self.assertIn("ctx", captured)
+        self.assertTrue(captured["ctx"].check_hostname)
+        self.assertEqual(captured["ctx"].verify_mode, ssl.CERT_REQUIRED)
+
+    def test_allow_insecure_downgrade(self):
+        # 临时开启 allow_insecure → 降级为不校验
+        orig = u.CONFIG.get("request", {}).get("allow_insecure", False)
+        u.CONFIG.setdefault("request", {})["allow_insecure"] = True
+        try:
+            captured = {}
+            tls_sock = mock.MagicMock()
+            tls_sock.do_handshake.return_value = None
+
+            def fake_create():
+                ctx = mock.MagicMock()
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
+                ctx.wrap_socket.return_value = tls_sock
+                captured["ctx"] = ctx
+                return ctx
+
+            with self._patch_connect(), \
+                 mock.patch.object(u.ssl, "create_default_context", side_effect=fake_create), \
+                 mock.patch("socket.create_connection") as m_conn:
+                m_conn.return_value.__enter__ = lambda s: s
+                m_conn.return_value.__exit__ = lambda s, *a: None
+                ok, tag, _ = u.probe_proxy_handshake("1.2.3.4", 443, "trojan",
+                                                      use_tls=True, sni="x.com")
+            self.assertTrue(ok)
+            self.assertEqual(captured["ctx"].check_hostname, False)
+            self.assertEqual(captured["ctx"].verify_mode, ssl.CERT_NONE)
+        finally:
+            u.CONFIG["request"]["allow_insecure"] = orig
+
+
+class TestResetState(unittest.TestCase):
+    """P1#6：reset_state 清空跨运行全局态，避免 CI/测试多次调用泄漏。"""
+
+    def test_reset_clears_counters_and_cache(self):
+        u._PROBE_COUNT["n"] = 999
+        u._IPINFO_QUOTA["used"] = 999
+        u.dns_resolve.cache_clear()
+        u.dns_resolve("cached.example.com")  # 填充缓存
+        self.assertGreater(len(u.dns_resolve.cache_info()._fields), 0)
+        u.reset_state()
+        self.assertEqual(u._PROBE_COUNT["n"], 0)
+        self.assertEqual(u._IPINFO_QUOTA["used"], 0)
+        self.assertEqual(u.dns_resolve.cache_info().hits, 0)
+        self.assertEqual(u.dns_resolve.cache_info().misses, 0)
 
 
 if __name__ == "__main__":
