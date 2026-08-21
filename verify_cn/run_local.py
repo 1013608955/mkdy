@@ -125,32 +125,51 @@ def _git(args, check=True):
     return r.returncode, out
 
 
-def _fix_reality_shortid(proxies):
-    """mihomo 严格校验 vless+reality 的 short-id 必须为 'XX:XX:...' 冒号分隔的 hex。
-    上游订阅常给出连写 hex（如 '7d6b6b7a606c21cf'），会导致 mihomo 启动 fatal、
-    整份配置拒绝加载、全部节点无法验证。这里在喂 mihomo 前把连写 hex 归一化为
-    冒号格式（值不变，仅补分隔符）；已合法或空的保持不动；非 hex 的跳过不动
-    （交给 mihomo 正常报错，不静默吞掉）。返回被修正的节点名列表。"""
+def _sanitize_reality(proxies):
+    """mihomo 对 vless+reality 校验极严（short-id 必须 'XX:XX:...' 冒号 hex、
+    public-key 必须标准 base64），任一带病节点会让 mihomo 启动 fatal、整份配置
+    拒绝加载、全部节点无法验证（本项目已多次踩坑）。上游订阅常混入格式损坏的
+    reality 节点（连写 hex 的 short-id、含 '-' 等非 base64 字符的 public-key 等）。
+
+    处理策略（隔离而非硬改值）：
+    1. short-id 为连写 hex 的 → 归一化补冒号（值不变，仅补分隔符）。
+    2. reality 节点的 public-key / short-id 任一不满足 mihomo 最小合法性 →
+       该节点从待验证列表**移除**（打 [skip] 日志），不参与 mihomo 加载，
+       避免拖垮其他节点。被跳过的 reality 节点本就难连，下游客户端 url-test 兜底。
+    返回 (kept, skipped)：kept 为保留的 proxies 列表，skipped 为被移除的节点名。
+    """
     import re
-    fixed = []
+    hex_colon = re.compile(r"[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){0,15}")
+    b64_std = re.compile(r"[A-Za-z0-9+/=]{43,44}")  # 标准 base64（不含 - / _）
+
+    kept, skipped = [], []
     for p in proxies:
         if p.get("type") != "vless":
+            kept.append(p)
             continue
         opts = p.get("reality-opts")
         if not isinstance(opts, dict):
+            # 声明 vless 但无 reality-opts：同样会让 mihomo 解析异常，隔离。
+            skipped.append(p.get("name"))
             continue
         sid = opts.get("short-id")
-        if not isinstance(sid, str) or not sid:
+        pk = opts.get("public-key")
+        reasons = []
+        if isinstance(sid, str) and sid and ":" not in sid:
+            s = sid.strip()
+            if len(s) % 2 == 0 and re.fullmatch(r"[0-9a-fA-F]+", s):
+                opts["short-id"] = ":".join(
+                    s[i:i + 2] for i in range(0, len(s), 2))
+                sid = opts["short-id"]
+        if not (isinstance(sid, str) and hex_colon.fullmatch(sid)):
+            reasons.append("short-id")
+        if not (isinstance(pk, str) and b64_std.fullmatch(pk)):
+            reasons.append("public-key")
+        if reasons:
+            skipped.append(p.get("name"))
             continue
-        if ":" in sid:
-            continue  # 已是冒号格式
-        s = sid.strip()
-        if len(s) % 2 != 0 or not re.fullmatch(r"[0-9a-fA-F]+", s):
-            continue  # 非连写 hex，跳过
-        norm = ":".join(s[i:i + 2] for i in range(0, len(s), 2))
-        opts["short-id"] = norm
-        fixed.append(p.get("name"))
-    return fixed
+        kept.append(p)
+    return kept, skipped
 
 
 def build_mihomo_config(proxies, ctrl_port, mixed_port):
@@ -275,11 +294,12 @@ def main():
         print(f"[warn] 丢弃 {len(dropped)} 个重名节点（上游 s-clash.yaml 有 duplicate "
               f"name，会导致 Clash 客户端拒绝加载）：{dropped[:3]}")
     proxies = uniq
-    # reality short-id 归一化：上游连写 hex 会让 mihomo 启动 fatal、拖垮全部节点。
-    _fixed = _fix_reality_shortid(proxies)
-    if _fixed:
-        print(f"[fix] 归一化 {len(_fixed)} 个 vless/reality short-id（补冒号分隔，值不变）："
-              f"{_fixed[:3]}")
+    # reality 节点隔离：归一化合法 short-id，字段带病的 reality 节点移除（避免
+    # mihomo 启动 fatal 拖垮全部验证）。被跳过节点打 [skip] 日志。
+    proxies, _skipped = _sanitize_reality(proxies)
+    if _skipped:
+        print(f"[skip] 隔离 {len(_skipped)} 个 reality 字段非法的节点（不验证，"
+              f"靠客户端兜底）：{_skipped[:3]}")
     if args.limit > 0:
         proxies = proxies[:args.limit]
     if not proxies:
