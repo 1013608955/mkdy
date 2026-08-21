@@ -1,5 +1,5 @@
 # s-verified.yaml — 仅含中国出口(FC)验证通过的节点 + clash_template 规则模版
-# 来源 verified.json: 36 个 ok → 匹配 36（漂移跳过 0）
+# 来源 verified.json: 36 个 ok → 匹配 20（漂移跳过 16）
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -45,122 +45,74 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - US美国(mibei77.com 米贝节点分享)_8
-  - 芬兰(mibei77.com 米贝节点分享)
-  - 芬兰(mibei77.com 米贝节点分享)_5
-  - '[peasoft/NoMoreWalls]🇫🇷FR_1|3.0MB/s'
-  - 瑞士(mibei77.com 米贝节点分享)
-  - SG新加坡(mibei77.com 米贝节点分享)_4
-  - 荷兰+阿姆斯特丹Online+S.A.S
-  - SG新加坡(mibei77.com 米贝节点分享)_2
-  - SG新加坡(mibei77.com 米贝节点分享)_3
-  - US美国(mibei77.com 米贝节点分享)_13
-  - US美国(mibei77.com 米贝节点分享)_63
-  - SG新加坡(mibei77.com 米贝节点分享)
-  - GB英国(mibei77.com 米贝节点分享)_2
   - NL荷兰(mibei77.com 米贝节点分享)_2
-  - 芬兰(mibei77.com 米贝节点分享)_2
-  - NL荷兰(mibei77.com 米贝节点分享)_5_2
-  - US美国(mibei77.com 米贝节点分享)_36_2
-  - RU俄罗斯(mibei77.com 米贝节点分享)
-  - 美国+科罗拉多州NTT(美国)通信公司
-  - FR法国(mibei77.com 米贝节点分享)_6
-  - NL荷兰(mibei77.com 米贝节点分享)_4_2
-  - '[peasoft/NoMoreWalls]🇫🇷FR_5|1.4MB/s'
-  - US美国(mibei77.com 米贝节点分享)_9
-  - 芬兰(mibei77.com 米贝节点分享)_7
-  - US美国(mibei77.com 米贝节点分享)_16
-  - 🇳🇱_荷兰_135
-  - 芬兰(mibei77.com 米贝节点分享)_6
-  - 芬兰(mibei77.com 米贝节点分享)_3
-  - '[peasoft/NoMoreWalls]🇩🇪DE_4|4.1MB/s'
-  - 芬兰(mibei77.com 米贝节点分享)_8
-  - '[peasoft/NoMoreWalls]🇹🇭TH_1|1.2MB/s'
-  - 芬兰(mibei77.com 米贝节点分享)_4
-  - 拉脱维亚(mibei77.com 米贝节点分享)
-  - 俄罗斯+V2CROSS.COM
-  - '[peasoft/NoMoreWalls]🇫🇷FR_3|2.8MB/s'
   - NL荷兰(mibei77.com 米贝节点分享)
+  - SG新加坡(mibei77.com 米贝节点分享)_4
+  - '[peasoft/NoMoreWalls]🇹🇭TH_1|1.2MB/s'
+  - RU俄罗斯(mibei77.com 米贝节点分享)
+  - '[peasoft/NoMoreWalls]🇫🇷FR_1|3.0MB/s'
+  - US美国(mibei77.com 米贝节点分享)_8
+  - '[peasoft/NoMoreWalls]🇩🇪DE_4|4.1MB/s'
+  - SG新加坡(mibei77.com 米贝节点分享)
+  - US美国(mibei77.com 米贝节点分享)_9
+  - SG新加坡(mibei77.com 米贝节点分享)_3
+  - US美国(mibei77.com 米贝节点分享)_36_2
+  - SG新加坡(mibei77.com 米贝节点分享)_2
+  - US美国(mibei77.com 米贝节点分享)_13
+  - US美国(mibei77.com 米贝节点分享)_16
+  - 芬兰(mibei77.com 米贝节点分享)
+  - FR法国(mibei77.com 米贝节点分享)_6
+  - '[peasoft/NoMoreWalls]🇫🇷FR_5|1.4MB/s'
+  - 瑞士(mibei77.com 米贝节点分享)
+  - '[peasoft/NoMoreWalls]🇫🇷FR_3|2.8MB/s'
 - name: 自动选择
   type: url-test
   proxies:
-  - US美国(mibei77.com 米贝节点分享)_8
-  - 芬兰(mibei77.com 米贝节点分享)
-  - 芬兰(mibei77.com 米贝节点分享)_5
-  - '[peasoft/NoMoreWalls]🇫🇷FR_1|3.0MB/s'
-  - 瑞士(mibei77.com 米贝节点分享)
-  - SG新加坡(mibei77.com 米贝节点分享)_4
-  - 荷兰+阿姆斯特丹Online+S.A.S
-  - SG新加坡(mibei77.com 米贝节点分享)_2
-  - SG新加坡(mibei77.com 米贝节点分享)_3
-  - US美国(mibei77.com 米贝节点分享)_13
-  - US美国(mibei77.com 米贝节点分享)_63
-  - SG新加坡(mibei77.com 米贝节点分享)
-  - GB英国(mibei77.com 米贝节点分享)_2
   - NL荷兰(mibei77.com 米贝节点分享)_2
-  - 芬兰(mibei77.com 米贝节点分享)_2
-  - NL荷兰(mibei77.com 米贝节点分享)_5_2
-  - US美国(mibei77.com 米贝节点分享)_36_2
-  - RU俄罗斯(mibei77.com 米贝节点分享)
-  - 美国+科罗拉多州NTT(美国)通信公司
-  - FR法国(mibei77.com 米贝节点分享)_6
-  - NL荷兰(mibei77.com 米贝节点分享)_4_2
-  - '[peasoft/NoMoreWalls]🇫🇷FR_5|1.4MB/s'
-  - US美国(mibei77.com 米贝节点分享)_9
-  - 芬兰(mibei77.com 米贝节点分享)_7
-  - US美国(mibei77.com 米贝节点分享)_16
-  - 🇳🇱_荷兰_135
-  - 芬兰(mibei77.com 米贝节点分享)_6
-  - 芬兰(mibei77.com 米贝节点分享)_3
-  - '[peasoft/NoMoreWalls]🇩🇪DE_4|4.1MB/s'
-  - 芬兰(mibei77.com 米贝节点分享)_8
-  - '[peasoft/NoMoreWalls]🇹🇭TH_1|1.2MB/s'
-  - 芬兰(mibei77.com 米贝节点分享)_4
-  - 拉脱维亚(mibei77.com 米贝节点分享)
-  - 俄罗斯+V2CROSS.COM
-  - '[peasoft/NoMoreWalls]🇫🇷FR_3|2.8MB/s'
   - NL荷兰(mibei77.com 米贝节点分享)
+  - SG新加坡(mibei77.com 米贝节点分享)_4
+  - '[peasoft/NoMoreWalls]🇹🇭TH_1|1.2MB/s'
+  - RU俄罗斯(mibei77.com 米贝节点分享)
+  - '[peasoft/NoMoreWalls]🇫🇷FR_1|3.0MB/s'
+  - US美国(mibei77.com 米贝节点分享)_8
+  - '[peasoft/NoMoreWalls]🇩🇪DE_4|4.1MB/s'
+  - SG新加坡(mibei77.com 米贝节点分享)
+  - US美国(mibei77.com 米贝节点分享)_9
+  - SG新加坡(mibei77.com 米贝节点分享)_3
+  - US美国(mibei77.com 米贝节点分享)_36_2
+  - SG新加坡(mibei77.com 米贝节点分享)_2
+  - US美国(mibei77.com 米贝节点分享)_13
+  - US美国(mibei77.com 米贝节点分享)_16
+  - 芬兰(mibei77.com 米贝节点分享)
+  - FR法国(mibei77.com 米贝节点分享)_6
+  - '[peasoft/NoMoreWalls]🇫🇷FR_5|1.4MB/s'
+  - 瑞士(mibei77.com 米贝节点分享)
+  - '[peasoft/NoMoreWalls]🇫🇷FR_3|2.8MB/s'
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - US美国(mibei77.com 米贝节点分享)_8
-  - 芬兰(mibei77.com 米贝节点分享)
-  - 芬兰(mibei77.com 米贝节点分享)_5
-  - '[peasoft/NoMoreWalls]🇫🇷FR_1|3.0MB/s'
-  - 瑞士(mibei77.com 米贝节点分享)
-  - SG新加坡(mibei77.com 米贝节点分享)_4
-  - 荷兰+阿姆斯特丹Online+S.A.S
-  - SG新加坡(mibei77.com 米贝节点分享)_2
-  - SG新加坡(mibei77.com 米贝节点分享)_3
-  - US美国(mibei77.com 米贝节点分享)_13
-  - US美国(mibei77.com 米贝节点分享)_63
-  - SG新加坡(mibei77.com 米贝节点分享)
-  - GB英国(mibei77.com 米贝节点分享)_2
   - NL荷兰(mibei77.com 米贝节点分享)_2
-  - 芬兰(mibei77.com 米贝节点分享)_2
-  - NL荷兰(mibei77.com 米贝节点分享)_5_2
-  - US美国(mibei77.com 米贝节点分享)_36_2
-  - RU俄罗斯(mibei77.com 米贝节点分享)
-  - 美国+科罗拉多州NTT(美国)通信公司
-  - FR法国(mibei77.com 米贝节点分享)_6
-  - NL荷兰(mibei77.com 米贝节点分享)_4_2
-  - '[peasoft/NoMoreWalls]🇫🇷FR_5|1.4MB/s'
-  - US美国(mibei77.com 米贝节点分享)_9
-  - 芬兰(mibei77.com 米贝节点分享)_7
-  - US美国(mibei77.com 米贝节点分享)_16
-  - 🇳🇱_荷兰_135
-  - 芬兰(mibei77.com 米贝节点分享)_6
-  - 芬兰(mibei77.com 米贝节点分享)_3
-  - '[peasoft/NoMoreWalls]🇩🇪DE_4|4.1MB/s'
-  - 芬兰(mibei77.com 米贝节点分享)_8
-  - '[peasoft/NoMoreWalls]🇹🇭TH_1|1.2MB/s'
-  - 芬兰(mibei77.com 米贝节点分享)_4
-  - 拉脱维亚(mibei77.com 米贝节点分享)
-  - 俄罗斯+V2CROSS.COM
-  - '[peasoft/NoMoreWalls]🇫🇷FR_3|2.8MB/s'
   - NL荷兰(mibei77.com 米贝节点分享)
+  - SG新加坡(mibei77.com 米贝节点分享)_4
+  - '[peasoft/NoMoreWalls]🇹🇭TH_1|1.2MB/s'
+  - RU俄罗斯(mibei77.com 米贝节点分享)
+  - '[peasoft/NoMoreWalls]🇫🇷FR_1|3.0MB/s'
+  - US美国(mibei77.com 米贝节点分享)_8
+  - '[peasoft/NoMoreWalls]🇩🇪DE_4|4.1MB/s'
+  - SG新加坡(mibei77.com 米贝节点分享)
+  - US美国(mibei77.com 米贝节点分享)_9
+  - SG新加坡(mibei77.com 米贝节点分享)_3
+  - US美国(mibei77.com 米贝节点分享)_36_2
+  - SG新加坡(mibei77.com 米贝节点分享)_2
+  - US美国(mibei77.com 米贝节点分享)_13
+  - US美国(mibei77.com 米贝节点分享)_16
+  - 芬兰(mibei77.com 米贝节点分享)
+  - FR法国(mibei77.com 米贝节点分享)_6
+  - '[peasoft/NoMoreWalls]🇫🇷FR_5|1.4MB/s'
+  - 瑞士(mibei77.com 米贝节点分享)
+  - '[peasoft/NoMoreWalls]🇫🇷FR_3|2.8MB/s'
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -681,49 +633,76 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: US美国(mibei77.com 米贝节点分享)_8
-  type: trojan
-  server: vip-us-6.hkd4fwmg.xyz
-  port: 13758
-  password: atKbXl2I4rKzHGiRybV7fOp+OCYPz+bO
+- name: NL荷兰(mibei77.com 米贝节点分享)_2
+  type: vless
+  server: 155.46.167.30
+  port: 8880
+  uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
+  tls: false
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: vms.lifetime50.workers.dev
+  security_scheme: none
+  proto: vless
+  peer: 155.46.167.30
+- name: NL荷兰(mibei77.com 米贝节点分享)
+  type: vless
+  server: 2.26.224.100
+  port: 8444
+  uuid: 15e83ced-7544-422e-863d-deafe29a1dbe
   tls: true
-  network: tcp
-  sni: vip-us-6.hkd4fwmg.xyz
+  network: xhttp
+  sni: www.amd.com
+  servername: www.amd.com
+  reality-opts:
+    public-key: jgf0wWpgkEJZzu9wu45Ms33SNZpibtx507rpvzfz3mQ
+    short-id: 635a76c25a4b1820
+    spider-x: ''
+    fingerprint: firefox
+  security_scheme: reality
+  proto: vless
+  peer: www.amd.com
+- name: SG新加坡(mibei77.com 米贝节点分享)_4
+  type: trojan
+  server: 104.16.174.109
+  port: 443
+  password: humanity
+  tls: true
+  network: ws
+  sni: www.ignitelimit.com
+  ws-opts:
+    path: /assignment
+    headers:
+      Host: www.ignitelimit.com
   security_scheme: tls
   proto: trojan
-  peer: vip-us-6.hkd4fwmg.xyz
-- name: 芬兰(mibei77.com 米贝节点分享)
-  type: vless
-  server: 188.241.241.3
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
+  peer: www.ignitelimit.com
+- name: '[peasoft/NoMoreWalls]🇹🇭TH_1|1.2MB/s'
+  type: ss
+  server: 103.169.67.34
+  port: 65443
+  cipher: aes-256-cfb
+  password: 7eadc6dbe2ae
+  security_scheme: none
+  proto: ss
+  peer: 103.169.67.34
+- name: RU俄罗斯(mibei77.com 米贝节点分享)
+  type: trojan
+  server: 104.18.152.219
+  port: 443
+  password: humanity
   tls: true
   network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
+  sni: www.ignitelimit.com
   ws-opts:
-    path: /
+    path: /assignment
     headers:
-      Host: forfreeuse.rtqa.ru
+      Host: www.ignitelimit.com
   security_scheme: tls
-  proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: 芬兰(mibei77.com 米贝节点分享)_5
-  type: vless
-  server: 143.110.163.137
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-  security_scheme: tls
-  proto: vless
-  peer: forfreeuse.rtqa.ru
+  proto: trojan
+  peer: www.ignitelimit.com
 - name: '[peasoft/NoMoreWalls]🇫🇷FR_1|3.0MB/s'
   type: ss
   server: 13.38.46.203
@@ -733,15 +712,31 @@ proxies:
   security_scheme: none
   proto: ss
   peer: 13.38.46.203
-- name: 瑞士(mibei77.com 米贝节点分享)
-  type: hysteria2
-  server: 46.229.243.137
-  port: 8080
-  password: s0_sdK93x9wer_D02Lz9cvK3_Sa014Oakl_C2z
-  sni: grape-turbo-fr.roxa.org
-  skip-cert-verify: true
-  udp: true
-- name: SG新加坡(mibei77.com 米贝节点分享)_4
+- name: US美国(mibei77.com 米贝节点分享)_8
+  type: trojan
+  server: render.com
+  port: 443
+  password: humanity
+  tls: true
+  network: ws
+  sni: www.ignitelimit.com
+  ws-opts:
+    path: /assignment
+    headers:
+      Host: www.ignitelimit.com
+  security_scheme: tls
+  proto: trojan
+  peer: www.ignitelimit.com
+- name: '[peasoft/NoMoreWalls]🇩🇪DE_4|4.1MB/s'
+  type: ss
+  server: 63.176.139.123
+  port: 443
+  cipher: aes-256-cfb
+  password: amazonskr05
+  security_scheme: none
+  proto: ss
+  peer: 63.176.139.123
+- name: SG新加坡(mibei77.com 米贝节点分享)
   type: vless
   server: 104.18.93.3
   port: 80
@@ -757,142 +752,30 @@ proxies:
   security_scheme: none
   proto: vless
   peer: worker3.yahoya44555.workers.dev
-- name: 荷兰+阿姆斯特丹Online+S.A.S
-  type: vless
-  server: 51.15.127.20
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-  security_scheme: tls
-  proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: SG新加坡(mibei77.com 米贝节点分享)_2
+- name: US美国(mibei77.com 米贝节点分享)_9
   type: trojan
-  server: vip-sg-2.hkd4fwmg.vip
-  port: 58277
-  password: Sn+JPr7a1JGWKxUrlhKrgTGajkOxbxUg
+  server: vip-us-6.hkd4fwmg.xyz
+  port: 13758
+  password: atKbXl2I4rKzHGiRybV7fOp+OCYPz+bO
   tls: true
   network: tcp
-  sni: vip-sg-2.hkd4fwmg.vip
+  sni: vip-us-6.hkd4fwmg.xyz
   security_scheme: tls
   proto: trojan
-  peer: vip-sg-2.hkd4fwmg.vip
+  peer: vip-us-6.hkd4fwmg.xyz
 - name: SG新加坡(mibei77.com 米贝节点分享)_3
   type: vless
-  server: vip-sg-2.hkd4fwmg.vip
-  port: 42110
-  uuid: 366ae9eb-56b6-4ce7-a7c2-ab0e1f4ecf5c
+  server: '[2605:e440:15::6b]'
+  port: 443
+  uuid: 41f4cb15-5a3f-3934-89fe-b4177146adf4
   flow: xtls-rprx-vision
   tls: true
   network: tcp
-  sni: vip-sg-2.hkd4fwmg.vip
-  servername: vip-sg-2.hkd4fwmg.vip
+  sni: u643766uccbf75e5s298.wagahaha.xyz
+  servername: u643766uccbf75e5s298.wagahaha.xyz
   security_scheme: tls
   proto: vless
-  peer: vip-sg-2.hkd4fwmg.vip
-- name: US美国(mibei77.com 米贝节点分享)_13
-  type: vless
-  server: 200.165.234.119
-  port: 2200
-  uuid: 936b7663-a841-4b42-b639-6e3fab1dbf45
-  tls: false
-  network: ws
-  sni: rzd.ru
-  servername: rzd.ru
-  ws-opts:
-    path: /v1
-    headers:
-      Host: rzd.ru
-  security_scheme: none
-  proto: vless
-  peer: rzd.ru
-- name: US美国(mibei77.com 米贝节点分享)_63
-  type: vless
-  server: 104.16.75.251
-  port: 443
-  uuid: 03707fb7-0990-440f-88f6-b0e0f7242a38
-  tls: true
-  network: ws
-  sni: germany-2.ariyuz.org
-  servername: germany-2.ariyuz.org
-  ws-opts:
-    path: /
-    headers:
-      Host: germany-2.ariyuz.org
-  security_scheme: tls
-  proto: vless
-  peer: germany-2.ariyuz.org
-- name: SG新加坡(mibei77.com 米贝节点分享)
-  type: trojan
-  server: vip-sg-1.hkd4fwmg.vip
-  port: 21802
-  password: Edk07MJ3Xqg5cl1j5519zqwX2f2EFjON
-  tls: true
-  network: tcp
-  sni: vip-sg-1.hkd4fwmg.vip
-  security_scheme: tls
-  proto: trojan
-  peer: vip-sg-1.hkd4fwmg.vip
-- name: GB英国(mibei77.com 米贝节点分享)_2
-  type: vless
-  server: 194.154.30.154
-  port: 443
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-  security_scheme: tls
-  proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: NL荷兰(mibei77.com 米贝节点分享)_2
-  type: vless
-  server: vip-nl-1.hkd4fwmg.vip
-  port: 31883
-  uuid: 20593145-d975-46f9-9bad-d9f3c8e2d899
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: vip-nl-1.hkd4fwmg.vip
-  servername: vip-nl-1.hkd4fwmg.vip
-  security_scheme: tls
-  proto: vless
-  peer: vip-nl-1.hkd4fwmg.vip
-- name: 芬兰(mibei77.com 米贝节点分享)_2
-  type: vless
-  server: 217.60.63.206
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-  security_scheme: tls
-  proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: NL荷兰(mibei77.com 米贝节点分享)_5_2
-  type: hysteria2
-  server: olp.crsmaps.com
-  port: 443
-  password: 16ab4d4a-fd81-4535-9b7b-346677226ce8
-  sni: olp.crsmaps.com
-  skip-cert-verify: true
-  udp: true
+  peer: u643766uccbf75e5s298.wagahaha.xyz
 - name: US美国(mibei77.com 米贝节点分享)_36_2
   type: hysteria2
   server: 31.76.70.78
@@ -901,60 +784,74 @@ proxies:
   sni: quic.tyr-agentstvo.tech
   skip-cert-verify: true
   udp: true
-- name: RU俄罗斯(mibei77.com 米贝节点分享)
+- name: SG新加坡(mibei77.com 米贝节点分享)_2
   type: vless
-  server: 51.250.4.141
-  port: 8443
-  uuid: 5ca83936-136d-4314-8453-4ba10a86cf60
+  server: 104.18.37.228
+  port: 443
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
   tls: true
   network: ws
-  sni: cloudflare.vhub.pro
-  servername: cloudflare.vhub.pro
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
   ws-opts:
-    path: /websocket?ed=2560
+    path: /sg-melbi
     headers:
-      Host: cloudflare.vhub.pro
+      Host: josni.hoyes.cloudns.ch
   security_scheme: tls
   proto: vless
-  peer: cloudflare.vhub.pro
-- name: 美国+科罗拉多州NTT(美国)通信公司
+  peer: josni.hoyes.cloudns.ch
+- name: US美国(mibei77.com 米贝节点分享)_13
   type: vless
-  server: 157.238.208.110
-  port: 41834
-  uuid: 5adeccb9-dfca-41de-cdf7-4d901f2e70f5
-  tls: false
-  network: ws
-  ws-opts:
-    path: /5adeccb9
-    headers:
-      Host: 157.238.208.110
-  security_scheme: none
-  proto: vless
-  peer: 157.238.208.110
-- name: FR法国(mibei77.com 米贝节点分享)_6
-  type: vless
-  server: 162.19.13.248
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
+  server: 104.16.6.70
+  port: 443
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
   tls: true
   network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
   ws-opts:
-    path: /
+    path: musiclovers85?ed=512
     headers:
-      Host: forfreeuse.rtqa.ru
+      Host: josni.hoyes.cloudns.ch
   security_scheme: tls
   proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: NL荷兰(mibei77.com 米贝节点分享)_4_2
+  peer: josni.hoyes.cloudns.ch
+- name: US美国(mibei77.com 米贝节点分享)_16
+  type: vless
+  server: '[2a0f:5707:aaf1:1ecd::1]'
+  port: 443
+  uuid: 41f4cb15-5a3f-3934-89fe-b4177146adf4
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: u643766u44ea3b0cs71.gogocs.xyz
+  servername: u643766u44ea3b0cs71.gogocs.xyz
+  security_scheme: tls
+  proto: vless
+  peer: u643766u44ea3b0cs71.gogocs.xyz
+- name: 芬兰(mibei77.com 米贝节点分享)
   type: hysteria2
-  server: 46.229.243.137
-  port: 8443
-  password: s0_sdK93x9wer_D02Lz9cvK3_Sa014Oakl_C2z
-  sni: grape-turbo-fr.roxa.org
+  server: fast.wwwinternetvideo.click
+  port: 443
+  password: C91FbOXGY9XRymrcEebtax9R1Nj62UizoT8S6kCb7xwey8IE
+  sni: fast.wwwinternetvideo.click
   skip-cert-verify: true
   udp: true
+- name: FR法国(mibei77.com 米贝节点分享)_6
+  type: trojan
+  server: 104.16.174.12
+  port: 443
+  password: humanity
+  tls: true
+  network: ws
+  sni: www.ignitelimit.com
+  ws-opts:
+    path: /assignment
+    headers:
+      Host: www.ignitelimit.com
+  security_scheme: tls
+  proto: trojan
+  peer: www.ignitelimit.com
 - name: '[peasoft/NoMoreWalls]🇫🇷FR_5|1.4MB/s'
   type: ss
   server: 13.38.78.128
@@ -964,166 +861,14 @@ proxies:
   security_scheme: none
   proto: ss
   peer: 13.38.78.128
-- name: US美国(mibei77.com 米贝节点分享)_9
-  type: vless
-  server: vip-us-6.hkd4fwmg.xyz
-  port: 38609
-  uuid: d0af05d4-d1f0-491e-a143-1def35ad6438
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: vip-us-6.hkd4fwmg.xyz
-  servername: vip-us-6.hkd4fwmg.xyz
-  security_scheme: tls
-  proto: vless
-  peer: vip-us-6.hkd4fwmg.xyz
-- name: 芬兰(mibei77.com 米贝节点分享)_7
-  type: vless
-  server: 104.194.134.129
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-  security_scheme: tls
-  proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: US美国(mibei77.com 米贝节点分享)_16
-  type: vless
-  server: 45.90.32.132
-  port: 4100
-  uuid: 31c2a8e8-0ab2-4f3f-8767-11f3a35d4228
-  tls: false
-  network: ws
-  ws-opts:
-    path: /v1
-    headers:
-      Host: 45.90.32.132
-  security_scheme: none
-  proto: vless
-  peer: 45.90.32.132
-- name: 🇳🇱_荷兰_135
-  type: vless
-  server: 31.59.94.24
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-  security_scheme: tls
-  proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: 芬兰(mibei77.com 米贝节点分享)_6
-  type: vless
-  server: 84.247.171.77
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-  security_scheme: tls
-  proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: 芬兰(mibei77.com 米贝节点分享)_3
-  type: vless
-  server: 77.110.100.63
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-  security_scheme: tls
-  proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: '[peasoft/NoMoreWalls]🇩🇪DE_4|4.1MB/s'
-  type: ss
-  server: 63.176.139.123
-  port: 443
-  cipher: aes-256-cfb
-  password: amazonskr05
-  security_scheme: none
-  proto: ss
-  peer: 63.176.139.123
-- name: 芬兰(mibei77.com 米贝节点分享)_8
+- name: 瑞士(mibei77.com 米贝节点分享)
   type: hysteria2
-  server: fast.wwwinternetvideo.click
-  port: 443
-  password: C91FbOXGY9XRymrcEebtax9R1Nj62UizoT8S6kCb7xwey8IE
-  sni: fast.wwwinternetvideo.click
+  server: 46.229.243.137
+  port: 8080
+  password: s0_sdK93x9wer_D02Lz9cvK3_Sa014Oakl_C2z
+  sni: grape-turbo-fr.roxa.org
   skip-cert-verify: true
   udp: true
-- name: '[peasoft/NoMoreWalls]🇹🇭TH_1|1.2MB/s'
-  type: ss
-  server: 103.169.67.34
-  port: 65443
-  cipher: aes-256-cfb
-  password: 7eadc6dbe2ae
-  security_scheme: none
-  proto: ss
-  peer: 103.169.67.34
-- name: 芬兰(mibei77.com 米贝节点分享)_4
-  type: vless
-  server: 46.101.163.124
-  port: 2053
-  uuid: c7e9c591-2764-423a-afca-efbd010fd396
-  tls: true
-  network: ws
-  sni: forfreeuse.rtqa.ru
-  servername: forfreeuse.rtqa.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: forfreeuse.rtqa.ru
-  security_scheme: tls
-  proto: vless
-  peer: forfreeuse.rtqa.ru
-- name: 拉脱维亚(mibei77.com 米贝节点分享)
-  type: trojan
-  server: tr-latvia1.unlimited-access.ru
-  port: 443
-  password: kxHw-Dk-e9dffgzYszMlEqLJ92AnY3Pi
-  tls: true
-  network: tcp
-  sni: tr-latvia1.unlimited-access.ru
-  security_scheme: tls
-  proto: trojan
-  peer: tr-latvia1.unlimited-access.ru
-- name: 俄罗斯+V2CROSS.COM
-  type: vless
-  server: 185.178.208.176
-  port: 443
-  uuid: 653aea5e-2157-4a1f-89bf-8b46fb677921
-  tls: true
-  network: ws
-  sni: stream.telemetryapi.uk
-  servername: stream.telemetryapi.uk
-  ws-opts:
-    path: /api/v2/client/session/connect
-    headers:
-      Host: stream.telemetryapi.uk
-  security_scheme: tls
-  proto: vless
-  peer: stream.telemetryapi.uk
 - name: '[peasoft/NoMoreWalls]🇫🇷FR_3|2.8MB/s'
   type: ss
   server: 51.44.167.151
@@ -1133,14 +878,3 @@ proxies:
   security_scheme: none
   proto: ss
   peer: 51.44.167.151
-- name: NL荷兰(mibei77.com 米贝节点分享)
-  type: trojan
-  server: vip-nl-1.hkd4fwmg.vip
-  port: 28236
-  password: 0PUoUQvkGLkxuukHJLje21MCg1DNeOpx
-  tls: true
-  network: tcp
-  sni: vip-nl-1.hkd4fwmg.vip
-  security_scheme: tls
-  proto: trojan
-  peer: vip-nl-1.hkd4fwmg.vip
