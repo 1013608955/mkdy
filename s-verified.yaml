@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=25
+# verified=22
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -45,10 +45,8 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - ✅ US美国(mibei77.com 米贝节点分享)_36_2
   - ✅ 瑞士(mibei77.com 米贝节点分享)
   - ✅ 芬兰(mibei77.com 米贝节点分享)_8
-  - ✅ [peasoft/NoMoreWalls]🇹🇭TH_1|1.2MB/s
   - ✅ 拉脱维亚(mibei77.com 米贝节点分享)
   - ✅ NL荷兰(mibei77.com 米贝节点分享)
   - ✅ SG新加坡(mibei77.com 米贝节点分享)
@@ -59,7 +57,6 @@ proxy-groups:
   - ✅ 芬兰(mibei77.com 米贝节点分享)_7
   - ✅ 芬兰(mibei77.com 米贝节点分享)_5
   - ✅ FR法国(mibei77.com 米贝节点分享)_6
-  - ✅ 俄罗斯+V2CROSS.COM
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ GB英国(mibei77.com 米贝节点分享)_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)_2
@@ -73,10 +70,8 @@ proxy-groups:
 - name: 自动选择
   type: url-test
   proxies:
-  - ✅ US美国(mibei77.com 米贝节点分享)_36_2
   - ✅ 瑞士(mibei77.com 米贝节点分享)
   - ✅ 芬兰(mibei77.com 米贝节点分享)_8
-  - ✅ [peasoft/NoMoreWalls]🇹🇭TH_1|1.2MB/s
   - ✅ 拉脱维亚(mibei77.com 米贝节点分享)
   - ✅ NL荷兰(mibei77.com 米贝节点分享)
   - ✅ SG新加坡(mibei77.com 米贝节点分享)
@@ -87,7 +82,6 @@ proxy-groups:
   - ✅ 芬兰(mibei77.com 米贝节点分享)_7
   - ✅ 芬兰(mibei77.com 米贝节点分享)_5
   - ✅ FR法国(mibei77.com 米贝节点分享)_6
-  - ✅ 俄罗斯+V2CROSS.COM
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ GB英国(mibei77.com 米贝节点分享)_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)_2
@@ -103,10 +97,8 @@ proxy-groups:
 - name: 故障转移
   type: fallback
   proxies:
-  - ✅ US美国(mibei77.com 米贝节点分享)_36_2
   - ✅ 瑞士(mibei77.com 米贝节点分享)
   - ✅ 芬兰(mibei77.com 米贝节点分享)_8
-  - ✅ [peasoft/NoMoreWalls]🇹🇭TH_1|1.2MB/s
   - ✅ 拉脱维亚(mibei77.com 米贝节点分享)
   - ✅ NL荷兰(mibei77.com 米贝节点分享)
   - ✅ SG新加坡(mibei77.com 米贝节点分享)
@@ -117,7 +109,6 @@ proxy-groups:
   - ✅ 芬兰(mibei77.com 米贝节点分享)_7
   - ✅ 芬兰(mibei77.com 米贝节点分享)_5
   - ✅ FR法国(mibei77.com 米贝节点分享)_6
-  - ✅ 俄罗斯+V2CROSS.COM
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ GB英国(mibei77.com 米贝节点分享)_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)_2
@@ -648,14 +639,6 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: ✅ US美国(mibei77.com 米贝节点分享)_36_2
-  type: hysteria2
-  server: 31.76.70.78
-  port: 8443
-  password: 5ca83936-136d-4314-8453-4ba10a86cf60
-  sni: quic.tyr-agentstvo.tech
-  skip-cert-verify: true
-  udp: true
 - name: ✅ 瑞士(mibei77.com 米贝节点分享)
   type: hysteria2
   server: 46.229.243.137
@@ -679,15 +662,6 @@ proxies:
       Host: forfreeuse.rtqa.ru
   skip-cert-verify: true
   udp: true
-- name: ✅ [peasoft/NoMoreWalls]🇹🇭TH_1|1.2MB/s
-  type: ss
-  server: 103.169.67.34
-  port: 65443
-  cipher: aes-256-cfb
-  password: 7eadc6dbe2ae
-  security_scheme: none
-  proto: ss
-  peer: 103.169.67.34
 - name: ✅ 拉脱维亚(mibei77.com 米贝节点分享)
   type: trojan
   server: tr-latvia1.unlimited-access.ru
@@ -804,23 +778,6 @@ proxies:
   ws-opts:
     path: /assignment
   udp: true
-- name: ✅ 俄罗斯+V2CROSS.COM
-  type: vless
-  server: 188.130.234.239
-  port: 443
-  uuid: 308cf8e0-e922-49bb-9b68-203e5aafcc97
-  tls: true
-  network: grpc
-  sni: kz.node.goidanet.com
-  servername: kz.node.goidanet.com
-  reality-opts:
-    public-key: xXxqDpB8gQjBddOHSOFb52xVS2Odmb63z1PYhMqe0Uo
-    short-id: 1a55b8fd25417fbf
-    spider-x: ''
-    fingerprint: firefox
-  security_scheme: reality
-  proto: vless
-  peer: kz.node.goidanet.com
 - name: ✅ 芬兰(mibei77.com 米贝节点分享)
   type: hysteria2
   server: fast.wwwinternetvideo.click
