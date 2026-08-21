@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=13
+# verified=16
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -45,6 +45,7 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
+  - ✅ 日本+东京Choopa数据中心
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸_美国_374
@@ -52,8 +53,10 @@ proxy-groups:
   - ✅ 🇺🇸_US_美国_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)_3
   - ✅ 🇩🇪_德国_313
+  - ✅ 🇷🇺_俄罗斯_651
   - ✅ 🇷🇺_俄罗斯_309
   - ✅ 🇷🇺_俄罗斯_308
+  - ✅ 🇷🇺_俄罗斯_400
   - ✅ 芬兰(mibei77.com 米贝节点分享)_2
   - ✅ 🇳🇱_荷兰_390
   - ✅ 🇳🇱_荷兰_304
@@ -61,6 +64,7 @@ proxy-groups:
 - name: 自动选择
   type: url-test
   proxies:
+  - ✅ 日本+东京Choopa数据中心
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸_美国_374
@@ -68,8 +72,10 @@ proxy-groups:
   - ✅ 🇺🇸_US_美国_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)_3
   - ✅ 🇩🇪_德国_313
+  - ✅ 🇷🇺_俄罗斯_651
   - ✅ 🇷🇺_俄罗斯_309
   - ✅ 🇷🇺_俄罗斯_308
+  - ✅ 🇷🇺_俄罗斯_400
   - ✅ 芬兰(mibei77.com 米贝节点分享)_2
   - ✅ 🇳🇱_荷兰_390
   - ✅ 🇳🇱_荷兰_304
@@ -79,6 +85,7 @@ proxy-groups:
 - name: 故障转移
   type: fallback
   proxies:
+  - ✅ 日本+东京Choopa数据中心
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸_美国_374
@@ -86,8 +93,10 @@ proxy-groups:
   - ✅ 🇺🇸_US_美国_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)_3
   - ✅ 🇩🇪_德国_313
+  - ✅ 🇷🇺_俄罗斯_651
   - ✅ 🇷🇺_俄罗斯_309
   - ✅ 🇷🇺_俄罗斯_308
+  - ✅ 🇷🇺_俄罗斯_400
   - ✅ 芬兰(mibei77.com 米贝节点分享)_2
   - ✅ 🇳🇱_荷兰_390
   - ✅ 🇳🇱_荷兰_304
@@ -612,6 +621,16 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
+- name: ✅ 日本+东京Choopa数据中心
+  type: hysteria2
+  server: 45.32.252.144
+  port: 443
+  password: 1e3a5c5fde1da9dd1358b4adeb0c4ca1
+  sni: vps.vpsv.cc
+  tls: true
+  security_scheme: tls
+  proto: hysteria2
+  peer: vps.vpsv.cc
 - name: ✅ 芬兰(mibei77.com 米贝节点分享)
   type: hysteria2
   server: fast.wwwinternetvideo.click
@@ -699,6 +718,20 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: forfreeuse.rtqa.ru
+- name: ✅ 🇷🇺_俄罗斯_651
+  type: vless
+  server: 194.26.229.157
+  port: 2200
+  uuid: c05888f0-4029-45c8-bea7-ea5eff564462
+  tls: false
+  network: ws
+  ws-opts:
+    path: /v1
+    headers:
+      Host: 194.26.229.157
+  security_scheme: none
+  proto: vless
+  peer: 194.26.229.157
 - name: ✅ 🇷🇺_俄罗斯_309
   type: vless
   server: 200.165.234.119
@@ -729,6 +762,22 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 201.24.126.156
+- name: ✅ 🇷🇺_俄罗斯_400
+  type: vless
+  server: 201.24.49.69
+  port: 4100
+  uuid: 2cd5f052-6455-4153-b7d3-0545184dc64c
+  tls: false
+  network: ws
+  sni: live.ok.ru
+  servername: live.ok.ru
+  ws-opts:
+    path: /v1
+    headers:
+      Host: live.ok.ru
+  security_scheme: none
+  proto: vless
+  peer: live.ok.ru
 - name: ✅ 芬兰(mibei77.com 米贝节点分享)_2
   type: vless
   server: 217.60.63.206
