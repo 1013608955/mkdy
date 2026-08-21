@@ -125,51 +125,66 @@ def _git(args, check=True):
     return r.returncode, out
 
 
-def _sanitize_reality(proxies):
-    """mihomo 对 vless+reality 校验极严（short-id 必须 'XX:XX:...' 冒号 hex、
-    public-key 必须标准 base64），任一带病节点会让 mihomo 启动 fatal、整份配置
-    拒绝加载、全部节点无法验证（本项目已多次踩坑）。上游订阅常混入格式损坏的
-    reality 节点（连写 hex 的 short-id、含 '-' 等非 base64 字符的 public-key 等）。
-
-    处理策略（隔离而非硬改值）：
-    1. short-id 为连写 hex 的 → 归一化补冒号（值不变，仅补分隔符）。
-    2. reality 节点的 public-key / short-id 任一不满足 mihomo 最小合法性 →
-       该节点从待验证列表**移除**（打 [skip] 日志），不参与 mihomo 加载，
-       避免拖垮其他节点。被跳过的 reality 节点本就难连，下游客户端 url-test 兜底。
-    返回 (kept, skipped)：kept 为保留的 proxies 列表，skipped 为被移除的节点名。
-    """
+def _norm_reality_shortid(proxies):
+    """short-id 连写 hex（如 '7d6b6b7a606c21cf'）归一化为冒号格式（值不变）。
+    这是已知的安全修复；其余字段不动（避免瞎改导致连不上）。"""
     import re
-    hex_colon = re.compile(r"[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){0,15}")
-    b64_std = re.compile(r"[A-Za-z0-9+/=]{43,44}")  # 标准 base64（不含 - / _）
-
-    kept, skipped = [], []
     for p in proxies:
         if p.get("type") != "vless":
-            kept.append(p)
             continue
         opts = p.get("reality-opts")
         if not isinstance(opts, dict):
-            # 声明 vless 但无 reality-opts：同样会让 mihomo 解析异常，隔离。
-            skipped.append(p.get("name"))
             continue
         sid = opts.get("short-id")
-        pk = opts.get("public-key")
-        reasons = []
         if isinstance(sid, str) and sid and ":" not in sid:
             s = sid.strip()
             if len(s) % 2 == 0 and re.fullmatch(r"[0-9a-fA-F]+", s):
                 opts["short-id"] = ":".join(
                     s[i:i + 2] for i in range(0, len(s), 2))
-                sid = opts["short-id"]
-        if not (isinstance(sid, str) and hex_colon.fullmatch(sid)):
-            reasons.append("short-id")
-        if not (isinstance(pk, str) and b64_std.fullmatch(pk)):
-            reasons.append("public-key")
-        if reasons:
-            skipped.append(p.get("name"))
-            continue
-        kept.append(p)
-    return kept, skipped
+
+
+def _mihomo_accepts(proxies, mihomo_bin, workdir):
+    """用 mihomo -t 校验这批 proxies 能否被加载。返回 True/False。"""
+    import tempfile, os, subprocess
+    cfg = build_mihomo_config(proxies, _free_port(), _free_port())
+    wd = tempfile.mkdtemp(prefix="mihomo_chk_", dir=workdir)
+    cp = os.path.join(wd, "config.yaml")
+    with open(cp, "w", encoding="utf-8") as f:
+        yaml.safe_dump(cfg, f, allow_unicode=True, sort_keys=False)
+    try:
+        r = subprocess.run([mihomo_bin, "-t", "-d", wd, "-f", cp],
+                           capture_output=True, text=True, timeout=30)
+        return r.returncode == 0
+    except Exception:
+        return False
+    finally:
+        shutil.rmtree(wd, ignore_errors=True)
+
+
+def _isolate_bad_proxies(proxies, mihomo_bin, workdir):
+    """以 mihomo -t 为预言机，二分隔离出会导致整份配置 fatal 的坏节点并移除，
+    使剩余节点能被 mihomo 正常加载。上游订阅常混入各种格式损坏节点（reality
+    字段、未知类型等），任一坏节点会让 mihomo 启动 fatal、拖垮全部验证。
+    返回 (clean, removed)：clean 为可加载的 proxies，removed 为被移除节点名。"""
+    _norm_reality_shortid(proxies)
+    removed = []
+
+    def split_bad(group):
+        # group 已知会让 mihomo fatal；二分定位其中的坏节点逐个移除。
+        if len(group) <= 1:
+            removed.append(group[0].get("name"))
+            return
+        mid = len(group) // 2
+        left, right = group[:mid], group[mid:]
+        if not _mihomo_accepts(left, mihomo_bin, workdir):
+            split_bad(left)
+        if not _mihomo_accepts(right, mihomo_bin, workdir):
+            split_bad(right)
+
+    if not _mihomo_accepts(proxies, mihomo_bin, workdir):
+        split_bad(list(proxies))
+    clean = [p for p in proxies if p.get("name") not in set(removed)]
+    return clean, removed
 
 
 def build_mihomo_config(proxies, ctrl_port, mixed_port):
@@ -294,11 +309,12 @@ def main():
         print(f"[warn] 丢弃 {len(dropped)} 个重名节点（上游 s-clash.yaml 有 duplicate "
               f"name，会导致 Clash 客户端拒绝加载）：{dropped[:3]}")
     proxies = uniq
-    # reality 节点隔离：归一化合法 short-id，字段带病的 reality 节点移除（避免
-    # mihomo 启动 fatal 拖垮全部验证）。被跳过节点打 [skip] 日志。
-    proxies, _skipped = _sanitize_reality(proxies)
+    # 坏节点隔离：以 mihomo -t 为预言机二分定位导致整份配置 fatal 的坏节点并移除，
+    # 避免单个坏节点（reality 字段损坏、未知类型等）拖垮全部验证。被隔离节点不验证，
+    # 靠客户端 url-test 兜底（本项目安全边界：真正可用性由客户端判定）。
+    proxies, _skipped = _isolate_bad_proxies(proxies, mihomo, tempfile.gettempdir())
     if _skipped:
-        print(f"[skip] 隔离 {len(_skipped)} 个 reality 字段非法的节点（不验证，"
+        print(f"[skip] 隔离 {len(_skipped)} 个 mihomo 无法加载的坏节点（不验证，"
               f"靠客户端兜底）：{_skipped[:3]}")
     if args.limit > 0:
         proxies = proxies[:args.limit]
