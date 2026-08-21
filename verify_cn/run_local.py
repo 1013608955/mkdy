@@ -125,6 +125,34 @@ def _git(args, check=True):
     return r.returncode, out
 
 
+def _fix_reality_shortid(proxies):
+    """mihomo 严格校验 vless+reality 的 short-id 必须为 'XX:XX:...' 冒号分隔的 hex。
+    上游订阅常给出连写 hex（如 '7d6b6b7a606c21cf'），会导致 mihomo 启动 fatal、
+    整份配置拒绝加载、全部节点无法验证。这里在喂 mihomo 前把连写 hex 归一化为
+    冒号格式（值不变，仅补分隔符）；已合法或空的保持不动；非 hex 的跳过不动
+    （交给 mihomo 正常报错，不静默吞掉）。返回被修正的节点名列表。"""
+    import re
+    fixed = []
+    for p in proxies:
+        if p.get("type") != "vless":
+            continue
+        opts = p.get("reality-opts")
+        if not isinstance(opts, dict):
+            continue
+        sid = opts.get("short-id")
+        if not isinstance(sid, str) or not sid:
+            continue
+        if ":" in sid:
+            continue  # 已是冒号格式
+        s = sid.strip()
+        if len(s) % 2 != 0 or not re.fullmatch(r"[0-9a-fA-F]+", s):
+            continue  # 非连写 hex，跳过
+        norm = ":".join(s[i:i + 2] for i in range(0, len(s), 2))
+        opts["short-id"] = norm
+        fixed.append(p.get("name"))
+    return fixed
+
+
 def build_mihomo_config(proxies, ctrl_port, mixed_port):
     """最小可用配置：只要能加载节点 + 开 external-controller 即可。
     mode=direct + 单条 MATCH,DIRECT 规则 → 不需要 geoip/geosite 数据文件。"""
@@ -247,6 +275,11 @@ def main():
         print(f"[warn] 丢弃 {len(dropped)} 个重名节点（上游 s-clash.yaml 有 duplicate "
               f"name，会导致 Clash 客户端拒绝加载）：{dropped[:3]}")
     proxies = uniq
+    # reality short-id 归一化：上游连写 hex 会让 mihomo 启动 fatal、拖垮全部节点。
+    _fixed = _fix_reality_shortid(proxies)
+    if _fixed:
+        print(f"[fix] 归一化 {len(_fixed)} 个 vless/reality short-id（补冒号分隔，值不变）："
+              f"{_fixed[:3]}")
     if args.limit > 0:
         proxies = proxies[:args.limit]
     if not proxies:
