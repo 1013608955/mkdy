@@ -123,6 +123,7 @@ else
 #!/usr/bin/env bash
 # 每 15 分钟循环：优先用控制台注入的 process env GITHUB_PAT，未注入则 fallback 仓库内 .env。
 # 仓库位于持久盘 /workspace（系统盘 /root 重启即丢），故路径硬编码。
+# 每次跑验证前先 git pull 最新代码（走 ghproxy 镜像 + ff-only），让容器自动跟进仓库改动（方案A 等）。
 while true; do
   sleep 900
   cd /workspace/mkdy
@@ -132,6 +133,12 @@ while true; do
   if [ -n "$GITHUB_PAT" ]; then
     git remote set-url --push origin "https://${GITHUB_PAT}@github.com/1013608955/mkdy.git"
   fi
+  # ---- 自动拉取最新代码（不阻塞验证：pull 失败仅告警，照常跑）----
+  # 华为云容器直连 GitHub 的 git fetch 会 stall，故 fetch 走 ghproxy 镜像。
+  echo "[$(date '+%F %T')] 自动 git pull（ff-only, 走镜像）..." >> verify_cn/logs/run.log 2>&1
+  git -c url."https://ghproxy.net/https://github.com/".insteadOf="https://github.com/" \
+      pull --ff-only origin main >> verify_cn/logs/run.log 2>&1 \
+    || echo "[$(date '+%F %T')] [WARN] git pull 失败，沿用本地代码继续验证" >> verify_cn/logs/run.log 2>&1
   python3 verify_cn/run_local.py >> verify_cn/logs/run.log 2>&1
 done
 LOOP
