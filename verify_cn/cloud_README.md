@@ -24,7 +24,7 @@ bash <(curl -fsSL https://ghproxy.net/https://raw.githubusercontent.com/10136089
 
 ## 验证链路
 - 每小时 :05：容器里 `run_local.py` 起 mihomo、真链探测全部节点、写 `verified.json`、推送到 main。
-- 推送触发 GitHub `verify-tag.yml` → 自动打标产出 `s-verified.yaml`（仅含已验证节点 + 完整规则层）。
+- 推送触发 GitHub `update-subs.yml` → `merge_subs.py` 读 verified.json 一步产出 `s-verified.yaml`（方案A，免打标漂移）。
 - 容器常开 = PC 关机也不中断。
 
 ## 核时消耗

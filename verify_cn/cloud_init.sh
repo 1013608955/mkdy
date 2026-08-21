@@ -10,7 +10,8 @@
 #   A. 已克隆本仓库：  bash verify_cn/cloud_init.sh
 #   B. 空环境直通：    bash <(curl -fsSL https://ghproxy.net/https://raw.githubusercontent.com/1013608955/mkdy/main/verify_cn/cloud_init.sh)
 #
-# 设计：每 15 分钟自动跑 run_local.py 并推送 -> GitHub verify-tag 自动打标 s-verified.yaml。
+# 设计：每 15 分钟自动跑 run_local.py（产出含完整 proxy 的 verified.json）并推送 ->
+#       GitHub update-subs.yml 监听 verified.json，由 merge_subs 一步产出 s-verified.yaml（方案A，免打标漂移）。
 # 容器常开即等价于「PC 关机也不中断」。想最省核时见末尾说明。
 set -euo pipefail
 
@@ -153,7 +154,7 @@ else
 fi
 
 echo
-log "完成。后续每 15 分钟自动验证并推送；GitHub verify-tag 自动打标 s-verified.yaml。"
+log "完成。后续每 15 分钟自动验证并推送 verified.json；GitHub update-subs 监听到后即 merge 产出 s-verified.yaml（方案A）。"
 log "查看日志： tail -f $REPO_DIR/verify_cn/logs/run.log"
 echo
 echo "【省核时进阶】若仅想跑几分钟/小时、其余时间关机："

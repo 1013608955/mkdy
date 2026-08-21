@@ -50,9 +50,57 @@ SCHEMES = (
 
 TXT_SOURCES = ["s.txt", "s1.txt", "s2.txt"]
 YAML_SOURCES = ["s2-clash-1.yaml", "s2-clash-2.yaml"]
-# 已验证节点快照（中国出口验证通过的节点），由 verify-tag.yml 每次 CI 刷新。
-# 在生成 s-clash.yaml 前去重阶段优先并入，使产物与 s-verified.yaml 最新内容同步。
-VERIFIED_SOURCE = "s-verified.yaml"
+# 方案 A：已验证节点直接来自 verify_cn/verified.json（验证器已携带完整 proxy dict），
+# 不再依赖 verify-tag.yml 用 'name' 去 s-clash.yaml 重新 join（那是漂移根因）。
+# merge_subs 读取 ok 节点的完整 proxy，一步产出 s-verified.yaml，彻底去掉打标环节。
+VERIFIED_SOURCE = "verify_cn/verified.json"
+VERIFIED_OUT = "s-verified.yaml"
+VERIFIED_MARK = "✅ "  # 与历史 s-verified.yaml 客户端消费方式保持一致
+
+
+def load_verified_proxies(path, name_index=None):
+    """读 verify_cn/verified.json，返回验证通过的完整 proxy dict 列表（已加 ✅ 前缀）。
+
+    方案 A：验证器在 nodes[i]['proxy'] 里存了完整节点配置，这里直接取用，
+    用 (type,server,port) 兜底去重，不再依赖节点名字符串匹配，根除漂移。
+
+    过渡兼容（name_index）：旧版 verified.json 不含 proxy 字段时，
+    回退用节点名去 name_index（全量节点）取完整配置，避免迁移期节点丢失；
+    新版验证器一跑即转纯方案 A 路径，name_index 不再被用到。
+    """
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f) or {}
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+    out = []
+    seen = set()
+    for nd in data.get("nodes", []) or []:
+        if not nd.get("ok"):
+            continue
+        name = nd.get("name", "")
+        proxy = nd.get("proxy")
+        if not isinstance(proxy, dict) or not proxy.get("server"):
+            # 旧格式降级：用 name 去全量节点里找完整配置
+            if name_index and name in name_index:
+                proxy = name_index[name]
+            else:
+                continue
+        if not isinstance(proxy, dict) or not proxy.get("server"):
+            continue
+        k = (str(proxy.get("type", "")).lower(),
+             str(proxy.get("server", "")).lower(),
+             int(proxy.get("port") or 0))
+        if k in seen:
+            continue
+        seen.add(k)
+        p = dict(proxy)
+        # 加 ✅ 前缀标记（若已存在则跳过，避免重复前缀累积）
+        pname = p.get("name", "")
+        if not pname.startswith(VERIFIED_MARK):
+            p["name"] = VERIFIED_MARK + pname
+        out.append(p)
+    return out
 
 
 # --------------------------------------------------------------------------- #
@@ -155,6 +203,49 @@ def write_txt(txt_out, merged):
 # make_names_unique 已抽到 name_util.py（见顶部 import 别名为 make_names_unique）。
 
 
+def write_verified(out_base, base, verified_nodes):
+    """方案 A：单独产出 s-verified.yaml（仅含中国出口验证通过的节点）。
+
+    入参 verified_nodes 由 main 统一计算（含旧格式 name 降级），
+    独立于全量 s-clash.yaml 的去重/排序，避免打标环节的 name 漂移。
+    无模版时退化为裸 proxies 输出。
+    """
+    if not verified_nodes:
+        LOG.info(f"[merge] 无已验证节点，跳过 {VERIFIED_OUT}")
+        return
+    out_path = os.path.join(out_base, VERIFIED_OUT)
+    os.makedirs(out_base, exist_ok=True)
+    template_path = os.path.join(base, "clash_template.yaml")
+    if not os.path.exists(template_path):
+        with open(out_path, "w", encoding="utf-8") as f:
+            yaml.safe_dump({"proxies": verified_nodes}, allow_unicode=True,
+                           sort_keys=False, default_flow_style=False)
+        LOG.info(f"[merge] 写出 {len(verified_nodes)} 条已验证节点 -> {VERIFIED_OUT} (无模版)")
+        return
+    with open(template_path, encoding="utf-8") as f:
+        doc = yaml.safe_load(f) or {}
+    all_names = [p["name"] for p in verified_nodes]
+    doc["proxies"] = verified_nodes
+    for g in doc.get("proxy-groups", []) or []:
+        plist = g.get("proxies")
+        if isinstance(plist, list):
+            new_list = []
+            for item in plist:
+                if item == "__ALL_PROXIES__":
+                    new_list.extend(all_names)
+                else:
+                    new_list.append(item)
+            g["proxies"] = new_list
+    header = (
+        "# Auto-merged verified subscription (mkdy) — 中国出口验证通过节点\n"
+        f"# verified={len(verified_nodes)}\n"
+    )
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(header)
+        yaml.safe_dump(doc, f, allow_unicode=True, sort_keys=False, default_flow_style=False, width=10000)
+    LOG.info(f"[merge] 写出 {len(verified_nodes)} 条已验证节点 -> {VERIFIED_OUT} (含规则层)")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="s-clash.yaml")
@@ -163,19 +254,6 @@ def main():
 
     base = args.base
     nodes = []
-
-    # 0) 优先并入"已验证节点"快照（s-verified.yaml，每次 CI 由 verify-tag 刷新）
-    #    放在最前：去重时优先保留 verified 的完整配置（含 tls/reality 等），
-    #    后续相同节点（server/port/uuid 一致）会被跳过而不覆盖 => 不丢字段。
-    #    与下游统一去重配合 => 最终 s-clash.yaml 既无重复、又与 s-verified 最新内容同步。
-    vpath = os.path.join(base, VERIFIED_SOURCE)
-    n_verified = 0
-    for nd in load_clash_yaml(vpath):
-        if isinstance(nd, dict) and nd.get("server"):
-            nodes.append(nd)
-            n_verified += 1
-    if n_verified:
-        LOG.info(f"[merge] 从 {VERIFIED_SOURCE} 并入 {n_verified} 条已验证节点（优先）")
 
     # 1) 订阅文本（base64）
     for fn in TXT_SOURCES:
@@ -196,7 +274,25 @@ def main():
             if isinstance(nd, dict) and nd.get("server"):
                 nodes.append(nd)
 
-    # 3) 去重
+    # 3) 方案 A：从 verify_cn/verified.json 并入"中国出口验证通过"的完整节点。
+    #    验证器已把完整 proxy dict 存进 json，这里直接取用（不再 name join），
+    #    去重时优先保留 verified 的完整配置（含 tls/reality 等）。
+    #    name_index 为全量节点的 name->proxy 映射，供旧版 verified.json（无 proxy 字段）
+    #    降级回退用 name 匹配，避免迁移期节点丢失；新版验证器一跑即转纯方案 A。
+    #    额外并入上一次合并产物 s-clash.yaml 的 proxies 作查找源（与旧 tag_verified 逻辑一致），
+    #    保证本地/CI 无论源 txt 是否就绪都能降级匹配。
+    name_index = {n.get("name"): n for n in nodes if n.get("name")}
+    for nd in load_clash_yaml(os.path.join(base, "s-clash.yaml")):
+        if isinstance(nd, dict) and nd.get("name") and nd["name"] not in name_index:
+            name_index[nd["name"]] = nd
+    vpath = os.path.join(base, VERIFIED_SOURCE)
+    verified_nodes = load_verified_proxies(vpath, name_index)
+    n_verified = len(verified_nodes)
+    if n_verified:
+        LOG.info(f"[merge] 从 {VERIFIED_SOURCE} 并入 {n_verified} 条已验证节点（优先，方案A）")
+        nodes = verified_nodes + nodes  # verified 在前：去重时优先保留其完整配置
+
+    # 4) 去重
     seen, merged = set(), []
     for n in nodes:
         k = dedup_key(n)
@@ -232,6 +328,7 @@ def main():
             f.write(body)
         LOG.info(f"[merge] 原始 {len(nodes)} 条 -> 去重后 {len(merged)} 条 -> {args.out} (无模版)")
         write_txt(txt_out, merged)  # 无模版时仍产出 v2rayN 兼容 txt，保持两产物对称
+        write_verified(out_base, base, verified_nodes)  # 方案 A：仍产出 s-verified.yaml
         return
 
     with open(template_path, encoding="utf-8") as f:
@@ -264,6 +361,9 @@ def main():
 
     LOG.info(f"[merge] 原始 {len(nodes)} 条 -> 去重后 {len(merged)} 条 -> {args.out} (含规则层)")
     write_txt(txt_out, merged)
+
+    # 方案 A：额外产出 s-verified.yaml（验证通过节点，独立完整配置，免打标漂移）
+    write_verified(out_base, base, verified_nodes)
 
 
 if __name__ == "__main__":

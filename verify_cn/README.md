@@ -1,7 +1,7 @@
 # mkdy 中国出口验证探针（verify_cn）
 
 在中国大陆网络出口对聚合后的代理节点做**真实链路验证**，产出「已验证可用」结论，
-回写仓库 `verify_cn/verified.json`；GitHub 端 `verify-tag.yml` 监听该文件、自动产出
+回写仓库 `verify_cn/verified.json`（含完整 proxy dict）；GitHub 端 `update-subs.yml` 监听该文件、由 `merge_subs.py` 一步产出
 仅含可用节点的 `s-verified.yaml`。
 
 > 本机部署见 [`LOCAL_VERIFY.md`](./LOCAL_VERIFY.md)；
@@ -19,8 +19,8 @@
   - 主目标失败的节点用兜底目标 `https://www.cloudflare.com/cdn-cgi/trace` 复测一轮，
     防止 google 单点被个别节点 / CDN 误杀；
 - 逐节点结果（含诊断 `detail`）写入 `verify_cn/verified.json`；
-- 若开启推送，`git commit + push` 后自动触发 GitHub `verify-tag.yml` →
-  `tag_verified.py` 给验证通过（ok=true）的节点套用规则模版，输出 `s-verified.yaml`。
+- 若开启推送，`git commit + push` 后自动触发 GitHub `update-subs.yml` →
+  `merge_subs.py` 读取 verified.json 的完整 proxy，直接产出带 ✅ 标记的 `s-verified.yaml`（方案A，免打标漂移）。
 
 > 验证的是「从该出口位置能翻墙」，不等于所有用户都能用（不同省份 / ISP 的 GFW 行为不同）。
 > 客户端 `url_test` 仍是最终仲裁。
@@ -57,9 +57,9 @@
 | `cloud_init.sh` | 容器一键引导（幂等，可重复跑） |
 | `set_schedule.sh` | 容器内把验证间隔切到每 15 分钟（幂等） |
 | `mkdy-verify.service` / `mkdy-verify.timer` | systemd 单元模板（容器有 systemd 时用） |
-| `tag_verified.py` | 读 `verified.json` + `s-clash.yaml` → 产出打标 `s-verified.yaml` |
+| `merge_subs.py` | 读 `verified.json`（含完整 proxy）→ 一步产出 `s-verified.yaml`（方案A，已替代 tag_verified.py） |
 | `requirements.txt` | Python 依赖（`pyyaml`） |
-| `verified.json` | 运行产物（运行时生成，已入库以便 `verify-tag.yml` 监听） |
+| `verified.json` | 运行产物（运行时生成，已入库以便 `update-subs.yml` 监听；含完整 proxy dict） |
 | `LOCAL_VERIFY.md` | 本机（Windows）部署说明 |
 | `cloud_README.md` | 容器部署说明 |
 

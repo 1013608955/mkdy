@@ -254,6 +254,9 @@ def main():
         sys.exit(2)
     names = [p["name"] for p in proxies]
     proto_of = {p["name"]: (p.get("type") or "?") for p in proxies}
+    # 方案 A：保留完整 proxy dict 映射，供 verified.json 直接携带完整节点配置，
+    # 免去下游 tag_verified 用 'name' 去 s-clash.yaml 重新 join（这正是漂移根因）。
+    proxy_of = {p["name"]: p for p in proxies}
     print(f"[init] 待验证节点：{len(proxies)}  并发：{args.concurrency}  "
           f"超时：{args.timeout}s")
 
@@ -297,6 +300,7 @@ def main():
                     ok, lat, det = fut.result()
                     results[n] = {"name": n, "proto": proto_of.get(n, "?"),
                                   "ok": ok, "latency": lat,
+                                  "proxy": proxy_of.get(n),  # 方案 A：完整节点配置，下游免 join
                                   "detail": (f"ok via {url} ({det})" if ok
                                              else det)}
                     done += 1
@@ -333,6 +337,9 @@ def main():
         "target": TARGET,
         "count": len(ordered),
         "ok": sum(1 for r in ordered if r["ok"]),
+        # 方案 A：每个 node 携带完整 proxy dict（含 tls/reality/server/port 等），
+        # merge_subs.py 直接消费 ok 节点的 proxy 产出 s-verified.yaml，
+        # 不再需要 tag_verified.py 用 'name' 去 s-clash.yaml 重新 join（消除漂移）。
         "nodes": ordered,
     }
     with open(OUT_JSON, "w", encoding="utf-8") as f:

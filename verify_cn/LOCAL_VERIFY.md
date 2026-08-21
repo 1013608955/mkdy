@@ -73,8 +73,8 @@ git pull ──> 读 s-clash.yaml 的 proxies
              └─> 写 verify_cn/verified.json
                  │
                  └─> git commit + push
-                     └─> 触发 GitHub 端 verify-tag.yml（监听 verify_cn/verified.json）
-                         └─> tag_verified.py 给已验证节点加 ✅ → s-verified.yaml
+                     └─> 触发 GitHub 端 update-subs.yml（监听 verify_cn/verified.json）
+                         └─> merge_subs.py 读完整 proxy 一步产出带 ✅ 的 s-verified.yaml（方案A）
 ```
 
 ## 定时执行

@@ -69,5 +69,5 @@ LOOP
   log "run_loop.sh 后台循环已启动（首次 15 分钟后跑，之后每 15 分钟）"
 fi
 
-log "完成。后续每 15 分钟自动验证并推送 verified.json；GitHub verify-tag 自动打标 s-verified.yaml。"
+log "完成。后续每 15 分钟自动验证并推送 verified.json；GitHub update-subs 监听后由 merge_subs 产出 s-verified.yaml（方案A）。"
 log "查看日志： tail -f $LOG_DIR/run.log"

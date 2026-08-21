@@ -3,7 +3,7 @@
 # 以及它们依赖的 SubConverter/Docker。
 #
 # 现在：单个工作流，每小时拉取全部源 -> 本地纯 Python 合并去重 -> 只提交 s-clash.yaml。
-# 仓库最终只保留两个订阅文件：s-clash.yaml（全量，喂给 verify_cn）+ s-verified.yaml（打标，由 verify-tag.yml 产出）。
+# 仓库最终只保留两个订阅文件：s-clash.yaml（全量，喂给 verify_cn）+ s-verified.yaml（验证通过节点，由 merge_subs 一步产出，方案A）。
 name: 订阅合并（单源）
 
 on:
@@ -68,8 +68,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # 只提交合并产物，其余临时文件（s.txt/s1.txt/s2.txt/s2-clash-*.yaml 等）不入库
-          git add s-clash.yaml s-clash.txt
+          # 只提交合并产物：s-clash.yaml（全量）+ s-verified.yaml（验证通过节点，方案A由 merge 一步产出）
+          # 其余临时文件（s.txt/s1.txt/s2.txt/s2-clash-*.yaml 等）不入库
+          git add s-clash.yaml s-clash.txt s-verified.yaml s-verified.txt
           if git diff --cached --quiet; then
             echo "[INFO] s-clash.yaml 无变化，跳过推送"
           else
@@ -78,5 +79,5 @@ jobs:
             git fetch origin main
             git merge origin/main --no-edit --no-ff
             git push
-            echo "[INFO] s-clash.yaml 已更新并推送"
+            echo "[INFO] s-clash.yaml / s-verified.yaml 已更新并推送"
           fi
