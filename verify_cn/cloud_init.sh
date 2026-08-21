@@ -13,7 +13,7 @@
 # 设计：每 15 分钟自动跑 run_local.py（产出含完整 proxy 的 verified.json）并推送 ->
 #       GitHub update-subs.yml 监听 verified.json，由 merge_subs 一步产出 s-verified.yaml（方案A，免打标漂移）。
 # 容器常开即等价于「PC 关机也不中断」。想最省核时见末尾说明。
-set -euo pipefail
+set -u
 
 REPO_URL="${REPO_URL:-https://github.com/1013608955/mkdy.git}"
 # 注意：容器重启会重置系统盘 /root，只有数据盘 /workspace（EVS）持久，

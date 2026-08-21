@@ -12,7 +12,7 @@
 #
 # 前置：容器需保持常开；GITHUB_PAT 已在控制台注入或写在 verify_cn/.env
 #       （run_local.py 推送靠 git remote 里的 PAT，详见 cloud_init.sh）。
-set -uo pipefail
+set -u
 REPO_DIR="${REPO_DIR:-/workspace/mkdy}"
 LOG_DIR="$REPO_DIR/verify_cn/logs"
 log(){ echo "==> $*"; }
