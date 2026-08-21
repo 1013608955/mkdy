@@ -43,5 +43,75 @@ class TestMergeDedup(unittest.TestCase):
         self.assertEqual(len(data.get("proxies", [])), 1)
 
 
+class TestVerifiedMerge(unittest.TestCase):
+    def test_verified_priority_and_dedup(self):
+        """验证：生成 s-clash.yaml 前并入 s-verified.yaml，且去重：
+        - 与订阅源重复的节点优先保留 verified 的完整配置（而非精简版）
+        - 最终无重复节点
+        - verified 的全部节点都同步进产物
+        """
+        d = tempfile.mkdtemp()
+
+        # s-verified.yaml：N1(带 extra 标记=完整版) + N2(verified 独有)
+        verified = {"proxies": [
+            {"name": "N1-verified", "type": "ss", "server": "h1", "port": 1,
+             "cipher": "aes-256-gcm", "password": "p", "extra": "verified-full"},
+            {"name": "N2", "type": "ss", "server": "h2", "port": 2,
+             "cipher": "aes-256-gcm", "password": "q"},
+        ]}
+        with open(os.path.join(d, "s-verified.yaml"), "w", encoding="utf-8") as f:
+            yaml.safe_dump(verified, f)
+
+        # s2-clash-1.yaml：N1(精简版，无 extra，与 verified 重复) + N3(源独有)
+        src = {"proxies": [
+            {"name": "N1-txt", "type": "ss", "server": "h1", "port": 1,
+             "cipher": "aes-256-gcm", "password": "p"},
+            {"name": "N3", "type": "ss", "server": "h3", "port": 3,
+             "cipher": "aes-256-gcm", "password": "r"},
+        ]}
+        with open(os.path.join(d, "s2-clash-1.yaml"), "w", encoding="utf-8") as f:
+            yaml.safe_dump(src, f)
+
+        out = os.path.join(d, "s-clash.yaml")
+        with mock.patch.object(sys, "argv", ["merge_subs", "--base", d, "--out", "s-clash.yaml"]):
+            m.main()
+
+        with open(out, encoding="utf-8") as f:
+            data = yaml.safe_load(f)
+        proxies = data.get("proxies", [])
+
+        # 1) 无重复：N1(重复) + N2 + N3 = 3
+        self.assertEqual(len(proxies), 3, f"期望去重后 3 节点，实际 {len(proxies)}")
+
+        by_name = {p["name"]: p for p in proxies}
+
+        # 2) verified 优先：重复的 N1 保留的是 verified 完整版（带 extra 标记）
+        self.assertIn("N1-verified", by_name, "重复节点应保留 verified 完整版")
+        self.assertNotIn("N1-txt", by_name, "重复的精简版应被去重跳过")
+        self.assertEqual(by_name["N1-verified"].get("extra"), "verified-full",
+                         "应优先保留 verified 的完整配置")
+
+        # 3) verified 全部同步进产物
+        self.assertIn("N2", by_name, "verified 独有节点 N2 应同步进产物")
+        # 4) 订阅源独有节点正常并入
+        self.assertIn("N3", by_name, "源独有节点 N3 应正常并入")
+
+    def test_missing_verified_is_noop(self):
+        """s-verified.yaml 缺失时不应报错，按原流程继续。"""
+        d = tempfile.mkdtemp()
+        src = {"proxies": [
+            {"name": "X", "type": "ss", "server": "hx", "port": 9,
+             "cipher": "aes-256-gcm", "password": "z"},
+        ]}
+        with open(os.path.join(d, "s2-clash-1.yaml"), "w", encoding="utf-8") as f:
+            yaml.safe_dump(src, f)
+        out = os.path.join(d, "s-clash.yaml")
+        with mock.patch.object(sys, "argv", ["merge_subs", "--base", d, "--out", "s-clash.yaml"]):
+            m.main()  # 不应抛异常
+        with open(out, encoding="utf-8") as f:
+            data = yaml.safe_load(f)
+        self.assertEqual(len(data.get("proxies", [])), 1)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -50,6 +50,9 @@ SCHEMES = (
 
 TXT_SOURCES = ["s.txt", "s1.txt", "s2.txt"]
 YAML_SOURCES = ["s2-clash-1.yaml", "s2-clash-2.yaml"]
+# 已验证节点快照（中国出口验证通过的节点），由 verify-tag.yml 每次 CI 刷新。
+# 在生成 s-clash.yaml 前去重阶段优先并入，使产物与 s-verified.yaml 最新内容同步。
+VERIFIED_SOURCE = "s-verified.yaml"
 
 
 # --------------------------------------------------------------------------- #
@@ -146,6 +149,19 @@ def main():
 
     base = args.base
     nodes = []
+
+    # 0) 优先并入"已验证节点"快照（s-verified.yaml，每次 CI 由 verify-tag 刷新）
+    #    放在最前：去重时优先保留 verified 的完整配置（含 tls/reality 等），
+    #    后续相同节点（server/port/uuid 一致）会被跳过而不覆盖 => 不丢字段。
+    #    与下游统一去重配合 => 最终 s-clash.yaml 既无重复、又与 s-verified 最新内容同步。
+    vpath = os.path.join(base, VERIFIED_SOURCE)
+    n_verified = 0
+    for nd in load_clash_yaml(vpath):
+        if isinstance(nd, dict) and nd.get("server"):
+            nodes.append(nd)
+            n_verified += 1
+    if n_verified:
+        LOG.info(f"[merge] 从 {VERIFIED_SOURCE} 并入 {n_verified} 条已验证节点（优先）")
 
     # 1) 订阅文本（base64）
     for fn in TXT_SOURCES:
