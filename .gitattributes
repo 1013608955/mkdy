@@ -1,0 +1,6 @@
+# 行尾铁律：shell / systemd 单元必须 LF——CRLF 会让容器 bash 报
+# "set: -: invalid option" / syntax error（已踩坑：set_schedule.sh 全文件 CRLF
+# 导致容器重部署失败，旧 run_loop 杀不掉）。
+*.sh text eol=lf
+*.service text eol=lf
+*.timer text eol=lf
