@@ -49,7 +49,6 @@ proxy-groups:
   - ✅ AU澳大利亚(mibei77.com 米贝节点分享)_2
   - ✅ 日本+东京Choopa数据中心
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
-  - ✅ US美国(mibei77.com 米贝节点分享)_57
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
@@ -57,8 +56,9 @@ proxy-groups:
   - ✅ 香港+Simcentric网络公司
   - ✅ US美国(mibei77.com 米贝节点分享)_58
   - ✅ 🇺🇸_US_美国_2
-  - ✅ US美国(mibei77.com 米贝节点分享)_2
   - ✅ 🇳🇱_荷兰_129
+  - ✅ 🇭🇰_香港_69
+  - ✅ 🇭🇰_香港_84
 - name: 自动选择
   type: url-test
   proxies:
@@ -66,7 +66,6 @@ proxy-groups:
   - ✅ AU澳大利亚(mibei77.com 米贝节点分享)_2
   - ✅ 日本+东京Choopa数据中心
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
-  - ✅ US美国(mibei77.com 米贝节点分享)_57
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
@@ -74,8 +73,9 @@ proxy-groups:
   - ✅ 香港+Simcentric网络公司
   - ✅ US美国(mibei77.com 米贝节点分享)_58
   - ✅ 🇺🇸_US_美国_2
-  - ✅ US美国(mibei77.com 米贝节点分享)_2
   - ✅ 🇳🇱_荷兰_129
+  - ✅ 🇭🇰_香港_69
+  - ✅ 🇭🇰_香港_84
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -85,7 +85,6 @@ proxy-groups:
   - ✅ AU澳大利亚(mibei77.com 米贝节点分享)_2
   - ✅ 日本+东京Choopa数据中心
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
-  - ✅ US美国(mibei77.com 米贝节点分享)_57
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
@@ -93,8 +92,9 @@ proxy-groups:
   - ✅ 香港+Simcentric网络公司
   - ✅ US美国(mibei77.com 米贝节点分享)_58
   - ✅ 🇺🇸_US_美国_2
-  - ✅ US美国(mibei77.com 米贝节点分享)_2
   - ✅ 🇳🇱_荷兰_129
+  - ✅ 🇭🇰_香港_69
+  - ✅ 🇭🇰_香港_84
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -658,16 +658,6 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: hopp-us.yyuyy.com
-- name: ✅ US美国(mibei77.com 米贝节点分享)_57
-  type: hysteria2
-  server: do.aigh.store
-  port: 10929
-  password: 17aVvwmiSU
-  sni: do.aigh.store
-  tls: true
-  security_scheme: tls
-  proto: hysteria2
-  peer: do.aigh.store
 - name: ✅ 芬兰(mibei77.com 米贝节点分享)
   type: hysteria2
   server: fast.wwwinternetvideo.click
@@ -756,22 +746,6 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 40.160.68.186
-- name: ✅ US美国(mibei77.com 米贝节点分享)_2
-  type: vless
-  server: news.zoom.us
-  port: 8443
-  uuid: 624dbb1d-d38b-4ed1-a967-f483af364eca
-  tls: true
-  network: ws
-  sni: zero.csmaster.ggff.net
-  servername: zero.csmaster.ggff.net
-  ws-opts:
-    path: /
-    headers:
-      Host: zero.csmaster.ggff.net
-  security_scheme: tls
-  proto: vless
-  peer: zero.csmaster.ggff.net
 - name: ✅ 🇳🇱_荷兰_129
   type: vmess
   server: 185.246.152.159
@@ -790,3 +764,29 @@ proxies:
   sni: apjhdggyx.com
   proto: vmess
   peer: apjhdggyx.com
+- name: ✅ 🇭🇰_香港_69
+  type: vmess
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.hdacd.com
+  proto: vmess
+  peer: v10.hdacd.com
+- name: ✅ 🇭🇰_香港_84
+  type: vmess
+  server: v10.zgtfqs.click
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.zgtfqs.click
+  proto: vmess
+  peer: v10.zgtfqs.click
