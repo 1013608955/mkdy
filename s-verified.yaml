@@ -47,7 +47,6 @@ proxy-groups:
   - 故障转移
   - ✅ 瑞士(mibei77.com 米贝节点分享)_4
   - ✅ AU澳大利亚(mibei77.com 米贝节点分享)_2
-  - ✅ 德国+纽伦堡CONTABO机房
   - ✅ 日本+东京Choopa数据中心
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_57
@@ -56,6 +55,7 @@ proxy-groups:
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
+  - ✅ US美国(mibei77.com 米贝节点分享)_62
   - ✅ 🇺🇸_US_美国_2
   - ✅ 🇳🇱_荷兰_129
   - ✅ 🇭🇰_香港_69
@@ -65,7 +65,6 @@ proxy-groups:
   proxies:
   - ✅ 瑞士(mibei77.com 米贝节点分享)_4
   - ✅ AU澳大利亚(mibei77.com 米贝节点分享)_2
-  - ✅ 德国+纽伦堡CONTABO机房
   - ✅ 日本+东京Choopa数据中心
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_57
@@ -74,6 +73,7 @@ proxy-groups:
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
+  - ✅ US美国(mibei77.com 米贝节点分享)_62
   - ✅ 🇺🇸_US_美国_2
   - ✅ 🇳🇱_荷兰_129
   - ✅ 🇭🇰_香港_69
@@ -85,7 +85,6 @@ proxy-groups:
   proxies:
   - ✅ 瑞士(mibei77.com 米贝节点分享)_4
   - ✅ AU澳大利亚(mibei77.com 米贝节点分享)_2
-  - ✅ 德国+纽伦堡CONTABO机房
   - ✅ 日本+东京Choopa数据中心
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_57
@@ -94,6 +93,7 @@ proxy-groups:
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
+  - ✅ US美国(mibei77.com 米贝节点分享)_62
   - ✅ 🇺🇸_US_美国_2
   - ✅ 🇳🇱_荷兰_129
   - ✅ 🇭🇰_香港_69
@@ -641,17 +641,6 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: rmgyvpn.rest
-- name: ✅ 德国+纽伦堡CONTABO机房
-  type: hysteria2
-  server: 173.212.201.85
-  port: 443
-  password: gf1:gfhysteria2024
-  sni: www.docker.com
-  skip-cert-verify: true
-  tls: true
-  security_scheme: tls
-  proto: hysteria2
-  peer: www.docker.com
 - name: ✅ 日本+东京Choopa数据中心
   type: hysteria2
   server: 45.32.252.144
@@ -740,6 +729,22 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 180.178.60.254
+- name: ✅ US美国(mibei77.com 米贝节点分享)_62
+  type: vless
+  server: 208.103.161.32
+  port: 443
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  tls: true
+  network: ws
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
+  ws-opts:
+    path: /sg-melbi_/
+    headers:
+      Host: josni.hoyes.cloudns.ch
+  security_scheme: tls
+  proto: vless
+  peer: josni.hoyes.cloudns.ch
 - name: ✅ 🇺🇸_US_美国_2
   type: vless
   server: 40.160.68.186
