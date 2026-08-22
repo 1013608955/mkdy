@@ -124,8 +124,8 @@ else
 # 每 15 分钟循环：优先用控制台注入的 process env GITHUB_PAT，未注入则 fallback 仓库内 .env。
 # 仓库位于持久盘 /workspace（系统盘 /root 重启即丢），故路径硬编码。
 # 每次跑验证前先 git pull 最新代码（走 ghproxy 镜像 + ff-only），让容器自动跟进仓库改动（方案A 等）。
+# P1-4：先跑验证再 sleep——容器启动/重部署后立即有首轮验证，不再空等 15 分钟。
 while true; do
-  sleep 900
   cd /workspace/mkdy
   if [ -z "$GITHUB_PAT" ] && [ -f verify_cn/.env ]; then
     set -a; . ./verify_cn/.env; set +a
@@ -140,6 +140,7 @@ while true; do
       pull --ff-only origin main >> verify_cn/logs/run.log 2>&1 \
     || echo "[$(date '+%F %T')] [WARN] git pull 失败，沿用本地代码继续验证" >> verify_cn/logs/run.log 2>&1
   python3 verify_cn/run_local.py >> verify_cn/logs/run.log 2>&1
+  sleep 900
 done
 LOOP
   chmod +x "$REPO_DIR/verify_cn/run_loop.sh"

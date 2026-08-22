@@ -18,8 +18,8 @@
 3. 起独立 mihomo 进程（不碰用户 Clash Verge 的端口/配置）。
 4. 并发调 /proxies/{name}/delay 真链测试；主目标失败的节点用兜底目标复测一轮。
 5. 写 verify_cn/verified.json。
-6. （可选）git add/commit/push —— push 后自动触发 GitHub 端 verify-tag.yml
-   （监听 verify_cn/verified.json）产出 s-verified.yaml。
+6. （可选）git add/commit/push —— push 后 GitHub 端 update-subs.yml 监听到
+   verified.json 变更，由 merge_subs 一步产出 s-verified.yaml（方案 A）。
 
 用法：
   python run_local.py --limit 20 --no-push   # 小规模试跑
@@ -152,8 +152,10 @@ def _mihomo_accepts(proxies, mihomo_bin, workdir):
     with open(cp, "w", encoding="utf-8") as f:
         yaml.safe_dump(cfg, f, allow_unicode=True, sort_keys=False)
     try:
+        # P1-1：timeout 从 30 提到 60 —— 大配置(400+节点)或容器 IO 抖动时
+        # mihomo -t 可能变慢，超时会被下方 except 当作 fatal、导致二分法误杀好节点。
         r = subprocess.run([mihomo_bin, "-t", "-d", wd, "-f", cp],
-                           capture_output=True, text=True, timeout=30)
+                           capture_output=True, text=True, timeout=60)
         return r.returncode == 0
     except Exception:
         return False
@@ -297,7 +299,7 @@ def main():
     proxies = [p for p in (data.get("proxies") or []) if p.get("name")]
     # 重名兜底：mihomo 遇到 duplicate name 会 fatal 拒绝加载整份配置。
     # 这里丢弃重复项而非重命名——verified.json 的 name 必须与 s-clash.yaml
-    # 精确一致，否则 tag_verified.py 匹配不上，打标会失效。
+    # 精确一致（下游 merge_subs 的降级匹配/日志对照都按裸名对齐）。
     seen, uniq, dropped = set(), [], []
     for p in proxies:
         if p["name"] in seen:
@@ -439,7 +441,7 @@ def main():
     for attempt in range(3):
         code, out = _git(["push", "origin", "main"], check=False)
         if code == 0:
-            print("[push] 推送成功；GitHub 端 verify-tag 将自动打标产出 s-verified.yaml。")
+            print("[push] 推送成功；GitHub 端 update-subs 将自动合并产出 s-verified.yaml。")
             _maybe_shutdown(args.shutdown_after)
             return
         print(f"[push] 第 {attempt+1} 次被拒，合并远端后重试…")

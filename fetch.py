@@ -99,7 +99,7 @@ def get_latest_article_url(site):
                         if (datetime.now() - article_date).days <= 1:
                             full_url = f"{home_url}{href}"
                             article_candidates.append((article_date, full_url, title))
-                    except:
+                    except Exception:
                         continue
             # 按日期排序取最新
             if article_candidates:
@@ -159,7 +159,7 @@ def extract_sub_links(article_url, site_name):
                     try:
                         base64.b64decode(part, validate=True)
                         sub_links.add(part)
-                    except:
+                    except Exception:
                         pass
 
         # 过滤社交类无用链接
@@ -210,7 +210,7 @@ def download_nodes(source):
                             sub_line = sub_line.strip()
                             if sub_line.startswith(_NODE_PREFIXES):
                                 nodes.append(sub_line)
-                    except:
+                    except Exception:
                         continue
 
         print(f"   ✨ 从 [{source[:50]}...] 提取到 {len(nodes)} 个有效节点")

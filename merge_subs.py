@@ -75,6 +75,7 @@ def load_verified_proxies(path, name_index=None):
         return []
     out = []
     seen = set()
+    fallback_used = 0
     for nd in data.get("nodes", []) or []:
         if not nd.get("ok"):
             continue
@@ -84,6 +85,7 @@ def load_verified_proxies(path, name_index=None):
             # 旧格式降级：用 name 去全量节点里找完整配置
             if name_index and name in name_index:
                 proxy = name_index[name]
+                fallback_used += 1
             else:
                 continue
         if not isinstance(proxy, dict) or not proxy.get("server"):
@@ -100,6 +102,9 @@ def load_verified_proxies(path, name_index=None):
         if not pname.startswith(VERIFIED_MARK):
             p["name"] = VERIFIED_MARK + pname
         out.append(p)
+    if fallback_used:
+        LOG.warning(f"[merge][WARN] {fallback_used} 条节点走了旧格式降级匹配（name_index），"
+                    f"配置可能来自上一轮产物而非本轮验证；容器跑出新版 run_local 后此路径自动退出")
     return out
 
 
@@ -203,6 +208,21 @@ def write_txt(txt_out, merged):
 # make_names_unique 已抽到 name_util.py（见顶部 import 别名为 make_names_unique）。
 
 
+def write_verified_txt(txt_out, verified_nodes):
+    """写出 s-verified.txt（已验证节点的 v2rayN 兼容订阅）。
+    P0-2：方案 A 删除打标环节后此产物一度缺失，而 CI 的 git add 仍引用它；
+    这里与 s-clash.txt 对称地产出，保持两套产物完整。"""
+    os.makedirs(os.path.dirname(txt_out) or ".", exist_ok=True)
+    lines = []
+    for nd in verified_nodes:
+        uri = struct_to_uri(nd)
+        if uri:
+            lines.append(uri)
+    with open(txt_out, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+    LOG.info(f"[merge] 写出 {len(lines)} 条已验证 URI -> {txt_out}")
+
+
 def write_verified(out_base, base, verified_nodes):
     """方案 A：单独产出 s-verified.yaml（仅含中国出口验证通过的节点）。
 
@@ -221,6 +241,7 @@ def write_verified(out_base, base, verified_nodes):
             yaml.safe_dump({"proxies": verified_nodes}, allow_unicode=True,
                            sort_keys=False, default_flow_style=False)
         LOG.info(f"[merge] 写出 {len(verified_nodes)} 条已验证节点 -> {VERIFIED_OUT} (无模版)")
+        write_verified_txt(os.path.splitext(out_path)[0] + ".txt", verified_nodes)
         return
     with open(template_path, encoding="utf-8") as f:
         doc = yaml.safe_load(f) or {}
@@ -244,6 +265,7 @@ def write_verified(out_base, base, verified_nodes):
         f.write(header)
         yaml.safe_dump(doc, f, allow_unicode=True, sort_keys=False, default_flow_style=False, width=10000)
     LOG.info(f"[merge] 写出 {len(verified_nodes)} 条已验证节点 -> {VERIFIED_OUT} (含规则层)")
+    write_verified_txt(os.path.splitext(out_path)[0] + ".txt", verified_nodes)
 
 
 def main():
@@ -282,9 +304,18 @@ def main():
     #    额外并入上一次合并产物 s-clash.yaml 的 proxies 作查找源（与旧 tag_verified 逻辑一致），
     #    保证本地/CI 无论源 txt 是否就绪都能降级匹配。
     name_index = {n.get("name"): n for n in nodes if n.get("name")}
+    # P0-1：从上一轮产物 s-clash.yaml 构建 name_index 时剥掉 "✅ " 前缀——
+    # 旧版 verified.json 存的是裸名，若不剥前缀则永远匹配不上；同时给降级匹配
+    # 打上来源标记（仅作过渡兼容，新版验证器一跑即退出此路径）。
     for nd in load_clash_yaml(os.path.join(base, "s-clash.yaml")):
-        if isinstance(nd, dict) and nd.get("name") and nd["name"] not in name_index:
-            name_index[nd["name"]] = nd
+        if isinstance(nd, dict) and nd.get("name"):
+            nm = nd["name"]
+            bare = nm[len(VERIFIED_MARK):] if nm.startswith(VERIFIED_MARK) else nm
+            if bare not in name_index:
+                p = dict(nd)
+                if bare != nm:
+                    p["name"] = bare  # 降级产物不带前缀，✅ 由 write_verified 统一加
+                name_index[bare] = p
     vpath = os.path.join(base, VERIFIED_SOURCE)
     verified_nodes = load_verified_proxies(vpath, name_index)
     n_verified = len(verified_nodes)
@@ -303,13 +334,13 @@ def main():
         seen.add(k)
         merged.append(clean_node(n))
 
-    # 4) name 唯一化（兜底：处理默认名冲突，保证 Clash/Clash Verge 校验通过）
+    # 5) name 唯一化（兜底：处理默认名冲突，保证 Clash/Clash Verge 校验通过）
     make_names_unique(merged)
 
-    # 5) 稳定排序（便于 diff）
+    # 6) 稳定排序（便于 diff）
     merged.sort(key=lambda n: (n.get("type", ""), n.get("server", ""), int(n.get("port") or 0)))
 
-    # 6) 写出（完整 Clash 配置：mode + dns + proxies + proxy-groups + rules）
+    # 7) 写出（完整 Clash 配置：mode + dns + proxies + proxy-groups + rules）
     #    加载 clash_template.yaml 模版，把 __ALL_PROXIES__ 占位符替换为实际节点名，
     #    使 s-clash.yaml 成为可直接导入 Clash/Clash Verge 的完整配置（不再是裸 proxies 列表）。
     #    统一基于 --out 计算 yaml / txt 输出路径：同源目录、同名前缀，目录自动创建，
