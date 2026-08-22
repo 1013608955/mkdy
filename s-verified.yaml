@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=16
+# verified=13
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -54,11 +54,8 @@ proxy-groups:
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
-  - ✅ US美国(mibei77.com 米贝节点分享)_57
   - ✅ 🇺🇸_US_美国_2
-  - ✅ 🇳🇱_荷兰_129
   - ✅ 🇭🇰_香港_69
   - ✅ 🇭🇰_香港_84
 - name: 自动选择
@@ -73,11 +70,8 @@ proxy-groups:
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
-  - ✅ US美国(mibei77.com 米贝节点分享)_57
   - ✅ 🇺🇸_US_美国_2
-  - ✅ 🇳🇱_荷兰_129
   - ✅ 🇭🇰_香港_69
   - ✅ 🇭🇰_香港_84
   url: http://www.gstatic.com/generate_204
@@ -94,11 +88,8 @@ proxy-groups:
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
-  - ✅ US美国(mibei77.com 米贝节点分享)_57
   - ✅ 🇺🇸_US_美国_2
-  - ✅ 🇳🇱_荷兰_129
   - ✅ 🇭🇰_香港_69
   - ✅ 🇭🇰_香港_84
   url: http://www.gstatic.com/generate_204
@@ -719,20 +710,6 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
-- name: ✅ 🇺🇸_美国_385
-  type: vless
-  server: 18.239.134.69
-  port: 80
-  uuid: de27291c-15a9-4256-9ba7-ad517569877e
-  tls: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: d2e1v87ko56lyw.cloudfront.net:assets.opensignal.com
-  security_scheme: none
-  proto: vless
-  peer: 18.239.134.69
 - name: ✅ 香港+Simcentric网络公司
   type: vless
   server: 180.178.60.254
@@ -743,22 +720,6 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 180.178.60.254
-- name: ✅ US美国(mibei77.com 米贝节点分享)_57
-  type: vless
-  server: 208.103.161.32
-  port: 443
-  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
-  tls: true
-  network: ws
-  sni: josni.hoyes.cloudns.ch
-  servername: josni.hoyes.cloudns.ch
-  ws-opts:
-    path: /sg-melbi_/
-    headers:
-      Host: josni.hoyes.cloudns.ch
-  security_scheme: tls
-  proto: vless
-  peer: josni.hoyes.cloudns.ch
 - name: ✅ 🇺🇸_US_美国_2
   type: vless
   server: 40.160.68.186
@@ -773,24 +734,6 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 40.160.68.186
-- name: ✅ 🇳🇱_荷兰_129
-  type: vmess
-  server: 185.246.152.159
-  port: 443
-  uuid: 5f72f180-b21b-4b7a-8484-240759012604
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /5f72f180-b21b-4b7a-8484-240759096785
-    headers:
-      Host: apjhdggyx.com
-  servername: apjhdggyx.com
-  security_scheme: tls
-  sni: apjhdggyx.com
-  proto: vmess
-  peer: apjhdggyx.com
 - name: ✅ 🇭🇰_香港_69
   type: vmess
   server: v10.hdacd.com
