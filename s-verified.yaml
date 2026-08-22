@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=17
+# verified=11
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -48,40 +48,28 @@ proxy-groups:
   - ✅ 日本+东京Choopa数据中心
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)
-  - ✅ 🏳️_未知_722
-  - ✅ NL荷兰(mibei77.com 米贝节点分享)_2
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_447
-  - ✅ 🇺🇸_US_美国_2
   - ✅ 🇩🇪_德国_313
   - ✅ 🇷🇺_俄罗斯_651
+  - ✅ US美国(mibei77.com 米贝节点分享)_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)_2
   - ✅ 🇳🇱_荷兰_390
-  - ✅ US美国(mibei77.com 米贝节点分享)_2
   - ✅ 🇳🇱_荷兰_304
   - ✅ DE 🇩🇪 | @Raydikalx | 268407
-  - ✅ 🇭🇰_香港_286
 - name: 自动选择
   type: url-test
   proxies:
   - ✅ 日本+东京Choopa数据中心
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)
-  - ✅ 🏳️_未知_722
-  - ✅ NL荷兰(mibei77.com 米贝节点分享)_2
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_447
-  - ✅ 🇺🇸_US_美国_2
   - ✅ 🇩🇪_德国_313
   - ✅ 🇷🇺_俄罗斯_651
+  - ✅ US美国(mibei77.com 米贝节点分享)_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)_2
   - ✅ 🇳🇱_荷兰_390
-  - ✅ US美国(mibei77.com 米贝节点分享)_2
   - ✅ 🇳🇱_荷兰_304
   - ✅ DE 🇩🇪 | @Raydikalx | 268407
-  - ✅ 🇭🇰_香港_286
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -90,20 +78,14 @@ proxy-groups:
   - ✅ 日本+东京Choopa数据中心
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)
-  - ✅ 🏳️_未知_722
-  - ✅ NL荷兰(mibei77.com 米贝节点分享)_2
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_447
-  - ✅ 🇺🇸_US_美国_2
   - ✅ 🇩🇪_德国_313
   - ✅ 🇷🇺_俄罗斯_651
+  - ✅ US美国(mibei77.com 米贝节点分享)_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)_2
   - ✅ 🇳🇱_荷兰_390
-  - ✅ US美国(mibei77.com 米贝节点分享)_2
   - ✅ 🇳🇱_荷兰_304
   - ✅ DE 🇩🇪 | @Raydikalx | 268407
-  - ✅ 🇭🇰_香港_286
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -651,66 +633,6 @@ proxies:
   security_scheme: none
   proto: ss
   peer: 103.169.67.34
-- name: ✅ SG新加坡(mibei77.com 米贝节点分享)
-  type: vless
-  server: 104.18.93.3
-  port: 80
-  uuid: a41322e9-d0f1-4ff1-ac5c-a486e2b680b2
-  tls: false
-  network: ws
-  sni: worker3.yahoya44555.workers.dev
-  servername: worker3.yahoya44555.workers.dev
-  ws-opts:
-    path: /2EP6G0LoOvs5eNZj
-    headers:
-      Host: worker3.yahoya44555.workers.dev
-  security_scheme: none
-  proto: vless
-  peer: worker3.yahoya44555.workers.dev
-- name: ✅ 🏳️_未知_722
-  type: vless
-  server: 104.21.15.212
-  port: 8880
-  uuid: 902fd911-ca5d-49a6-99ad-47372a266804
-  tls: false
-  network: ws
-  ws-opts:
-    path: /pyip=ProxyIP.JP.CMLiussss.net
-    headers:
-      Host: young-wildflower-6b6c.100-52d.workers.dev
-  security_scheme: none
-  proto: vless
-  peer: 104.21.15.212
-- name: ✅ NL荷兰(mibei77.com 米贝节点分享)_2
-  type: vless
-  server: 155.46.167.30
-  port: 8880
-  uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
-  tls: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: vms.lifetime50.workers.dev
-  security_scheme: none
-  proto: vless
-  peer: 155.46.167.30
-- name: ✅ US美国(mibei77.com 米贝节点分享)_3
-  type: vless
-  server: 162.159.152.205
-  port: 443
-  uuid: c98a16e4-0dc5-42f0-b3db-30f04525c123
-  tls: true
-  network: ws
-  sni: vless2-8vx.pages.dev
-  servername: vless2-8vx.pages.dev
-  ws-opts:
-    path: /
-    headers:
-      Host: vless2-8vx.pages.dev
-  security_scheme: tls
-  proto: vless
-  peer: vless2-8vx.pages.dev
 - name: ✅ 🇺🇸_美国_447
   type: vless
   server: 18.239.134.69
@@ -725,16 +647,6 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 18.239.134.69
-- name: ✅ 🇺🇸_US_美国_2
-  type: vless
-  server: 180.178.60.254
-  port: 10000
-  uuid: caec0d8d-ab2f-4247-b97d-7fb1a34ab195
-  tls: false
-  network: tcp
-  security_scheme: none
-  proto: vless
-  peer: 180.178.60.254
 - name: ✅ 🇩🇪_德国_313
   type: vless
   server: 194.154.30.154
@@ -765,6 +677,22 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 194.26.229.157
+- name: ✅ US美国(mibei77.com 米贝节点分享)_2
+  type: vless
+  server: 208.103.161.32
+  port: 443
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  tls: true
+  network: ws
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
+  ws-opts:
+    path: /sg-melbi_/
+    headers:
+      Host: josni.hoyes.cloudns.ch
+  security_scheme: tls
+  proto: vless
+  peer: josni.hoyes.cloudns.ch
 - name: ✅ 芬兰(mibei77.com 米贝节点分享)_2
   type: vless
   server: 217.60.63.206
@@ -795,20 +723,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: forfreeuse.rtqa.ru
-- name: ✅ US美国(mibei77.com 米贝节点分享)_2
-  type: vless
-  server: 63.141.128.30
-  port: 8880
-  uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
-  tls: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: vms.lifetime42.workers.dev
-  security_scheme: none
-  proto: vless
-  peer: 63.141.128.30
 - name: ✅ 🇳🇱_荷兰_304
   type: vmess
   server: 185.246.152.159
@@ -844,16 +758,3 @@ proxies:
   sni: 407a2bc6d452ff93e6d7b73078539d9e.mobgslb.tbcache.com
   proto: vmess
   peer: 407a2bc6d452ff93e6d7b73078539d9e.mobgslb.tbcache.com
-- name: ✅ 🇭🇰_香港_286
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
