@@ -316,15 +316,19 @@ def dns_resolve(domain: str) -> Tuple[bool, List[str]]:
         return False, []
     servers = CONFIG["detection"]["dns"]["servers"]
     timeout = CONFIG["detection"]["dns"]["timeout"]
-    # 优先：对配置的 DNS 服务器做轻量 UDP A 查询（best-effort）
-    for srv in servers:
-        try:
-            ips = _udp_resolve_a(domain, srv, timeout)
+    # 优先：对配置的 DNS 服务器做轻量 UDP A 查询（best-effort）。
+    # P1-2：并发查询全部服务器、取最快返回的合法结果——原串行写法在
+    # 服务器全部超时时最坏 4×timeout(16s)，拖慢整体处理；并发后总耗时≈单次超时。
+    with ThreadPoolExecutor(max_workers=max(1, len(servers))) as ex:
+        futs = [ex.submit(_udp_resolve_a, domain, srv, timeout) for srv in servers]
+        for fut in as_completed(futs):
+            try:
+                ips = fut.result()
+            except Exception:
+                continue
             valid = [ip for ip in ips if not is_private_ip(ip) and not is_cn_ip(ip)]
             if valid:
                 return True, valid
-        except Exception:
-            continue
     # 回退：系统解析器（线程超时，避免全局 setdefaulttimeout 竞态）
     result: Dict = {}
     def _run():
