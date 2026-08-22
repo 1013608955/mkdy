@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=15
+# verified=14
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -55,7 +55,6 @@ proxy-groups:
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
-  - ✅ US美国(mibei77.com 米贝节点分享)_62
   - ✅ 🇺🇸_US_美国_2
   - ✅ 🇳🇱_荷兰_129
   - ✅ 🇭🇰_香港_69
@@ -73,7 +72,6 @@ proxy-groups:
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
-  - ✅ US美国(mibei77.com 米贝节点分享)_62
   - ✅ 🇺🇸_US_美国_2
   - ✅ 🇳🇱_荷兰_129
   - ✅ 🇭🇰_香港_69
@@ -93,7 +91,6 @@ proxy-groups:
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
-  - ✅ US美国(mibei77.com 米贝节点分享)_62
   - ✅ 🇺🇸_US_美国_2
   - ✅ 🇳🇱_荷兰_129
   - ✅ 🇭🇰_香港_69
@@ -729,22 +726,6 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 180.178.60.254
-- name: ✅ US美国(mibei77.com 米贝节点分享)_62
-  type: vless
-  server: 208.103.161.32
-  port: 443
-  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
-  tls: true
-  network: ws
-  sni: josni.hoyes.cloudns.ch
-  servername: josni.hoyes.cloudns.ch
-  ws-opts:
-    path: /sg-melbi_/
-    headers:
-      Host: josni.hoyes.cloudns.ch
-  security_scheme: tls
-  proto: vless
-  peer: josni.hoyes.cloudns.ch
 - name: ✅ 🇺🇸_US_美国_2
   type: vless
   server: 40.160.68.186
