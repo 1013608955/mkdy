@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=12
+# verified=19
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -50,11 +50,18 @@ proxy-groups:
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
+  - ✅ US美国(mibei77.com 米贝节点分享)_54
+  - ✅ FR法国(mibei77.com 米贝节点分享)_15
   - ✅ 🇳🇱_NL_荷兰_2
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
-  - ✅ 🏳️_未知_447
   - ✅ 🇳🇱_荷兰_129
+  - ✅ 香港3|@ripaojiedian
+  - ✅ 新加坡|@ripaojiedian
+  - ✅ 日本2|@ripaojiedian
+  - ✅ 日本3|@ripaojiedian
+  - ✅ 美国|@ripaojiedian
+  - ✅ 香港2|@ripaojiedian
   - ✅ 🇭🇰_香港_69
   - ✅ 🇭🇰_香港_84
 - name: 自动选择
@@ -65,11 +72,18 @@ proxy-groups:
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
+  - ✅ US美国(mibei77.com 米贝节点分享)_54
+  - ✅ FR法国(mibei77.com 米贝节点分享)_15
   - ✅ 🇳🇱_NL_荷兰_2
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
-  - ✅ 🏳️_未知_447
   - ✅ 🇳🇱_荷兰_129
+  - ✅ 香港3|@ripaojiedian
+  - ✅ 新加坡|@ripaojiedian
+  - ✅ 日本2|@ripaojiedian
+  - ✅ 日本3|@ripaojiedian
+  - ✅ 美国|@ripaojiedian
+  - ✅ 香港2|@ripaojiedian
   - ✅ 🇭🇰_香港_69
   - ✅ 🇭🇰_香港_84
   url: http://www.gstatic.com/generate_204
@@ -82,11 +96,18 @@ proxy-groups:
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
+  - ✅ US美国(mibei77.com 米贝节点分享)_54
+  - ✅ FR法国(mibei77.com 米贝节点分享)_15
   - ✅ 🇳🇱_NL_荷兰_2
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
-  - ✅ 🏳️_未知_447
   - ✅ 🇳🇱_荷兰_129
+  - ✅ 香港3|@ripaojiedian
+  - ✅ 新加坡|@ripaojiedian
+  - ✅ 日本2|@ripaojiedian
+  - ✅ 日本3|@ripaojiedian
+  - ✅ 美国|@ripaojiedian
+  - ✅ 香港2|@ripaojiedian
   - ✅ 🇭🇰_香港_69
   - ✅ 🇭🇰_香港_84
   url: http://www.gstatic.com/generate_204
@@ -663,6 +684,38 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
+- name: ✅ US美国(mibei77.com 米贝节点分享)_54
+  type: vless
+  server: 104.16.6.70
+  port: 443
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  tls: true
+  network: ws
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
+  ws-opts:
+    path: /
+    headers:
+      Host: josni.hoyes.cloudns.ch
+  security_scheme: tls
+  proto: vless
+  peer: josni.hoyes.cloudns.ch
+- name: ✅ FR法国(mibei77.com 米贝节点分享)_15
+  type: vless
+  server: 104.17.28.89
+  port: 443
+  uuid: 1078d418-b4e0-4668-9018-dc90c2042d61
+  tls: true
+  network: ws
+  sni: workspace.evan00.dpdns.org
+  servername: workspace.evan00.dpdns.org
+  ws-opts:
+    path: /
+    headers:
+      Host: workspace.evan00.dpdns.org
+  security_scheme: tls
+  proto: vless
+  peer: workspace.evan00.dpdns.org
 - name: ✅ 🇳🇱_NL_荷兰_2
   type: vless
   server: 158.101.208.44
@@ -697,22 +750,6 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 180.178.60.254
-- name: ✅ 🏳️_未知_447
-  type: vless
-  server: yx.zhourf2006.dpdns.org
-  port: 443
-  uuid: 7e81824b-35e0-4eb1-89e9-592f0c92aa6b
-  tls: true
-  network: ws
-  sni: yx.zhourf2006.dpdns.org
-  servername: yx.zhourf2006.dpdns.org
-  ws-opts:
-    path: /blog/ranking/task/proxyip=156.246.92.195,172.238.6.57,43.207.197.79,156.246.91.114,161.248.254.27,153.121.45.101,101.36.105.226?ed=2560
-    headers:
-      Host: yx.zhourf2006.dpdns.org
-  security_scheme: tls
-  proto: vless
-  peer: yx.zhourf2006.dpdns.org
 - name: ✅ 🇳🇱_荷兰_129
   type: vmess
   server: 185.246.152.159
@@ -731,6 +768,114 @@ proxies:
   sni: apjhdggyx.com
   proto: vmess
   peer: apjhdggyx.com
+- name: ✅ 香港3|@ripaojiedian
+  type: vmess
+  server: 3j41E63Msh9TgXvR.v.3dns.vip
+  port: 443
+  uuid: 1abe49dedb6e4f65a0f0a5ea79ddefad
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /ws-vmess
+    headers:
+      Host: 3j41E63Msh9TgXvR.v.3dns.vip
+  servername: 3j41E63Msh9TgXvR.v.3dns.vip
+  security_scheme: tls
+  sni: 3j41E63Msh9TgXvR.v.3dns.vip
+  proto: vmess
+  peer: 3j41E63Msh9TgXvR.v.3dns.vip
+- name: ✅ 新加坡|@ripaojiedian
+  type: vmess
+  server: Aim7HqTuvNOofcsx.v.3dns.vip
+  port: 443
+  uuid: 1abe49dedb6e4f65a0f0a5ea79ddefad
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /ws-vmess
+    headers:
+      Host: Aim7HqTuvNOofcsx.v.3dns.vip
+  servername: Aim7HqTuvNOofcsx.v.3dns.vip
+  security_scheme: tls
+  sni: Aim7HqTuvNOofcsx.v.3dns.vip
+  proto: vmess
+  peer: Aim7HqTuvNOofcsx.v.3dns.vip
+- name: ✅ 日本2|@ripaojiedian
+  type: vmess
+  server: J3Nz0zA0r13AoVhH.v.3dns.vip
+  port: 443
+  uuid: 1abe49dedb6e4f65a0f0a5ea79ddefad
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /ws-vmess
+    headers:
+      Host: J3Nz0zA0r13AoVhH.v.3dns.vip
+  servername: J3Nz0zA0r13AoVhH.v.3dns.vip
+  security_scheme: tls
+  sni: J3Nz0zA0r13AoVhH.v.3dns.vip
+  proto: vmess
+  peer: J3Nz0zA0r13AoVhH.v.3dns.vip
+- name: ✅ 日本3|@ripaojiedian
+  type: vmess
+  server: UcKniXjfd2JOKBmx.v.3dns.vip
+  port: 443
+  uuid: 1abe49dedb6e4f65a0f0a5ea79ddefad
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /ws-vmess
+    headers:
+      Host: UcKniXjfd2JOKBmx.v.3dns.vip
+  servername: UcKniXjfd2JOKBmx.v.3dns.vip
+  security_scheme: tls
+  sni: UcKniXjfd2JOKBmx.v.3dns.vip
+  proto: vmess
+  peer: UcKniXjfd2JOKBmx.v.3dns.vip
+- name: ✅ 美国|@ripaojiedian
+  type: vmess
+  server: lL0GIaPVZ6Zxkd94.v.3dns.vip
+  port: 443
+  uuid: 1abe49dedb6e4f65a0f0a5ea79ddefad
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /ws-vmess
+    headers:
+      Host: lL0GIaPVZ6Zxkd94.v.3dns.vip
+  servername: lL0GIaPVZ6Zxkd94.v.3dns.vip
+  security_scheme: tls
+  sni: lL0GIaPVZ6Zxkd94.v.3dns.vip
+  proto: vmess
+  peer: lL0GIaPVZ6Zxkd94.v.3dns.vip
+- name: ✅ 香港2|@ripaojiedian
+  type: vmess
+  server: t245hvl0VMtlXR4v.v.3dns.vip
+  port: 443
+  uuid: 1abe49dedb6e4f65a0f0a5ea79ddefad
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /ws-vmess
+    headers:
+      Host: t245hvl0VMtlXR4v.v.3dns.vip
+  servername: t245hvl0VMtlXR4v.v.3dns.vip
+  security_scheme: tls
+  sni: t245hvl0VMtlXR4v.v.3dns.vip
+  proto: vmess
+  peer: t245hvl0VMtlXR4v.v.3dns.vip
 - name: ✅ 🇭🇰_香港_69
   type: vmess
   server: v10.hdacd.com
