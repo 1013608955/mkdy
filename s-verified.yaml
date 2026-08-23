@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=14
+# verified=13
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -48,7 +48,6 @@ proxy-groups:
   - ✅ DE德国(mibei77.com 米贝节点分享)
   - ✅ 美国+V2CROSS.COM
   - ✅ US美国(mibei77.com 米贝节点分享)_18
-  - ✅ 🇫🇮_FI_芬兰_2
   - ✅ 美国+V2CROSS.COM_2
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸 美国 V2CROSS.COM
@@ -56,16 +55,15 @@ proxy-groups:
   - ✅ 🇺🇸_美国_163
   - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
   - ✅ 🏳️_未知_384
-  - ✅ 🇭🇰_香港_146
 - name: 自动选择
   type: url-test
   proxies:
   - ✅ DE德国(mibei77.com 米贝节点分享)
   - ✅ 美国+V2CROSS.COM
   - ✅ US美国(mibei77.com 米贝节点分享)_18
-  - ✅ 🇫🇮_FI_芬兰_2
   - ✅ 美国+V2CROSS.COM_2
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸 美国 V2CROSS.COM
@@ -73,9 +71,9 @@ proxy-groups:
   - ✅ 🇺🇸_美国_163
   - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
   - ✅ 🏳️_未知_384
-  - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -84,7 +82,6 @@ proxy-groups:
   - ✅ DE德国(mibei77.com 米贝节点分享)
   - ✅ 美国+V2CROSS.COM
   - ✅ US美国(mibei77.com 米贝节点分享)_18
-  - ✅ 🇫🇮_FI_芬兰_2
   - ✅ 美国+V2CROSS.COM_2
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸 美国 V2CROSS.COM
@@ -92,9 +89,9 @@ proxy-groups:
   - ✅ 🇺🇸_美国_163
   - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
   - ✅ 🏳️_未知_384
-  - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -646,17 +643,6 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: hopp-us.yyuyy.com
-- name: ✅ 🇫🇮_FI_芬兰_2
-  type: hysteria2
-  server: fast.wwwinternetvideo.click
-  port: 443
-  password: C91FbOXGY9XRymrcEebtax9R1Nj62UizoT8S6kCb7xwey8IE
-  sni: fast.wwwinternetvideo.click
-  skip-cert-verify: true
-  tls: true
-  security_scheme: tls
-  proto: hysteria2
-  peer: fast.wwwinternetvideo.click
 - name: ✅ 美国+V2CROSS.COM_2
   type: hysteria2
   server: replay.wwwinternetvideo.click
@@ -735,6 +721,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: ssl.fastly.com
+- name: ✅ US美国(mibei77.com 米贝节点分享)_3
+  type: vless
+  server: 208.103.161.32
+  port: 443
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  tls: true
+  network: ws
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
+  ws-opts:
+    path: /sg-melbi_/
+    headers:
+      Host: josni.hoyes.cloudns.ch
+  security_scheme: tls
+  proto: vless
+  peer: josni.hoyes.cloudns.ch
 - name: ✅ 🇺🇸_美国_155
   type: vmess
   server: guanwang.awsno.com
@@ -765,16 +767,3 @@ proxies:
   sni: rush-6it6b.teeopp.quest
   proto: vmess
   peer: rush-6it6b.teeopp.quest
-- name: ✅ 🇭🇰_香港_146
-  type: vmess
-  server: v10.zgtfqs.click
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.zgtfqs.click
-  proto: vmess
-  peer: v10.zgtfqs.click
