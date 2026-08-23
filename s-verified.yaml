@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=12
+# verified=13
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -57,6 +57,7 @@ proxy-groups:
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
+  - ✅ 🇭🇰_香港_146
 - name: 自动选择
   type: url-test
   proxies:
@@ -72,6 +73,7 @@ proxy-groups:
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
+  - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -89,6 +91,7 @@ proxy-groups:
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
+  - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -745,3 +748,16 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
+- name: ✅ 🇭🇰_香港_146
+  type: vmess
+  server: v10.zgtfqs.click
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.zgtfqs.click
+  proto: vmess
+  peer: v10.zgtfqs.click
