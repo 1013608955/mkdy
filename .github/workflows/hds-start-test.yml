@@ -51,18 +51,14 @@ jobs:
 
           # —— 后台自动应答器：发现弹窗就聚焦、输入密码并回车 ——
           (
-            for i in $(seq 1 150); do
+            for i in $(seq 1 300); do
               WINS=$(xdotool search --onlyvisible "" 2>/dev/null || true)
               if [ -n "$WINS" ]; then
                 echo "[autoresponder] cycle$i 可见窗口: $WINS" >&2
               fi
               for W in $WINS; do
-                NAME=$(xdotool getwindowname "$W" 2>/dev/null || true)
-                case "$NAME" in
-                  *"autoresponder"*|"")
-                    ;;
-                  *)
-                    echo "[autoresponder] 应答窗口: $NAME" >&2
+                if true; then
+                    echo "[autoresponder] 应答窗口: $W" >&2
                     xdotool windowactivate "$W" 2>/dev/null
                     xdotool windowfocus "$W" 2>/dev/null
                     sleep 0.5
@@ -70,9 +66,8 @@ jobs:
                     xdotool key Tab
                     xdotool type --delay 60 'ci-unlock'
                     xdotool key Return
-                    sleep 2
-                    ;;
-                esac
+                    sleep 3
+                fi
               done
               sleep 1
             done
