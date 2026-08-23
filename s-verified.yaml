@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=14
+# verified=16
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -45,56 +45,62 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - ✅ DE德国(mibei77.com 米贝节点分享)
   - ✅ 美国+V2CROSS.COM
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ 🇫🇮_FI_芬兰_2
+  - ✅ 美国+V2CROSS.COM
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇫🇷 法国 格拉沃利讷OVH数据中心
   - ✅ 🇺🇸_美国_163
+  - ✅ HK香港(mibei77.com 米贝节点分享)_7
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
+  - ✅ [1808.ga]🇫🇷
+  - ✅ [ermaozi/get_subscribe]🇨🇳_CN_中国->🇯🇵_JP_日本
 - name: 自动选择
   type: url-test
   proxies:
-  - ✅ DE德国(mibei77.com 米贝节点分享)
   - ✅ 美国+V2CROSS.COM
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ 🇫🇮_FI_芬兰_2
+  - ✅ 美国+V2CROSS.COM
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇫🇷 法国 格拉沃利讷OVH数据中心
   - ✅ 🇺🇸_美国_163
+  - ✅ HK香港(mibei77.com 米贝节点分享)_7
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
+  - ✅ [1808.ga]🇫🇷
+  - ✅ [ermaozi/get_subscribe]🇨🇳_CN_中国->🇯🇵_JP_日本
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - ✅ DE德国(mibei77.com 米贝节点分享)
   - ✅ 美国+V2CROSS.COM
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ 🇫🇮_FI_芬兰_2
+  - ✅ 美国+V2CROSS.COM
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇫🇷 法国 格拉沃利讷OVH数据中心
   - ✅ 🇺🇸_美国_163
+  - ✅ HK香港(mibei77.com 米贝节点分享)_7
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
+  - ✅ [1808.ga]🇫🇷
+  - ✅ [ermaozi/get_subscribe]🇨🇳_CN_中国->🇯🇵_JP_日本
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -615,16 +621,6 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: ✅ DE德国(mibei77.com 米贝节点分享)
-  type: hysteria2
-  server: 185.230.44.170
-  port: 9443
-  password: e5gqbtu97umt992j
-  sni: 185.230.44.170
-  tls: true
-  security_scheme: tls
-  proto: hysteria2
-  peer: 185.230.44.170
 - name: ✅ 美国+V2CROSS.COM
   type: hysteria2
   server: 66.94.121.46
@@ -667,6 +663,17 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: fast.wwwinternetvideo.click
+- name: ✅ 美国+V2CROSS.COM
+  type: hysteria2
+  server: replay.wwwinternetvideo.click
+  port: 443
+  password: 2691cbe7c20cced8b0aeb12c812d09077e5b3eec7669fb8f
+  sni: replay.wwwinternetvideo.click
+  skip-cert-verify: true
+  tls: true
+  security_scheme: tls
+  proto: hysteria2
+  peer: replay.wwwinternetvideo.click
 - name: ✅ 🇹🇭_TH_泰国
   type: ss
   server: 103.169.67.34
@@ -717,6 +724,22 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: ssl.fastly.com
+- name: ✅ HK香港(mibei77.com 米贝节点分享)_7
+  type: vless
+  server: 141.101.122.147
+  port: 443
+  uuid: c4edb87e-8544-4fa4-bd1c-b0cda9a34b46
+  tls: true
+  network: ws
+  sni: a.cwvps.eu.org
+  servername: a.cwvps.eu.org
+  ws-opts:
+    path: /ws
+    headers:
+      Host: a.cwvps.eu.org
+  security_scheme: tls
+  proto: vless
+  peer: a.cwvps.eu.org
 - name: ✅ 香港+Simcentric网络公司
   type: vless
   server: 180.178.60.254
@@ -743,22 +766,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: ssl.fastly.com
-- name: ✅ US美国(mibei77.com 米贝节点分享)_3
-  type: vless
-  server: 208.103.161.32
-  port: 443
-  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
-  tls: true
-  network: ws
-  sni: josni.hoyes.cloudns.ch
-  servername: josni.hoyes.cloudns.ch
-  ws-opts:
-    path: /sg-melbi_/
-    headers:
-      Host: josni.hoyes.cloudns.ch
-  security_scheme: tls
-  proto: vless
-  peer: josni.hoyes.cloudns.ch
 - name: ✅ 🇺🇸_美国_155
   type: vmess
   server: guanwang.awsno.com
@@ -772,3 +779,29 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
+- name: ✅ [1808.ga]🇫🇷
+  type: vmess
+  server: v35.hdacd.com
+  port: 30835
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v35.hdacd.com
+  proto: vmess
+  peer: v35.hdacd.com
+- name: ✅ [ermaozi/get_subscribe]🇨🇳_CN_中国->🇯🇵_JP_日本
+  type: vmess
+  server: v6.hdacd.com
+  port: 30806
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v6.hdacd.com
+  proto: vmess
+  peer: v6.hdacd.com
