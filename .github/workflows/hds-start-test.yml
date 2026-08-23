@@ -1,16 +1,14 @@
-# hdspace 在 headless CI 上的可行性实证 v8（手动触发）
+# hdspace headless 攻关 v9（手动触发）
 #
-# v7 发现：ente 配方下 keyring 完全可用（secretstorage 写探针 OK、Login 未锁），
-# 但 hdspace 写入仍触发 SystemPrompter 弹窗（无 display 即死）→ 疑似它要
-# 创建自己的 collection（建集合必弹窗）或解析 default 别名的方式不同。
+# v8 决定性发现（dbus-monitor 实锤）：hdspace config 的失败链 =
+#   OpenSession → CreateCollection（创建自己的集合！）→ Secret.Prompt
+#   （建集合须设密码）→ gcr-prompter 无 display 即死 → Object not exist at "/"
 #
-# v8 三件事：
-#   1) default 别名双保险：~/.local/share/keyrings/default 文件 + set_default_collection
-#   2) dbus-monitor 全程原始抓取 config 尝试期间的 D-Bus 调用——拿到它
-#      操作的精确对象路径/方法/属性后，下一版用 secretstorage 直接替写凭据。
-#   3) 修正 strace（去掉非法的 getenv）。
+# v9 目标：抓到 CreateCollection 的完整 body（properties/label），
+#   确认它想要的集合名与别名 → 下一版用 secretstorage 预建该集合绕过弹窗。
+#   同时试探 secretstorage.create_collection 自身是否也会触发弹窗。
 #
-# 前置 Secrets：HDS_AK / HDS_SK。只调 start 不调 close。
+# 前置 Secrets：HDS_AK / HDS_SK
 
 name: hds-start-test
 
@@ -22,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
-      - name: 检出仓库（含 linux 版 hdspace）
+      - name: 检出仓库
         uses: actions/checkout@v4
 
       - name: 安装依赖
@@ -36,7 +34,7 @@ jobs:
           chmod +x tools/bin/hdspace-linux tools/config_hds.py
           mkdir -p ~/.devenv/logs ~/.cache ~/.local/share/keyrings
 
-      - name: keyring 会话 + 别名双保险 + 监听下的 config/list
+      - name: 抓 CreateCollection 完整 body
         env:
           HDS_AK: ${{ secrets.HDS_AK }}
           HDS_SK: ${{ secrets.HDS_SK }}
@@ -45,32 +43,37 @@ jobs:
           mkdir -p ~/.cache ~/.local/share/keyrings
           eval "$(printf '\n' | gnome-keyring-daemon --unlock)" || true
           eval "$(printf '\n' | gnome-keyring-daemon --start)" || true
-          # —— default 别名双保险 ——
           printf 'login' > ~/.local/share/keyrings/default
-          python3 -c "
-          import secretstorage
-          conn = secretstorage.dbus_init()
-          col = secretstorage.get_default_collection(conn)
-          print('default:', col.get_label(), '| locked:', col.is_locked())
-          "
-          # —— dbus-monitor 先起，全程监听 ——
+
           dbus-monitor > /tmp/dbus.log 2>&1 &
           MON=$!
           sleep 1
-          python3 tools/config_hds.py || true
+          python3 tools/config_hds.py >/tmp/config_out.txt 2>&1 || true
           ./tools/bin/hdspace-linux devenv list </dev/null >/dev/null 2>&1 || true
-          sleep 1; kill $MON 2>/dev/null
-          echo "===== D-Bus 调用序列（config+list 期间全部 method_call）====="
-          grep -aE "method (call|return)|member=|path=" /tmp/dbus.log | head -60
-          echo "===== 原始日志尾 ====="
-          tail -50 /tmp/dbus.log
-          echo "===== STRACE 单次 list（修正版）====="
-          strace -f -qq -e trace=access,openat,connect -o /tmp/full.log \
-            ./tools/bin/hdspace-linux devenv list </dev/null >/dev/null 2>&1 || true
-          echo "--- access() 非库探测 ---"
-          grep -aE 'access\("' /tmp/full.log | grep -avE '\.so|ENOENT.*lib' | head -15
-          echo "--- openat 非库文件 ---"
-          grep -aE 'openat\([^"]*"[^"]+"' /tmp/full.log | grep -avE '\.so|locale|/usr/lib|/etc/ld|/proc|/sys/|locale-archive' | head -25
-          echo "--- connect ---"
-          grep -a 'connect(' /tmp/full.log | head -15
+          sleep 1; kill $MON 2>/dev/null; sleep 1
+
+          echo "===== config 输出 ====="
+          cat /tmp/config_out.txt
+          echo "===== CreateCollection 上下文原文（前后各18行）====="
+          grep -an "CreateCollection" /tmp/dbus.log | head -3
+          L=$(grep -an "member=CreateCollection" /tmp/dbus.log | head -1 | cut -d: -f1)
+          [ -n "$L" ] && sed -n "$((L-6)),$((L+18))p" /tmp/dbus.log || echo "(未捕获到 CreateCollection)"
+          echo "===== ReadAlias/Prompt 上下文 ====="
+          L2=$(grep -an "member=Prompt" /tmp/dbus.log | head -1 | cut -d: -f1)
+          [ -n "$L2" ] && sed -n "$((L2-4)),$((L2+10))p" /tmp/dbus.log
+          echo "===== keyring 文件终态 ====="
+          ls -la ~/.local/share/keyrings/
+
+          # ===== 试探：secretstorage.create_collection 是否也弹窗死 =====
+          echo "===== secretstorage.create_collection 试探 ====="
+          timeout 8 python3 -c "
+          import secretstorage
+          conn = secretstorage.dbus_init()
+          try:
+              col = secretstorage.create_collection(conn, 'probe-col', 'ci-unlock')
+              print('created:', col.get_label())
+              print('items:', len(list(col.get_all_items())))
+          except Exception as e:
+              print('create_collection failed:', e)
+          " || echo "(超时——大概率也是弹窗挂起)"
           SESSION
