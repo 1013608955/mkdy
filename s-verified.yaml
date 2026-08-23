@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=15
+# verified=16
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -55,9 +55,10 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ HK香港(mibei77.com 米贝节点分享)_5
+  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ SG新加坡(mibei77.com 米贝节点分享)
   - ✅ HK香港(mibei77.com 米贝节点分享)_6
-  - ✅ 🇺🇸_US_美国
+  - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
 - name: 自动选择
@@ -73,9 +74,10 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ HK香港(mibei77.com 米贝节点分享)_5
+  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ SG新加坡(mibei77.com 米贝节点分享)
   - ✅ HK香港(mibei77.com 米贝节点分享)_6
-  - ✅ 🇺🇸_US_美国
+  - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
   url: http://www.gstatic.com/generate_204
@@ -93,9 +95,10 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ HK香港(mibei77.com 米贝节点分享)_5
+  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ SG新加坡(mibei77.com 米贝节点分享)
   - ✅ HK香港(mibei77.com 米贝节点分享)_6
-  - ✅ 🇺🇸_US_美国
+  - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
   url: http://www.gstatic.com/generate_204
@@ -724,22 +727,38 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
-- name: ✅ HK香港(mibei77.com 米贝节点分享)_5
+- name: ✅ HK香港(mibei77.com 米贝节点分享)
   type: vless
-  server: 109.73.206.166
-  port: 2200
-  uuid: fc72e947-b8dd-4de0-9ec7-2b0050c9f83a
-  tls: false
+  server: 104.17.28.89
+  port: 443
+  uuid: 1078d418-b4e0-4668-9018-dc90c2042d61
+  tls: true
   network: ws
-  sni: rzd.ru
-  servername: rzd.ru
+  sni: workspace.evan00.dpdns.org
+  servername: workspace.evan00.dpdns.org
   ws-opts:
-    path: /v1
+    path: /
     headers:
-      Host: rzd.ru
-  security_scheme: none
+      Host: workspace.evan00.dpdns.org
+  security_scheme: tls
   proto: vless
-  peer: rzd.ru
+  peer: workspace.evan00.dpdns.org
+- name: ✅ SG新加坡(mibei77.com 米贝节点分享)
+  type: vless
+  server: 104.18.37.228
+  port: 443
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  tls: true
+  network: ws
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
+  ws-opts:
+    path: /sg-melbi
+    headers:
+      Host: josni.hoyes.cloudns.ch
+  security_scheme: tls
+  proto: vless
+  peer: josni.hoyes.cloudns.ch
 - name: ✅ HK香港(mibei77.com 米贝节点分享)_6
   type: vless
   server: 141.101.122.147
@@ -756,11 +775,11 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: a.cwvps.eu.org
-- name: ✅ 🇺🇸_US_美国
+- name: ✅ 香港+Simcentric网络公司
   type: vless
   server: 180.178.60.254
   port: 10000
-  uuid: caec0d8d-ab2f-4247-b97d-7fb1a34ab195
+  uuid: 431fe973-a43a-4fac-bf83-2a772e0d0625
   tls: false
   network: tcp
   security_scheme: none
