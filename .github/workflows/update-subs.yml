@@ -66,6 +66,11 @@ jobs:
         continue-on-error: true
         run: python fetch.py
 
+      # 直连 Clash YAML 订阅（连续失败≥5次自动跳过，状态持久于 source_health.json）
+      - name: 抓取直连 YAML 订阅 -> s2-clash-3..6.yaml
+        continue-on-error: true
+        run: python fetch_extra.py
+
       # ---- 合并去重：所有源 -> 单个 s-clash.yaml ----
       - name: 合并去重生成 s-clash.yaml
         run: python merge_subs.py
@@ -75,8 +80,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # 只提交合并产物：s-clash.yaml（全量）+ s-verified.yaml（验证通过节点，方案A由 merge 一步产出）
+          # + source_health.json（源健康状态跨轮持久：连续失败自动跳过机制依赖它入库）
           # 其余临时文件（s.txt/s1.txt/s2.txt/s2-clash-*.yaml 等）不入库
-          git add s-clash.yaml s-clash.txt s-verified.yaml s-verified.txt
+          git add s-clash.yaml s-clash.txt s-verified.yaml s-verified.txt source_health.json
           if git diff --cached --quiet; then
             echo "[INFO] s-clash.yaml 无变化，跳过推送"
           else

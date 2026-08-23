@@ -49,7 +49,11 @@ SCHEMES = (
 )
 
 TXT_SOURCES = ["s.txt", "s1.txt", "s2.txt"]
-YAML_SOURCES = ["s2-clash-1.yaml", "s2-clash-2.yaml"]
+# s2-clash-1/2: fetch.py（米贝77/Datiya 文章抓取）
+# s2-clash-3..6: fetch_extra.py（直连 Clash YAML 订阅，含连续失败自动跳过）
+YAML_SOURCES = ["s2-clash-1.yaml", "s2-clash-2.yaml",
+                "s2-clash-3.yaml", "s2-clash-4.yaml",
+                "s2-clash-5.yaml", "s2-clash-6.yaml"]
 # 方案 A：已验证节点直接来自 verify_cn/verified.json（验证器已携带完整 proxy dict），
 # 不再依赖 verify-tag.yml 用 'name' 去 s-clash.yaml 重新 join（那是漂移根因）。
 # merge_subs 读取 ok 节点的完整 proxy，一步产出 s-verified.yaml，彻底去掉打标环节。

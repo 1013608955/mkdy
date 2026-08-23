@@ -34,7 +34,9 @@ CONFIG: Dict = {
         {"url": "https://raw.githubusercontent.com/HakurouKen/free-node/main/public", "weight": 7},
         {"url": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub", "weight": 6}
     ],
-    "request": {"timeout": 15, "retry": 3, "retry_delay": 3, "allow_insecure": False, "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"},
+    "request": {"timeout": 15, "retry": 3, "retry_delay": 3, "allow_insecure": False,
+                 "failure_threshold": 5,
+                 "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"},
     "github": {"token": os.getenv("GITHUB_TOKEN", ""), "interval": 0.5, "cache_ttl": 3600, "cache_expire_days": 7},
     "detection": {
         "tcp_timeout": {"vmess": 5, "vless": 5, "trojan": 5, "ss": 4, "hysteria": 6},
@@ -827,37 +829,96 @@ def adjust_score_threshold(valid_nodes_info: List[Dict]) -> int:
         LOG.info(f"📊 动态调整阈值：{base_threshold} → {dynamic_threshold}（平均得分{avg_score:.1f}）")
   
     return dynamic_threshold
+# ---------- 源健康跟踪（连续失败自动跳过）----------
+# 状态存仓库根 source_health.json（与 fetch_extra.py 共用），CI 每轮随产物提交，
+# 跨运行持久：某源连续失败 ≥ failure_threshold 次则跳过请求，恢复成功即清零。
+SOURCE_HEALTH_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "source_health.json")
+
+
+def _load_source_health() -> Dict:
+    try:
+        with open(SOURCE_HEALTH_FILE, encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except Exception:  # noqa: BLE001
+        return {}
+
+
+def _save_source_health(health: Dict) -> None:
+    try:
+        with open(SOURCE_HEALTH_FILE, "w", encoding="utf-8") as f:
+            json.dump(health, f, ensure_ascii=False, indent=1, sort_keys=True)
+    except OSError as e:
+        LOG.warning(f"⚠️ 源健康状态写入失败: {str(e)[:50]}")
+
+
+def _now_utc() -> str:
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
+
 def fetch_all_sources() -> Tuple[List[Dict], Dict[str, Dict]]:
     all_nodes = []
     source_records = {}
-  
+
+    threshold = int(CONFIG["request"].get("failure_threshold", 5))
+    health = _load_source_health()
+
+    def _fails(url: str) -> int:
+        return int((health.get(url) or {}).get("consecutive_failures", 0))
+
+    skipped = [src["url"] for src in CONFIG["sources"] if _fails(src["url"]) >= threshold]
+    for url in skipped:
+        LOG.warning(f"⛔ 源已连续失败 {_fails(url)} 次(≥{threshold})，本轮跳过: {url}")
+
+    active = [src for src in CONFIG["sources"] if src["url"] not in set(skipped)]
+
     with ThreadPoolExecutor(max_workers=5) as executor:
-        futures = {executor.submit(fetch_source_data, src["url"], src["weight"]): src["url"] for src in CONFIG["sources"]}
+        futures = {executor.submit(fetch_source_data, src["url"], src["weight"]): src["url"]
+                   for src in active}
         for future in as_completed(futures):
             url = futures[future]
             try:
                 lines, weight = future.result()
-                proto_count = count_proto(lines)
-                source_records[url] = {
-                    "original": lines,
-                    "original_count": len(lines),
-                    "weight": weight,
-                    "proto_count": proto_count,
-                    "retained_count": 0,
-                    "retained_lines": []
-                }
-                all_nodes.extend([{"line": l, "weight": weight, "source_url": url} for l in lines])
+                ok_run = bool(lines)
             except Exception as e:
                 LOG.error(f"❌ 处理源{url}异常：{str(e)[:50]}")
-                source_records[url] = {
-                    "original": [],
-                    "original_count":0,
-                    "weight":0,
-                    "proto_count":count_proto([]),
-                    "retained_count":0
-                }
-  
-    LOG.info(f"\n📥 所有数据源拉取完成：累计原始节点 {len(all_nodes)} 条")
+                lines, weight, ok_run = [], 0, False
+
+            # 更新健康状态：拉到节点=成功清零；空/异常=失败+1
+            rec = health.get(url) or {}
+            if ok_run:
+                if rec.get("consecutive_failures"):
+                    LOG.info(f"✅ 源恢复可用（此前连续失败 {rec['consecutive_failures']} 次）: {url}")
+                health[url] = {"consecutive_failures": 0, "last_ok": _now_utc(),
+                               "nodes": len(lines)}
+            else:
+                rec["consecutive_failures"] = int(rec.get("consecutive_failures", 0)) + 1
+                rec["last_fail"] = _now_utc()
+                health[url] = rec
+                n = rec["consecutive_failures"]
+                level = "⛔ 达阈值，下轮起跳过" if n >= threshold else "连续失败"
+                LOG.warning(f"⚠️ 源{level} {n}/{threshold}: {url}")
+
+            proto_count = count_proto(lines)
+            source_records[url] = {
+                "original": lines,
+                "original_count": len(lines),
+                "weight": weight,
+                "proto_count": proto_count,
+                "retained_count": 0,
+                "retained_lines": []
+            }
+            all_nodes.extend([{"line": l, "weight": weight, "source_url": url} for l in lines])
+
+    for url in skipped:
+        source_records[url] = {
+            "original": [], "original_count": 0, "weight": 0,
+            "proto_count": count_proto([]), "retained_count": 0,
+        }
+
+    _save_source_health(health)
+    LOG.info(f"\n📥 所有数据源拉取完成：累计原始节点 {len(all_nodes)} 条"
+             f"（跳过失效源 {len(skipped)} 个）")
     return all_nodes, source_records
 def process_nodes_final(unique_nodes: List[Dict]) -> Tuple[List[str], List[Dict]]:
     scored = []   # (line, node_info, score) 全部通过TCP预筛的节点
