@@ -1,11 +1,10 @@
-# hds-cycle — CI 定时唤醒华为云容器跑验证（省核时方案生产链路）
+# hds-cycle — CI 定时唤醒华为云容器跑验证（省核时方案生产链路）v2
 #
-# 流程：hdspace config（Xvfb+xdotool 自动应答 gcr 弹窗）→ 查状态 →
-#   按 action 分支：status=只看状态 / wake=只开机 / wake_verify=开机+SSH验证+关机
+# 架构：config 一次（Xvfb+openbox+xdotool 应答 gcr 弹窗）→ 之后每条 hdspace
+#   命令用 tools/hds_session.sh 独立短会话执行（互不影响、close 必达）。
 #
+# 三模式：status=查状态 | wake=仅开机 | wake_verify=开机+SSH验证+关机
 # 前置 Secrets：HDS_AK / HDS_SK / HDS_SSH_KEY（容器 root 私钥全文）
-# 成本：每次运行约 6-8 分钟 runner 时间（公共仓库免费）；容器 Running 约 5-7 分钟
-#       ≈ 4-6 核时/次。每小时一跑 ≈ 100-150 核时/月（常开为 1440/月）。
 
 name: hds-cycle
 
@@ -19,6 +18,9 @@ on:
         options: [status, wake, wake_verify]
       instance_id:
         default: "21ce28b8230a43f2ab414327f68bb1a0"
+
+env:
+  INSTANCE: "21ce28b8230a43f2ab414327f68bb1a0"
 
 jobs:
   cycle:
@@ -34,40 +36,36 @@ jobs:
           sudo apt-get install -y -qq gnome-keyring dbus-x11 libsecret-1-0 \
             python3-secretstorage xvfb xdotool openbox >/dev/null
 
-      - name: 准备 hdspace 与 SSH key
+      - name: 准备（hdspace / SSH key / Xvfb）
         env:
           HDS_SSH_KEY: ${{ secrets.HDS_SSH_KEY }}
         run: |
-          chmod +x tools/bin/hdspace-linux tools/config_hds.py tools/boot_job.sh
+          chmod +x tools/bin/hdspace-linux tools/config_hds.py \
+                   tools/hds_session.sh tools/boot_job.sh
           mkdir -p ~/.devenv/logs ~/.cache ~/.local/share/keyrings ~/.ssh
           printf '%s\n' "$HDS_SSH_KEY" > ~/.ssh/hds_key
           chmod 600 ~/.ssh/hds_key
+          nohup Xvfb :99 -screen 0 1280x1024x24 >/dev/null 2>&1 &
+          sleep 2
+          (echo > /dev/tcp/127.0.0.1/6099) 2>/dev/null || true
 
-      - name: 配置凭据 + 查状态 + 按需唤醒
+      - name: "[1] 首次写入凭据（含 gcr 弹窗自动应答）"
         env:
           HDS_AK: ${{ secrets.HDS_AK }}
           HDS_SK: ${{ secrets.HDS_SK }}
-          ACTION: ${{ inputs.action || 'wake_verify' }}
-          INSTANCE: ${{ inputs.instance_id || '21ce28b8230a43f2ab414327f68bb1a0' }}
         run: |
-          Xvfb :99 -screen 0 1280x1024x24 >/dev/null 2>&1 &
-          sleep 2
-          # DISPLAY 必须在 dbus-run-session 外层设置（dbus-daemon 用自身环境激活 prompter）
           export DISPLAY=:99
           dbus-run-session -- bash -exs <<'SESSION'
-          export DISPLAY=:99
           DISPLAY=:99 openbox >/dev/null 2>&1 &
           sleep 2
           mkdir -p ~/.cache ~/.local/share/keyrings
           eval "$(printf '\n' | gnome-keyring-daemon --unlock)" || true
           eval "$(printf '\n' | gnome-keyring-daemon --start)" || true
-
-          # 自动应答 gcr 弹窗（config 建集合必弹）
           (
             for i in $(seq 1 200); do
               WINS=$( { xdotool search --onlyvisible --name 'gcr' 2>/dev/null;
                         xdotool search --onlyvisible --class 'Gcr' 2>/dev/null; } | sort -u)
-              [ -z "$WINS" ] && { sleep 1; continue; }
+              if [ -z "$WINS" ]; then sleep 1; continue; fi
               echo "[autoresponder] cycle$i 命中gcr窗口: $WINS" >&2
               for W in $WINS; do
                 eval "$(xdotool getwindowgeometry --shell "$W" 2>/dev/null)"
@@ -84,34 +82,35 @@ jobs:
             done
           ) &
           AR=$!
-
-          echo "===== [1] 写入凭据 ====="
           timeout 170 python3 tools/config_hds.py || true
+          kill $AR 2>/dev/null
+          SESSION
 
-          echo "===== [2] 查询状态 ====="
-          timeout 25 ./tools/bin/hdspace-linux devenv list </dev/null 2>&1 | tee /tmp/state.txt
-          STATE=$(grep -oE "Running|Ready|Starting|Closing" /tmp/state.txt | head -1)
+      - name: "[2] 查状态 + 按需开机"
+        run: |
+          STATE=$(tools/hds_session.sh devenv list </dev/null 2>&1 | tee /tmp/state.txt | grep -oE "Running|Ready|Starting|Closing" | head -1)
           echo "当前状态: ${STATE:-未知}"
-
-          if [ "$ACTION" = "status" ]; then kill $AR 2>/dev/null; echo "[done] status 模式完成"; exit 0; fi
-
-          echo "===== [3] 确保 Running ====="
+          if [ "${{ inputs.action || 'wake_verify' }}" = "status" ]; then
+            echo "[done] status 模式完成"; exit 0
+          fi
           if [ "$STATE" != "Running" ]; then
-            ./tools/bin/hdspace-linux devenv start --instance-id="$INSTANCE" </dev/null 2>&1 | head -3
+            tools/hds_session.sh devenv start --instance-id="$INSTANCE" </dev/null 2>&1 | head -3
             for i in $(seq 1 20); do
               sleep 15
-              timeout 25 ./tools/bin/hdspace-linux devenv list </dev/null > /tmp/state.txt 2>&1 || true
-              STATE=$(grep -oE "Running|Ready|Starting|Closing" /tmp/state.txt | head -1)
+              STATE=$(tools/hds_session.sh devenv list </dev/null 2>&1 | grep -oE "Running|Ready|Starting|Closing" | head -1)
               echo "  [$i] 状态=$STATE"
               [ "$STATE" = "Running" ] && break
             done
           fi
           [ "$STATE" = "Running" ] || { echo "[ERR] 容器未能进入 Running"; exit 1; }
+          if [ "${{ inputs.action || 'wake_verify' }}" = "wake" ]; then
+            echo "[done] 仅开机模式，保持 Running"; exit 0
+          fi
 
-          if [ "$ACTION" = "wake" ]; then echo "[done] 仅开机模式，保持 Running"; exit 0; fi
-
-          echo "===== [4] 开隧道并分离执行容器侧验证 ====="
-          ./tools/bin/hdspace-linux devenv start-tunnel \
+      - name: "[3] 开隧道 + 分离执行容器验证 + 轮询结果"
+        timeout-minutes: 14
+        run: |
+          tools/hds_session.sh devenv start-tunnel \
             --instance-id="$INSTANCE" --ports=10022:22 >/tmp/tunnel.log 2>&1 &
           TUN=$!
           for i in $(seq 1 30); do
@@ -119,12 +118,11 @@ jobs:
             sleep 2
           done
           SSH="ssh -p 10022 -i $HOME/.ssh/hds_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=10 -o BatchMode=yes root@127.0.0.1"
-          # 上传引导脚本并分离启动（输出落容器持久盘日志，连接断开不影响）
+          # 上传引导脚本并分离启动（输出落容器持久盘，连接断开不影响）
           $SSH "cat > /tmp/boot_job.sh && chmod +x /tmp/boot_job.sh && \
                 rm -f /workspace/mkdy/verify_cn/logs/ci_boot.log && \
                 nohup /tmp/boot_job.sh > /workspace/mkdy/verify_cn/logs/ci_boot.log 2>&1 & \
                 sleep 1; echo LAUNCHED" < tools/boot_job.sh
-          # 轮询日志直到完成标记（最长 ~9 分钟）
           DONE=""
           for i in $(seq 1 27); do
             sleep 20
@@ -138,20 +136,16 @@ jobs:
             exit 1
           fi
           echo "===== boot_job 结果 ====="
-          $SSH "tail -20 /workspace/mkdy/verify_cn/logs/ci_boot.log"
-          kill $TUN 2>/dev/null
+          $SSH "cat /workspace/mkdy/verify_cn/logs/ci_boot.log"
 
-          echo "===== [5] 关机 ====="
-          ./tools/bin/hdspace-linux devenv close --instance-id="$INSTANCE" </dev/null 2>&1 | head -3
-          echo "[done] 已发出关机指令"
-          kill $AR 2>/dev/null
-          SESSION
-
-      - name: 新会话复核状态
+      - name: "[4] 关机（无论成败必执行）"
         if: always()
         run: |
-          dbus-run-session -- bash -c '
-          echo -n "ci-unlock" | gnome-keyring-daemon --unlock >/dev/null 2>&1 || true
-          printf "\n" | gnome-keyring-daemon --start >/dev/null 2>&1 || true
-          timeout 25 ./tools/bin/hdspace-linux devenv list </dev/null 2>&1 | head -5
-          ' || true
+          tools/hds_session.sh devenv close --instance-id="$INSTANCE" </dev/null 2>&1 | head -3
+          echo "[done] 已发出关机指令"
+
+      - name: "[5] 复核最终状态"
+        if: always()
+        run: |
+          sleep 30
+          tools/hds_session.sh devenv list </dev/null 2>&1 | head -6 || true
