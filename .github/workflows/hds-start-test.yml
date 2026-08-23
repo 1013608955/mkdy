@@ -37,6 +37,10 @@ jobs:
           dbus-run-session -- bash -exs <<'SESSION'
           echo -n "ci-unlock" | gnome-keyring-daemon --unlock --replace > /dev/null 2>&1 || true
           eval "$(echo -n "ci-unlock" | gnome-keyring-daemon --unlock --replace 2>/dev/null | grep GNOME_KEYRING_CONTROL | cut -d= -f2 | sed 's/^/GNOME_KEYRING_CONTROL=/')" || true
+          echo "===== 会话总线上的服务列表 ====="
+          gdbus call --session --dest org.freedesktop.DBus --object-path /org/freedesktop/DBus --method org.freedesktop.DBus.ListNames 2>&1 | tr ',' '\n' | grep -aiE "secret|keyring" || echo "(无 secret/keyring 服务注册！)"
+          echo "===== .dbus-keyrings 目录 ====="
+          ls -la ~/.dbus-keyrings 2>/dev/null || echo "(不存在)"
           python3 - <<'PY'
           import secretstorage
           conn = secretstorage.dbus_init()
