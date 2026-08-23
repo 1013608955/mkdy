@@ -110,18 +110,35 @@ jobs:
 
           if [ "$ACTION" = "wake" ]; then echo "[done] 仅开机模式，保持 Running"; exit 0; fi
 
-          echo "===== [4] 开隧道并执行容器侧验证 ====="
+          echo "===== [4] 开隧道并分离执行容器侧验证 ====="
           ./tools/bin/hdspace-linux devenv start-tunnel \
             --instance-id="$INSTANCE" --ports=10022:22 >/tmp/tunnel.log 2>&1 &
           TUN=$!
-          for i in $(seq 1 20); do
+          for i in $(seq 1 30); do
             (echo > /dev/tcp/127.0.0.1/10022) 2>/dev/null && break
             sleep 2
           done
-          ssh -p 10022 -i ~/.ssh/hds_key -o StrictHostKeyChecking=no -o BatchMode=yes \
-              root@127.0.0.1 'bash -s' < tools/boot_job.sh
-          RC=$?
-          echo "boot_job 退出码=$RC"
+          SSH="ssh -p 10022 -i $HOME/.ssh/hds_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=10 -o BatchMode=yes root@127.0.0.1"
+          # 上传引导脚本并分离启动（输出落容器持久盘日志，连接断开不影响）
+          $SSH "cat > /tmp/boot_job.sh && chmod +x /tmp/boot_job.sh && \
+                rm -f /workspace/mkdy/verify_cn/logs/ci_boot.log && \
+                nohup /tmp/boot_job.sh > /workspace/mkdy/verify_cn/logs/ci_boot.log 2>&1 & \
+                sleep 1; echo LAUNCHED" < tools/boot_job.sh
+          # 轮询日志直到完成标记（最长 ~9 分钟）
+          DONE=""
+          for i in $(seq 1 27); do
+            sleep 20
+            TAIL=$($SSH "tail -3 /workspace/mkdy/verify_cn/logs/ci_boot.log 2>/dev/null" 2>/dev/null || true)
+            echo "--- poll$i: ${TAIL##*$'\n'}"
+            case "$TAIL" in *"[boot_job] done"*) DONE=1; break;; esac
+          done
+          if [ -z "$DONE" ]; then
+            echo "[ERR] boot_job 未在时限内完成"
+            $SSH "tail -25 /workspace/mkdy/verify_cn/logs/ci_boot.log 2>/dev/null" || true
+            exit 1
+          fi
+          echo "===== boot_job 结果 ====="
+          $SSH "tail -20 /workspace/mkdy/verify_cn/logs/ci_boot.log"
           kill $TUN 2>/dev/null
 
           echo "===== [5] 关机 ====="

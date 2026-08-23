@@ -29,5 +29,5 @@ set -a
 set +a
 python3 verify_cn/run_local.py
 RC=$?
-echo "[boot_job] run_local 退出码=$RC"
+echo "[boot_job] done rc=$RC"
 exit $RC
