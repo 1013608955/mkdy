@@ -55,8 +55,15 @@ jobs:
               secretstorage.set_default_collection(usable[0])
               print("default alias ->", usable[0].get_label())
           PY
-          python3 tools/config_hds.py
-          ./tools/bin/hdspace-linux devenv list && echo "[OK] list 成功 —— hdspace 在 CI 上完全可用"
+          python3 tools/config_hds.py || true
+          dbus-monitor > /tmp/dbus.log 2>&1 &
+          MON=$!
+          ./tools/bin/hdspace-linux devenv list >/dev/null 2>&1 || true
+          sleep 1; kill $MON 2>/dev/null
+          echo "===== DBUS MONITOR（list 读凭据的真实调用）====="
+          grep -aE "method call|member=|path=" /tmp/dbus.log | grep -aiE "secret|collection|item|search" | head -30
+          echo "===== 原始尾部 ====="
+          tail -40 /tmp/dbus.log
           SESSION
 
       - name: 测试启动容器（若上步成功）
