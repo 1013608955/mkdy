@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=16
+# verified=10
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -46,18 +46,12 @@ proxy-groups:
   - 自动选择
   - 故障转移
   - ✅ 瑞士(mibei77.com 米贝节点分享)_4
-  - ✅ AU澳大利亚(mibei77.com 米贝节点分享)_2
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)_2
-  - ✅ US美国(mibei77.com 米贝节点分享)_52
-  - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
   - ✅ US美国(mibei77.com 米贝节点分享)_58
-  - ✅ 🇺🇸_US_美国_2
-  - ✅ US美国(mibei77.com 米贝节点分享)_47
   - ✅ 🇳🇱_荷兰_129
   - ✅ 🇭🇰_香港_69
   - ✅ 🇭🇰_香港_84
@@ -65,18 +59,12 @@ proxy-groups:
   type: url-test
   proxies:
   - ✅ 瑞士(mibei77.com 米贝节点分享)_4
-  - ✅ AU澳大利亚(mibei77.com 米贝节点分享)_2
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)_2
-  - ✅ US美国(mibei77.com 米贝节点分享)_52
-  - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
   - ✅ US美国(mibei77.com 米贝节点分享)_58
-  - ✅ 🇺🇸_US_美国_2
-  - ✅ US美国(mibei77.com 米贝节点分享)_47
   - ✅ 🇳🇱_荷兰_129
   - ✅ 🇭🇰_香港_69
   - ✅ 🇭🇰_香港_84
@@ -86,18 +74,12 @@ proxy-groups:
   type: fallback
   proxies:
   - ✅ 瑞士(mibei77.com 米贝节点分享)_4
-  - ✅ AU澳大利亚(mibei77.com 米贝节点分享)_2
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)_2
-  - ✅ US美国(mibei77.com 米贝节点分享)_52
-  - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
   - ✅ US美国(mibei77.com 米贝节点分享)_58
-  - ✅ 🇺🇸_US_美国_2
-  - ✅ US美国(mibei77.com 米贝节点分享)_47
   - ✅ 🇳🇱_荷兰_129
   - ✅ 🇭🇰_香港_69
   - ✅ 🇭🇰_香港_84
@@ -631,19 +613,6 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: hopp-legend-se.roxa.org
-- name: ✅ AU澳大利亚(mibei77.com 米贝节点分享)_2
-  type: hysteria2
-  server: 140.238.206.44
-  port: 20000
-  password: b42d90fa667942aebc734d60
-  sni: rmgyvpn.rest
-  obfs: salamander
-  obfs-password: b42d90fa667942aebc734d60
-  mport: 20000-30000
-  tls: true
-  security_scheme: tls
-  proto: hysteria2
-  peer: rmgyvpn.rest
 - name: ✅ GB英国(mibei77.com 米贝节点分享)_3
   type: hysteria2
   server: 82.39.214.95
@@ -688,52 +657,6 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
-- name: ✅ SG新加坡(mibei77.com 米贝节点分享)_2
-  type: vless
-  server: 104.18.93.3
-  port: 80
-  uuid: a41322e9-d0f1-4ff1-ac5c-a486e2b680b2
-  tls: false
-  network: ws
-  sni: worker3.yahoya44555.workers.dev
-  servername: worker3.yahoya44555.workers.dev
-  ws-opts:
-    path: /2EP6G0LoOvs5eNZj
-    headers:
-      Host: worker3.yahoya44555.workers.dev
-  security_scheme: none
-  proto: vless
-  peer: worker3.yahoya44555.workers.dev
-- name: ✅ US美国(mibei77.com 米贝节点分享)_52
-  type: vless
-  server: 162.159.152.205
-  port: 443
-  uuid: c98a16e4-0dc5-42f0-b3db-30f04525c123
-  tls: true
-  network: ws
-  sni: vless2-8vx.pages.dev
-  servername: vless2-8vx.pages.dev
-  ws-opts:
-    path: /
-    headers:
-      Host: vless2-8vx.pages.dev
-  security_scheme: tls
-  proto: vless
-  peer: vless2-8vx.pages.dev
-- name: ✅ 🇺🇸_美国_385
-  type: vless
-  server: 18.239.134.69
-  port: 80
-  uuid: de27291c-15a9-4256-9ba7-ad517569877e
-  tls: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: d2e1v87ko56lyw.cloudfront.net:assets.opensignal.com
-  security_scheme: none
-  proto: vless
-  peer: 18.239.134.69
 - name: ✅ 香港+Simcentric网络公司
   type: vless
   server: 180.178.60.254
@@ -760,34 +683,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: josni.hoyes.cloudns.ch
-- name: ✅ 🇺🇸_US_美国_2
-  type: vless
-  server: 40.160.68.186
-  port: 8080
-  uuid: 11af1c47-865a-47c6-92ff-118013655d78
-  tls: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: 40.160.68.186
-  security_scheme: none
-  proto: vless
-  peer: 40.160.68.186
-- name: ✅ US美国(mibei77.com 米贝节点分享)_47
-  type: vless
-  server: 5.42.103.91
-  port: 2200
-  uuid: 7b2ce6b0-6d2b-4926-b7bf-6247eb1a0050
-  tls: false
-  network: ws
-  ws-opts:
-    path: /v1
-    headers:
-      Host: 5.42.103.91
-  security_scheme: none
-  proto: vless
-  peer: 5.42.103.91
 - name: ✅ 🇳🇱_荷兰_129
   type: vmess
   server: 185.246.152.159
