@@ -1,19 +1,18 @@
-# hdspace 在 headless CI 上的可行性实证 v6（手动触发）
+# hdspace 在 headless CI 上的可行性实证 v7（手动触发）
 #
-# 目标：打通「CI 定时唤醒华为云容器」省核时链路的第一环——让 hdspace 在
-# headless runner 上读到凭据并完成 config/list/start。
+# v6 发现：
+#   - 方案A 败于漏装 python3-secretstorage（-e 中止）。
+#   - 真正元凶：写 keyring 时 gcr-prompter 要弹 GUI（cannot open display）→
+#     "Object does not exist at path /"。v6 用非空密码 unlock 触发弹窗路径。
+#   - 方案B 抓包管道已通（流量过代理），但无凭据则零 API 流量。
 #
-# 本版并行两个方案：
-#   方案A：python-keyring 官方 README 的 headless canonical 配方原样照抄——
-#         dbus-run-session 内 `echo pass | gnome-keyring-daemon --unlock`
-#         （keyring 不存在会自动创建 login keyring + default 别名，正是
-#         go-keyring 期望的结构；此前我们手工建集合的方式与其不一致）。
-#   方案B（兜底+根治）：CI runner 上跑 mitmproxy 透明模式 + 系统 CA，
-#         抓 hdspace 的全部出站 TLS 流量拿到明文 API——一旦成功即可用
-#         纯 Python 复刻 start/close，彻底摆脱 hdspace/keyring。
+# v7 改动：
+#   A) ente#1328 实证配方原样照抄：空密码 unlock（创建 keyring 不走弹窗）
+#      + --start 两步式；补装 python3-secretstorage；pty 驱动 config；list 验证。
+#   C) 全量 strace 单次 list：不过滤 dump getenv/access/openat/connect，
+#      彻底搞清 isSecretServiceAvailable 的判定依据。
 #
-# 前置 Secrets：HDS_AK / HDS_SK
-# 注意：本测试只调 start（幂等），绝不调 close——容器现处常开模式。
+# 前置 Secrets：HDS_AK / HDS_SK。只调 start 不调 close。
 
 name: hds-start-test
 
@@ -23,71 +22,64 @@ on:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 12
     steps:
       - name: 检出仓库（含 linux 版 hdspace）
         uses: actions/checkout@v4
 
-      - name: 安装依赖（keyring 栈 + 抓包栈）
+      - name: 安装依赖
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq gnome-keyring dbus-x11 libsecret-1-0 strace mitmproxy >/dev/null
-          mitmdump --version
+          sudo apt-get install -y -qq gnome-keyring dbus-x11 libsecret-1-0 \
+            python3-secretstorage strace >/dev/null
 
-      - name: 准备 hdspace 与 keyring 目录
+      - name: 准备
         run: |
           chmod +x tools/bin/hdspace-linux tools/config_hds.py
           mkdir -p ~/.devenv/logs ~/.cache ~/.local/share/keyrings
 
-      - name: 方案A——canonical 配方（config + list）
+      - name: 方案A——ente 配方（空密码 unlock+start）+ config + list
         env:
           HDS_AK: ${{ secrets.HDS_AK }}
           HDS_SK: ${{ secrets.HDS_SK }}
         run: |
           dbus-run-session -- bash -exs <<'SESSION'
-          # python-keyring 官方 README「headless Linux」配方：
-          # --unlock 从 stdin 读密码解锁 login keyring；不存在则自动创建。
-          echo 'ci-unlock' | gnome-keyring-daemon --unlock >/dev/null
-          echo "--- keyring 文件结构 ---"
-          ls -la ~/.local/share/keyrings/ 2>/dev/null
-          echo "--- secretstorage 视角验证 ---"
-          python3 - <<'PY'
+          mkdir -p ~/.cache ~/.local/share/keyrings
+          # —— ente#1328 实证配方：两步式，空密码 ——
+          eval "$(printf '\n' | gnome-keyring-daemon --unlock)" || true
+          eval "$(printf '\n' | gnome-keyring-daemon --start)" || true
+          echo "--- keyring 文件 ---"
+          ls -la ~/.local/share/keyrings/
+          echo "--- secretstorage 验证 default collection ---"
+          python3 -c "
           import secretstorage
           conn = secretstorage.dbus_init()
           col = secretstorage.get_default_collection(conn)
-          print("default collection:", col.get_label(), "| locked:", col.is_locked())
-          PY
-          echo "--- pty 驱动 hdspace config（AK/SK/SK确认 三提示）---"
+          print('default:', col.get_label(), '| locked:', col.is_locked())
+          col.create_item('probe-item', {'app':'probe'}, b'x', replace=True)
+          print('write probe item: OK')
+          "
+          echo "--- pty 驱动 config ---"
           python3 tools/config_hds.py || true
-          echo "--- devenv list 验证凭据读取 ---"
+          echo "--- devenv list ---"
           ./tools/bin/hdspace-linux devenv list && echo "[OK-A] list 成功" || echo "[FAIL-A] list 失败"
           SESSION
 
-      - name: 方案B——mitmproxy 透明抓包（捕获真实 API 明文）
+      - name: 方案C——全量 strace 单次 list（揪出可用性探测逻辑）
         if: always()
-        env:
-          HDS_AK: ${{ secrets.HDS_AK }}
-          HDS_SK: ${{ secrets.HDS_SK }}
         run: |
-          mitmdump --mode transparent --listen-port 8080 -w /tmp/hds.flows > /tmp/mitm.log 2>&1 &
-          for i in $(seq 1 20); do [ -f ~/.mitmproxy/mitmproxy-ca-cert.pem ] && break; sleep 1; done
-          sudo cp ~/.mitmproxy/mitmproxy-ca-cert.pem /usr/local/share/ca-certificates/mitmproxy-ca.crt
-          sudo update-ca-certificates >/dev/null
-          # 出站 443/8443 全部重定向进 mitmproxy（窗口内只有 hdspace 在跑）
-          sudo iptables -t nat -A OUTPUT -p tcp -m multiport --dports 443,8443 -j REDIRECT --to-ports 8080
-
           dbus-run-session -- bash -exs <<'SESSION'
-          echo 'ci-unlock' | gnome-keyring-daemon --unlock >/dev/null
-          # Go 的 crypto/x509 认 SSL_CERT_FILE，双保险再装系统信任
-          export SSL_CERT_FILE="$HOME/.mitmproxy/mitmproxy-ca-cert.pem"
-          python3 tools/config_hds.py || true
-          ./tools/bin/hdspace-linux devenv list && echo "[OK-B] list 经代理成功" || echo "[FAIL-B] list 经代理失败"
+          printf '\n' | gnome-keyring-daemon --unlock >/dev/null || true
+          printf '\n' | gnome-keyring-daemon --start >/dev/null || true
+          strace -f -qq -e trace=getenv,access,openat,connect -o /tmp/full.log \
+            ./tools/bin/hdspace-linux devenv list </dev/null >/tmp/list_out.txt 2>&1 || true
+          echo "--- list 输出 ---"; head -5 /tmp/list_out.txt
+          echo "--- 关键环境变量读取 ---"
+          grep -aoE 'getenv\("[A-Z_]+"\)' /tmp/full.log | sort | uniq -c | sort -rn | head -25
+          echo "--- access() 探测的路径 ---"
+          grep -aE 'access\("' /tmp/full.log | grep -av ENOENT.*\.so | head -20
+          echo "--- 打开的非库文件 ---"
+          grep -aE 'openat\(.*"' /tmp/full.log | grep -avE '\.so|locale|/usr/lib|/etc/ld|/proc|/sys/|python|locale-archive' | head -30
+          echo "--- 全部 connect ---"
+          grep -a 'connect(' /tmp/full.log | head -20
           SESSION
-
-          sudo iptables -t nat -D OUTPUT -p tcp -m multiport --dports 443,8443 -j REDIRECT --to-ports 8080 2>/dev/null || true
-          sleep 2
-          pkill -f mitmdump 2>/dev/null || true
-          echo "===== 抓到的 HTTP 流量 ====="
-          mitmdump -nr /tmp/hds.flows --set flow_detail=1 2>/dev/null | grep -avE "^\s*$" | head -80
-          echo "===== mitmproxy 自身日志尾 ====="
-          tail -10 /tmp/mitm.log
