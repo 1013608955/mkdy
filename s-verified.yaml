@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=10
+# verified=9
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -50,11 +50,10 @@ proxy-groups:
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
+  - ✅ 🇳🇱_NL_荷兰_2
+  - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
-  - ✅ US美国(mibei77.com 米贝节点分享)_58
   - ✅ 🇳🇱_荷兰_129
-  - ✅ 🇭🇰_香港_69
-  - ✅ 🇭🇰_香港_84
 - name: 自动选择
   type: url-test
   proxies:
@@ -63,11 +62,10 @@ proxy-groups:
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
+  - ✅ 🇳🇱_NL_荷兰_2
+  - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
-  - ✅ US美国(mibei77.com 米贝节点分享)_58
   - ✅ 🇳🇱_荷兰_129
-  - ✅ 🇭🇰_香港_69
-  - ✅ 🇭🇰_香港_84
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -78,11 +76,10 @@ proxy-groups:
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
+  - ✅ 🇳🇱_NL_荷兰_2
+  - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
-  - ✅ US美国(mibei77.com 米贝节点分享)_58
   - ✅ 🇳🇱_荷兰_129
-  - ✅ 🇭🇰_香港_69
-  - ✅ 🇭🇰_香港_84
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -657,6 +654,30 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
+- name: ✅ 🇳🇱_NL_荷兰_2
+  type: vless
+  server: 158.101.208.44
+  port: 62145
+  uuid: 8fb65472-5957-4f64-ba2d-b5812b2f155a
+  tls: false
+  network: tcp
+  security_scheme: none
+  proto: vless
+  peer: 158.101.208.44
+- name: ✅ 🇺🇸_美国_385
+  type: vless
+  server: 18.239.134.69
+  port: 80
+  uuid: de27291c-15a9-4256-9ba7-ad517569877e
+  tls: false
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: d2e1v87ko56lyw.cloudfront.net:assets.opensignal.com
+  security_scheme: none
+  proto: vless
+  peer: 18.239.134.69
 - name: ✅ 香港+Simcentric网络公司
   type: vless
   server: 180.178.60.254
@@ -667,22 +688,6 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 180.178.60.254
-- name: ✅ US美国(mibei77.com 米贝节点分享)_58
-  type: vless
-  server: 208.103.161.32
-  port: 443
-  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
-  tls: true
-  network: ws
-  sni: josni.hoyes.cloudns.ch
-  servername: josni.hoyes.cloudns.ch
-  ws-opts:
-    path: /sg-melbi_/
-    headers:
-      Host: josni.hoyes.cloudns.ch
-  security_scheme: tls
-  proto: vless
-  peer: josni.hoyes.cloudns.ch
 - name: ✅ 🇳🇱_荷兰_129
   type: vmess
   server: 185.246.152.159
@@ -701,29 +706,3 @@ proxies:
   sni: apjhdggyx.com
   proto: vmess
   peer: apjhdggyx.com
-- name: ✅ 🇭🇰_香港_69
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
-- name: ✅ 🇭🇰_香港_84
-  type: vmess
-  server: v10.zgtfqs.click
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.zgtfqs.click
-  proto: vmess
-  peer: v10.zgtfqs.click
