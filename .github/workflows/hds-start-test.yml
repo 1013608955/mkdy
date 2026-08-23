@@ -49,24 +49,28 @@ jobs:
           eval "$(printf '\n' | gnome-keyring-daemon --start)" || true
           printf 'login' > ~/.local/share/keyrings/default
 
-          # —— 后台自动应答器：发现弹窗就输入密码并回车 ——
+          # —— 后台自动应答器：发现弹窗就聚焦、输入密码并回车 ——
           (
-            for i in $(seq 1 90); do
-              WINS=$(xdotool search --onlyvisible --name '.' 2>/dev/null || true)
+            for i in $(seq 1 150); do
+              WINS=$(xdotool search --onlyvisible "" 2>/dev/null || true)
+              if [ -n "$WINS" ]; then
+                echo "[autoresponder] cycle$i 可见窗口: $WINS" >&2
+              fi
               for W in $WINS; do
                 NAME=$(xdotool getwindowname "$W" 2>/dev/null || true)
                 case "$NAME" in
-                  *Xvfb*|"")
+                  *"autoresponder"*|"")
                     ;;
                   *)
-                    echo "[autoresponder] 窗口: $NAME" >&2
+                    echo "[autoresponder] 应答窗口: $NAME" >&2
                     xdotool windowactivate "$W" 2>/dev/null
+                    xdotool windowfocus "$W" 2>/dev/null
                     sleep 0.5
-                    xdotool type --delay 50 'ci-unlock'
+                    xdotool type --delay 60 'ci-unlock'
                     xdotool key Tab
-                    xdotool type --delay 50 'ci-unlock'
+                    xdotool type --delay 60 'ci-unlock'
                     xdotool key Return
-                    sleep 1
+                    sleep 2
                     ;;
                 esac
               done
@@ -76,7 +80,10 @@ jobs:
           AR=$!
 
           echo "===== pty 驱动 config（弹窗将被自动应答）====="
-          timeout 100 python3 tools/config_hds.py || true
+          timeout 170 python3 tools/config_hds.py || true
+
+          echo "===== X 窗口树（诊断弹窗结构）====="
+          DISPLAY=:99 xwininfo -root -tree 2>/dev/null | head -25
 
           echo "===== devenv list 验证 ====="
           timeout 20 ./tools/bin/hdspace-linux devenv list </dev/null 2>&1 | head -10 && echo "[OK-A] list 有输出" || true

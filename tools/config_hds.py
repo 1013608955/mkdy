@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """config_hds.py — 用 pty 精确驱动 hdspace config 交互。
-select 带超时读写，发完 SK 即收尾强杀，绝不挂死。"""
+v14：加长等待窗（弹窗交互可能很慢），完整回显，不提前截断。"""
 import os
 import pty
 import select
@@ -19,13 +19,20 @@ if pid == 0:
               ["./tools/bin/hdspace-linux", "config"])
     os._exit(1)
 
-sent_ak = sent_sk = False
+sent_ak = False
 sk_sends = 0
 text = ""
-deadline = time.time() + 25
+deadline = time.time() + 150          # 给弹窗交互留足时间
 while time.time() < deadline:
     r, _, _ = select.select([fd], [], [], 1.0)
     if not r:
+        try:
+            done, _ = os.waitpid(pid, os.WNOHANG)
+            if done:
+                print("[info] 子进程已退出")
+                break
+        except ChildProcessError:
+            break
         continue
     try:
         chunk = os.read(fd, 4096)
@@ -44,34 +51,27 @@ while time.time() < deadline:
     elif "secret" in low:
         time.sleep(0.3)
         os.write(fd, (sk + "\n").encode())
-        sent_sk = True
         sk_sends += 1
         text = ""
         print(f"[info] 已喂入 SK 第{sk_sends}次")
-    if sent_sk and sk_sends >= 2 and len(text) > 120:
-        break
 
-# 等子进程自然退出（keyring 写入可能发生在末尾），上限 30s
-deadline = time.time() + 30
-while time.time() < deadline:
-    r, _, _ = select.select([fd], [], [], 1.0)
-    if not r:
-        # 无新数据时探测子进程是否已退出
-        try:
-            pid_done, _ = os.waitpid(pid, os.WNOHANG)
-            if pid_done:
-                break
-        except ChildProcessError:
-            break
-        continue
+# 收尾：等自然退出最多 10s，再强杀
+end = time.time() + 10
+while time.time() < end:
     try:
-        chunk = os.read(fd, 4096)
-    except OSError:
+        done, _ = os.waitpid(pid, os.WNOHANG)
+        if done:
+            break
+    except ChildProcessError:
         break
-    if not chunk:
-        break
-    text += chunk.decode("utf-8", "replace")
-
+    r, _, _ = select.select([fd], [], [], 0.5)
+    if r:
+        try:
+            chunk = os.read(fd, 4096)
+            if chunk:
+                text += chunk.decode("utf-8", "replace")
+        except OSError:
+            break
 try:
     os.kill(pid, 9)
 except OSError:
@@ -81,6 +81,7 @@ try:
 except ChildProcessError:
     pass
 
-print(text[-600:])
-print(f"[result] sent_ak={sent_ak} sent_sk={sent_sk}")
-sys.exit(0 if (sent_ak and sent_sk) else 1)
+print("===== pty 完整输出尾 =====")
+print(text[-2000:])
+print(f"[result] sent_ak={sent_ak} sk_sends={sk_sends}")
+sys.exit(0 if (sent_ak and sk_sends >= 2) else 1)
