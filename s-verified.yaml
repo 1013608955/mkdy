@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=13
+# verified=14
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -55,6 +55,7 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
@@ -71,6 +72,7 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
@@ -89,6 +91,7 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
@@ -718,6 +721,22 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
+- name: ✅ HK香港(mibei77.com 米贝节点分享)
+  type: vless
+  server: 104.17.28.89
+  port: 443
+  uuid: 1078d418-b4e0-4668-9018-dc90c2042d61
+  tls: true
+  network: ws
+  sni: workspace.evan00.dpdns.org
+  servername: workspace.evan00.dpdns.org
+  ws-opts:
+    path: /
+    headers:
+      Host: workspace.evan00.dpdns.org
+  security_scheme: tls
+  proto: vless
+  peer: workspace.evan00.dpdns.org
 - name: ✅ 香港+Simcentric网络公司
   type: vless
   server: 180.178.60.254
