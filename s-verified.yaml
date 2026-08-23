@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=13
+# verified=12
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -49,6 +49,7 @@ proxy-groups:
   - ✅ 美国+V2CROSS.COM
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_18
+  - ✅ 🇫🇮_FI_芬兰_2
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
@@ -56,8 +57,6 @@ proxy-groups:
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
-  - ✅ 🇭🇰_香港_151
-  - ✅ 🇭🇰_香港_146
 - name: 自动选择
   type: url-test
   proxies:
@@ -65,6 +64,7 @@ proxy-groups:
   - ✅ 美国+V2CROSS.COM
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_18
+  - ✅ 🇫🇮_FI_芬兰_2
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
@@ -72,8 +72,6 @@ proxy-groups:
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
-  - ✅ 🇭🇰_香港_151
-  - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -83,6 +81,7 @@ proxy-groups:
   - ✅ 美国+V2CROSS.COM
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_18
+  - ✅ 🇫🇮_FI_芬兰_2
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
@@ -90,8 +89,6 @@ proxy-groups:
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
-  - ✅ 🇭🇰_香港_151
-  - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -653,6 +650,17 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: hopp-us.yyuyy.com
+- name: ✅ 🇫🇮_FI_芬兰_2
+  type: hysteria2
+  server: fast.wwwinternetvideo.click
+  port: 443
+  password: C91FbOXGY9XRymrcEebtax9R1Nj62UizoT8S6kCb7xwey8IE
+  sni: fast.wwwinternetvideo.click
+  skip-cert-verify: true
+  tls: true
+  security_scheme: tls
+  proto: hysteria2
+  peer: fast.wwwinternetvideo.click
 - name: ✅ 🇹🇭_TH_泰国
   type: ss
   server: 103.169.67.34
@@ -733,29 +741,3 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
-- name: ✅ 🇭🇰_香港_151
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
-- name: ✅ 🇭🇰_香港_146
-  type: vmess
-  server: v10.zgtfqs.click
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.zgtfqs.click
-  proto: vmess
-  peer: v10.zgtfqs.click
