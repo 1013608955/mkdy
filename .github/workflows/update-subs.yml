@@ -81,9 +81,12 @@ jobs:
             echo "[INFO] s-clash.yaml 无变化，跳过推送"
           else
             git commit -m "chore: 合并订阅 $(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M 北京时间')"
-            # 防止与容器 run_local.py / verify-tag.yml 并发推送竞争 main 导致 non-fast-forward 拒绝
+            # 防止与容器 run_local.py / 其他 CI 轮次并发推送竞争 main。
+            # -X ours：s-clash/s-verified 是本轮从最新源重算的生成产物，内容冲突以
+            # 本轮为准（实测踩坑：19:19/19:21 两轮 CI 相撞，生成文件必逐行冲突，
+            # 无 -X ours 则 merge CONFLICT 且 bash -e 中止整轮；下轮会再刷新，自愈）。
             git fetch origin main
-            git merge origin/main --no-edit --no-ff
+            git merge origin/main --no-edit --no-ff -X ours
             git push
             echo "[INFO] s-clash.yaml / s-verified.yaml 已更新并推送"
           fi
