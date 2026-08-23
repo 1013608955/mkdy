@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=13
+# verified=16
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -46,6 +46,7 @@ proxy-groups:
   - 自动选择
   - 故障转移
   - ✅ DE德国(mibei77.com 米贝节点分享)
+  - ✅ 美国+V2CROSS.COM
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ 🇫🇮_FI_芬兰_2
@@ -53,15 +54,18 @@ proxy-groups:
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
-  - ✅ HK香港(mibei77.com 米贝节点分享)_3
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
+  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_155
+  - ✅ 🇭🇰_香港_151
   - ✅ 🇭🇰_香港_146
 - name: 自动选择
   type: url-test
   proxies:
   - ✅ DE德国(mibei77.com 米贝节点分享)
+  - ✅ 美国+V2CROSS.COM
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ 🇫🇮_FI_芬兰_2
@@ -69,10 +73,12 @@ proxy-groups:
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
-  - ✅ HK香港(mibei77.com 米贝节点分享)_3
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
+  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_155
+  - ✅ 🇭🇰_香港_151
   - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 86400
@@ -80,6 +86,7 @@ proxy-groups:
   type: fallback
   proxies:
   - ✅ DE德国(mibei77.com 米贝节点分享)
+  - ✅ 美国+V2CROSS.COM
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ 🇫🇮_FI_芬兰_2
@@ -87,10 +94,12 @@ proxy-groups:
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
-  - ✅ HK香港(mibei77.com 米贝节点分享)_3
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
+  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_155
+  - ✅ 🇭🇰_香港_151
   - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -622,6 +631,17 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: 185.230.44.170
+- name: ✅ 美国+V2CROSS.COM
+  type: hysteria2
+  server: 66.94.121.46
+  port: 443
+  password: gf1:gfhysteria2024
+  sni: www.broadcom.com
+  skip-cert-verify: true
+  tls: true
+  security_scheme: tls
+  proto: hysteria2
+  peer: www.broadcom.com
 - name: ✅ GB英国(mibei77.com 米贝节点分享)_3
   type: hysteria2
   server: 82.39.214.95
@@ -694,21 +714,6 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: ssl.fastly.com
-- name: ✅ HK香港(mibei77.com 米贝节点分享)_3
-  type: trojan
-  server: 188.42.145.180
-  port: 443
-  password: MiTiVPN
-  tls: true
-  network: ws
-  sni: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
-  ws-opts:
-    path: /---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/s-g@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN
-    headers:
-      Host: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
-  security_scheme: tls
-  proto: trojan
-  peer: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
 - name: ✅ 香港+Simcentric网络公司
   type: vless
   server: 180.178.60.254
@@ -735,6 +740,38 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: ssl.fastly.com
+- name: ✅ US美国(mibei77.com 米贝节点分享)_3
+  type: vless
+  server: 208.103.161.32
+  port: 443
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  tls: true
+  network: ws
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
+  ws-opts:
+    path: /sg-melbi_/
+    headers:
+      Host: josni.hoyes.cloudns.ch
+  security_scheme: tls
+  proto: vless
+  peer: josni.hoyes.cloudns.ch
+- name: ✅ 俄罗斯(mibei77.com 米贝节点分享)
+  type: vless
+  server: mws.tunnelgate.org
+  port: 14443
+  uuid: 423b1d79-08c4-403f-9d5e-c541f791b55f
+  tls: true
+  network: ws
+  sni: mws.tunnelgate.org
+  servername: mws.tunnelgate.org
+  ws-opts:
+    path: /ru
+    headers:
+      Host: mws.tunnelgate.org
+  security_scheme: tls
+  proto: vless
+  peer: mws.tunnelgate.org
 - name: ✅ 🇺🇸_美国_155
   type: vmess
   server: guanwang.awsno.com
@@ -748,6 +785,19 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
+- name: ✅ 🇭🇰_香港_151
+  type: vmess
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.hdacd.com
+  proto: vmess
+  peer: v10.hdacd.com
 - name: ✅ 🇭🇰_香港_146
   type: vmess
   server: v10.zgtfqs.click
