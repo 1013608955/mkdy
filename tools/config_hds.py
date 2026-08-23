@@ -20,6 +20,7 @@ if pid == 0:
     os._exit(1)
 
 sent_ak = sent_sk = False
+sk_sends = 0
 text = ""
 deadline = time.time() + 25
 while time.time() < deadline:
@@ -39,13 +40,16 @@ while time.time() < deadline:
         os.write(fd, (ak + "\n").encode())
         sent_ak = True
         text = ""
-        print(f"[info] 已喂入 AK")
-    elif sent_ak and not sent_sk and "secret" in low:
+        print("[info] 已喂入 AK")
+    elif "secret" in low:
         time.sleep(0.3)
         os.write(fd, (sk + "\n").encode())
         sent_sk = True
+        sk_sends += 1
         text = ""
-        print("[info] 已喂入 SK")
+        print(f"[info] 已喂入 SK 第{sk_sends}次")
+    if sent_sk and sk_sends >= 2 and len(text) > 120:
+        break
 
 # 发完 SK 给 keyring 写入留 2s，然后强杀收尾
 if sent_sk:
