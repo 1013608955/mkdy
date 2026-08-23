@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=16
+# verified=20
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -53,13 +53,17 @@ proxy-groups:
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
+  - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ HK香港(mibei77.com 米贝节点分享)_7
   - ✅ HK香港(mibei77.com 米贝节点分享)_6
-  - ✅ 🇺🇸_美国_385
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
+  - ✅ 🇺🇸_US_美国
+  - ✅ 🇺🇸_美国_161
   - ✅ HK香港(mibei77.com 米贝节点分享)_4
   - ✅ 美国2|@ripaojiedian
+  - ✅ 🇺🇸_美国_155
+  - ✅ 美国|@ripaojiedian
+  - ✅ 🇭🇰_香港_151
+  - ✅ 🇭🇰_香港_146
   - ✅ 🇨🇳_中国_77
 - name: 自动选择
   type: url-test
@@ -72,13 +76,17 @@ proxy-groups:
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
+  - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ HK香港(mibei77.com 米贝节点分享)_7
   - ✅ HK香港(mibei77.com 米贝节点分享)_6
-  - ✅ 🇺🇸_美国_385
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
+  - ✅ 🇺🇸_US_美国
+  - ✅ 🇺🇸_美国_161
   - ✅ HK香港(mibei77.com 米贝节点分享)_4
   - ✅ 美国2|@ripaojiedian
+  - ✅ 🇺🇸_美国_155
+  - ✅ 美国|@ripaojiedian
+  - ✅ 🇭🇰_香港_151
+  - ✅ 🇭🇰_香港_146
   - ✅ 🇨🇳_中国_77
   url: http://www.gstatic.com/generate_204
   interval: 86400
@@ -93,13 +101,17 @@ proxy-groups:
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
+  - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ HK香港(mibei77.com 米贝节点分享)_7
   - ✅ HK香港(mibei77.com 米贝节点分享)_6
-  - ✅ 🇺🇸_美国_385
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
+  - ✅ 🇺🇸_US_美国
+  - ✅ 🇺🇸_美国_161
   - ✅ HK香港(mibei77.com 米贝节点分享)_4
   - ✅ 美国2|@ripaojiedian
+  - ✅ 🇺🇸_美国_155
+  - ✅ 美国|@ripaojiedian
+  - ✅ 🇭🇰_香港_151
+  - ✅ 🇭🇰_香港_146
   - ✅ 🇨🇳_中国_77
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -698,6 +710,21 @@ proxies:
   password: Butterfly123@qwe9527
   skip-cert-verify: true
   udp: true
+- name: ✅ 🇺🇸_美国_163
+  type: trojan
+  server: 140.248.185.253
+  port: 443
+  password: MiTiVPN
+  tls: true
+  network: ws
+  sni: ssl.fastly.com
+  ws-opts:
+    path: /---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/s-w@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN
+    headers:
+      Host: 4x-mitivpn--mitivpn------mitivpn.global.ssl.fastly.net
+  security_scheme: tls
+  proto: trojan
+  peer: ssl.fastly.com
 - name: ✅ 卢森堡(mibei77.com 米贝节点分享)
   type: trojan
   server: 188.42.145.180
@@ -713,22 +740,6 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
-- name: ✅ HK香港(mibei77.com 米贝节点分享)_7
-  type: vless
-  server: 109.73.206.166
-  port: 2200
-  uuid: fc72e947-b8dd-4de0-9ec7-2b0050c9f83a
-  tls: false
-  network: ws
-  sni: rzd.ru
-  servername: rzd.ru
-  ws-opts:
-    path: /v1
-    headers:
-      Host: rzd.ru
-  security_scheme: none
-  proto: vless
-  peer: rzd.ru
 - name: ✅ HK香港(mibei77.com 米贝节点分享)_6
   type: vless
   server: 141.101.122.147
@@ -745,36 +756,32 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: a.cwvps.eu.org
-- name: ✅ 🇺🇸_美国_385
+- name: ✅ 🇺🇸_US_美国
   type: vless
-  server: 18.239.134.69
-  port: 80
-  uuid: de27291c-15a9-4256-9ba7-ad517569877e
+  server: 180.178.60.254
+  port: 10000
+  uuid: caec0d8d-ab2f-4247-b97d-7fb1a34ab195
   tls: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: d2e1v87ko56lyw.cloudfront.net:assets.opensignal.com
+  network: tcp
   security_scheme: none
   proto: vless
-  peer: 18.239.134.69
-- name: ✅ US美国(mibei77.com 米贝节点分享)_3
+  peer: 180.178.60.254
+- name: ✅ 🇺🇸_美国_161
   type: vless
-  server: 208.103.161.32
+  server: 199.232.78.159
   port: 443
-  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  uuid: 27315937-5479-49fd-867d-6b2f17246708
   tls: true
   network: ws
-  sni: josni.hoyes.cloudns.ch
-  servername: josni.hoyes.cloudns.ch
+  sni: ssl.fastly.com
+  servername: ssl.fastly.com
   ws-opts:
-    path: /sg-melbi_/
+    path: /TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER?ed=2053
     headers:
-      Host: josni.hoyes.cloudns.ch
+      Host: pan1.global.ssl.fastly.net
   security_scheme: tls
   proto: vless
-  peer: josni.hoyes.cloudns.ch
+  peer: ssl.fastly.com
 - name: ✅ HK香港(mibei77.com 米贝节点分享)_4
   type: vless
   server: liang92.dpdns.org
@@ -809,6 +816,63 @@ proxies:
   sni: 3kCf86Ufi0U5xBDA.v.3dns.vip
   proto: vmess
   peer: 3kCf86Ufi0U5xBDA.v.3dns.vip
+- name: ✅ 🇺🇸_美国_155
+  type: vmess
+  server: guanwang.awsno.com
+  port: 443
+  uuid: 6a89a215-22bf-4bd7-9642-b95b2e09583a
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: tcp
+  security_scheme: tls
+  sni: guanwang.awsno.com
+  proto: vmess
+  peer: guanwang.awsno.com
+- name: ✅ 美国|@ripaojiedian
+  type: vmess
+  server: lL0GIaPVZ6Zxkd94.v.3dns.vip
+  port: 443
+  uuid: 1abe49dedb6e4f65a0f0a5ea79ddefad
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /ws-vmess
+    headers:
+      Host: lL0GIaPVZ6Zxkd94.v.3dns.vip
+  servername: lL0GIaPVZ6Zxkd94.v.3dns.vip
+  security_scheme: tls
+  sni: lL0GIaPVZ6Zxkd94.v.3dns.vip
+  proto: vmess
+  peer: lL0GIaPVZ6Zxkd94.v.3dns.vip
+- name: ✅ 🇭🇰_香港_151
+  type: vmess
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.hdacd.com
+  proto: vmess
+  peer: v10.hdacd.com
+- name: ✅ 🇭🇰_香港_146
+  type: vmess
+  server: v10.zgtfqs.click
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.zgtfqs.click
+  proto: vmess
+  peer: v10.zgtfqs.click
 - name: ✅ 🇨🇳_中国_77
   type: vmess
   server: v6.hdacd.com
