@@ -54,11 +54,11 @@ proxy-groups:
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)_2
   - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
+  - ✅ 🏳️_未知_384
+  - ✅ 🇭🇰_香港_146
 - name: 自动选择
   type: url-test
   proxies:
@@ -71,11 +71,11 @@ proxy-groups:
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)_2
   - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
+  - ✅ 🏳️_未知_384
+  - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -90,11 +90,11 @@ proxy-groups:
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)_2
   - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
+  - ✅ 🏳️_未知_384
+  - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -709,22 +709,6 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: ssl.fastly.com
-- name: ✅ SG新加坡(mibei77.com 米贝节点分享)_2
-  type: vless
-  server: 104.18.37.228
-  port: 443
-  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
-  tls: true
-  network: ws
-  sni: josni.hoyes.cloudns.ch
-  servername: josni.hoyes.cloudns.ch
-  ws-opts:
-    path: /sg-melbi
-    headers:
-      Host: josni.hoyes.cloudns.ch
-  security_scheme: tls
-  proto: vless
-  peer: josni.hoyes.cloudns.ch
 - name: ✅ 🇺🇸_US_美国
   type: vless
   server: 180.178.60.254
@@ -751,22 +735,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: ssl.fastly.com
-- name: ✅ US美国(mibei77.com 米贝节点分享)_3
-  type: vless
-  server: 208.103.161.32
-  port: 443
-  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
-  tls: true
-  network: ws
-  sni: josni.hoyes.cloudns.ch
-  servername: josni.hoyes.cloudns.ch
-  ws-opts:
-    path: /sg-melbi_/
-    headers:
-      Host: josni.hoyes.cloudns.ch
-  security_scheme: tls
-  proto: vless
-  peer: josni.hoyes.cloudns.ch
 - name: ✅ 🇺🇸_美国_155
   type: vmess
   server: guanwang.awsno.com
@@ -780,3 +748,33 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
+- name: ✅ 🏳️_未知_384
+  type: vmess
+  server: rush-6it6b.teeopp.quest
+  port: 443
+  uuid: 03fcc618-b93d-6796-6aed-8a38c975d581
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: rush-6it6b.teeopp.quest
+  security_scheme: tls
+  sni: rush-6it6b.teeopp.quest
+  proto: vmess
+  peer: rush-6it6b.teeopp.quest
+- name: ✅ 🇭🇰_香港_146
+  type: vmess
+  server: v10.zgtfqs.click
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.zgtfqs.click
+  proto: vmess
+  peer: v10.zgtfqs.click
