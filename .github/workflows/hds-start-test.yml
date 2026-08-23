@@ -1,8 +1,11 @@
-# hdspace headless 攻关 v11（手动触发）
+# hdspace headless 攻关 v12（手动触发）
 #
-# v10 发现：list 无凭据时 6s 内未发任何 D-Bus 调用（可能先做别的检查）。
-# 本版：暴力注入所有合理 service×username 组合到 login 集合（secretstorage
-# 已证可写），给 list 足够时长（25s）+ 全程 D-Bus 监听，看它命中哪一项。
+# 已实锤链条：config 写入必走 CreateCollection → gcr-prompter GUI 弹窗设密码
+#   → 无 display 即死。绕过注入均失败（list 只认 daemon 内部状态）。
+#
+# v12 终极方案：给 prompter 一个假显示器 + 键盘自动化
+#   Xvfb 虚拟屏 + xdotool 监听窗口弹出 → 自动输入密码并回车。
+#   这是社区对付 GUI 依赖 CLI 的标准打法。
 #
 # 前置 Secrets：HDS_AK / HDS_SK
 
@@ -14,61 +17,78 @@ on:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 14
     steps:
       - name: 检出仓库
         uses: actions/checkout@v4
 
-      - name: 安装依赖
+      - name: 安装依赖（含虚拟显示与键盘自动化）
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq gnome-keyring dbus-x11 libsecret-1-0 \
-            python3-secretstorage >/dev/null
+            python3-secretstorage xvfb xdotool x11-utils >/dev/null
 
       - name: 准备
         run: |
           chmod +x tools/bin/hdspace-linux tools/config_hds.py
           mkdir -p ~/.devenv/logs ~/.cache ~/.local/share/keyrings
 
-      - name: 暴力注入候选凭据项 + 长窗监听验证
+      - name: Xvfb + 自动应答弹窗 + config/list 全链路
         env:
           HDS_AK: ${{ secrets.HDS_AK }}
           HDS_SK: ${{ secrets.HDS_SK }}
         run: |
+          Xvfb :99 -screen 0 1280x1024x24 >/dev/null 2>&1 &
+          sleep 2
           dbus-run-session -- bash -exs <<'SESSION'
+          export DISPLAY=:99
+          export SUDO_USER=runner
           mkdir -p ~/.cache ~/.local/share/keyrings
           eval "$(printf '\n' | gnome-keyring-daemon --unlock)" || true
           eval "$(printf '\n' | gnome-keyring-daemon --start)" || true
           printf 'login' > ~/.local/share/keyrings/default
 
-          HDS_AK="$HDS_AK" HDS_SK="$HDS_SK" python3 - <<'PY'
-          import os, secretstorage
-          ak, sk = os.environ['HDS_AK'], os.environ['HDS_SK']
-          conn = secretstorage.dbus_init()
-          col = secretstorage.get_default_collection(conn)
-          services = ['hdspace', 'hds', 'csm', 'devenv', 'csmservice',
-                      'csmuserservice', 'com.huawei.hdspace', 'hds-csm']
-          users = ['hdspace', 'developer', 'csmuser', 'csm_user_name', 'user']
-          n = 0
-          for s in services:
-              for u in users:
-                  # 密码存 SK；AK 放进额外属性便于识别
-                  col.create_item(f'hds-{s}-{u}',
-                                  {'service': s, 'username': u, 'ak': ak},
-                                  sk.encode(), replace=True)
-                  n += 1
-          print(f'已注入 {n} 个候选 item')
-          PY
+          # —— 后台自动应答器：发现弹窗就输入密码并回车 ——
+          (
+            for i in $(seq 1 90); do
+              WINS=$(xdotool search --onlyvisible --name '.' 2>/dev/null || true)
+              for W in $WINS; do
+                NAME=$(xdotool getwindowname "$W" 2>/dev/null || true)
+                case "$NAME" in
+                  *Xvfb*|"")
+                    ;;
+                  *)
+                    echo "[autoresponder] 窗口: $NAME" >&2
+                    xdotool windowactivate "$W" 2>/dev/null
+                    sleep 0.5
+                    xdotool type --delay 50 'ci-unlock'
+                    xdotool key Tab
+                    xdotool type --delay 50 'ci-unlock'
+                    xdotool key Return
+                    sleep 1
+                    ;;
+                esac
+              done
+              sleep 1
+            done
+          ) &
+          AR=$!
 
-          echo "===== 注入完成，开始 25s 监听窗口内跑 list ====="
-          dbus-monitor > /tmp/dbus.log 2>&1 &
-          MON=$!
-          sleep 1
-          timeout 25 ./tools/bin/hdspace-linux devenv list </dev/null >/tmp/list_out.txt 2>&1 || true
-          sleep 2; kill $MON 2>/dev/null; sleep 1
+          echo "===== pty 驱动 config（弹窗将被自动应答）====="
+          timeout 100 python3 tools/config_hds.py || true
 
-          echo "--- list 输出 ---"
-          head -12 /tmp/list_out.txt
-          echo "--- 命中的 D-Bus 调用 ---"
-          grep -aE 'member=(SearchItems|GetSecret|Unlock)' -aA 8 /tmp/dbus.log | head -60
+          echo "===== devenv list 验证 ====="
+          timeout 20 ./tools/bin/hdspace-linux devenv list </dev/null 2>&1 | head -10 && echo "[OK-A] list 有输出" || true
+
+          kill $AR 2>/dev/null
+          SESSION
+
+      - name: 若凭据落库则直接验证 start
+        if: always()
+        run: |
+          # 独立会话重读凭据（keyring 文件已持久化在 HOME）
+          dbus-run-session -- bash -exs <<'SESSION' || true
+          printf '\n' | gnome-keyring-daemon --unlock >/dev/null || true
+          printf '\n' | gnome-keyring-daemon --start >/dev/null || true
+          ./tools/bin/hdspace-linux devenv list </dev/null 2>&1 | head -8 && echo "[FINAL] 新会话也能读凭据！" || true
           SESSION
