@@ -60,14 +60,17 @@ jobs:
               print("default alias ->", usable[0].get_label())
           PY
           python3 tools/config_hds.py || true
-          dbus-monitor > /tmp/dbus.log 2>&1 &
-          MON=$!
-          ./tools/bin/hdspace-linux devenv list >/dev/null 2>&1 || true
-          sleep 1; kill $MON 2>/dev/null
-          echo "===== DBUS MONITOR（list 读凭据的真实调用）====="
-          grep -aE "method call|member=|path=" /tmp/dbus.log | grep -aiE "secret|collection|item|search" | head -30
-          echo "===== 原始尾部 ====="
-          tail -40 /tmp/dbus.log
+          sudo apt-get install -y -qq strace >/dev/null 2>&1
+          echo "===== STRACE: list 的文件打开与网络连接 ====="
+          strace -f -qq -e trace=openat,connect,access -o /tmp/strace.log ./tools/bin/hdspace-linux devenv list >/dev/null 2>&1 || true
+          echo "--- 打开的非常规库文件 ---"
+          grep -aE "openat" /tmp/strace.log | grep -avE "\.so|locale|/usr/lib|/etc/ld|/proc|python" | head -25
+          echo "--- 网络连接 ---"
+          grep -aE "connect\(" /tmp/strace.log | grep -avE "ENOENT|-1 E" | head -15
+          echo "===== STRACE: config 的文件写入 ====="
+          strace -f -qq -e trace=openat,connect -o /tmp/strace2.log ./tools/bin/hdspace-linux config >/dev/null 2>&1 < /dev/null || true
+          echo "--- config 打开的文件 ---"
+          grep -aE "openat" /tmp/strace2.log | grep -avE "\.so|locale|/usr/lib|/etc/ld|/proc|python" | head -20
           SESSION
 
       - name: 测试启动容器（若上步成功）
