@@ -1,12 +1,14 @@
-# hdspace headless 攻关 v9（手动触发）
+# hdspace headless 攻关 v10（手动触发）
 #
-# v8 决定性发现（dbus-monitor 实锤）：hdspace config 的失败链 =
-#   OpenSession → CreateCollection（创建自己的集合！）→ Secret.Prompt
-#   （建集合须设密码）→ gcr-prompter 无 display 即死 → Object not exist at "/"
+# 已确认链条（v8/v9）：
+#   - config 写入 = CreateCollection(Label="Login") → 必弹窗 → headless 死
+#   - list 读取 = ReadAlias("default") → 打开集合 → SearchItems(service,username)
+#   - 二进制常量：csmservicename/csmusername/csmuserservice + iamservicename/iamuser
 #
-# v9 目标：抓到 CreateCollection 的完整 body（properties/label），
-#   确认它想要的集合名与别名 → 下一版用 secretstorage 预建该集合绕过弹窗。
-#   同时试探 secretstorage.create_collection 自身是否也会触发弹窗。
+# v10 自学习注入：
+#   1) 监听下跑一次 list，从 SearchItems body 提取它查询的精确 service/username
+#   2) 用 secretstorage 把该 item 直接写进 login 集合（secret=HDS_SK）
+#   3) 再跑 list —— 若读到凭据即打通！全程无需 hdspace config。
 #
 # 前置 Secrets：HDS_AK / HDS_SK
 
@@ -27,14 +29,14 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq gnome-keyring dbus-x11 libsecret-1-0 \
-            python3-secretstorage strace >/dev/null
+            python3-secretstorage >/dev/null
 
       - name: 准备
         run: |
           chmod +x tools/bin/hdspace-linux tools/config_hds.py
           mkdir -p ~/.devenv/logs ~/.cache ~/.local/share/keyrings
 
-      - name: 抓 CreateCollection 完整 body
+      - name: 学习-注入-验证（免 config 直写 keyring）
         env:
           HDS_AK: ${{ secrets.HDS_AK }}
           HDS_SK: ${{ secrets.HDS_SK }}
@@ -45,35 +47,51 @@ jobs:
           eval "$(printf '\n' | gnome-keyring-daemon --start)" || true
           printf 'login' > ~/.local/share/keyrings/default
 
+          echo "===== [1] 监听下首次 list，学习其查询属性 ====="
           dbus-monitor > /tmp/dbus.log 2>&1 &
           MON=$!
           sleep 1
-          python3 tools/config_hds.py >/tmp/config_out.txt 2>&1 || true
-          ./tools/bin/hdspace-linux devenv list </dev/null >/dev/null 2>&1 || true
-          sleep 1; kill $MON 2>/dev/null; sleep 1
+          timeout 6 ./tools/bin/hdspace-linux devenv list </dev/null >/dev/null 2>&1 || true
+          sleep 2; kill $MON 2>/dev/null; sleep 1
 
-          echo "===== config 输出 ====="
-          cat /tmp/config_out.txt
-          echo "===== CreateCollection 上下文原文（前后各18行）====="
-          grep -an "CreateCollection" /tmp/dbus.log | head -3
-          L=$(grep -an "member=CreateCollection" /tmp/dbus.log | head -1 | cut -d: -f1)
-          [ -n "$L" ] && sed -n "$((L-6)),$((L+18))p" /tmp/dbus.log || echo "(未捕获到 CreateCollection)"
-          echo "===== ReadAlias/Prompt 上下文 ====="
-          L2=$(grep -an "member=Prompt" /tmp/dbus.log | head -1 | cut -d: -f1)
-          [ -n "$L2" ] && sed -n "$((L2-4)),$((L2+10))p" /tmp/dbus.log
-          echo "===== keyring 文件终态 ====="
-          ls -la ~/.local/share/keyrings/
+          echo "===== [2] 从监控日志提取 SearchItems 属性并注入 ====="
+          HDS_SK="$HDS_SK" python3 - <<'PY'
+          import re, os
+          log = open('/tmp/dbus.log', encoding='utf-8', errors='replace').read()
+          # 取每个 SearchItems 调用之后的 body 段（至下一个 method call/signal）
+          segs = re.split(r'(?=method call time=)', log)
+          found = []
+          for s in segs:
+              if 'member=SearchItems' not in s:
+                  continue
+              pairs = re.findall(
+                  r'string "(?:service|username)"\s*\n\s*string "([^"]*)"', s)
+              if pairs:
+                  found.append(pairs)
+          print('捕获到的属性组合:', found)
+          svc_usr = found[0] if found else None
+          assert len(svc_usr) == 2, f'未解析出 service/username 对: {found}'
+          service, username = svc_usr[0], svc_usr[1]
+          print(f'→ service={service!r} username={username!r}')
 
-          # ===== 试探：secretstorage.create_collection 是否也弹窗死 =====
-          echo "===== secretstorage.create_collection 试探 ====="
-          timeout 8 python3 -c "
           import secretstorage
           conn = secretstorage.dbus_init()
-          try:
-              col = secretstorage.create_collection(conn, 'probe-col', 'ci-unlock')
-              print('created:', col.get_label())
-              print('items:', len(list(col.get_all_items())))
-          except Exception as e:
-              print('create_collection failed:', e)
-          " || echo "(超时——大概率也是弹窗挂起)"
+          col = secretstorage.get_default_collection(conn)
+          sk = os.environ['HDS_SK'].encode()
+          col.create_item('hds-csm',
+                          {'service': service, 'username': username},
+                          sk, replace=True)
+          print('已注入 item 到默认集合')
+          PY
+
+          echo "===== [3] 再次 list 验证 ====="
+          dbus-monitor > /tmp/dbus2.log 2>&1 &
+          MON=$!
+          sleep 1
+          timeout 15 ./tools/bin/hdspace-linux devenv list </dev/null 2>&1 | head -8 || true
+          sleep 2; kill $MON 2>/dev/null; sleep 1
+
+          echo "===== [4] 第二轮 D-Bus 关键调用（是否 GetSecret 了我们的 item）====="
+          grep -aE 'member=(SearchItems|GetSecret|Unlock|OpenSession)|string "' /tmp/dbus2.log \
+            | grep -aB1 -aA2 'SearchItems\|GetSecret' | head -40
           SESSION
