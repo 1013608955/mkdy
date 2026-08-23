@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=20
+# verified=22
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -55,15 +55,17 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)_5
   - ✅ HK香港(mibei77.com 米贝节点分享)_6
   - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
+  - ✅ HK香港(mibei77.com 米贝节点分享)_4
   - ✅ HK香港(mibei77.com 米贝节点分享)_4
   - ✅ 美国2|@ripaojiedian
   - ✅ 🇺🇸_美国_155
   - ✅ 美国|@ripaojiedian
-  - ✅ 🇭🇰_香港_151
-  - ✅ 🇭🇰_香港_146
   - ✅ 🇨🇳_中国_77
 - name: 自动选择
   type: url-test
@@ -78,15 +80,17 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)_5
   - ✅ HK香港(mibei77.com 米贝节点分享)_6
   - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
+  - ✅ HK香港(mibei77.com 米贝节点分享)_4
   - ✅ HK香港(mibei77.com 米贝节点分享)_4
   - ✅ 美国2|@ripaojiedian
   - ✅ 🇺🇸_美国_155
   - ✅ 美国|@ripaojiedian
-  - ✅ 🇭🇰_香港_151
-  - ✅ 🇭🇰_香港_146
   - ✅ 🇨🇳_中国_77
   url: http://www.gstatic.com/generate_204
   interval: 86400
@@ -103,15 +107,17 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)_5
   - ✅ HK香港(mibei77.com 米贝节点分享)_6
   - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
+  - ✅ HK香港(mibei77.com 米贝节点分享)_4
   - ✅ HK香港(mibei77.com 米贝节点分享)_4
   - ✅ 美国2|@ripaojiedian
   - ✅ 🇺🇸_美国_155
   - ✅ 美国|@ripaojiedian
-  - ✅ 🇭🇰_香港_151
-  - ✅ 🇭🇰_香港_146
   - ✅ 🇨🇳_中国_77
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -740,6 +746,38 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
+- name: ✅ HK香港(mibei77.com 米贝节点分享)
+  type: vless
+  server: 104.17.28.89
+  port: 443
+  uuid: 1078d418-b4e0-4668-9018-dc90c2042d61
+  tls: true
+  network: ws
+  sni: workspace.evan00.dpdns.org
+  servername: workspace.evan00.dpdns.org
+  ws-opts:
+    path: /
+    headers:
+      Host: workspace.evan00.dpdns.org
+  security_scheme: tls
+  proto: vless
+  peer: workspace.evan00.dpdns.org
+- name: ✅ HK香港(mibei77.com 米贝节点分享)_5
+  type: vless
+  server: 109.73.206.166
+  port: 2200
+  uuid: fc72e947-b8dd-4de0-9ec7-2b0050c9f83a
+  tls: false
+  network: ws
+  sni: rzd.ru
+  servername: rzd.ru
+  ws-opts:
+    path: /v1
+    headers:
+      Host: rzd.ru
+  security_scheme: none
+  proto: vless
+  peer: rzd.ru
 - name: ✅ HK香港(mibei77.com 米贝节点分享)_6
   type: vless
   server: 141.101.122.147
@@ -782,6 +820,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: ssl.fastly.com
+- name: ✅ US美国(mibei77.com 米贝节点分享)_3
+  type: vless
+  server: 208.103.161.32
+  port: 443
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  tls: true
+  network: ws
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
+  ws-opts:
+    path: /sg-melbi_/
+    headers:
+      Host: josni.hoyes.cloudns.ch
+  security_scheme: tls
+  proto: vless
+  peer: josni.hoyes.cloudns.ch
 - name: ✅ HK香港(mibei77.com 米贝节点分享)_4
   type: vless
   server: liang92.dpdns.org
@@ -798,6 +852,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: liang92.dpdns.org
+- name: ✅ HK香港(mibei77.com 米贝节点分享)_4
+  type: vless
+  server: vpn.renshengxuanze.ccwu.cc
+  port: 443
+  uuid: 9a3de3e0-2a6e-4bb2-81bd-1a4e51dfa110
+  tls: true
+  network: ws
+  sni: vpn.renshengxuanze.ccwu.cc
+  servername: vpn.renshengxuanze.ccwu.cc
+  ws-opts:
+    path: /
+    headers:
+      Host: vpn.renshengxuanze.ccwu.cc
+  security_scheme: tls
+  proto: vless
+  peer: vpn.renshengxuanze.ccwu.cc
 - name: ✅ 美国2|@ripaojiedian
   type: vmess
   server: 3kCf86Ufi0U5xBDA.v.3dns.vip
@@ -847,32 +917,6 @@ proxies:
   sni: lL0GIaPVZ6Zxkd94.v.3dns.vip
   proto: vmess
   peer: lL0GIaPVZ6Zxkd94.v.3dns.vip
-- name: ✅ 🇭🇰_香港_151
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
-- name: ✅ 🇭🇰_香港_146
-  type: vmess
-  server: v10.zgtfqs.click
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.zgtfqs.click
-  proto: vmess
-  peer: v10.zgtfqs.click
 - name: ✅ 🇨🇳_中国_77
   type: vmess
   server: v6.hdacd.com
