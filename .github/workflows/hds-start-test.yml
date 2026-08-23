@@ -37,7 +37,7 @@ jobs:
           dbus-run-session -- bash -exs <<'SESSION'
           echo -n "ci-unlock" | gnome-keyring-daemon --unlock --replace > /dev/null 2>&1 || true
           eval "$(echo -n "ci-unlock" | gnome-keyring-daemon --unlock --replace 2>/dev/null | grep GNOME_KEYRING_CONTROL | cut -d= -f2 | sed 's/^/GNOME_KEYRING_CONTROL=/')" || true
-          { printf '%s\n' "$HDS_AK"; sleep 1; printf '%s\n' "$HDS_SK"; sleep 3; } | script -qec "./tools/bin/hdspace-linux config" /dev/null | tail -5
+          python3 tools/config_hds.py
           ./tools/bin/hdspace-linux devenv list && echo "[OK] list 成功 —— hdspace 在 CI 上完全可用"
           SESSION
 
