@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=11
+# verified=14
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -46,29 +46,35 @@ proxy-groups:
   - 自动选择
   - 故障转移
   - ✅ DE德国(mibei77.com 米贝节点分享)
+  - ✅ SG新加坡(mibei77.com 米贝节点分享)
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_18
+  - ✅ 🇫🇮_FI_芬兰_2
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
+  - ✅ HK香港(mibei77.com 米贝节点分享)_3
+  - ✅ HK香港(mibei77.com 米贝节点分享)_7
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
 - name: 自动选择
   type: url-test
   proxies:
   - ✅ DE德国(mibei77.com 米贝节点分享)
+  - ✅ SG新加坡(mibei77.com 米贝节点分享)
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_18
+  - ✅ 🇫🇮_FI_芬兰_2
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
+  - ✅ HK香港(mibei77.com 米贝节点分享)_3
+  - ✅ HK香港(mibei77.com 米贝节点分享)_7
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
   url: http://www.gstatic.com/generate_204
   interval: 86400
@@ -76,15 +82,18 @@ proxy-groups:
   type: fallback
   proxies:
   - ✅ DE德国(mibei77.com 米贝节点分享)
+  - ✅ SG新加坡(mibei77.com 米贝节点分享)
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_18
+  - ✅ 🇫🇮_FI_芬兰_2
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
+  - ✅ HK香港(mibei77.com 米贝节点分享)_3
+  - ✅ HK香港(mibei77.com 米贝节点分享)_7
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -616,6 +625,16 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: 185.230.44.170
+- name: ✅ SG新加坡(mibei77.com 米贝节点分享)
+  type: hysteria2
+  server: 52.221.223.227
+  port: 36001
+  password: 4hkCvE2nz6svLLqv
+  sni: sg-ls-z-5.lihmxssuqleitqcxpssa.uk
+  tls: true
+  security_scheme: tls
+  proto: hysteria2
+  peer: sg-ls-z-5.lihmxssuqleitqcxpssa.uk
 - name: ✅ GB英国(mibei77.com 米贝节点分享)_3
   type: hysteria2
   server: 82.39.214.95
@@ -636,6 +655,17 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: hopp-us.yyuyy.com
+- name: ✅ 🇫🇮_FI_芬兰_2
+  type: hysteria2
+  server: fast.wwwinternetvideo.click
+  port: 443
+  password: C91FbOXGY9XRymrcEebtax9R1Nj62UizoT8S6kCb7xwey8IE
+  sni: fast.wwwinternetvideo.click
+  skip-cert-verify: true
+  tls: true
+  security_scheme: tls
+  proto: hysteria2
+  peer: fast.wwwinternetvideo.click
 - name: ✅ 🇹🇭_TH_泰国
   type: ss
   server: 103.169.67.34
@@ -677,6 +707,37 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: ssl.fastly.com
+- name: ✅ HK香港(mibei77.com 米贝节点分享)_3
+  type: trojan
+  server: 188.42.145.180
+  port: 443
+  password: MiTiVPN
+  tls: true
+  network: ws
+  sni: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
+  ws-opts:
+    path: /---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/s-g@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN
+    headers:
+      Host: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
+  security_scheme: tls
+  proto: trojan
+  peer: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
+- name: ✅ HK香港(mibei77.com 米贝节点分享)_7
+  type: vless
+  server: 141.101.122.147
+  port: 443
+  uuid: c4edb87e-8544-4fa4-bd1c-b0cda9a34b46
+  tls: true
+  network: ws
+  sni: a.cwvps.eu.org
+  servername: a.cwvps.eu.org
+  ws-opts:
+    path: /ws
+    headers:
+      Host: a.cwvps.eu.org
+  security_scheme: tls
+  proto: vless
+  peer: a.cwvps.eu.org
 - name: ✅ 香港+Simcentric网络公司
   type: vless
   server: 180.178.60.254
@@ -703,22 +764,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: ssl.fastly.com
-- name: ✅ US美国(mibei77.com 米贝节点分享)_3
-  type: vless
-  server: 208.103.161.32
-  port: 443
-  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
-  tls: true
-  network: ws
-  sni: josni.hoyes.cloudns.ch
-  servername: josni.hoyes.cloudns.ch
-  ws-opts:
-    path: /sg-melbi_/
-    headers:
-      Host: josni.hoyes.cloudns.ch
-  security_scheme: tls
-  proto: vless
-  peer: josni.hoyes.cloudns.ch
 - name: ✅ 🇺🇸_美国_155
   type: vmess
   server: guanwang.awsno.com
