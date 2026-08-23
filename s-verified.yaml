@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=12
+# verified=15
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -45,6 +45,7 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
+  - ✅ DE德国(mibei77.com 米贝节点分享)
   - ✅ 美国+V2CROSS.COM
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ 🇫🇮_FI_芬兰_2
@@ -53,13 +54,16 @@ proxy-groups:
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)_2
-  - ✅ HK香港(mibei77.com 米贝节点分享)_7
+  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
+  - ✅ 🇭🇰_香港_151
+  - ✅ 🇭🇰_香港_146
 - name: 自动选择
   type: url-test
   proxies:
+  - ✅ DE德国(mibei77.com 米贝节点分享)
   - ✅ 美国+V2CROSS.COM
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ 🇫🇮_FI_芬兰_2
@@ -68,15 +72,18 @@ proxy-groups:
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)_2
-  - ✅ HK香港(mibei77.com 米贝节点分享)_7
+  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
+  - ✅ 🇭🇰_香港_151
+  - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
+  - ✅ DE德国(mibei77.com 米贝节点分享)
   - ✅ 美国+V2CROSS.COM
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ 🇫🇮_FI_芬兰_2
@@ -85,10 +92,12 @@ proxy-groups:
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)_2
-  - ✅ HK香港(mibei77.com 米贝节点分享)_7
+  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
+  - ✅ 🇭🇰_香港_151
+  - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -609,6 +618,16 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
+- name: ✅ DE德国(mibei77.com 米贝节点分享)
+  type: hysteria2
+  server: 185.230.44.170
+  port: 9443
+  password: e5gqbtu97umt992j
+  sni: 185.230.44.170
+  tls: true
+  security_scheme: tls
+  proto: hysteria2
+  peer: 185.230.44.170
 - name: ✅ 美国+V2CROSS.COM
   type: hysteria2
   server: 66.94.121.46
@@ -693,38 +712,32 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: ssl.fastly.com
-- name: ✅ SG新加坡(mibei77.com 米贝节点分享)_2
+- name: ✅ HK香港(mibei77.com 米贝节点分享)
   type: vless
-  server: 104.18.37.228
+  server: 104.17.28.89
   port: 443
-  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  uuid: 1078d418-b4e0-4668-9018-dc90c2042d61
   tls: true
   network: ws
-  sni: josni.hoyes.cloudns.ch
-  servername: josni.hoyes.cloudns.ch
+  sni: workspace.evan00.dpdns.org
+  servername: workspace.evan00.dpdns.org
   ws-opts:
-    path: /sg-melbi
+    path: /
     headers:
-      Host: josni.hoyes.cloudns.ch
+      Host: workspace.evan00.dpdns.org
   security_scheme: tls
   proto: vless
-  peer: josni.hoyes.cloudns.ch
-- name: ✅ HK香港(mibei77.com 米贝节点分享)_7
+  peer: workspace.evan00.dpdns.org
+- name: ✅ 🇺🇸_US_美国
   type: vless
-  server: 141.101.122.147
-  port: 443
-  uuid: c4edb87e-8544-4fa4-bd1c-b0cda9a34b46
-  tls: true
-  network: ws
-  sni: a.cwvps.eu.org
-  servername: a.cwvps.eu.org
-  ws-opts:
-    path: /ws
-    headers:
-      Host: a.cwvps.eu.org
-  security_scheme: tls
+  server: 180.178.60.254
+  port: 10000
+  uuid: caec0d8d-ab2f-4247-b97d-7fb1a34ab195
+  tls: false
+  network: tcp
+  security_scheme: none
   proto: vless
-  peer: a.cwvps.eu.org
+  peer: 180.178.60.254
 - name: ✅ 🇺🇸_美国_161
   type: vless
   server: 199.232.78.159
@@ -754,3 +767,29 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
+- name: ✅ 🇭🇰_香港_151
+  type: vmess
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.hdacd.com
+  proto: vmess
+  peer: v10.hdacd.com
+- name: ✅ 🇭🇰_香港_146
+  type: vmess
+  server: v10.zgtfqs.click
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.zgtfqs.click
+  proto: vmess
+  peer: v10.zgtfqs.click
