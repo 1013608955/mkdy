@@ -55,9 +55,9 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ SG新加坡(mibei77.com 米贝节点分享)
   - ✅ 香港+Simcentric网络公司
-  - ✅ 🇺🇸_美国_161
+  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_155
 - name: 自动选择
   type: url-test
@@ -72,9 +72,9 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ SG新加坡(mibei77.com 米贝节点分享)
   - ✅ 香港+Simcentric网络公司
-  - ✅ 🇺🇸_美国_161
+  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_155
   url: http://www.gstatic.com/generate_204
   interval: 86400
@@ -91,9 +91,9 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ SG新加坡(mibei77.com 米贝节点分享)
   - ✅ 香港+Simcentric网络公司
-  - ✅ 🇺🇸_美国_161
+  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_155
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -721,22 +721,22 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
-- name: ✅ HK香港(mibei77.com 米贝节点分享)
+- name: ✅ SG新加坡(mibei77.com 米贝节点分享)
   type: vless
-  server: 104.17.28.89
+  server: 104.18.37.228
   port: 443
-  uuid: 1078d418-b4e0-4668-9018-dc90c2042d61
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
   tls: true
   network: ws
-  sni: workspace.evan00.dpdns.org
-  servername: workspace.evan00.dpdns.org
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
   ws-opts:
-    path: /
+    path: /sg-melbi
     headers:
-      Host: workspace.evan00.dpdns.org
+      Host: josni.hoyes.cloudns.ch
   security_scheme: tls
   proto: vless
-  peer: workspace.evan00.dpdns.org
+  peer: josni.hoyes.cloudns.ch
 - name: ✅ 香港+Simcentric网络公司
   type: vless
   server: 180.178.60.254
@@ -747,22 +747,22 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 180.178.60.254
-- name: ✅ 🇺🇸_美国_161
+- name: ✅ 俄罗斯(mibei77.com 米贝节点分享)
   type: vless
-  server: 199.232.78.159
-  port: 443
-  uuid: 27315937-5479-49fd-867d-6b2f17246708
+  server: mws.tunnelgate.org
+  port: 14443
+  uuid: 423b1d79-08c4-403f-9d5e-c541f791b55f
   tls: true
   network: ws
-  sni: ssl.fastly.com
-  servername: ssl.fastly.com
+  sni: mws.tunnelgate.org
+  servername: mws.tunnelgate.org
   ws-opts:
-    path: /TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER?ed=2053
+    path: /ru
     headers:
-      Host: pan1.global.ssl.fastly.net
+      Host: mws.tunnelgate.org
   security_scheme: tls
   proto: vless
-  peer: ssl.fastly.com
+  peer: mws.tunnelgate.org
 - name: ✅ 🇺🇸_美国_155
   type: vmess
   server: guanwang.awsno.com
