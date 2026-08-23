@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""config_hds.py — 用 pty 精确驱动 hdspace config 的交互式提示。
-从环境变量读 HDS_AK / HDS_SK，检测到对应提示词时逐个喂入。
-在 dbus-run-session + gnome-keyring 解锁会话内运行。"""
+"""config_hds.py — 用 pty 精确驱动 hdspace config 交互。
+select 带超时读写，发完 SK 即收尾强杀，绝不挂死。"""
 import os
 import pty
+import select
 import sys
 import time
 
@@ -20,44 +20,50 @@ if pid == 0:
     os._exit(1)
 
 sent_ak = sent_sk = False
-buf = b""
-text_all = ""
-deadline = time.time() + 30
+text = ""
+deadline = time.time() + 25
 while time.time() < deadline:
+    r, _, _ = select.select([fd], [], [], 1.0)
+    if not r:
+        continue
     try:
         chunk = os.read(fd, 4096)
     except OSError:
         break
     if not chunk:
         break
-    buf += chunk
-    text_all += chunk.decode("utf-8", "replace")
-    low = text_all.lower()
+    text += chunk.decode("utf-8", "replace")
+    low = text.lower()
     if not sent_ak and "access key" in low and "id" in low:
         time.sleep(0.3)
         os.write(fd, (ak + "\n").encode())
         sent_ak = True
-        text_all = ""
+        text = ""
+        print(f"[info] 已喂入 AK")
     elif sent_ak and not sent_sk and "secret" in low:
         time.sleep(0.3)
         os.write(fd, (sk + "\n").encode())
         sent_sk = True
-        text_all = ""
-    if sent_ak and sent_sk and len(text_all) > 200:
-        break
+        text = ""
+        print("[info] 已喂入 SK")
 
-# 排干剩余输出直到子进程退出（上限 10s）
-deadline = time.time() + 10
-while time.time() < deadline:
-    try:
-        chunk = os.read(fd, 4096)
+# 发完 SK 给 keyring 写入留 2s，然后强杀收尾
+if sent_sk:
+    end = time.time() + 2
+    while time.time() < end:
+        r, _, _ = select.select([fd], [], [], 0.5)
+        if not r:
+            continue
+        try:
+            chunk = os.read(fd, 4096)
+        except OSError:
+            break
         if not chunk:
             break
-        text_all += chunk.decode("utf-8", "replace")
-    except OSError:
-        break
+        text += chunk.decode("utf-8", "replace")
+
 try:
-    os.close(fd)
+    os.kill(pid, 9)
 except OSError:
     pass
 try:
@@ -65,5 +71,6 @@ try:
 except ChildProcessError:
     pass
 
-print(text_all[-800:])
-print(f"[info] sent_ak={sent_ak} sent_sk={sent_sk}")
+print(text[-600:])
+print(f"[result] sent_ak={sent_ak} sent_sk={sent_sk}")
+sys.exit(0 if (sent_ak and sent_sk) else 1)
