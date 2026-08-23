@@ -46,8 +46,14 @@ jobs:
           if not usable:
               col = secretstorage.create_collection(conn, "login", "ci-unlock")
               print("created collection: login")
-              secretstorage.set_default_collection(col)
-              print("set as default")
+              usable = [col]
+          try:
+              secretstorage.get_default_collection(conn)
+              print("default collection OK")
+          except Exception as e:
+              print("default missing, setting alias:", e)
+              secretstorage.set_default_collection(usable[0])
+              print("default alias ->", usable[0].get_label())
           PY
           python3 tools/config_hds.py
           ./tools/bin/hdspace-linux devenv list && echo "[OK] list 成功 —— hdspace 在 CI 上完全可用"
