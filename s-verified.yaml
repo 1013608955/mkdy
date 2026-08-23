@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=17
+# verified=14
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -54,13 +54,10 @@ proxy-groups:
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
-  - ✅ 🇫🇷 法国 格拉沃利讷OVH数据中心
   - ✅ 🇺🇸_美国_163
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)_2
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ US美国(mibei77.com 米贝节点分享)_3
-  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_155
 - name: 自动选择
   type: url-test
@@ -74,13 +71,10 @@ proxy-groups:
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
-  - ✅ 🇫🇷 法国 格拉沃利讷OVH数据中心
   - ✅ 🇺🇸_美国_163
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)_2
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ US美国(mibei77.com 米贝节点分享)_3
-  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_155
   url: http://www.gstatic.com/generate_204
   interval: 86400
@@ -96,13 +90,10 @@ proxy-groups:
   - ✅ 🇹🇭_TH_泰国
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
-  - ✅ 🇫🇷 法国 格拉沃利讷OVH数据中心
   - ✅ 🇺🇸_美国_163
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)_2
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ US美国(mibei77.com 米贝节点分享)_3
-  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_155
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -713,15 +704,6 @@ proxies:
   password: Butterfly123@qwe9527
   skip-cert-verify: true
   udp: true
-- name: ✅ 🇫🇷 法国 格拉沃利讷OVH数据中心
-  type: ss
-  server: 54.36.174.140
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: ytw2awn
-  security_scheme: aead
-  proto: ss
-  peer: 54.36.174.140
 - name: ✅ 🇺🇸_美国_163
   type: trojan
   server: 140.248.185.253
@@ -737,22 +719,6 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: ssl.fastly.com
-- name: ✅ SG新加坡(mibei77.com 米贝节点分享)_2
-  type: vless
-  server: 104.18.37.228
-  port: 443
-  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
-  tls: true
-  network: ws
-  sni: josni.hoyes.cloudns.ch
-  servername: josni.hoyes.cloudns.ch
-  ws-opts:
-    path: /sg-melbi
-    headers:
-      Host: josni.hoyes.cloudns.ch
-  security_scheme: tls
-  proto: vless
-  peer: josni.hoyes.cloudns.ch
 - name: ✅ 香港+Simcentric网络公司
   type: vless
   server: 180.178.60.254
@@ -795,22 +761,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: josni.hoyes.cloudns.ch
-- name: ✅ 俄罗斯(mibei77.com 米贝节点分享)
-  type: vless
-  server: mws.tunnelgate.org
-  port: 14443
-  uuid: 423b1d79-08c4-403f-9d5e-c541f791b55f
-  tls: true
-  network: ws
-  sni: mws.tunnelgate.org
-  servername: mws.tunnelgate.org
-  ws-opts:
-    path: /ru
-    headers:
-      Host: mws.tunnelgate.org
-  security_scheme: tls
-  proto: vless
-  peer: mws.tunnelgate.org
 - name: ✅ 🇺🇸_美国_155
   type: vmess
   server: guanwang.awsno.com
