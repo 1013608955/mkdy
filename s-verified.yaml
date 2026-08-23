@@ -51,8 +51,8 @@ proxy-groups:
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
   - ✅ 🇳🇱_NL_荷兰_2
-  - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
+  - ✅ US美国(mibei77.com 米贝节点分享)_61
   - ✅ 香港3|@ripaojiedian
   - ✅ 美国2|@ripaojiedian
   - ✅ 新加坡|@ripaojiedian
@@ -71,8 +71,8 @@ proxy-groups:
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
   - ✅ 🇳🇱_NL_荷兰_2
-  - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
+  - ✅ US美国(mibei77.com 米贝节点分享)_61
   - ✅ 香港3|@ripaojiedian
   - ✅ 美国2|@ripaojiedian
   - ✅ 新加坡|@ripaojiedian
@@ -93,8 +93,8 @@ proxy-groups:
   - ✅ 🇹🇭_TH_泰国
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
   - ✅ 🇳🇱_NL_荷兰_2
-  - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
+  - ✅ US美国(mibei77.com 米贝节点分享)_61
   - ✅ 香港3|@ripaojiedian
   - ✅ 美国2|@ripaojiedian
   - ✅ 新加坡|@ripaojiedian
@@ -688,20 +688,6 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 158.101.208.44
-- name: ✅ 🇺🇸_美国_385
-  type: vless
-  server: 18.239.134.69
-  port: 80
-  uuid: de27291c-15a9-4256-9ba7-ad517569877e
-  tls: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: d2e1v87ko56lyw.cloudfront.net:assets.opensignal.com
-  security_scheme: none
-  proto: vless
-  peer: 18.239.134.69
 - name: ✅ 香港+Simcentric网络公司
   type: vless
   server: 180.178.60.254
@@ -712,6 +698,22 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 180.178.60.254
+- name: ✅ US美国(mibei77.com 米贝节点分享)_61
+  type: vless
+  server: 208.103.161.32
+  port: 443
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  tls: true
+  network: ws
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
+  ws-opts:
+    path: /sg-melbi_/
+    headers:
+      Host: josni.hoyes.cloudns.ch
+  security_scheme: tls
+  proto: vless
+  peer: josni.hoyes.cloudns.ch
 - name: ✅ 香港3|@ripaojiedian
   type: vmess
   server: 3j41E63Msh9TgXvR.v.3dns.vip
