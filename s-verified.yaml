@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=14
+# verified=16
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -55,8 +55,10 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ SG新加坡(mibei77.com 米贝节点分享)_2
   - ✅ 香港+Simcentric网络公司
+  - ✅ 🇺🇸_美国_161
   - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_155
 - name: 自动选择
@@ -72,8 +74,10 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ SG新加坡(mibei77.com 米贝节点分享)_2
   - ✅ 香港+Simcentric网络公司
+  - ✅ 🇺🇸_美国_161
   - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_155
   url: http://www.gstatic.com/generate_204
@@ -91,8 +95,10 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ SG新加坡(mibei77.com 米贝节点分享)_2
   - ✅ 香港+Simcentric网络公司
+  - ✅ 🇺🇸_美国_161
   - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_155
   url: http://www.gstatic.com/generate_204
@@ -721,7 +727,23 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
-- name: ✅ SG新加坡(mibei77.com 米贝节点分享)
+- name: ✅ HK香港(mibei77.com 米贝节点分享)
+  type: vless
+  server: 104.17.28.89
+  port: 443
+  uuid: 1078d418-b4e0-4668-9018-dc90c2042d61
+  tls: true
+  network: ws
+  sni: workspace.evan00.dpdns.org
+  servername: workspace.evan00.dpdns.org
+  ws-opts:
+    path: /
+    headers:
+      Host: workspace.evan00.dpdns.org
+  security_scheme: tls
+  proto: vless
+  peer: workspace.evan00.dpdns.org
+- name: ✅ SG新加坡(mibei77.com 米贝节点分享)_2
   type: vless
   server: 104.18.37.228
   port: 443
@@ -747,6 +769,22 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 180.178.60.254
+- name: ✅ 🇺🇸_美国_161
+  type: vless
+  server: 199.232.78.159
+  port: 443
+  uuid: 27315937-5479-49fd-867d-6b2f17246708
+  tls: true
+  network: ws
+  sni: ssl.fastly.com
+  servername: ssl.fastly.com
+  ws-opts:
+    path: /TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER?ed=2053
+    headers:
+      Host: pan1.global.ssl.fastly.net
+  security_scheme: tls
+  proto: vless
+  peer: ssl.fastly.com
 - name: ✅ 俄罗斯(mibei77.com 米贝节点分享)
   type: vless
   server: mws.tunnelgate.org
