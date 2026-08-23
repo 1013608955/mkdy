@@ -93,7 +93,7 @@ jobs:
           STATE=$(grep -oE "Running|Ready|Starting|Closing" /tmp/state.txt | head -1)
           echo "当前状态: ${STATE:-未知}"
 
-          if [ "$ACTION" = "status" ]; then kill $AR 2>/dev/null; SESSION; fi
+          if [ "$ACTION" = "status" ]; then kill $AR 2>/dev/null; echo "[done] status 模式完成"; exit 0; fi
 
           echo "===== [3] 确保 Running ====="
           if [ "$STATE" != "Running" ]; then
