@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=16
+# verified=15
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -49,13 +49,12 @@ proxy-groups:
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)
-  - ✅ US美国(mibei77.com 米贝节点分享)_53
+  - ✅ 卢森堡(mibei77.com 米贝节点分享)
   - ✅ 🇳🇱_NL_荷兰_2
-  - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇳🇱_荷兰_129
   - ✅ 香港3|@ripaojiedian
+  - ✅ 美国2|@ripaojiedian
   - ✅ 新加坡|@ripaojiedian
   - ✅ 日本2|@ripaojiedian
   - ✅ 日本3|@ripaojiedian
@@ -68,13 +67,12 @@ proxy-groups:
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)
-  - ✅ US美国(mibei77.com 米贝节点分享)_53
+  - ✅ 卢森堡(mibei77.com 米贝节点分享)
   - ✅ 🇳🇱_NL_荷兰_2
-  - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇳🇱_荷兰_129
   - ✅ 香港3|@ripaojiedian
+  - ✅ 美国2|@ripaojiedian
   - ✅ 新加坡|@ripaojiedian
   - ✅ 日本2|@ripaojiedian
   - ✅ 日本3|@ripaojiedian
@@ -89,13 +87,12 @@ proxy-groups:
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)
-  - ✅ US美国(mibei77.com 米贝节点分享)_53
+  - ✅ 卢森堡(mibei77.com 米贝节点分享)
   - ✅ 🇳🇱_NL_荷兰_2
-  - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇳🇱_荷兰_129
   - ✅ 香港3|@ripaojiedian
+  - ✅ 美国2|@ripaojiedian
   - ✅ 新加坡|@ripaojiedian
   - ✅ 日本2|@ripaojiedian
   - ✅ 日本3|@ripaojiedian
@@ -660,38 +657,21 @@ proxies:
   security_scheme: none
   proto: ss
   peer: 103.169.67.34
-- name: ✅ SG新加坡(mibei77.com 米贝节点分享)
-  type: vless
-  server: 104.18.37.228
+- name: ✅ 卢森堡(mibei77.com 米贝节点分享)
+  type: trojan
+  server: 188.42.145.180
   port: 443
-  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  password: MiTiVPN
   tls: true
   network: ws
-  sni: josni.hoyes.cloudns.ch
-  servername: josni.hoyes.cloudns.ch
+  sni: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
   ws-opts:
-    path: /sg-melbi
+    path: /---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/s-g@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN
     headers:
-      Host: josni.hoyes.cloudns.ch
+      Host: 383838-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
   security_scheme: tls
-  proto: vless
-  peer: josni.hoyes.cloudns.ch
-- name: ✅ US美国(mibei77.com 米贝节点分享)_53
-  type: vless
-  server: 104.24.9.6
-  port: 443
-  uuid: 407ecce0-dc85-465f-89f5-e520e9378baf
-  tls: true
-  network: ws
-  sni: ld.223350.xyz
-  servername: ld.223350.xyz
-  ws-opts:
-    path: /
-    headers:
-      Host: ld.223350.xyz
-  security_scheme: tls
-  proto: vless
-  peer: ld.223350.xyz
+  proto: trojan
+  peer: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
 - name: ✅ 🇳🇱_NL_荷兰_2
   type: vless
   server: 158.101.208.44
@@ -702,20 +682,6 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 158.101.208.44
-- name: ✅ 🇺🇸_美国_385
-  type: vless
-  server: 18.239.134.69
-  port: 80
-  uuid: de27291c-15a9-4256-9ba7-ad517569877e
-  tls: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: d2e1v87ko56lyw.cloudfront.net:assets.opensignal.com
-  security_scheme: none
-  proto: vless
-  peer: 18.239.134.69
 - name: ✅ 香港+Simcentric网络公司
   type: vless
   server: 180.178.60.254
@@ -762,6 +728,24 @@ proxies:
   sni: 3j41E63Msh9TgXvR.v.3dns.vip
   proto: vmess
   peer: 3j41E63Msh9TgXvR.v.3dns.vip
+- name: ✅ 美国2|@ripaojiedian
+  type: vmess
+  server: 3kCf86Ufi0U5xBDA.v.3dns.vip
+  port: 443
+  uuid: 1abe49dedb6e4f65a0f0a5ea79ddefad
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /ws-vmess
+    headers:
+      Host: 3kCf86Ufi0U5xBDA.v.3dns.vip
+  servername: 3kCf86Ufi0U5xBDA.v.3dns.vip
+  security_scheme: tls
+  sni: 3kCf86Ufi0U5xBDA.v.3dns.vip
+  proto: vmess
+  peer: 3kCf86Ufi0U5xBDA.v.3dns.vip
 - name: ✅ 新加坡|@ripaojiedian
   type: vmess
   server: Aim7HqTuvNOofcsx.v.3dns.vip
