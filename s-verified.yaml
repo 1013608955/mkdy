@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=16
+# verified=13
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -55,12 +55,9 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ HK香港(mibei77.com 米贝节点分享)_6
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
-  - ✅ 🇭🇰_香港_151
-  - ✅ 🇭🇰_香港_146
 - name: 自动选择
   type: url-test
   proxies:
@@ -74,12 +71,9 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ HK香港(mibei77.com 米贝节点分享)_6
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
-  - ✅ 🇭🇰_香港_151
-  - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -95,12 +89,9 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ HK香港(mibei77.com 米贝节点分享)_6
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ 🇺🇸_美国_155
-  - ✅ 🇭🇰_香港_151
-  - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -727,22 +718,6 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
-- name: ✅ HK香港(mibei77.com 米贝节点分享)_6
-  type: vless
-  server: 141.101.122.147
-  port: 443
-  uuid: c4edb87e-8544-4fa4-bd1c-b0cda9a34b46
-  tls: true
-  network: ws
-  sni: a.cwvps.eu.org
-  servername: a.cwvps.eu.org
-  ws-opts:
-    path: /ws
-    headers:
-      Host: a.cwvps.eu.org
-  security_scheme: tls
-  proto: vless
-  peer: a.cwvps.eu.org
 - name: ✅ 香港+Simcentric网络公司
   type: vless
   server: 180.178.60.254
@@ -782,29 +757,3 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
-- name: ✅ 🇭🇰_香港_151
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
-- name: ✅ 🇭🇰_香港_146
-  type: vmess
-  server: v10.zgtfqs.click
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.zgtfqs.click
-  proto: vmess
-  peer: v10.zgtfqs.click
