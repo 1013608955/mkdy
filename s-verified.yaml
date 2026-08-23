@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=19
+# verified=22
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -52,13 +52,16 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
+  - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
   - ✅ HK香港(mibei77.com 米贝节点分享)_5
   - ✅ HK香港(mibei77.com 米贝节点分享)_6
+  - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
   - ✅ 巴西+圣保罗
+  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 美国2|@ripaojiedian
   - ✅ 🏳️_未知_165
   - ✅ 🇺🇸_美国_155
@@ -74,13 +77,16 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
+  - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
   - ✅ HK香港(mibei77.com 米贝节点分享)_5
   - ✅ HK香港(mibei77.com 米贝节点分享)_6
+  - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
   - ✅ 巴西+圣保罗
+  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 美国2|@ripaojiedian
   - ✅ 🏳️_未知_165
   - ✅ 🇺🇸_美国_155
@@ -98,13 +104,16 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
+  - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
   - ✅ 卢森堡(mibei77.com 米贝节点分享)
   - ✅ HK香港(mibei77.com 米贝节点分享)_5
   - ✅ HK香港(mibei77.com 米贝节点分享)_6
+  - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
   - ✅ 巴西+圣保罗
+  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 美国2|@ripaojiedian
   - ✅ 🏳️_未知_165
   - ✅ 🇺🇸_美国_155
@@ -699,6 +708,15 @@ proxies:
   security_scheme: none
   proto: ss
   peer: 103.169.67.34
+- name: ✅ 🇺🇸 美国 V2CROSS.COM
+  type: ss
+  server: 144.31.243.2
+  port: 16015
+  cipher: chacha20-ietf-poly1305
+  password: J1InuU6QRT5JOh1mQfkjU2
+  security_scheme: aead
+  proto: ss
+  peer: 144.31.243.2
 - name: ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   type: ss
   server: 36.33.35.105
@@ -769,6 +787,16 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: a.cwvps.eu.org
+- name: ✅ 🇺🇸_US_美国
+  type: vless
+  server: 180.178.60.254
+  port: 10000
+  uuid: caec0d8d-ab2f-4247-b97d-7fb1a34ab195
+  tls: false
+  network: tcp
+  security_scheme: none
+  proto: vless
+  peer: 180.178.60.254
 - name: ✅ 🇺🇸_美国_161
   type: vless
   server: 199.232.78.159
@@ -799,6 +827,22 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 201.24.49.19
+- name: ✅ 俄罗斯(mibei77.com 米贝节点分享)
+  type: vless
+  server: mws.tunnelgate.org
+  port: 14443
+  uuid: 423b1d79-08c4-403f-9d5e-c541f791b55f
+  tls: true
+  network: ws
+  sni: mws.tunnelgate.org
+  servername: mws.tunnelgate.org
+  ws-opts:
+    path: /ru
+    headers:
+      Host: mws.tunnelgate.org
+  security_scheme: tls
+  proto: vless
+  peer: mws.tunnelgate.org
 - name: ✅ 美国2|@ripaojiedian
   type: vmess
   server: 3kCf86Ufi0U5xBDA.v.3dns.vip
