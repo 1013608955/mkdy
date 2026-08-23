@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=28
+# verified=24
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -59,10 +59,8 @@ proxy-groups:
   - ✅ 🇳🇱_NL_荷兰_2
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
-  - ✅ HK香港(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ HK香港(mibei77.com 米贝节点分享)_4
-  - ✅ 🇳🇱_荷兰_129
   - ✅ 香港3|@ripaojiedian
   - ✅ 美国2|@ripaojiedian
   - ✅ 新加坡|@ripaojiedian
@@ -70,8 +68,6 @@ proxy-groups:
   - ✅ 日本3|@ripaojiedian
   - ✅ 美国|@ripaojiedian
   - ✅ 香港2|@ripaojiedian
-  - ✅ 🇭🇰_香港_69
-  - ✅ 🇭🇰_香港_84
   - ✅ 🇨🇳_中国_77
 - name: 自动选择
   type: url-test
@@ -90,10 +86,8 @@ proxy-groups:
   - ✅ 🇳🇱_NL_荷兰_2
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
-  - ✅ HK香港(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ HK香港(mibei77.com 米贝节点分享)_4
-  - ✅ 🇳🇱_荷兰_129
   - ✅ 香港3|@ripaojiedian
   - ✅ 美国2|@ripaojiedian
   - ✅ 新加坡|@ripaojiedian
@@ -101,8 +95,6 @@ proxy-groups:
   - ✅ 日本3|@ripaojiedian
   - ✅ 美国|@ripaojiedian
   - ✅ 香港2|@ripaojiedian
-  - ✅ 🇭🇰_香港_69
-  - ✅ 🇭🇰_香港_84
   - ✅ 🇨🇳_中国_77
   url: http://www.gstatic.com/generate_204
   interval: 86400
@@ -123,10 +115,8 @@ proxy-groups:
   - ✅ 🇳🇱_NL_荷兰_2
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
-  - ✅ HK香港(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ HK香港(mibei77.com 米贝节点分享)_4
-  - ✅ 🇳🇱_荷兰_129
   - ✅ 香港3|@ripaojiedian
   - ✅ 美国2|@ripaojiedian
   - ✅ 新加坡|@ripaojiedian
@@ -134,8 +124,6 @@ proxy-groups:
   - ✅ 日本3|@ripaojiedian
   - ✅ 美国|@ripaojiedian
   - ✅ 香港2|@ripaojiedian
-  - ✅ 🇭🇰_香港_69
-  - ✅ 🇭🇰_香港_84
   - ✅ 🇨🇳_中国_77
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -815,22 +803,6 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 180.178.60.254
-- name: ✅ HK香港(mibei77.com 米贝节点分享)_3
-  type: vless
-  server: 188.114.97.6
-  port: 8880
-  uuid: b19b768d-bc57-4d03-9bea-61129ed5fef9
-  tls: false
-  network: ws
-  sni: new.106-79e.workers.dev
-  servername: new.106-79e.workers.dev
-  ws-opts:
-    path: /pyip=ProxyIP.SG.CMLiussss.net
-    headers:
-      Host: new.106-79e.workers.dev
-  security_scheme: none
-  proto: vless
-  peer: new.106-79e.workers.dev
 - name: ✅ US美国(mibei77.com 米贝节点分享)_3
   type: vless
   server: 208.103.161.32
@@ -863,24 +835,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: liang92.dpdns.org
-- name: ✅ 🇳🇱_荷兰_129
-  type: vmess
-  server: 185.246.152.159
-  port: 443
-  uuid: 5f72f180-b21b-4b7a-8484-240759012604
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /5f72f180-b21b-4b7a-8484-240759096785
-    headers:
-      Host: apjhdggyx.com
-  servername: apjhdggyx.com
-  security_scheme: tls
-  sni: apjhdggyx.com
-  proto: vmess
-  peer: apjhdggyx.com
 - name: ✅ 香港3|@ripaojiedian
   type: vmess
   server: 3j41E63Msh9TgXvR.v.3dns.vip
@@ -1007,32 +961,6 @@ proxies:
   sni: t245hvl0VMtlXR4v.v.3dns.vip
   proto: vmess
   peer: t245hvl0VMtlXR4v.v.3dns.vip
-- name: ✅ 🇭🇰_香港_69
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
-- name: ✅ 🇭🇰_香港_84
-  type: vmess
-  server: v10.zgtfqs.click
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.zgtfqs.click
-  proto: vmess
-  peer: v10.zgtfqs.click
 - name: ✅ 🇨🇳_中国_77
   type: vmess
   server: v6.hdacd.com
