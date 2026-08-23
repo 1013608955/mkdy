@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=9
+# verified=12
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -53,7 +53,10 @@ proxy-groups:
   - ✅ 🇳🇱_NL_荷兰_2
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
+  - ✅ 🏳️_未知_447
   - ✅ 🇳🇱_荷兰_129
+  - ✅ 🇭🇰_香港_69
+  - ✅ 🇭🇰_香港_84
 - name: 自动选择
   type: url-test
   proxies:
@@ -65,7 +68,10 @@ proxy-groups:
   - ✅ 🇳🇱_NL_荷兰_2
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
+  - ✅ 🏳️_未知_447
   - ✅ 🇳🇱_荷兰_129
+  - ✅ 🇭🇰_香港_69
+  - ✅ 🇭🇰_香港_84
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -79,7 +85,10 @@ proxy-groups:
   - ✅ 🇳🇱_NL_荷兰_2
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
+  - ✅ 🏳️_未知_447
   - ✅ 🇳🇱_荷兰_129
+  - ✅ 🇭🇰_香港_69
+  - ✅ 🇭🇰_香港_84
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -688,6 +697,22 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 180.178.60.254
+- name: ✅ 🏳️_未知_447
+  type: vless
+  server: yx.zhourf2006.dpdns.org
+  port: 443
+  uuid: 7e81824b-35e0-4eb1-89e9-592f0c92aa6b
+  tls: true
+  network: ws
+  sni: yx.zhourf2006.dpdns.org
+  servername: yx.zhourf2006.dpdns.org
+  ws-opts:
+    path: /blog/ranking/task/proxyip=156.246.92.195,172.238.6.57,43.207.197.79,156.246.91.114,161.248.254.27,153.121.45.101,101.36.105.226?ed=2560
+    headers:
+      Host: yx.zhourf2006.dpdns.org
+  security_scheme: tls
+  proto: vless
+  peer: yx.zhourf2006.dpdns.org
 - name: ✅ 🇳🇱_荷兰_129
   type: vmess
   server: 185.246.152.159
@@ -706,3 +731,29 @@ proxies:
   sni: apjhdggyx.com
   proto: vmess
   peer: apjhdggyx.com
+- name: ✅ 🇭🇰_香港_69
+  type: vmess
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.hdacd.com
+  proto: vmess
+  peer: v10.hdacd.com
+- name: ✅ 🇭🇰_香港_84
+  type: vmess
+  server: v10.zgtfqs.click
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.zgtfqs.click
+  proto: vmess
+  peer: v10.zgtfqs.click
