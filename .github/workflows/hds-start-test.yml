@@ -1,14 +1,8 @@
-# hdspace headless 攻关 v10（手动触发）
+# hdspace headless 攻关 v11（手动触发）
 #
-# 已确认链条（v8/v9）：
-#   - config 写入 = CreateCollection(Label="Login") → 必弹窗 → headless 死
-#   - list 读取 = ReadAlias("default") → 打开集合 → SearchItems(service,username)
-#   - 二进制常量：csmservicename/csmusername/csmuserservice + iamservicename/iamuser
-#
-# v10 自学习注入：
-#   1) 监听下跑一次 list，从 SearchItems body 提取它查询的精确 service/username
-#   2) 用 secretstorage 把该 item 直接写进 login 集合（secret=HDS_SK）
-#   3) 再跑 list —— 若读到凭据即打通！全程无需 hdspace config。
+# v10 发现：list 无凭据时 6s 内未发任何 D-Bus 调用（可能先做别的检查）。
+# 本版：暴力注入所有合理 service×username 组合到 login 集合（secretstorage
+# 已证可写），给 list 足够时长（25s）+ 全程 D-Bus 监听，看它命中哪一项。
 #
 # 前置 Secrets：HDS_AK / HDS_SK
 
@@ -36,7 +30,7 @@ jobs:
           chmod +x tools/bin/hdspace-linux tools/config_hds.py
           mkdir -p ~/.devenv/logs ~/.cache ~/.local/share/keyrings
 
-      - name: 学习-注入-验证（免 config 直写 keyring）
+      - name: 暴力注入候选凭据项 + 长窗监听验证
         env:
           HDS_AK: ${{ secrets.HDS_AK }}
           HDS_SK: ${{ secrets.HDS_SK }}
@@ -47,51 +41,34 @@ jobs:
           eval "$(printf '\n' | gnome-keyring-daemon --start)" || true
           printf 'login' > ~/.local/share/keyrings/default
 
-          echo "===== [1] 监听下首次 list，学习其查询属性 ====="
+          HDS_AK="$HDS_AK" HDS_SK="$HDS_SK" python3 - <<'PY'
+          import os, secretstorage
+          ak, sk = os.environ['HDS_AK'], os.environ['HDS_SK']
+          conn = secretstorage.dbus_init()
+          col = secretstorage.get_default_collection(conn)
+          services = ['hdspace', 'hds', 'csm', 'devenv', 'csmservice',
+                      'csmuserservice', 'com.huawei.hdspace', 'hds-csm']
+          users = ['hdspace', 'developer', 'csmuser', 'csm_user_name', 'user']
+          n = 0
+          for s in services:
+              for u in users:
+                  # 密码存 SK；AK 放进额外属性便于识别
+                  col.create_item(f'hds-{s}-{u}',
+                                  {'service': s, 'username': u, 'ak': ak},
+                                  sk.encode(), replace=True)
+                  n += 1
+          print(f'已注入 {n} 个候选 item')
+          PY
+
+          echo "===== 注入完成，开始 25s 监听窗口内跑 list ====="
           dbus-monitor > /tmp/dbus.log 2>&1 &
           MON=$!
           sleep 1
-          timeout 6 ./tools/bin/hdspace-linux devenv list </dev/null >/dev/null 2>&1 || true
+          timeout 25 ./tools/bin/hdspace-linux devenv list </dev/null >/tmp/list_out.txt 2>&1 || true
           sleep 2; kill $MON 2>/dev/null; sleep 1
 
-          echo "===== [2] 从监控日志提取 SearchItems 属性并注入 ====="
-          HDS_SK="$HDS_SK" python3 - <<'PY'
-          import re, os
-          log = open('/tmp/dbus.log', encoding='utf-8', errors='replace').read()
-          # 取每个 SearchItems 调用之后的 body 段（至下一个 method call/signal）
-          segs = re.split(r'(?=method call time=)', log)
-          found = []
-          for s in segs:
-              if 'member=SearchItems' not in s:
-                  continue
-              pairs = re.findall(
-                  r'string "(?:service|username)"\s*\n\s*string "([^"]*)"', s)
-              if pairs:
-                  found.append(pairs)
-          print('捕获到的属性组合:', found)
-          svc_usr = found[0] if found else None
-          assert len(svc_usr) == 2, f'未解析出 service/username 对: {found}'
-          service, username = svc_usr[0], svc_usr[1]
-          print(f'→ service={service!r} username={username!r}')
-
-          import secretstorage
-          conn = secretstorage.dbus_init()
-          col = secretstorage.get_default_collection(conn)
-          sk = os.environ['HDS_SK'].encode()
-          col.create_item('hds-csm',
-                          {'service': service, 'username': username},
-                          sk, replace=True)
-          print('已注入 item 到默认集合')
-          PY
-
-          echo "===== [3] 再次 list 验证 ====="
-          dbus-monitor > /tmp/dbus2.log 2>&1 &
-          MON=$!
-          sleep 1
-          timeout 15 ./tools/bin/hdspace-linux devenv list </dev/null 2>&1 | head -8 || true
-          sleep 2; kill $MON 2>/dev/null; sleep 1
-
-          echo "===== [4] 第二轮 D-Bus 关键调用（是否 GetSecret 了我们的 item）====="
-          grep -aE 'member=(SearchItems|GetSecret|Unlock|OpenSession)|string "' /tmp/dbus2.log \
-            | grep -aB1 -aA2 'SearchItems\|GetSecret' | head -40
+          echo "--- list 输出 ---"
+          head -12 /tmp/list_out.txt
+          echo "--- 命中的 D-Bus 调用 ---"
+          grep -aE 'member=(SearchItems|GetSecret|Unlock)' -aA 8 /tmp/dbus.log | head -60
           SESSION
