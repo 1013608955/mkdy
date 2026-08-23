@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=22
+# verified=15
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -45,7 +45,6 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - ✅ 瑞士(mibei77.com 米贝节点分享)_4
   - ✅ DE德国(mibei77.com 米贝节点分享)
   - ✅ SG新加坡(mibei77.com 米贝节点分享)
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
@@ -60,17 +59,10 @@ proxy-groups:
   - ✅ HK香港(mibei77.com 米贝节点分享)_6
   - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
-  - ✅ 巴西+圣保罗
-  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
-  - ✅ 美国2|@ripaojiedian
-  - ✅ 🏳️_未知_165
   - ✅ 🇺🇸_美国_155
-  - ✅ 美国|@ripaojiedian
-  - ✅ 🇨🇳_中国_77
 - name: 自动选择
   type: url-test
   proxies:
-  - ✅ 瑞士(mibei77.com 米贝节点分享)_4
   - ✅ DE德国(mibei77.com 米贝节点分享)
   - ✅ SG新加坡(mibei77.com 米贝节点分享)
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
@@ -85,19 +77,12 @@ proxy-groups:
   - ✅ HK香港(mibei77.com 米贝节点分享)_6
   - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
-  - ✅ 巴西+圣保罗
-  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
-  - ✅ 美国2|@ripaojiedian
-  - ✅ 🏳️_未知_165
   - ✅ 🇺🇸_美国_155
-  - ✅ 美国|@ripaojiedian
-  - ✅ 🇨🇳_中国_77
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
   type: fallback
   proxies:
-  - ✅ 瑞士(mibei77.com 米贝节点分享)_4
   - ✅ DE德国(mibei77.com 米贝节点分享)
   - ✅ SG新加坡(mibei77.com 米贝节点分享)
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
@@ -112,13 +97,7 @@ proxy-groups:
   - ✅ HK香港(mibei77.com 米贝节点分享)_6
   - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
-  - ✅ 巴西+圣保罗
-  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
-  - ✅ 美国2|@ripaojiedian
-  - ✅ 🏳️_未知_165
   - ✅ 🇺🇸_美国_155
-  - ✅ 美国|@ripaojiedian
-  - ✅ 🇨🇳_中国_77
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -639,16 +618,6 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: ✅ 瑞士(mibei77.com 米贝节点分享)_4
-  type: hysteria2
-  server: 138.124.0.168
-  port: 8080
-  password: h_B9x3942fJ9x_Kpx3914KQ_nZ934HFg_rT
-  sni: hopp-legend-se.roxa.org
-  tls: true
-  security_scheme: tls
-  proto: hysteria2
-  peer: hopp-legend-se.roxa.org
 - name: ✅ DE德国(mibei77.com 米贝节点分享)
   type: hysteria2
   server: 185.230.44.170
@@ -813,71 +782,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: ssl.fastly.com
-- name: ✅ 巴西+圣保罗
-  type: vless
-  server: 201.24.49.19
-  port: 2200
-  uuid: 716903b1-e6bf-4420-9e27-65e4451692e9
-  tls: false
-  network: ws
-  ws-opts:
-    path: /v1
-    headers:
-      Host: rzd.ru
-  security_scheme: none
-  proto: vless
-  peer: 201.24.49.19
-- name: ✅ 俄罗斯(mibei77.com 米贝节点分享)
-  type: vless
-  server: mws.tunnelgate.org
-  port: 14443
-  uuid: 423b1d79-08c4-403f-9d5e-c541f791b55f
-  tls: true
-  network: ws
-  sni: mws.tunnelgate.org
-  servername: mws.tunnelgate.org
-  ws-opts:
-    path: /ru
-    headers:
-      Host: mws.tunnelgate.org
-  security_scheme: tls
-  proto: vless
-  peer: mws.tunnelgate.org
-- name: ✅ 美国2|@ripaojiedian
-  type: vmess
-  server: 3kCf86Ufi0U5xBDA.v.3dns.vip
-  port: 443
-  uuid: 1abe49dedb6e4f65a0f0a5ea79ddefad
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /ws-vmess
-    headers:
-      Host: 3kCf86Ufi0U5xBDA.v.3dns.vip
-  servername: 3kCf86Ufi0U5xBDA.v.3dns.vip
-  security_scheme: tls
-  sni: 3kCf86Ufi0U5xBDA.v.3dns.vip
-  proto: vmess
-  peer: 3kCf86Ufi0U5xBDA.v.3dns.vip
-- name: ✅ 🏳️_未知_165
-  type: vmess
-  server: US032013.ssgreen.org
-  port: 443
-  uuid: 645acb68-3229-4595-957b-fc712705e605
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /wes
-    headers:
-      Host: US032013.ssgreen.org
-  security_scheme: tls
-  sni: US032013.ssgreen.org
-  proto: vmess
-  peer: US032013.ssgreen.org
 - name: ✅ 🇺🇸_美国_155
   type: vmess
   server: guanwang.awsno.com
@@ -891,34 +795,3 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
-- name: ✅ 美国|@ripaojiedian
-  type: vmess
-  server: lL0GIaPVZ6Zxkd94.v.3dns.vip
-  port: 443
-  uuid: 1abe49dedb6e4f65a0f0a5ea79ddefad
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /ws-vmess
-    headers:
-      Host: lL0GIaPVZ6Zxkd94.v.3dns.vip
-  servername: lL0GIaPVZ6Zxkd94.v.3dns.vip
-  security_scheme: tls
-  sni: lL0GIaPVZ6Zxkd94.v.3dns.vip
-  proto: vmess
-  peer: lL0GIaPVZ6Zxkd94.v.3dns.vip
-- name: ✅ 🇨🇳_中国_77
-  type: vmess
-  server: v6.hdacd.com
-  port: 30806
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v6.hdacd.com
-  proto: vmess
-  peer: v6.hdacd.com
