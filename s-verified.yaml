@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=13
+# verified=12
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -46,7 +46,6 @@ proxy-groups:
   - 自动选择
   - 故障转移
   - ✅ DE德国(mibei77.com 米贝节点分享)
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ 🇫🇮_FI_芬兰_2
@@ -62,7 +61,6 @@ proxy-groups:
   type: url-test
   proxies:
   - ✅ DE德国(mibei77.com 米贝节点分享)
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ 🇫🇮_FI_芬兰_2
@@ -80,7 +78,6 @@ proxy-groups:
   type: fallback
   proxies:
   - ✅ DE德国(mibei77.com 米贝节点分享)
-  - ✅ SG新加坡(mibei77.com 米贝节点分享)
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ 🇫🇮_FI_芬兰_2
@@ -622,16 +619,6 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: 185.230.44.170
-- name: ✅ SG新加坡(mibei77.com 米贝节点分享)
-  type: hysteria2
-  server: 52.221.223.227
-  port: 36001
-  password: 4hkCvE2nz6svLLqv
-  sni: sg-ls-z-5.lihmxssuqleitqcxpssa.uk
-  tls: true
-  security_scheme: tls
-  proto: hysteria2
-  peer: sg-ls-z-5.lihmxssuqleitqcxpssa.uk
 - name: ✅ GB英国(mibei77.com 米贝节点分享)_3
   type: hysteria2
   server: 82.39.214.95
