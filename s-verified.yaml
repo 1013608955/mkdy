@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=13
+# verified=15
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -54,9 +54,11 @@ proxy-groups:
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
-  - ✅ 卢森堡(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)_6
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
 - name: 自动选择
   type: url-test
@@ -70,9 +72,11 @@ proxy-groups:
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
-  - ✅ 卢森堡(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)_6
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
   url: http://www.gstatic.com/generate_204
   interval: 86400
@@ -88,9 +92,11 @@ proxy-groups:
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
-  - ✅ 卢森堡(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ HK香港(mibei77.com 米贝节点分享)_6
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -703,21 +709,38 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: ssl.fastly.com
-- name: ✅ 卢森堡(mibei77.com 米贝节点分享)
-  type: trojan
-  server: 188.42.145.180
+- name: ✅ HK香港(mibei77.com 米贝节点分享)
+  type: vless
+  server: 104.17.28.89
   port: 443
-  password: MiTiVPN
+  uuid: 1078d418-b4e0-4668-9018-dc90c2042d61
   tls: true
   network: ws
-  sni: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
+  sni: workspace.evan00.dpdns.org
+  servername: workspace.evan00.dpdns.org
   ws-opts:
-    path: /---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/s-g@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN
+    path: /
     headers:
-      Host: 383838-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
+      Host: workspace.evan00.dpdns.org
   security_scheme: tls
-  proto: trojan
-  peer: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
+  proto: vless
+  peer: workspace.evan00.dpdns.org
+- name: ✅ HK香港(mibei77.com 米贝节点分享)_6
+  type: vless
+  server: 141.101.122.147
+  port: 443
+  uuid: c4edb87e-8544-4fa4-bd1c-b0cda9a34b46
+  tls: true
+  network: ws
+  sni: a.cwvps.eu.org
+  servername: a.cwvps.eu.org
+  ws-opts:
+    path: /ws
+    headers:
+      Host: a.cwvps.eu.org
+  security_scheme: tls
+  proto: vless
+  peer: a.cwvps.eu.org
 - name: ✅ 香港+Simcentric网络公司
   type: vless
   server: 180.178.60.254
@@ -744,6 +767,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: ssl.fastly.com
+- name: ✅ US美国(mibei77.com 米贝节点分享)_3
+  type: vless
+  server: 208.103.161.32
+  port: 443
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  tls: true
+  network: ws
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
+  ws-opts:
+    path: /sg-melbi_/
+    headers:
+      Host: josni.hoyes.cloudns.ch
+  security_scheme: tls
+  proto: vless
+  peer: josni.hoyes.cloudns.ch
 - name: ✅ 🇺🇸_美国_155
   type: vmess
   server: guanwang.awsno.com
