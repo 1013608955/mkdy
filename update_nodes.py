@@ -35,7 +35,7 @@ CONFIG: Dict = {
         {"url": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub", "weight": 6}
     ],
     "request": {"timeout": 15, "retry": 3, "retry_delay": 3, "allow_insecure": False,
-                 "failure_threshold": 5,
+                 "failure_threshold": 5, "probe_interval_hours": 24,
                  "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"},
     "github": {"token": os.getenv("GITHUB_TOKEN", ""), "interval": 0.5, "cache_ttl": 3600, "cache_expire_days": 7},
     "detection": {
@@ -856,21 +856,44 @@ def _now_utc() -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
 
+def _ts_utc(s: str) -> float:
+    """UTC 时间串 -> epoch 秒；解析失败返回 0（视为冷却已满，允许探活）。"""
+    try:
+        import calendar
+        return calendar.timegm(time.strptime(s, "%Y-%m-%dT%H:%M:%SZ"))
+    except Exception:  # noqa: BLE001
+        return 0.0
+
+
 def fetch_all_sources() -> Tuple[List[Dict], Dict[str, Dict]]:
     all_nodes = []
     source_records = {}
 
     threshold = int(CONFIG["request"].get("failure_threshold", 5))
+    probe_hours = float(CONFIG["request"].get("probe_interval_hours", 24))
     health = _load_source_health()
 
     def _fails(url: str) -> int:
         return int((health.get(url) or {}).get("consecutive_failures", 0))
 
-    skipped = [src["url"] for src in CONFIG["sources"] if _fails(src["url"]) >= threshold]
-    for url in skipped:
-        LOG.warning(f"⛔ 源已连续失败 {_fails(url)} 次(≥{threshold})，本轮跳过: {url}")
-
-    active = [src for src in CONFIG["sources"] if src["url"] not in set(skipped)]
+    # 禁赛判定 + 冷却探活：禁赛源每 probe_hours 小时自动试探一次（自愈）
+    skipped, active, probing = [], [], set()
+    for src in CONFIG["sources"]:
+        url = src["url"]
+        n = _fails(url)
+        if n < threshold:
+            active.append(src)
+            continue
+        last_probe = str((health.get(url) or {}).get("last_probe") or "")
+        if (time.time() - _ts_utc(last_probe)) >= probe_hours * 3600:
+            LOG.info(f"[probe] 源禁赛冷却期满，试探性重试: {url}")
+            health.setdefault(url, {})["last_probe"] = _now_utc()
+            probing.add(url)
+            active.append(src)
+        else:
+            LOG.info(f"[bench] 源禁赛中（连续失败 {n} 次），"
+                     f"{probe_hours:.0f}h 冷却后自动探活: {url}")
+            skipped.append(url)
 
     with ThreadPoolExecutor(max_workers=5) as executor:
         futures = {executor.submit(fetch_source_data, src["url"], src["weight"]): src["url"]
@@ -884,19 +907,29 @@ def fetch_all_sources() -> Tuple[List[Dict], Dict[str, Dict]]:
                 LOG.error(f"❌ 处理源{url}异常：{str(e)[:50]}")
                 lines, weight, ok_run = [], 0, False
 
-            # 更新健康状态：拉到节点=成功清零；空/异常=失败+1
+            # 更新健康状态：拉到节点=成功清零；空/异常=失败+1（探活失败保持禁赛不涨）
             rec = health.get(url) or {}
             if ok_run:
                 if rec.get("consecutive_failures"):
-                    LOG.info(f"✅ 源恢复可用（此前连续失败 {rec['consecutive_failures']} 次）: {url}")
+                    tag = "探活成功，恢复可用" if url in probing else "恢复可用"
+                    LOG.info(f"✅ {tag}（此前连续失败 {rec['consecutive_failures']} 次）: {url}")
                 health[url] = {"consecutive_failures": 0, "last_ok": _now_utc(),
                                "nodes": len(lines)}
+                health[url].pop("last_probe", None)
+            elif url in probing:
+                rec["consecutive_failures"] = max(int(rec.get("consecutive_failures", 0)),
+                                                  threshold)
+                rec["last_probe"] = _now_utc()
+                rec["last_fail"] = _now_utc()
+                health[url] = rec
+                LOG.warning(f"⛔ [probe-fail] 探活失败，继续禁赛"
+                            f"（{probe_hours:.0f}h 后再探）: {url}")
             else:
                 rec["consecutive_failures"] = int(rec.get("consecutive_failures", 0)) + 1
                 rec["last_fail"] = _now_utc()
                 health[url] = rec
                 n = rec["consecutive_failures"]
-                level = "⛔ 达阈值，下轮起跳过" if n >= threshold else "连续失败"
+                level = "⛔ 达阈值，进入禁赛" if n >= threshold else "连续失败"
                 LOG.warning(f"⚠️ 源{level} {n}/{threshold}: {url}")
 
             proto_count = count_proto(lines)
