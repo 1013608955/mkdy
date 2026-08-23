@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=17
+# verified=14
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -55,13 +55,10 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇫🇷 法国 格拉沃利讷OVH数据中心
   - ✅ 🇺🇸_美国_163
-  - ✅ US美国(mibei77.com 米贝节点分享)_8
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
-  - ✅ 🇭🇰_香港_151
-  - ✅ 🇭🇰_香港_146
 - name: 自动选择
   type: url-test
   proxies:
@@ -75,13 +72,10 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇫🇷 法国 格拉沃利讷OVH数据中心
   - ✅ 🇺🇸_美国_163
-  - ✅ US美国(mibei77.com 米贝节点分享)_8
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
-  - ✅ 🇭🇰_香港_151
-  - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -97,13 +91,10 @@ proxy-groups:
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇫🇷 法国 格拉沃利讷OVH数据中心
   - ✅ 🇺🇸_美国_163
-  - ✅ US美国(mibei77.com 米贝节点分享)_8
   - ✅ 香港+Simcentric网络公司
   - ✅ 🇺🇸_美国_161
   - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
-  - ✅ 🇭🇰_香港_151
-  - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -726,22 +717,6 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: ssl.fastly.com
-- name: ✅ US美国(mibei77.com 米贝节点分享)_8
-  type: vless
-  server: 104.16.6.70
-  port: 443
-  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
-  tls: true
-  network: ws
-  sni: josni.hoyes.cloudns.ch
-  servername: josni.hoyes.cloudns.ch
-  ws-opts:
-    path: /
-    headers:
-      Host: josni.hoyes.cloudns.ch
-  security_scheme: tls
-  proto: vless
-  peer: josni.hoyes.cloudns.ch
 - name: ✅ 香港+Simcentric网络公司
   type: vless
   server: 180.178.60.254
@@ -797,29 +772,3 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
-- name: ✅ 🇭🇰_香港_151
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
-- name: ✅ 🇭🇰_香港_146
-  type: vmess
-  server: v10.zgtfqs.click
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.zgtfqs.click
-  proto: vmess
-  peer: v10.zgtfqs.click
