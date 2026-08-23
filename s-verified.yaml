@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=14
+# verified=15
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -56,6 +56,7 @@ proxy-groups:
   - ✅ 🇺🇸_美国_163
   - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
   - ✅ 🇭🇰_香港_151
   - ✅ 🇭🇰_香港_146
@@ -73,6 +74,7 @@ proxy-groups:
   - ✅ 🇺🇸_美国_163
   - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
   - ✅ 🇭🇰_香港_151
   - ✅ 🇭🇰_香港_146
@@ -92,6 +94,7 @@ proxy-groups:
   - ✅ 🇺🇸_美国_163
   - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
+  - ✅ US美国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_155
   - ✅ 🇭🇰_香港_151
   - ✅ 🇭🇰_香港_146
@@ -735,6 +738,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: ssl.fastly.com
+- name: ✅ US美国(mibei77.com 米贝节点分享)_3
+  type: vless
+  server: 208.103.161.32
+  port: 443
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  tls: true
+  network: ws
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
+  ws-opts:
+    path: /sg-melbi_/
+    headers:
+      Host: josni.hoyes.cloudns.ch
+  security_scheme: tls
+  proto: vless
+  peer: josni.hoyes.cloudns.ch
 - name: ✅ 🇺🇸_美国_155
   type: vmess
   server: guanwang.awsno.com
