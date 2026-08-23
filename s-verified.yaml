@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=19
+# verified=16
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -49,9 +49,8 @@ proxy-groups:
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
-  - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ US美国(mibei77.com 米贝节点分享)_54
-  - ✅ FR法国(mibei77.com 米贝节点分享)_15
+  - ✅ SG新加坡(mibei77.com 米贝节点分享)
+  - ✅ US美国(mibei77.com 米贝节点分享)_53
   - ✅ 🇳🇱_NL_荷兰_2
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
@@ -62,8 +61,6 @@ proxy-groups:
   - ✅ 日本3|@ripaojiedian
   - ✅ 美国|@ripaojiedian
   - ✅ 香港2|@ripaojiedian
-  - ✅ 🇭🇰_香港_69
-  - ✅ 🇭🇰_香港_84
 - name: 自动选择
   type: url-test
   proxies:
@@ -71,9 +68,8 @@ proxy-groups:
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
-  - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ US美国(mibei77.com 米贝节点分享)_54
-  - ✅ FR法国(mibei77.com 米贝节点分享)_15
+  - ✅ SG新加坡(mibei77.com 米贝节点分享)
+  - ✅ US美国(mibei77.com 米贝节点分享)_53
   - ✅ 🇳🇱_NL_荷兰_2
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
@@ -84,8 +80,6 @@ proxy-groups:
   - ✅ 日本3|@ripaojiedian
   - ✅ 美国|@ripaojiedian
   - ✅ 香港2|@ripaojiedian
-  - ✅ 🇭🇰_香港_69
-  - ✅ 🇭🇰_香港_84
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -95,9 +89,8 @@ proxy-groups:
   - ✅ GB英国(mibei77.com 米贝节点分享)_3
   - ✅ 芬兰(mibei77.com 米贝节点分享)
   - ✅ 🇹🇭_TH_泰国
-  - ✅ 卢森堡(mibei77.com 米贝节点分享)
-  - ✅ US美国(mibei77.com 米贝节点分享)_54
-  - ✅ FR法国(mibei77.com 米贝节点分享)_15
+  - ✅ SG新加坡(mibei77.com 米贝节点分享)
+  - ✅ US美国(mibei77.com 米贝节点分享)_53
   - ✅ 🇳🇱_NL_荷兰_2
   - ✅ 🇺🇸_美国_385
   - ✅ 香港+Simcentric网络公司
@@ -108,8 +101,6 @@ proxy-groups:
   - ✅ 日本3|@ripaojiedian
   - ✅ 美国|@ripaojiedian
   - ✅ 香港2|@ripaojiedian
-  - ✅ 🇭🇰_香港_69
-  - ✅ 🇭🇰_香港_84
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -669,24 +660,9 @@ proxies:
   security_scheme: none
   proto: ss
   peer: 103.169.67.34
-- name: ✅ 卢森堡(mibei77.com 米贝节点分享)
-  type: trojan
-  server: 188.42.145.180
-  port: 443
-  password: MiTiVPN
-  tls: true
-  network: ws
-  sni: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
-  ws-opts:
-    path: /---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/s-g@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN
-    headers:
-      Host: 383838-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
-  security_scheme: tls
-  proto: trojan
-  peer: 82929473-mitivpn--mitivpn------mitivpn.mitivpn-s.lifestyle
-- name: ✅ US美国(mibei77.com 米贝节点分享)_54
+- name: ✅ SG新加坡(mibei77.com 米贝节点分享)
   type: vless
-  server: 104.16.6.70
+  server: 104.18.37.228
   port: 443
   uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
   tls: true
@@ -694,28 +670,28 @@ proxies:
   sni: josni.hoyes.cloudns.ch
   servername: josni.hoyes.cloudns.ch
   ws-opts:
-    path: /
+    path: /sg-melbi
     headers:
       Host: josni.hoyes.cloudns.ch
   security_scheme: tls
   proto: vless
   peer: josni.hoyes.cloudns.ch
-- name: ✅ FR法国(mibei77.com 米贝节点分享)_15
+- name: ✅ US美国(mibei77.com 米贝节点分享)_53
   type: vless
-  server: 104.17.28.89
+  server: 104.24.9.6
   port: 443
-  uuid: 1078d418-b4e0-4668-9018-dc90c2042d61
+  uuid: 407ecce0-dc85-465f-89f5-e520e9378baf
   tls: true
   network: ws
-  sni: workspace.evan00.dpdns.org
-  servername: workspace.evan00.dpdns.org
+  sni: ld.223350.xyz
+  servername: ld.223350.xyz
   ws-opts:
     path: /
     headers:
-      Host: workspace.evan00.dpdns.org
+      Host: ld.223350.xyz
   security_scheme: tls
   proto: vless
-  peer: workspace.evan00.dpdns.org
+  peer: ld.223350.xyz
 - name: ✅ 🇳🇱_NL_荷兰_2
   type: vless
   server: 158.101.208.44
@@ -876,29 +852,3 @@ proxies:
   sni: t245hvl0VMtlXR4v.v.3dns.vip
   proto: vmess
   peer: t245hvl0VMtlXR4v.v.3dns.vip
-- name: ✅ 🇭🇰_香港_69
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
-- name: ✅ 🇭🇰_香港_84
-  type: vmess
-  server: v10.zgtfqs.click
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.zgtfqs.click
-  proto: vmess
-  peer: v10.zgtfqs.click
