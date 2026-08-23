@@ -51,20 +51,26 @@ while time.time() < deadline:
     if sent_sk and sk_sends >= 2 and len(text) > 120:
         break
 
-# 发完 SK 给 keyring 写入留 2s，然后强杀收尾
-if sent_sk:
-    end = time.time() + 2
-    while time.time() < end:
-        r, _, _ = select.select([fd], [], [], 0.5)
-        if not r:
-            continue
+# 等子进程自然退出（keyring 写入可能发生在末尾），上限 30s
+deadline = time.time() + 30
+while time.time() < deadline:
+    r, _, _ = select.select([fd], [], [], 1.0)
+    if not r:
+        # 无新数据时探测子进程是否已退出
         try:
-            chunk = os.read(fd, 4096)
-        except OSError:
+            pid_done, _ = os.waitpid(pid, os.WNOHANG)
+            if pid_done:
+                break
+        except ChildProcessError:
             break
-        if not chunk:
-            break
-        text += chunk.decode("utf-8", "replace")
+        continue
+    try:
+        chunk = os.read(fd, 4096)
+    except OSError:
+        break
+    if not chunk:
+        break
+    text += chunk.decode("utf-8", "replace")
 
 try:
     os.kill(pid, 9)
