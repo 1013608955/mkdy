@@ -26,7 +26,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq gnome-keyring dbus-x11 libsecret-1-0 \
-            python3-secretstorage xvfb xdotool x11-utils >/dev/null
+            python3-secretstorage xvfb xdotool x11-utils openbox >/dev/null
 
       - name: 准备
         run: |
@@ -44,30 +44,29 @@ jobs:
           # dbus-daemon 激活 prompter 用的是 daemon 自身环境，而非调用方环境
           export DISPLAY=:99
           dbus-run-session -- bash -exs <<'SESSION'
+          DISPLAY=:99 openbox >/dev/null 2>&1 &
+          sleep 2
           mkdir -p ~/.cache ~/.local/share/keyrings
           eval "$(printf '\n' | gnome-keyring-daemon --unlock)" || true
           eval "$(printf '\n' | gnome-keyring-daemon --start)" || true
           printf 'login' > ~/.local/share/keyrings/default
 
-          # —— 后台自动应答器：发现弹窗就聚焦、输入密码并回车 ——
+          # —— 后台自动应答器：按名/类精确搜 gcr 对话框，点击中心拿焦点后键入 ——
           (
             for i in $(seq 1 300); do
-              WINS=$(xdotool search --onlyvisible "" 2>/dev/null || true)
-              if [ -n "$WINS" ]; then
-                echo "[autoresponder] cycle$i 可见窗口: $WINS" >&2
-              fi
+              WINS=$( { xdotool search --onlyvisible --name 'gcr' 2>/dev/null; xdotool search --onlyvisible --class 'Gcr' 2>/dev/null; } | sort -u)
+              if [ -z "$WINS" ]; then sleep 1; continue; fi
+              echo "[autoresponder] cycle$i 命中gcr窗口: $WINS" >&2
               for W in $WINS; do
-                if true; then
-                    echo "[autoresponder] 应答窗口: $W" >&2
-                    xdotool windowactivate "$W" 2>/dev/null
-                    xdotool windowfocus "$W" 2>/dev/null
-                    sleep 0.5
-                    xdotool type --delay 60 'ci-unlock'
-                    xdotool key Tab
-                    xdotool type --delay 60 'ci-unlock'
-                    xdotool key Return
-                    sleep 3
-                fi
+                eval "$(xdotool getwindowgeometry --shell "$W" 2>/dev/null)"
+                xdotool mousemove --window "$W" $((WIDTH/2)) $((HEIGHT/2)) click 1 2>/dev/null
+                xdotool windowfocus "$W" 2>/dev/null
+                sleep 0.5
+                xdotool type --delay 80 'ci-unlock'
+                xdotool key Tab
+                xdotool type --delay 80 'ci-unlock'
+                xdotool key Return
+                sleep 3
               done
               sleep 1
             done
