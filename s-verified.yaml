@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=14
+# verified=17
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -55,10 +55,13 @@ proxy-groups:
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
-  - ✅ 香港+Simcentric网络公司
+  - ✅ US美国(mibei77.com 米贝节点分享)_7
+  - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
+  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_155
+  - ✅ 🇭🇰_香港_151
+  - ✅ 🇭🇰_香港_146
 - name: 自动选择
   type: url-test
   proxies:
@@ -72,10 +75,13 @@ proxy-groups:
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
-  - ✅ 香港+Simcentric网络公司
+  - ✅ US美国(mibei77.com 米贝节点分享)_7
+  - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
+  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_155
+  - ✅ 🇭🇰_香港_151
+  - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -91,10 +97,13 @@ proxy-groups:
   - ✅ 🇺🇸 美国 V2CROSS.COM
   - ✅ SG新加坡(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸_美国_163
-  - ✅ 香港+Simcentric网络公司
+  - ✅ US美国(mibei77.com 米贝节点分享)_7
+  - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_美国_161
-  - ✅ US美国(mibei77.com 米贝节点分享)_3
+  - ✅ 俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国_155
+  - ✅ 🇭🇰_香港_151
+  - ✅ 🇭🇰_香港_146
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -719,11 +728,27 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: ssl.fastly.com
-- name: ✅ 香港+Simcentric网络公司
+- name: ✅ US美国(mibei77.com 米贝节点分享)_7
+  type: vless
+  server: 104.16.6.70
+  port: 443
+  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  tls: true
+  network: ws
+  sni: josni.hoyes.cloudns.ch
+  servername: josni.hoyes.cloudns.ch
+  ws-opts:
+    path: /
+    headers:
+      Host: josni.hoyes.cloudns.ch
+  security_scheme: tls
+  proto: vless
+  peer: josni.hoyes.cloudns.ch
+- name: ✅ 🇺🇸_US_美国
   type: vless
   server: 180.178.60.254
   port: 10000
-  uuid: 431fe973-a43a-4fac-bf83-2a772e0d0625
+  uuid: caec0d8d-ab2f-4247-b97d-7fb1a34ab195
   tls: false
   network: tcp
   security_scheme: none
@@ -745,22 +770,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: ssl.fastly.com
-- name: ✅ US美国(mibei77.com 米贝节点分享)_3
+- name: ✅ 俄罗斯(mibei77.com 米贝节点分享)
   type: vless
-  server: 208.103.161.32
-  port: 443
-  uuid: 83afd88f-200f-4d89-bfc7-66eff160c1d8
+  server: mws.tunnelgate.org
+  port: 14443
+  uuid: 423b1d79-08c4-403f-9d5e-c541f791b55f
   tls: true
   network: ws
-  sni: josni.hoyes.cloudns.ch
-  servername: josni.hoyes.cloudns.ch
+  sni: mws.tunnelgate.org
+  servername: mws.tunnelgate.org
   ws-opts:
-    path: /sg-melbi_/
+    path: /ru
     headers:
-      Host: josni.hoyes.cloudns.ch
+      Host: mws.tunnelgate.org
   security_scheme: tls
   proto: vless
-  peer: josni.hoyes.cloudns.ch
+  peer: mws.tunnelgate.org
 - name: ✅ 🇺🇸_美国_155
   type: vmess
   server: guanwang.awsno.com
@@ -774,3 +799,29 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
+- name: ✅ 🇭🇰_香港_151
+  type: vmess
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.hdacd.com
+  proto: vmess
+  peer: v10.hdacd.com
+- name: ✅ 🇭🇰_香港_146
+  type: vmess
+  server: v10.zgtfqs.click
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.zgtfqs.click
+  proto: vmess
+  peer: v10.zgtfqs.click
