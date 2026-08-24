@@ -105,7 +105,7 @@ jobs:
           [ "$STATE" = "Running" ] || { echo "[ERR] 容器未能进入 Running"; exit 1; }
 
           echo "===== 重置并获取 SSH 私钥（需容器开机）====="
-          echo yes | tools/hds_session.sh devenv ssh-key-reset --instance-id="$INSTANCE" </dev/null 2>&1 | head -4
+          echo yes | tools/hds_session.sh devenv ssh-key-reset --instance-id="$INSTANCE" 2>&1 | head -6
           ls -la "$HOME/.devenv/.ssh/IdentityFile/$INSTANCE" || echo "[WARN] 私钥未落盘"
 
           if [ "${{ inputs.action || 'wake_verify' }}" = "wake" ]; then
