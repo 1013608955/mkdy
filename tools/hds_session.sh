@@ -7,7 +7,7 @@ export DISPLAY="${DISPLAY:-:99}"
 export HDS_SESSION_ARGS
 HDS_SESSION_ARGS=$(printf '%q ' "$@")
 
-dbus-run-session -- bash -exc '
+timeout 100 dbus-run-session -- bash -exc '
   DISPLAY=:99 openbox >/dev/null 2>&1 &
   sleep 1
   # 用创建时的密码解锁已存在的 login keyring
@@ -15,7 +15,7 @@ dbus-run-session -- bash -exc '
   eval "$(printf "\n" | gnome-keyring-daemon --start)" || true
   # 防意外弹窗的自动应答器
   (
-    for i in $(seq 1 180); do
+    for i in $(seq 1 90); do
       WINS=$( { xdotool search --onlyvisible --name gcr 2>/dev/null;
                 xdotool search --onlyvisible --class Gcr 2>/dev/null; } | sort -u)
       [ -z "$WINS" ] && { sleep 1; continue; }
@@ -25,9 +25,11 @@ dbus-run-session -- bash -exc '
         xdotool mousemove --window "$W" $((WIDTH/2)) $((HEIGHT/2)) click 1 2>/dev/null
         xdotool windowfocus "$W" 2>/dev/null
         sleep 0.5
-        xdotool type --delay 80 "ci-unlock"
+        if [ $((i % 2)) -eq 0 ]; then PW=''; else PW='ci-unlock'; fi
+        echo "[autoresponder] 尝试密码: \${PW:+<ci-unlock>}" >&2
+        xdotool type --delay 80 "$PW"
         xdotool key Tab
-        xdotool type --delay 80 "ci-unlock"
+        xdotool type --delay 80 "$PW"
         xdotool key Return
         sleep 3
       done
