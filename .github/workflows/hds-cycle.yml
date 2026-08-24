@@ -110,7 +110,7 @@ jobs:
       - name: "[3] 开隧道 + 分离执行容器验证 + 轮询结果"
         timeout-minutes: 14
         run: |
-          tools/hds_session.sh devenv start-tunnel \
+          HDS_NO_TIMEOUT=1 tools/hds_session.sh devenv start-tunnel \
             --instance-id="$INSTANCE" --ports=10022:22 >/tmp/tunnel.log 2>&1 &
           TUN=$!
           for i in $(seq 1 30); do

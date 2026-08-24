@@ -7,7 +7,7 @@ export DISPLAY="${DISPLAY:-:99}"
 export HDS_SESSION_ARGS
 HDS_SESSION_ARGS=$(printf '%q ' "$@")
 
-timeout 100 dbus-run-session -- bash -exc '
+if [ -n \\${HDS_NO_TIMEOUT:-} ]; then WRAP=''; else WRAP='timeout 100 '; fi; \$WRAP dbus-run-session -- bash -exc '
   DISPLAY=:99 openbox >/dev/null 2>&1 &
   sleep 1
   # 用创建时的密码解锁已存在的 login keyring
