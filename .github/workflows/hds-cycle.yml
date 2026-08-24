@@ -9,6 +9,8 @@
 name: hds-cycle
 
 on:
+  schedule:
+    - cron: '0 * * * *'        # 每小时整点：唤醒→验证→关机（改 '*/15 * * * *' 可到15分钟新鲜度，核时消耗约3倍）
   workflow_dispatch:
     inputs:
       action:
