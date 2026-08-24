@@ -126,7 +126,8 @@ jobs:
           sleep 2
           echo "--- 近 5 分钟 .devenv 新增文件 ---"
           find "$HOME/.devenv" -type f -newermt '-5 minutes' 2>/dev/null
-          KEYFILE=$(find "$HOME" -type f -newermt '-6 minutes' 2>/dev/null | while read -r f; do grep -l 'PRIVATE KEY' "$f" 2>/dev/null; done | grep -v hds_key | head -1)
+          # reset 成功后私钥固定生成在 ~/.devenv/.ssh/IdentityFile/<实例ID>
+          KEYFILE="$HOME/.devenv/.ssh/IdentityFile/$INSTANCE"
           echo "KEYFILE=$KEYFILE"
           [ -n "$KEYFILE" ] || { echo "[ERR] 私钥未找到"; exit 1; }
           chmod 600 "$KEYFILE"
