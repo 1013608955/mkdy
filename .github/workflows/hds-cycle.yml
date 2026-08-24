@@ -117,7 +117,12 @@ jobs:
             (echo > /dev/tcp/127.0.0.1/10022) 2>/dev/null && break
             sleep 2
           done
-          SSH="ssh -p 10022 -i $HOME/.ssh/hds_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=10 -o BatchMode=yes root@127.0.0.1"
+          # 冷启动会重置系统盘 authorized_keys → 先重置密钥并取 runner 本地新生成的私钥
+          tools/hds_session.sh devenv ssh-key-reset --instance-id="$INSTANCE" </dev/null 2>&1 | head -3
+          KEYFILE="$HOME/.devenv/.ssh/IdentityFile/$INSTANCE"
+          ls -la "$KEYFILE" || { echo "[ERR] 私钥未生成"; exit 1; }
+          chmod 600 "$KEYFILE"
+          SSH="ssh -p 10022 -i $KEYFILE -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=10 -o BatchMode=yes root@127.0.0.1"
           # 上传引导脚本并分离启动（输出落容器持久盘，连接断开不影响）
           $SSH "cat > /tmp/boot_job.sh && chmod +x /tmp/boot_job.sh && \
                 rm -f /workspace/mkdy/verify_cn/logs/ci_boot.log && \
