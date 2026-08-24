@@ -103,6 +103,11 @@ jobs:
             done
           fi
           [ "$STATE" = "Running" ] || { echo "[ERR] 容器未能进入 Running"; exit 1; }
+
+          echo "===== 重置并获取 SSH 私钥（需容器开机）====="
+          echo yes | tools/hds_session.sh devenv ssh-key-reset --instance-id="$INSTANCE" </dev/null 2>&1 | head -4
+          ls -la "$HOME/.devenv/.ssh/IdentityFile/$INSTANCE" || echo "[WARN] 私钥未落盘"
+
           if [ "${{ inputs.action || 'wake_verify' }}" = "wake" ]; then
             echo "[done] 仅开机模式，保持 Running"; exit 0
           fi
@@ -117,10 +122,8 @@ jobs:
             (echo > /dev/tcp/127.0.0.1/10022) 2>/dev/null && break
             sleep 2
           done
-          # 冷启动会重置系统盘 authorized_keys → 先重置密钥并取 runner 本地新生成的私钥
-          tools/hds_session.sh devenv ssh-key-reset --instance-id="$INSTANCE" </dev/null 2>&1 | head -3
           KEYFILE="$HOME/.devenv/.ssh/IdentityFile/$INSTANCE"
-          ls -la "$KEYFILE" || { echo "[ERR] 私钥未生成"; exit 1; }
+          [ -f "$KEYFILE" ] || { echo "[ERR] 私钥不存在"; exit 1; }
           chmod 600 "$KEYFILE"
           SSH="ssh -p 10022 -i $KEYFILE -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=10 -o BatchMode=yes root@127.0.0.1"
           # 上传引导脚本并分离启动（输出落容器持久盘，连接断开不影响）
