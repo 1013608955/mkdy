@@ -24,6 +24,10 @@ on:
 env:
   INSTANCE: "21ce28b8230a43f2ab414327f68bb1a0"
 
+concurrency:
+  group: hds-cycle
+  cancel-in-progress: false   # 上一轮未结束时新轮排队等待，绝不并行操作容器
+
 jobs:
   cycle:
     runs-on: ubuntu-latest
