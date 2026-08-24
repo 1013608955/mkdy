@@ -105,8 +105,9 @@ jobs:
           [ "$STATE" = "Running" ] || { echo "[ERR] 容器未能进入 Running"; exit 1; }
 
           echo "===== 重置并获取 SSH 私钥（需容器开机）====="
-          echo yes | tools/hds_session.sh devenv ssh-key-reset --instance-id="$INSTANCE" 2>&1 | head -6
-          ls -la "$HOME/.devenv/.ssh/IdentityFile/$INSTANCE" || echo "[WARN] 私钥未落盘"
+          echo yes | tools/hds_session.sh devenv ssh-key-reset --instance-id="$INSTANCE" > /tmp/reset.log 2>&1 || true
+          echo "--- reset 输出尾 ---"
+          tail -5 /tmp/reset.log
 
           if [ "${{ inputs.action || 'wake_verify' }}" = "wake" ]; then
             echo "[done] 仅开机模式，保持 Running"; exit 0
@@ -125,11 +126,7 @@ jobs:
           sleep 2
           echo "--- 近 5 分钟 .devenv 新增文件 ---"
           find "$HOME/.devenv" -type f -newermt '-5 minutes' 2>/dev/null
-          KEYFILE=$(find "$HOME/.devenv" -type f -newermt '-5 minutes' 2>/dev/null | while read -r f; do grep -l 'PRIVATE KEY' "$f" 2>/dev/null; done | head -1)
-          if [ -z "$KEYFILE" ]; then
-            # 兜底：任意新生成且含 PRIVATE 的文件（含 IdentityFile 目录外）
-            KEYFILE=$(grep -rl 'PRIVATE KEY' "$HOME/.devenv" 2>/dev/null | head -1)
-          fi
+          KEYFILE=$(find "$HOME" -type f -newermt '-6 minutes' 2>/dev/null | while read -r f; do grep -l 'PRIVATE KEY' "$f" 2>/dev/null; done | grep -v hds_key | head -1)
           echo "KEYFILE=$KEYFILE"
           [ -n "$KEYFILE" ] || { echo "[ERR] 私钥未找到"; exit 1; }
           chmod 600 "$KEYFILE"
