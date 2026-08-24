@@ -170,3 +170,20 @@ jobs:
         run: |
           sleep 30
           tools/hds_session.sh devenv list </dev/null 2>&1 | head -6 || true
+
+      - name: "[6] 失败告警（配置了对应 Secret 才发送）"
+        if: failure()
+        env:
+          SERVERCHAN_KEY: ${{ secrets.SERVERCHAN_KEY }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          MSG="mkdy 容器周期失败，请查看: $RUN_URL"
+          if [ -n "$SERVERCHAN_KEY" ]; then
+            curl -s --max-time 15 -o /dev/null               "https://sctapi.ftqq.com/${SERVERCHAN_KEY}.send?title=mkdy容器周期失败&desp=$(printf %s "$MSG" | sed s/&/%26/g)" || true
+          fi
+          if [ -n "$TG_BOT_TOKEN" ] && [ -n "$TG_CHAT_ID" ]; then
+            curl -s --max-time 15 -o /dev/null               "https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage"               -d chat_id="$TG_CHAT_ID" --data-urlencode text="$MSG" || true
+          fi
+          echo "告警步骤完成（未配置 Secret 时为空操作）"

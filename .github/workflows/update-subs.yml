@@ -8,7 +8,7 @@ name: 订阅合并（单源）
 
 on:
   schedule:
-    - cron: '0 */1 * * *'      # 每小时整点
+    - cron: '5 */1 * * *'      # 每小时 :05（错开 hds-cycle 的整点唤醒，容器拉到的是刚出炉的 s-clash）
   # 容器 run_local.py 推送 verified.json 后立即触发合并（P0-4：
   # 此前仅靠每小时 schedule，s-verified 更新延迟最长 60 分钟）
   push:

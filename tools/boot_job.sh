@@ -4,11 +4,12 @@
 set -u
 cd /workspace/mkdy || exit 9
 
-# 1) Python 依赖（系统盘重置后需重装；走清华镜像）
-python3 -c "import yaml" 2>/dev/null \
-  || pip3 install --quiet pyyaml -i https://pypi.tuna.tsinghua.edu.cn/simple
-python3 -c "import requests" 2>/dev/null \
-  || pip3 install --quiet requests -i https://pypi.tuna.tsinghua.edu.cn/simple
+# 1) Python 依赖装到持久盘（系统盘重置也不丢，冷启动秒过）
+export PYTHONPATH="/workspace/pylibs${PYTHONPATH:+:$PYTHONPATH}"
+if ! python3 -c "import yaml, requests" 2>/dev/null; then
+  pip3 install --quiet --target /workspace/pylibs pyyaml requests \
+    -i https://pypi.tuna.tsinghua.edu.cn/simple
+fi
 
 # 2) git 身份与配置（系统盘重置丢失）
 git config --global user.email "ci@mkdy.local"
