@@ -141,7 +141,7 @@ jobs:
       - name: "[4] 关机（无论成败必执行）"
         if: always()
         run: |
-          tools/hds_session.sh devenv close --instance-id="$INSTANCE" </dev/null 2>&1 | head -3
+          tools/hds_session.sh devenv stop --instance-id="$INSTANCE" </dev/null 2>&1 | head -3
           echo "[done] 已发出关机指令"
 
       - name: "[5] 复核最终状态"
