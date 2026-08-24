@@ -59,8 +59,8 @@ jobs:
           DISPLAY=:99 openbox >/dev/null 2>&1 &
           sleep 2
           mkdir -p ~/.cache ~/.local/share/keyrings
-          eval "$(printf '\n' | gnome-keyring-daemon --unlock)" || true
-          eval "$(printf '\n' | gnome-keyring-daemon --start)" || true
+          eval "$(printf 'ci-unlock' | gnome-keyring-daemon --unlock)" || true
+          eval "$(printf 'ci-unlock' | gnome-keyring-daemon --start)" || true
           (
             for i in $(seq 1 200); do
               WINS=$( { xdotool search --onlyvisible --name 'gcr' 2>/dev/null;

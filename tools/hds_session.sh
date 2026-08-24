@@ -25,11 +25,9 @@ timeout 100 dbus-run-session -- bash -exc '
         xdotool mousemove --window "$W" $((WIDTH/2)) $((HEIGHT/2)) click 1 2>/dev/null
         xdotool windowfocus "$W" 2>/dev/null
         sleep 0.5
-        if [ $((i % 2)) -eq 0 ]; then PW=''; else PW='ci-unlock'; fi
-        echo "[autoresponder] 尝试密码: \${PW:+<ci-unlock>}" >&2
-        xdotool type --delay 80 "$PW"
+        xdotool type --delay 80 'ci-unlock'
         xdotool key Tab
-        xdotool type --delay 80 "$PW"
+        xdotool type --delay 80 'ci-unlock'
         xdotool key Return
         sleep 3
       done
