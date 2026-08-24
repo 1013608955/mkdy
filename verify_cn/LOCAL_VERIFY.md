@@ -1,3 +1,6 @@
+> **⛔ 已弃用（2026-08-24）**：本机未安装 mihomo 二进制，此路线无法工作。
+> 验证统一由华为云容器承担（GitHub Actions `hds-cycle.yml` 按需唤醒），见根 [README.md](../README.md)。本文仅存档。
+>
 # 本机节点验证（run_local.py）
 
 在**本机**（中国大陆出口）跑节点真链验证，替代此前的阿里云 FC / 华为云 FunctionGraph 方案。
