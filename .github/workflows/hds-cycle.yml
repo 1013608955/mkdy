@@ -122,8 +122,17 @@ jobs:
             (echo > /dev/tcp/127.0.0.1/10022) 2>/dev/null && break
             sleep 2
           done
-          KEYFILE="$HOME/.devenv/.ssh/IdentityFile/$INSTANCE"
-          [ -f "$KEYFILE" ] || { echo "[ERR] 私钥不存在"; exit 1; }
+          sleep 2
+          echo "--- 近 5 分钟 .devenv 新增文件 ---"
+          find "$HOME/.devenv" -type f -newermt '-5 minutes' 2>/dev/null
+          KEYFILE=$(find "$HOME/.devenv" -type f -newermt '-5 minutes' 2>/dev/null | while read -r f; do grep -l 'PRIVATE KEY' "$f" 2>/dev/null; done | head -1)
+          if [ -z "$KEYFILE" ]; then
+            # 兜底：任意新生成且含 PRIVATE 的文件（含 IdentityFile 目录外）
+            KEYFILE=$(grep -rl 'PRIVATE KEY' "$HOME/.devenv" 2>/dev/null | head -1)
+          fi
+          echo "KEYFILE=$KEYFILE"
+          [ -n "$KEYFILE" ] || { echo "[ERR] 私钥未找到"; exit 1; }
+          chmod 600 "$KEYFILE"
           chmod 600 "$KEYFILE"
           SSH="ssh -p 10022 -i $KEYFILE -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=10 -o BatchMode=yes root@127.0.0.1"
           # 上传引导脚本并分离启动（输出落容器持久盘，连接断开不影响）
