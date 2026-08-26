@@ -263,38 +263,13 @@ def _norm_err(detail):
     return (detail or "unknown")[:60]
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--limit", type=int, default=0, help="只验证前 N 个节点(试跑)，0=全量")
-    ap.add_argument("-c", "--concurrency", type=int, default=16)
-    ap.add_argument("-t", "--timeout", type=int, default=8, help="单次测试超时(秒)")
-    ap.add_argument("--no-pull", action="store_true")
-    ap.add_argument("--no-push", action="store_true")
-    ap.add_argument("--no-fallback", action="store_true", help="跳过兜底目标复测")
-    ap.add_argument("--shutdown-after", action="store_true",
-                    help="跑完即关机（云环境省核时；需配合外部定时开机才有意义）")
-    ap.add_argument("--source", default=SRC_YAML)
-    args = ap.parse_args()
-
-    # 时间戳：定时任务把 stdout 追加进同一个日志文件，需要分隔每轮运行
-    print(f"\n===== {time.strftime('%Y-%m-%d %H:%M:%S')} 开始验证 =====")
-    mihomo = _find_mihomo()
-    if not mihomo:
-        print("[FATAL] 未找到 mihomo 二进制（verify_cn/mihomo.exe）。", file=sys.stderr)
+def _load_and_filter(source, mihomo, limit):
+    """加载 s-clash.yaml → 去重名 → 二分隔离坏节点 → 返回待验证 proxies 列表。
+    失败时 sys.exit(2)。"""
+    if not os.path.exists(source):
+        print(f"[FATAL] 节点源不存在：{source}", file=sys.stderr)
         sys.exit(2)
-    print(f"[init] mihomo={mihomo}  git={GIT}")
-
-    if not args.no_pull:
-        try:
-            _, out = _git(["pull", "--ff-only", "origin", "main"])
-            print(f"[git] pull: {out.splitlines()[-1] if out else 'ok'}")
-        except RuntimeError as e:
-            print(f"[git] pull 跳过（{e}）；继续用本地 s-clash.yaml。")
-
-    if not os.path.exists(args.source):
-        print(f"[FATAL] 节点源不存在：{args.source}", file=sys.stderr)
-        sys.exit(2)
-    with open(args.source, encoding="utf-8") as f:
+    with open(source, encoding="utf-8") as f:
         data = yaml.safe_load(f) or {}
     proxies = [p for p in (data.get("proxies") or []) if p.get("name")]
     # 重名兜底：mihomo 遇到 duplicate name 会 fatal 拒绝加载整份配置。
@@ -314,22 +289,28 @@ def main():
     # 坏节点隔离：以 mihomo -t 为预言机二分定位导致整份配置 fatal 的坏节点并移除，
     # 避免单个坏节点（reality 字段损坏、未知类型等）拖垮全部验证。被隔离节点不验证，
     # 靠客户端 url-test 兜底（本项目安全边界：真正可用性由客户端判定）。
-    proxies, _skipped = _isolate_bad_proxies(proxies, mihomo, tempfile.gettempdir())
-    if _skipped:
-        print(f"[skip] 隔离 {len(_skipped)} 个 mihomo 无法加载的坏节点（不验证，"
-              f"靠客户端兜底）：{_skipped[:3]}")
-    if args.limit > 0:
-        proxies = proxies[:args.limit]
+    proxies, skipped = _isolate_bad_proxies(proxies, mihomo, tempfile.gettempdir())
+    if skipped:
+        print(f"[skip] 隔离 {len(skipped)} 个 mihomo 无法加载的坏节点（不验证，"
+              f"靠客户端兜底）：{skipped[:3]}")
+    if limit > 0:
+        proxies = proxies[:limit]
     if not proxies:
         print("[FATAL] 解析到 0 个节点。", file=sys.stderr)
         sys.exit(2)
+    return proxies
+
+
+def _run_verification(proxies, mihomo, concurrency, timeout_s, no_fallback):
+    """启动 mihomo → 并发真链测试 → 返回 {name: result_dict} 映射。
+    负责 mihomo 进程的完整生命周期（启动/回收/清理临时目录）。"""
     names = [p["name"] for p in proxies]
     proto_of = {p["name"]: (p.get("type") or "?") for p in proxies}
     # 方案 A：保留完整 proxy dict 映射，供 verified.json 直接携带完整节点配置，
     # 免去下游 tag_verified 用 'name' 去 s-clash.yaml 重新 join（这正是漂移根因）。
     proxy_of = {p["name"]: p for p in proxies}
-    print(f"[init] 待验证节点：{len(proxies)}  并发：{args.concurrency}  "
-          f"超时：{args.timeout}s")
+    print(f"[init] 待验证节点：{len(proxies)}  并发：{concurrency}  "
+          f"超时：{timeout_s}s")
 
     ctrl_port, mixed_port = _free_port(), _free_port()
     ctrl = f"127.0.0.1:{ctrl_port}"
@@ -362,9 +343,9 @@ def main():
         def _run_round(target_names, url, label):
             done = 0
             with concurrent.futures.ThreadPoolExecutor(
-                    max_workers=args.concurrency) as ex:
+                    max_workers=concurrency) as ex:
                 futs = {ex.submit(test_delay, ctrl, n, url,
-                                  args.timeout * 1000): n
+                                  timeout_s * 1000): n
                         for n in target_names}
                 for fut in concurrent.futures.as_completed(futs):
                     n = futs[fut]
@@ -382,7 +363,7 @@ def main():
 
         _run_round(names, TARGET, "round1")
         failed = [n for n in names if not results[n]["ok"]]
-        if failed and not args.no_fallback:
+        if failed and not no_fallback:
             print(f"[round2] {len(failed)} 个节点主目标失败，用兜底目标复测…")
             _run_round(failed, FALLBACK_TARGET, "round2")
     finally:
@@ -402,6 +383,11 @@ def main():
                 pass
         shutil.rmtree(workdir, ignore_errors=True)
 
+    return results, names, t0
+
+
+def _write_results(results, names, t0):
+    """写 verified.json + 打印统计摘要。返回 verified dict。"""
     ordered = [results[n] for n in names]
     verified = {
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -426,11 +412,11 @@ def main():
     if errc:
         print("[stat] 失败原因：" +
               "; ".join(f"{k}×{v}" for k, v in errc.most_common(6)))
+    return verified
 
-    if args.no_push:
-        print("[push] --no-push，跳过推送。")
-        _maybe_shutdown(args.shutdown_after)
-        return
+
+def _push_results(verified, shutdown_after):
+    """git add/commit/push verified.json（3 次重试 + FETCH_HEAD 合并）。"""
     _git(["add", "verify_cn/verified.json"])
     code, out = _git(["commit", "-m",
                       f"verify(local): {verified['ok']}/{verified['count']} 节点可用"],
@@ -442,7 +428,7 @@ def main():
         code, out = _git(["push", "origin", "main"], check=False)
         if code == 0:
             print("[push] 推送成功；GitHub 端 update-subs 将自动合并产出 s-verified.yaml。")
-            _maybe_shutdown(args.shutdown_after)
+            _maybe_shutdown(shutdown_after)
             return
         print(f"[push] 第 {attempt+1} 次被拒，合并远端后重试…")
         _git(["fetch", "origin", "main"], check=False)
@@ -458,6 +444,46 @@ def main():
             sys.exit(1)
     print("[push][ERROR] push 连续 3 次失败。", file=sys.stderr)
     sys.exit(1)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--limit", type=int, default=0, help="只验证前 N 个节点(试跑)，0=全量")
+    ap.add_argument("-c", "--concurrency", type=int, default=16)
+    ap.add_argument("-t", "--timeout", type=int, default=8, help="单次测试超时(秒)")
+    ap.add_argument("--no-pull", action="store_true")
+    ap.add_argument("--no-push", action="store_true")
+    ap.add_argument("--no-fallback", action="store_true", help="跳过兜底目标复测")
+    ap.add_argument("--shutdown-after", action="store_true",
+                    help="跑完即关机（云环境省核时；需配合外部定时开机才有意义）")
+    ap.add_argument("--source", default=SRC_YAML)
+    args = ap.parse_args()
+
+    # 时间戳：定时任务把 stdout 追加进同一个日志文件，需要分隔每轮运行
+    print(f"\n===== {time.strftime('%Y-%m-%d %H:%M:%S')} 开始验证 =====")
+    mihomo = _find_mihomo()
+    if not mihomo:
+        print("[FATAL] 未找到 mihomo 二进制（verify_cn/mihomo.exe）。", file=sys.stderr)
+        sys.exit(2)
+    print(f"[init] mihomo={mihomo}  git={GIT}")
+
+    if not args.no_pull:
+        try:
+            _, out = _git(["pull", "--ff-only", "origin", "main"])
+            print(f"[git] pull: {out.splitlines()[-1] if out else 'ok'}")
+        except RuntimeError as e:
+            print(f"[git] pull 跳过（{e}）；继续用本地 s-clash.yaml。")
+
+    proxies = _load_and_filter(args.source, mihomo, args.limit)
+    results, names, t0 = _run_verification(
+        proxies, mihomo, args.concurrency, args.timeout, args.no_fallback)
+    verified = _write_results(results, names, t0)
+
+    if args.no_push:
+        print("[push] --no-push，跳过推送。")
+        _maybe_shutdown(args.shutdown_after)
+        return
+    _push_results(verified, args.shutdown_after)
 
 
 if __name__ == "__main__":

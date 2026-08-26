@@ -10,7 +10,8 @@ name: hds-cycle
 
 on:
   schedule:
-    - cron: '*/15 * * * *'      # 每 15 分钟：唤醒→验证→关机（15分钟新鲜度；约 600+ 核时/月，8000 余额撑 ~1 年）
+    - cron: '23 * * * *'        # 每小时兜底：主力触发已改为华为云 FunctionGraph 每15分钟调 workflow_dispatch
+                                # （GitHub 免费档 schedule 高峰期严重延迟，实测 */15 实际间隔 25~100 分钟）
   workflow_dispatch:
     inputs:
       action:
@@ -35,6 +36,22 @@ jobs:
     steps:
       - name: 检出仓库
         uses: actions/checkout@v4
+
+      - name: "防重入门卫：存在排队/运行中的更新轮次则空转退出（省核时）"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # concurrency(FIFO) 保证本运行拿到执行权时，其余未完成轮次必然全部比本次新
+          # ——它们会产出更新的验证结果，本次属冗余触发（外部 dispatch 与迟到 schedule
+          # 撞车时出现），直接空转退出即可，不必再跑完整容器流程。
+          OTHERS=$(gh api "repos/${{ github.repository }}/actions/workflows/hds-cycle.yml/runs?per_page=20" \
+            --jq '[.workflow_runs[] | select(.id != $rid) | select(.status == "in_progress" or .status == "queued")] | length' \
+            --arg rid "${{ github.run_id }}" 2>/dev/null || echo 0)
+          if [ "${OTHERS:-0}" -gt 0 ] 2>/dev/null; then
+            echo "[skip] 检测到 $OTHERS 个更新的轮次在排队/运行中，本次冗余，空转退出。"
+            exit 0
+          fi
+          echo "[pass] 无冗余轮次，继续执行。"
 
       - name: 安装依赖
         run: |
