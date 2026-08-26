@@ -107,11 +107,14 @@ LOG = init_logger()
 # ---------- CONFIG 外部化 ----------
 # 日常修改请在 config.yaml 进行；其顶层字段会覆盖下方内联默认（config.yaml 为权威来源）。
 # 内联 CONFIG 作为兜底，保证 config.yaml 缺失时模块仍可导入/运行。
-def _load_cn_ranges(path: str = None) -> Tuple:
-    """加载 CN CIDR 列表（离线成员判定 is_cn_ip）。由 tools/gen_cn_ranges.py 生成 cn_ranges.txt。"""
+def _load_cn_ranges(path: str = None) -> dict:
+    """加载 CN CIDR 列表，预处理为 (sorted_starts, ends, v6_starts, v6_ends) 四元组，
+    供 is_cn_ip 用 bisect 二分查找（O(log n) 替代原线性扫描 O(n)）。
+    由 tools/gen_cn_ranges.py 生成 cn_ranges.txt。"""
+    import bisect
     if path is None:
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cn_ranges.txt")
-    nets = []
+    v4, v6 = [], []
     try:
         with open(path, encoding="utf-8") as f:
             for line in f:
@@ -119,12 +122,20 @@ def _load_cn_ranges(path: str = None) -> Tuple:
                 if not line or line.startswith("#"):
                     continue
                 try:
-                    nets.append(ipaddress.ip_network(line, strict=False))
+                    net = ipaddress.ip_network(line, strict=False)
+                    start = int(net.network_address)
+                    end = int(net.broadcast_address)
+                    (v4 if net.version == 4 else v6).append((start, end))
                 except ValueError:
                     continue
     except FileNotFoundError:
         LOG.warning(f"⚠️ 未找到 {path}，is_cn_ip 退化为仅 private_ip 判定（CN 段不全）")
-    return tuple(nets)
+    v4.sort()
+    v6.sort()
+    return {
+        "v4_starts": [r[0] for r in v4], "v4_ends": [r[1] for r in v4],
+        "v6_starts": [r[0] for r in v6], "v6_ends": [r[1] for r in v6],
+    }
 
 
 def _deep_merge(base: dict, override: dict) -> dict:
@@ -225,16 +236,27 @@ def is_private_ip(ip: str) -> bool:
     return bool(ip and CONFIG["filter"]["private_ip"].match(ip))
 def is_cn_ip(ip: str) -> bool:
     """判断 IP 是否属于中国（基于 cn_ranges.txt 的离线 CIDR 成员判定）。
-    域名（非法 IP 字面量）一律返回 False；私有地址由 is_private_ip 处理。"""
+    域名（非法 IP 字面量）一律返回 False；私有地址由 is_private_ip 处理。
+    P1-1：改用 bisect 二分查找（O(log n)），原线性扫描在 1 万条 CIDR 时
+    每个节点都要遍历全部，400 节点 × 1 万 = 400 万次比较。"""
+    import bisect
     if not ip or is_private_ip(ip):
         return False
     try:
         addr = ipaddress.ip_address(ip)
     except ValueError:
         return False
-    for net in CN_RANGES:
-        if addr.version == net.version and addr in net:
-            return True
+    val = int(addr)
+    if addr.version == 4:
+        starts, ends = CN_RANGES["v4_starts"], CN_RANGES["v4_ends"]
+    else:
+        starts, ends = CN_RANGES["v6_starts"], CN_RANGES["v6_ends"]
+    if not starts:
+        return False
+    # bisect_right 找到第一个 > val 的 start 索引，候选 range 在 idx-1
+    idx = bisect.bisect_right(starts, val) - 1
+    if idx >= 0 and val <= ends[idx]:
+        return True
     return False
 def is_ip(addr: str) -> bool:
     """支持 IPv4 / IPv6 字面量；域名（及 None/空）返回 False。"""
