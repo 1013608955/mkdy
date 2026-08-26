@@ -16,9 +16,12 @@ git config --global user.email "ci@mkdy.local"
 git config --global user.name "mkdy-ci"
 git config --global http.version HTTP/1.1
 
-# 3) 拉最新代码（走镜像，失败仅告警）
-git -c url."https://ghproxy.net/https://github.com/".insteadOf="https://github.com/" \
-    pull --ff-only origin main \
+# 3) 拉最新代码——直连 github.com，不走 ghproxy 镜像。
+#    2026-08-26 教训：ghproxy.net 证书到期（notAfter Aug 26 13:58 UTC）导致
+#    pull 失败 → 本地 main 落后 → push non-fast-forward 连拒 3 次 →
+#    verified.json 更新断链数小时。git 协议直连 GitHub 从容器一直可用，
+#    当初走镜像只是防 raw 文件超时的习惯，git 操作不需要它。
+git pull --ff-only origin main \
   || echo "[WARN] git pull 失败，沿用本地代码继续"
 
 # 4) 迁移保护：杀掉常驻循环（按需模式下由 CI 决定何时再验）
