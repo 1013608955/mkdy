@@ -16,6 +16,16 @@ git config --global user.email "ci@mkdy.local"
 git config --global user.name "mkdy-ci"
 git config --global http.version HTTP/1.1
 
+# 2.5) 清理持久盘残留的 ghproxy 镜像重写（2026-08-26 该镜像证书到期，任何
+# insteadOf 残留都会让 pull/fetch/push 全灭）。幂等：没有就什么都不做。
+git config --global --unset-all url.https://ghproxy.net/https://github.com/.insteadOf 2>/dev/null || true
+git config --unset-all  url.https://ghproxy.net/https://github.com/.insteadOf 2>/dev/null || true
+# 若 origin 的 fetch url 被改成镜像地址，改回官方（push url 带 PAT 不动）
+ORIGIN_URL=$(git remote get-url origin 2>/dev/null || true)
+case "$ORIGIN_URL" in
+  *ghproxy*) git remote set-url origin https://github.com/1013608955/mkdy.git ;;
+esac
+
 # 3) 拉最新代码——直连 github.com，不走 ghproxy 镜像。
 #    2026-08-26 教训：ghproxy.net 证书到期（notAfter Aug 26 13:58 UTC）导致
 #    pull 失败 → 本地 main 落后 → push non-fast-forward 连拒 3 次 →
