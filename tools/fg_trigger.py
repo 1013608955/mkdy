@@ -43,9 +43,13 @@ def _dispatch_once(token: str) -> int:
         print(f"[warn] request error: {e}")
         return 0
 
-
-def handler(event, context):  # FunctionGraph 入口
+def handler(event, context):
     token = os.environ.get("GITHUB_PAT", "")
+    if not token and context is not None:
+        try:
+            token = context.getUserData("GITHUB_PAT") or ""
+        except Exception:
+            pass
     if not token:
         print("[FATAL] 未配置环境变量 GITHUB_PAT")
         return {"statusCode": 500, "body": "missing GITHUB_PAT"}
