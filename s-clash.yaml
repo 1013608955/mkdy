@@ -1,6 +1,6 @@
 # Auto-merged subscription (mkdy) — full Clash config with rules
 # sources: s.txt, s1.txt, s2.txt + s2-clash-1.yaml, s2-clash-2.yaml, s2-clash-3.yaml, s2-clash-4.yaml, s2-clash-5.yaml, s2-clash-6.yaml
-# raw=1098 unique=517 groups=3 rules=516
+# raw=1099 unique=518 groups=3 rules=516
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -198,7 +198,6 @@ proxy-groups:
   - 🇫🇷 FRANCE-1A
   - 🇺🇸 UNITED STATES-1B
   - 🇺🇸 UNITED STATES-1A
-  - ⚡ b2n.ir/v2ray-configs | 661
   - ✅ 🇮🇪_IE_爱尔兰
   - ⚡ b2n.ir/v2ray-configs | 760_2
   - 🇭🇰 HONG KONG-1A
@@ -318,6 +317,7 @@ proxy-groups:
   - US美国(mibei77.com 米贝节点分享)_31
   - FR法国(mibei77.com 米贝节点分享)_10
   - US美国(mibei77.com 米贝节点分享)_30
+  - 🇯🇵_日本_8
   - 🇹🇭TH_1|450KB/s|YT-CN|GPT⁺|NF|0%
   - ⚡ b2n.ir/v2ray-configs | 945
   - ⚡ b2n.ir/v2ray-configs | 153
@@ -563,6 +563,7 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | 783C66
   - 🇭🇰HK_2|753KB/s
   - ✅ 香港|@ripaojiedian
+  - 🇺🇸US-54.224.34.30-1079
 - name: 自动选择
   type: url-test
   proxies:
@@ -718,7 +719,6 @@ proxy-groups:
   - 🇫🇷 FRANCE-1A
   - 🇺🇸 UNITED STATES-1B
   - 🇺🇸 UNITED STATES-1A
-  - ⚡ b2n.ir/v2ray-configs | 661
   - ✅ 🇮🇪_IE_爱尔兰
   - ⚡ b2n.ir/v2ray-configs | 760_2
   - 🇭🇰 HONG KONG-1A
@@ -838,6 +838,7 @@ proxy-groups:
   - US美国(mibei77.com 米贝节点分享)_31
   - FR法国(mibei77.com 米贝节点分享)_10
   - US美国(mibei77.com 米贝节点分享)_30
+  - 🇯🇵_日本_8
   - 🇹🇭TH_1|450KB/s|YT-CN|GPT⁺|NF|0%
   - ⚡ b2n.ir/v2ray-configs | 945
   - ⚡ b2n.ir/v2ray-configs | 153
@@ -1083,6 +1084,7 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | 783C66
   - 🇭🇰HK_2|753KB/s
   - ✅ 香港|@ripaojiedian
+  - 🇺🇸US-54.224.34.30-1079
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -1240,7 +1242,6 @@ proxy-groups:
   - 🇫🇷 FRANCE-1A
   - 🇺🇸 UNITED STATES-1B
   - 🇺🇸 UNITED STATES-1A
-  - ⚡ b2n.ir/v2ray-configs | 661
   - ✅ 🇮🇪_IE_爱尔兰
   - ⚡ b2n.ir/v2ray-configs | 760_2
   - 🇭🇰 HONG KONG-1A
@@ -1360,6 +1361,7 @@ proxy-groups:
   - US美国(mibei77.com 米贝节点分享)_31
   - FR法国(mibei77.com 米贝节点分享)_10
   - US美国(mibei77.com 米贝节点分享)_30
+  - 🇯🇵_日本_8
   - 🇹🇭TH_1|450KB/s|YT-CN|GPT⁺|NF|0%
   - ⚡ b2n.ir/v2ray-configs | 945
   - ⚡ b2n.ir/v2ray-configs | 153
@@ -1605,6 +1607,7 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | 783C66
   - 🇭🇰HK_2|753KB/s
   - ✅ 香港|@ripaojiedian
+  - 🇺🇸US-54.224.34.30-1079
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -3195,15 +3198,6 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: e936372a-d976-4e25-8b3b-29c1a5841e06
   udp: true
-- name: ⚡ b2n.ir/v2ray-configs | 661
-  type: ss
-  server: 162.19.59.165
-  port: 443
-  cipher: aes-256-cfb
-  password: asdKkaskJKfnsa
-  security_scheme: none
-  proto: ss
-  peer: 162.19.59.165
 - name: ✅ 🇮🇪_IE_爱尔兰
   type: ss
   server: 176.34.158.52
@@ -4725,6 +4719,17 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: www.ignitelimit.com
+- name: 🇯🇵_日本_8
+  type: trojan
+  server: jp200m.jiasu.asia
+  port: 50000
+  password: c9618d0e-edc9-46f5-a948-96a3781fc3e9
+  tls: true
+  network: tcp
+  sni: jp200m.jiasu.asia
+  security_scheme: tls
+  proto: trojan
+  peer: jp200m.jiasu.asia
 - name: 🇹🇭TH_1|450KB/s|YT-CN|GPT⁺|NF|0%
   network: tcp
   password: a126f35c-e832-4115-8593-b723ade3f7be
@@ -8260,3 +8265,20 @@ proxies:
   sni: v10.hdacd.com
   proto: vmess
   peer: v10.hdacd.com
+- name: 🇺🇸US-54.224.34.30-1079
+  type: vmess
+  server: xr-1.herokuapp.com
+  port: 443
+  uuid: 17af76e1-a5d7-41ab-ae87-b48f185075d1
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /17af76e1-a5d7-41ab-ae87-b48f185075d1-vmess
+    headers:
+      Host: xr-1.herokuapp.com
+  security_scheme: tls
+  sni: xr-1.herokuapp.com
+  proto: vmess
+  peer: xr-1.herokuapp.com
