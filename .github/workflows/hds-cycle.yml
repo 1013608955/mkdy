@@ -113,22 +113,28 @@ jobs:
         run: |
           # A. 状态枚举补全：以 hdspace list 真实返回为准（本机实测含 Stopping/Stopped，原模式漏列）
           STATES="Running|Ready|Starting|Stopping|Stopped|Closing|Error"
-          get_state() { tools/hds_session.sh devenv list </dev/null 2>&1 | grep -oE "$STATES" | head -1; }
+          # get_state 仅从本实例所在表格行解析状态；若 devenv list 自身失败(输出含 Error 字样但无实例行)
+          # 则返回空，避免把 CLI 报错误判为实例 Error 态而直接放弃（run 381 误判根因）
+          get_state() {
+            tools/hds_session.sh devenv list </dev/null 2>&1 \
+              | grep -F "$INSTANCE" | grep -oE "$STATES" | head -1
+          }
 
           if [ "${{ inputs.action || 'wake_verify' }}" = "status" ]; then
             echo "当前状态: $(get_state)"; echo "[done] status 模式完成"; exit 0
           fi
 
-          STATE=$(get_state); echo "初始状态: ${STATE:-未知}"
+          STATE=$(get_state); echo "初始状态: ${STATE:-未知(list 可能瞬时失败)}"
           for attempt in 1 2 3; do
             if [ "$STATE" = "Running" ]; then echo "[ok] 已进入 Running"; break; fi
-            if [ "$STATE" = "Error" ];   then echo "[ERR] 实例 Error，放弃"; exit 1; fi
 
-            # 仅稳定非运行态才发 start；过渡态(Starting/Stopping)只轮询等待
+            # 过渡态只轮询等待；真实 Error 视为可能瞬时，等待恢复而非立即放弃；
+            # 空(状态未知/list 失败)与稳定非运行态(Ready/Stopped/Closing)才发 start
             case "$STATE" in
               Running|Starting|Stopping) echo "[info] 过渡态 $STATE，仅等待";;
+              Error) echo "[warn] 实例 Error（可能瞬时），等待恢复，不立即放弃";;
               *)
-                echo "[start] 第 $attempt/3 次开机（当前态=$STATE）"
+                echo "[start] 第 $attempt/3 次开机（当前态=${STATE:-未知}）"
                 # B. 检查 start 返回码，静默失败即告警（应对平台瞬时限流/偶发失效）
                 if tools/hds_session.sh devenv start --instance-id="$INSTANCE" </dev/null 2>&1 | tail -3; then
                   echo "[ok] start 返回 0"
@@ -138,18 +144,17 @@ jobs:
                 ;;
             esac
 
-            # 轮询等待进入 Running；识别 Error 立即失败
+            # 轮询等待进入 Running；Error/未知 仅继续等待，不立即失败（容错瞬时异常）
             for i in $(seq 1 20); do
               sleep 15
               STATE=$(get_state)
               echo "  [$i] 状态=$STATE"
               [ "$STATE" = "Running" ] && break
-              [ "$STATE" = "Error" ]   && { echo "[ERR] 进入 Error 态"; exit 1; }
             done
             [ "$STATE" = "Running" ] && break
             echo "[retry] 第 $attempt 次未进入 Running，准备重试"
           done
-          [ "$STATE" = "Running" ] || { echo "[ERR] 容器未能进入 Running（已尝试 3 次）"; exit 1; }
+          [ "$STATE" = "Running" ] || { echo "[ERR] 容器未能进入 Running（最终态=${STATE:-未知}）"; exit 1; }
 
           echo "===== 重置并获取 SSH 私钥（需容器开机）====="
           echo yes | tools/hds_session.sh devenv ssh-key-reset --instance-id="$INSTANCE" > /tmp/reset.log 2>&1 || true
