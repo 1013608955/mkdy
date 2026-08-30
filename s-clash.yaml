@@ -579,7 +579,6 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | 154336
   - IR 🇮🇷 | @Raydikalx | 797632
   - 🇳🇱_荷兰_172
-  - KR 🇰🇷 | @Raydikalx | 168118
   - 🇺🇸 硅谷-01-1A
   - 🇺🇸 硅谷-01-1F
   - 🇺🇸 硅谷-01-1E
@@ -607,6 +606,7 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | B9B048
   - 🇺🇸US-172.239.194.103-0959
   - 香港|@ripaojiedian
+  - 🇹🇷TR-37.221.79.48-1546
   - ✅ 🇨🇳_中国_138
   - IR 🇮🇷 | @Raydikalx | 67B9CB
   - HK 🇭🇰 | @Raydikalx | D2C524
@@ -1147,7 +1147,6 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | 154336
   - IR 🇮🇷 | @Raydikalx | 797632
   - 🇳🇱_荷兰_172
-  - KR 🇰🇷 | @Raydikalx | 168118
   - 🇺🇸 硅谷-01-1A
   - 🇺🇸 硅谷-01-1F
   - 🇺🇸 硅谷-01-1E
@@ -1175,6 +1174,7 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | B9B048
   - 🇺🇸US-172.239.194.103-0959
   - 香港|@ripaojiedian
+  - 🇹🇷TR-37.221.79.48-1546
   - ✅ 🇨🇳_中国_138
   - IR 🇮🇷 | @Raydikalx | 67B9CB
   - HK 🇭🇰 | @Raydikalx | D2C524
@@ -1717,7 +1717,6 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | 154336
   - IR 🇮🇷 | @Raydikalx | 797632
   - 🇳🇱_荷兰_172
-  - KR 🇰🇷 | @Raydikalx | 168118
   - 🇺🇸 硅谷-01-1A
   - 🇺🇸 硅谷-01-1F
   - 🇺🇸 硅谷-01-1E
@@ -1745,6 +1744,7 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | B9B048
   - 🇺🇸US-172.239.194.103-0959
   - 香港|@ripaojiedian
+  - 🇹🇷TR-37.221.79.48-1546
   - ✅ 🇨🇳_中国_138
   - IR 🇮🇷 | @Raydikalx | 67B9CB
   - HK 🇭🇰 | @Raydikalx | D2C524
@@ -8856,19 +8856,6 @@ proxies:
   sni: apjhdggyx.com
   proto: vmess
   peer: apjhdggyx.com
-- name: KR 🇰🇷 | @Raydikalx | 168118
-  type: vmess
-  server: 217.142.138.61
-  port: 80
-  uuid: ac1b933d-afff-4487-93ef-f57130a55dff
-  alterId: 0
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: 217.142.138.61
-  proto: vmess
-  peer: 217.142.138.61
 - name: 🇺🇸 硅谷-01-1A
   server: 43.130.35.53
   port: 10087
@@ -9232,6 +9219,23 @@ proxies:
   sni: v10.hdacd.com
   proto: vmess
   peer: v10.hdacd.com
+- name: 🇹🇷TR-37.221.79.48-1546
+  type: vmess
+  server: v2ray.online
+  port: 443
+  uuid: 2F094845-E2BD-EBF7-DEB7-995992436FAF
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /speedtest
+    headers:
+      Host: v2ray.online
+  security_scheme: tls
+  sni: v2ray.online
+  proto: vmess
+  peer: v2ray.online
 - name: ✅ 🇨🇳_中国_138
   type: vmess
   server: v4.hdacd.com
