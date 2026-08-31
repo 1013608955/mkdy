@@ -1,6 +1,6 @@
 # Auto-merged subscription (mkdy) — full Clash config with rules
 # sources: s.txt, s1.txt, s2.txt + s2-clash-1.yaml, s2-clash-2.yaml, s2-clash-3.yaml, s2-clash-4.yaml, s2-clash-5.yaml, s2-clash-6.yaml
-# raw=1200 unique=649 groups=3 rules=516
+# raw=1201 unique=650 groups=3 rules=516
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -354,6 +354,7 @@ proxy-groups:
   - 🇦🇹_奥地利_47
   - 🇩🇪_德国_37
   - 🇫🇷_法国_16
+  - 🇷🇺_俄罗斯_31
   - 🇩🇪_德国_8
   - 西班牙(mibei77.com 米贝节点分享)
   - 🇫🇷_法国_451
@@ -438,7 +439,6 @@ proxy-groups:
   - 🇪🇪_爱沙尼亚_48
   - 🇵🇱_波兰_398
   - 🇵🇱_波兰_389
-  - 🇷🇺_俄罗斯_28
   - 🇨🇿_捷克_49
   - FR法国(mibei77.com 米贝节点分享)
   - US美国(mibei77.com 米贝节点分享)_2
@@ -569,6 +569,7 @@ proxy-groups:
   - 🇩🇪_德国_412
   - 🇺🇸US_5|290KB/s|YT-NL|GPT⁺|NF|0%
   - 🇦🇪_阿拉伯联合酋长国_409
+  - 🇬🇧_英国_42
   - 🇺🇸_美国_6
   - ✅ 🇷🇺_俄罗斯_155
   - 🇷🇺_俄罗斯_60
@@ -1006,6 +1007,7 @@ proxy-groups:
   - 🇦🇹_奥地利_47
   - 🇩🇪_德国_37
   - 🇫🇷_法国_16
+  - 🇷🇺_俄罗斯_31
   - 🇩🇪_德国_8
   - 西班牙(mibei77.com 米贝节点分享)
   - 🇫🇷_法国_451
@@ -1090,7 +1092,6 @@ proxy-groups:
   - 🇪🇪_爱沙尼亚_48
   - 🇵🇱_波兰_398
   - 🇵🇱_波兰_389
-  - 🇷🇺_俄罗斯_28
   - 🇨🇿_捷克_49
   - FR法国(mibei77.com 米贝节点分享)
   - US美国(mibei77.com 米贝节点分享)_2
@@ -1221,6 +1222,7 @@ proxy-groups:
   - 🇩🇪_德国_412
   - 🇺🇸US_5|290KB/s|YT-NL|GPT⁺|NF|0%
   - 🇦🇪_阿拉伯联合酋长国_409
+  - 🇬🇧_英国_42
   - 🇺🇸_美国_6
   - ✅ 🇷🇺_俄罗斯_155
   - 🇷🇺_俄罗斯_60
@@ -1660,6 +1662,7 @@ proxy-groups:
   - 🇦🇹_奥地利_47
   - 🇩🇪_德国_37
   - 🇫🇷_法国_16
+  - 🇷🇺_俄罗斯_31
   - 🇩🇪_德国_8
   - 西班牙(mibei77.com 米贝节点分享)
   - 🇫🇷_法国_451
@@ -1744,7 +1747,6 @@ proxy-groups:
   - 🇪🇪_爱沙尼亚_48
   - 🇵🇱_波兰_398
   - 🇵🇱_波兰_389
-  - 🇷🇺_俄罗斯_28
   - 🇨🇿_捷克_49
   - FR法国(mibei77.com 米贝节点分享)
   - US美国(mibei77.com 米贝节点分享)_2
@@ -1875,6 +1877,7 @@ proxy-groups:
   - 🇩🇪_德国_412
   - 🇺🇸US_5|290KB/s|YT-NL|GPT⁺|NF|0%
   - 🇦🇪_阿拉伯联合酋长国_409
+  - 🇬🇧_英国_42
   - 🇺🇸_美国_6
   - ✅ 🇷🇺_俄罗斯_155
   - 🇷🇺_俄罗斯_60
@@ -5661,6 +5664,24 @@ proxies:
   security_scheme: reality
   proto: vless
   peer: tesla.com
+- name: 🇷🇺_俄罗斯_31
+  type: vless
+  server: 159.194.234.196
+  port: 16445
+  uuid: 1206bad5-dcc9-410e-9595-d9fe9ee54085
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: fr.aeternavpn.space
+  servername: fr.aeternavpn.space
+  reality-opts:
+    public-key: BfWH0Semc11YkTslIO_Igss921A5J3JMmq_i2FaZxDo
+    short-id: a1b2c3d4
+    spider-x: ''
+    fingerprint: edge
+  security_scheme: reality
+  proto: vless
+  peer: fr.aeternavpn.space
 - name: 🇩🇪_德国_8
   type: vless
   server: 159.200.230.117
@@ -6995,24 +7016,6 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 94.183.209.59
-- name: 🇷🇺_俄罗斯_28
-  type: vless
-  server: 94.228.166.247
-  port: 2053
-  uuid: 9f5b9ca7-d0bb-4e50-a3ca-acf5968027fc
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: fi-one.quiet-rogue.site
-  servername: fi-one.quiet-rogue.site
-  reality-opts:
-    public-key: AKUQO-fKsD19FFBxNq5XTFCRXWDZfes4zJjRINY1KUI
-    short-id: beff3ff061a64cfd
-    spider-x: ''
-    fingerprint: chrome
-  security_scheme: reality
-  proto: vless
-  peer: fi-one.quiet-rogue.site
 - name: 🇨🇿_捷克_49
   type: vless
   server: 95.85.232.112
@@ -8898,6 +8901,24 @@ proxies:
   security_scheme: none
   proto: vless
   peer: pl5.lckdwn.ru
+- name: 🇬🇧_英国_42
+  type: vless
+  server: public-auth.savesafe.cc
+  port: 443
+  uuid: b5ca5ab3-8cbc-4ac3-89da-9cd360589ecb
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: public-auth.savesafe.cc
+  servername: public-auth.savesafe.cc
+  reality-opts:
+    public-key: YULPgY4Knu4LVqKcc2uhzTcndqIWWKr74W1dVXcLQ0c
+    short-id: c37c2ae6f6eb0d71
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: public-auth.savesafe.cc
 - name: 🇺🇸_美国_6
   type: vless
   server: rrr.windconnect.pro
