@@ -196,7 +196,6 @@ proxy-groups:
   - 🇫🇷 FRANCE-1A
   - 🇺🇸 UNITED STATES-1B
   - 🇺🇸 UNITED STATES-1A
-  - ⚡ b2n.ir/v2ray-configs | 770
   - 🇭🇰 HONG KONG-1A
   - 🇭🇰 HONG KONG-1B
   - 🇮🇹IT_1|1.6MB/s|YT-RO|GPT⁺-IT|GM-RO
@@ -376,6 +375,7 @@ proxy-groups:
   - ✅ 🇬🇧_GB_英国->🇩🇪_DE_德国
   - US美国(mibei77.com 米贝节点分享)_19
   - GB英国(mibei77.com 米贝节点分享)
+  - 🇺🇸_美国_114
   - 🇸🇪_SE_瑞典
   - 俄罗斯+V2CROSS.COM
   - US美国(mibei77.com 米贝节点分享)_15
@@ -769,7 +769,6 @@ proxy-groups:
   - 🇫🇷 FRANCE-1A
   - 🇺🇸 UNITED STATES-1B
   - 🇺🇸 UNITED STATES-1A
-  - ⚡ b2n.ir/v2ray-configs | 770
   - 🇭🇰 HONG KONG-1A
   - 🇭🇰 HONG KONG-1B
   - 🇮🇹IT_1|1.6MB/s|YT-RO|GPT⁺-IT|GM-RO
@@ -949,6 +948,7 @@ proxy-groups:
   - ✅ 🇬🇧_GB_英国->🇩🇪_DE_德国
   - US美国(mibei77.com 米贝节点分享)_19
   - GB英国(mibei77.com 米贝节点分享)
+  - 🇺🇸_美国_114
   - 🇸🇪_SE_瑞典
   - 俄罗斯+V2CROSS.COM
   - US美国(mibei77.com 米贝节点分享)_15
@@ -1344,7 +1344,6 @@ proxy-groups:
   - 🇫🇷 FRANCE-1A
   - 🇺🇸 UNITED STATES-1B
   - 🇺🇸 UNITED STATES-1A
-  - ⚡ b2n.ir/v2ray-configs | 770
   - 🇭🇰 HONG KONG-1A
   - 🇭🇰 HONG KONG-1B
   - 🇮🇹IT_1|1.6MB/s|YT-RO|GPT⁺-IT|GM-RO
@@ -1524,6 +1523,7 @@ proxy-groups:
   - ✅ 🇬🇧_GB_英国->🇩🇪_DE_德国
   - US美国(mibei77.com 米贝节点分享)_19
   - GB英国(mibei77.com 米贝节点分享)
+  - 🇺🇸_美国_114
   - 🇸🇪_SE_瑞典
   - 俄罗斯+V2CROSS.COM
   - US美国(mibei77.com 米贝节点分享)_15
@@ -3330,15 +3330,6 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: e936372a-d976-4e25-8b3b-29c1a5841e06
   udp: true
-- name: ⚡ b2n.ir/v2ray-configs | 770
-  type: ss
-  server: 156.146.38.169
-  port: 443
-  cipher: aes-128-gcm
-  password: shadowsocks
-  security_scheme: aead
-  proto: ss
-  peer: 156.146.38.169
 - name: 🇭🇰 HONG KONG-1A
   server: 202.155.141.87
   port: 12345
@@ -3759,6 +3750,21 @@ proxies:
     headers:
       User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.65 Safari/537.36
     path: /assignment
+- name: 🏳️_未知_102
+  type: trojan
+  server: 104.16.174.6
+  port: 443
+  password: humanity
+  tls: true
+  network: ws
+  sni: www.ignitelimit.com
+  ws-opts:
+    path: /assignment
+    headers:
+      Host: www.ignitelimit.com
+  security_scheme: tls
+  proto: trojan
+  peer: www.ignitelimit.com
 - client-fingerprint: chrome
   name: ✅ 🇫🇷FR_12|306KB/s|GPT⁺|NF
   network: ws
@@ -4101,6 +4107,21 @@ proxies:
 - name: US美国(mibei77.com 米贝节点分享)_26
   type: trojan
   server: 104.18.152.229
+  port: 443
+  password: humanity
+  tls: true
+  network: ws
+  sni: www.ignitelimit.com
+  ws-opts:
+    path: /assignment
+    headers:
+      Host: www.ignitelimit.com
+  security_scheme: tls
+  proto: trojan
+  peer: www.ignitelimit.com
+- name: 🏳️_未知_195
+  type: trojan
+  server: 104.18.152.230
   port: 443
   password: humanity
   tls: true
@@ -5772,6 +5793,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: eded-52n.pages.dev
+- name: 🇺🇸_美国_114
+  type: vless
+  server: 199.232.78.159
+  port: 443
+  uuid: a1ee277e-93b7-4aa9-86a2-c7ef85a2adb0
+  tls: true
+  network: ws
+  sni: ssl.fastly.com
+  servername: ssl.fastly.com
+  ws-opts:
+    path: /TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER,TELEGRAM_NUFiLTER?ed=2053
+    headers:
+      Host: pane3.global.ssl.fastly.net
+  security_scheme: tls
+  proto: vless
+  peer: ssl.fastly.com
 - name: 🇸🇪_SE_瑞典
   type: vless
   server: 202.155.11.249
