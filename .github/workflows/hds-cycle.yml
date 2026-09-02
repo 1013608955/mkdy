@@ -168,6 +168,8 @@ jobs:
       - name: "[3] 开隧道 + 分离执行容器验证 + 轮询结果"
         timeout-minutes: 14
         run: |
+          # B. 诊断留痕：stdout/stderr 改行缓冲，被 kill 也不丢最后一行；轮询每轮打印标记
+          exec > >(stdbuf -oL cat) 2> >(stdbuf -eL cat)
           HDS_NO_TIMEOUT=1 tools/hds_session.sh devenv start-tunnel \
             --instance-id="$INSTANCE" --ports=10022:22 >/tmp/tunnel.log 2>&1 &
           TUN=$!
@@ -183,16 +185,21 @@ jobs:
           echo "KEYFILE=$KEYFILE"
           [ -n "$KEYFILE" ] || { echo "[ERR] 私钥未找到"; exit 1; }
           chmod 600 "$KEYFILE"
-          chmod 600 "$KEYFILE"
-          SSH="ssh -p 10022 -i $KEYFILE -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=10 -o BatchMode=yes root@127.0.0.1"
-          # 上传引导脚本并分离启动（输出落容器持久盘，连接断开不影响）
+          # A. SSH 快速失败：建连 10s 超时 + 已建连会话 10s 无响应即断（原 30s），避免每轮白挂 30s
+          SSH="ssh -p 10022 -i $KEYFILE -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=10 -o ServerAliveCountMax=1 -o ConnectTimeout=10 -o BatchMode=yes root@127.0.0.1"
+          echo "[upload] 上传并分离启动 boot_job.sh ..."
           $SSH "cat > /tmp/boot_job.sh && chmod +x /tmp/boot_job.sh && \
                 rm -f /workspace/mkdy/verify_cn/logs/ci_boot.log && \
                 nohup /tmp/boot_job.sh > /workspace/mkdy/verify_cn/logs/ci_boot.log 2>&1 & \
                 sleep 1; echo LAUNCHED" < tools/boot_job.sh
+          echo "[poll] 开始轮询 ci_boot.log（硬上限 10 分钟）"
+          # 轮询硬上限（等价于 timeout 600），即使 SSH 遇半开 socket 永不报错也被强制结束，避免吃满 14 分钟
+          DEADLINE=$(( $(date +%s) + 600 ))
           DONE=""
           for i in $(seq 1 27); do
+            [ $(date +%s) -ge $DEADLINE ] && { echo "[warn] 轮询达 10 分钟硬上限，强制结束"; break; }
             sleep 20
+            echo "[poll$i] SSH 探测中..."
             TAIL=$($SSH "tail -3 /workspace/mkdy/verify_cn/logs/ci_boot.log 2>/dev/null" 2>/dev/null || true)
             echo "--- poll$i: ${TAIL##*$'\n'}"
             case "$TAIL" in *"[boot_job] done"*) DONE=1; break;; esac
