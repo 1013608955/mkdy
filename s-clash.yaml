@@ -1,6 +1,6 @@
 # Auto-merged subscription (mkdy) — full Clash config with rules
 # sources: s.txt, s1.txt, s2.txt + s2-clash-1.yaml, s2-clash-2.yaml, s2-clash-3.yaml, s2-clash-4.yaml, s2-clash-5.yaml, s2-clash-6.yaml
-# raw=1132 unique=577 groups=3 rules=516
+# raw=1127 unique=575 groups=3 rules=516
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -350,7 +350,6 @@ proxy-groups:
   - ✅ 🏳️_未知_78
   - ✅ 🏳️_未知_108
   - ✅ 🏳️_未知_102
-  - 🏳️_未知_150
   - 🇩🇪_德国_37
   - 哥伦比亚(mibei77.com 米贝节点分享)
   - 哥伦比亚(mibei77.com 米贝节点分享)_2
@@ -593,7 +592,6 @@ proxy-groups:
   - ✅ 🇺🇸US_4|2.4MB/s|YT-US|GPT⁺-US|GM-US
   - DE 🇩🇪 | @Raydikalx | BC81CC
   - US 🇺🇸 | @Raydikalx | 452ED5
-  - 🇰🇷KR-132.145.80.230-0162
   - 🇯🇵JP-140.83.57.20-0233
   - 🇮🇷IR-185.143.233.114-4692
   - 🇺🇸_美国_267
@@ -930,7 +928,6 @@ proxy-groups:
   - ✅ 🏳️_未知_78
   - ✅ 🏳️_未知_108
   - ✅ 🏳️_未知_102
-  - 🏳️_未知_150
   - 🇩🇪_德国_37
   - 哥伦比亚(mibei77.com 米贝节点分享)
   - 哥伦比亚(mibei77.com 米贝节点分享)_2
@@ -1173,7 +1170,6 @@ proxy-groups:
   - ✅ 🇺🇸US_4|2.4MB/s|YT-US|GPT⁺-US|GM-US
   - DE 🇩🇪 | @Raydikalx | BC81CC
   - US 🇺🇸 | @Raydikalx | 452ED5
-  - 🇰🇷KR-132.145.80.230-0162
   - 🇯🇵JP-140.83.57.20-0233
   - 🇮🇷IR-185.143.233.114-4692
   - 🇺🇸_美国_267
@@ -1512,7 +1508,6 @@ proxy-groups:
   - ✅ 🏳️_未知_78
   - ✅ 🏳️_未知_108
   - ✅ 🏳️_未知_102
-  - 🏳️_未知_150
   - 🇩🇪_德国_37
   - 哥伦比亚(mibei77.com 米贝节点分享)
   - 哥伦比亚(mibei77.com 米贝节点分享)_2
@@ -1755,7 +1750,6 @@ proxy-groups:
   - ✅ 🇺🇸US_4|2.4MB/s|YT-US|GPT⁺-US|GM-US
   - DE 🇩🇪 | @Raydikalx | BC81CC
   - US 🇺🇸 | @Raydikalx | 452ED5
-  - 🇰🇷KR-132.145.80.230-0162
   - 🇯🇵JP-140.83.57.20-0233
   - 🇮🇷IR-185.143.233.114-4692
   - 🇺🇸_美国_267
@@ -5393,22 +5387,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: 8-M19.OmAN-LInK.KdNS.FR
-- name: 🏳️_未知_150
-  type: vless
-  server: 104.21.95.47
-  port: 443
-  uuid: 2240d8f8-898f-4988-8c08-ac724aa06ddb
-  tls: true
-  network: ws
-  sni: 6-m9.60673e90-5cbf-4567-b4d2-942581dac7a7.kdns.fr
-  servername: 6-m9.60673e90-5cbf-4567-b4d2-942581dac7a7.kdns.fr
-  ws-opts:
-    path: /BzuntJ8qZN0TRKbC8TveMxJ0
-    headers:
-      Host: 6-m9.60673e90-5cbf-4567-b4d2-942581dac7a7.kdns.fr
-  security_scheme: tls
-  proto: vless
-  peer: 6-m9.60673e90-5cbf-4567-b4d2-942581dac7a7.kdns.fr
 - name: 🇩🇪_德国_37
   type: vless
   server: 146.75.119.82
@@ -8935,23 +8913,6 @@ proxies:
   sni: 129.146.77.248
   proto: vmess
   peer: 129.146.77.248
-- name: 🇰🇷KR-132.145.80.230-0162
-  type: vmess
-  server: 132.145.80.230
-  port: 80
-  uuid: 5155860e-d07d-46c3-9128-3afbd84626c7
-  alterId: 0
-  cipher: auto
-  tls: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: kr02.a0a.xyz
-  security_scheme: none
-  sni: kr02.a0a.xyz
-  proto: vmess
-  peer: kr02.a0a.xyz
 - name: 🇯🇵JP-140.83.57.20-0233
   type: vmess
   server: 140.83.57.20
