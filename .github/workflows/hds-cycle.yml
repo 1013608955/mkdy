@@ -168,13 +168,35 @@ jobs:
       - name: "[3] 开隧道 + 分离执行容器验证 + 轮询结果"
         timeout-minutes: 14
         run: |
-          # B. 诊断留痕：stdout/stderr 改行缓冲，被 kill 也不丢最后一行；轮询每轮打印标记
+          # 诊断留痕：stdout/stderr 改行缓冲，被 kill 也不丢最后一行
           exec > >(stdbuf -oL cat) 2> >(stdbuf -eL cat)
+
+          # 全局预算：本步骤所有阶段共用一个硬上限，任何阶段都不得吃满 14 分钟。
+          # 2026-09-02 run#812 教训：旧 DEADLINE 设在「上传命令」之后，上传一旦卡死，
+          # 轮询循环连同硬上限永远轮不到执行，步骤被 14min 超时强杀且毫无 [ERR]/[warn] 留痕。
+          T0=$(date +%s)
+          DEADLINE=$(( T0 + 660 ))
+          left() { echo $(( DEADLINE - $(date +%s) )); }
+          # 统一 SSH 入口：外置 timeout 兜底。ConnectTimeout/ServerAlive 只能发现「传输层已死」，
+          # 拦不住「sshd 活着但会话通道不 EOF / ssh 阻塞在写」这类卡死，故每条 SSH 必须显式 timeout。
+          ssh_run() {            # ssh_run <上限秒> <远端命令...>
+            local lim="$1"; shift
+            local l; l=$(left)
+            [ "$l" -lt "$lim" ] && lim=$l
+            if [ "$lim" -le 5 ]; then echo "[timeout] 全局预算耗尽，跳过本次 SSH"; return 1; fi
+            timeout -k 5 "$lim" ssh -p 10022 -i "$KEYFILE" \
+              -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+              -o ServerAliveInterval=10 -o ServerAliveCountMax=1 \
+              -o ConnectTimeout=10 -o BatchMode=yes root@127.0.0.1 "$@"
+          }
+
           HDS_NO_TIMEOUT=1 tools/hds_session.sh devenv start-tunnel \
             --instance-id="$INSTANCE" --ports=10022:22 >/tmp/tunnel.log 2>&1 &
           TUN=$!
+          echo "[tunnel] 等待端口 10022（预算内 $(left)s）"
           for i in $(seq 1 30); do
             (echo > /dev/tcp/127.0.0.1/10022) 2>/dev/null && break
+            [ $(left) -lt 90 ] && { echo "[ERR] 隧道端口 10022 迟迟未通且预算不足"; break; }
             sleep 2
           done
           sleep 2
@@ -185,32 +207,40 @@ jobs:
           echo "KEYFILE=$KEYFILE"
           [ -n "$KEYFILE" ] || { echo "[ERR] 私钥未找到"; exit 1; }
           chmod 600 "$KEYFILE"
-          # A. SSH 快速失败：建连 10s 超时 + 已建连会话 10s 无响应即断（原 30s），避免每轮白挂 30s
-          SSH="ssh -p 10022 -i $KEYFILE -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=10 -o ServerAliveCountMax=1 -o ConnectTimeout=10 -o BatchMode=yes root@127.0.0.1"
-          echo "[upload] 上传并分离启动 boot_job.sh ..."
-          $SSH "cat > /tmp/boot_job.sh && chmod +x /tmp/boot_job.sh && \
-                rm -f /workspace/mkdy/verify_cn/logs/ci_boot.log && \
-                nohup /tmp/boot_job.sh > /workspace/mkdy/verify_cn/logs/ci_boot.log 2>&1 & \
-                sleep 1; echo LAUNCHED" < tools/boot_job.sh
-          echo "[poll] 开始轮询 ci_boot.log（硬上限 10 分钟）"
-          # 轮询硬上限（等价于 timeout 600），即使 SSH 遇半开 socket 永不报错也被强制结束，避免吃满 14 分钟
-          DEADLINE=$(( $(date +%s) + 600 ))
+
+          # 上传并真正分离启动 boot_job（关键修正，run#812 根因）：
+          #  - 旧写法 `A && B && C && D &` 因 & 优先级低于 &&，整条链（含 cat）被丢后台，
+          #    `sleep 1; echo LAUNCHED` 与它并发 → LAUNCHED 不代表真启动了；
+          #  - nohup 只在 stdin 是终端时才把它重定向 /dev/null；此处 stdin 是 SSH 通道（非 tty），
+          #    boot_job 会继承通道 → sshd 通道无法 EOF → 本次 SSH 阻塞到 boot_job 跑完
+          #    （正常 4~7min，慢窗 >14min 就撑爆步骤上限，且 ConnectTimeout/ServerAlive 拦不住）。
+          #  - 改用 `( nohup ... < /dev/null & )`：subshell 立即返回、子进程被 init 接管，
+          #    三路 IO 全部脱离 SSH 通道，本次 SSH 秒回；远端若 setsid 可用则更干净（nohup 已够）。
+          LOG=/workspace/mkdy/verify_cn/logs/ci_boot.log
+          echo "[upload] 上传并分离启动 boot_job.sh（预算内 $(left)s）..."
+          ssh_run 90 "mkdir -p /workspace/mkdy/verify_cn/logs && cat > /tmp/boot_job.sh && \
+                chmod +x /tmp/boot_job.sh && rm -f $LOG && \
+                ( nohup /tmp/boot_job.sh > $LOG 2>&1 < /dev/null & ) && \
+                sleep 2 && { [ -e $LOG ] && echo LAUNCHED || echo NOT_LAUNCHED; }" \
+            < tools/boot_job.sh
+
+          echo "[poll] 开始轮询 ci_boot.log（全局预算 $(left)s）"
           DONE=""
-          for i in $(seq 1 27); do
-            [ $(date +%s) -ge $DEADLINE ] && { echo "[warn] 轮询达 10 分钟硬上限，强制结束"; break; }
+          for i in $(seq 1 60); do
+            [ $(left) -lt 60 ] && { echo "[warn] 全局预算不足，停止轮询"; break; }
             sleep 20
-            echo "[poll$i] SSH 探测中..."
-            TAIL=$($SSH "tail -3 /workspace/mkdy/verify_cn/logs/ci_boot.log 2>/dev/null" 2>/dev/null || true)
+            echo "[poll$i] SSH 探测（剩余 $(left)s）..."
+            TAIL=$(ssh_run 30 "tail -3 $LOG 2>/dev/null" 2>/dev/null || true)
             echo "--- poll$i: ${TAIL##*$'\n'}"
             case "$TAIL" in *"[boot_job] done"*) DONE=1; break;; esac
           done
           if [ -z "$DONE" ]; then
             echo "[ERR] boot_job 未在时限内完成"
-            $SSH "tail -25 /workspace/mkdy/verify_cn/logs/ci_boot.log 2>/dev/null" || true
+            ssh_run 60 "tail -40 $LOG 2>/dev/null" || true
             exit 1
           fi
           echo "===== boot_job 结果 ====="
-          $SSH "cat /workspace/mkdy/verify_cn/logs/ci_boot.log"
+          ssh_run 120 "cat $LOG"
 
       - name: "[4] 关机（无论成败必执行）"
         if: always()
