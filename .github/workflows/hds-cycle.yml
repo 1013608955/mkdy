@@ -130,6 +130,7 @@ jobs:
           #    后果：2026-09-04 02:00-03:55 连续 5 轮容器起不来，
           #       日志里没有一行平台侧线索，完全无法定位。
           #    现改为：stdout/stderr 分开落临时文件，rc 取 $? 并作为返回值，输出全量打印。
+          START_MSG=""   # do_start 捕获的平台 stdout（无算力等关键报错在这里）
           do_start() {
             local out err rc
             out=$(mktemp); err=$(mktemp)
@@ -140,6 +141,7 @@ jobs:
             cat "$out"
             echo "--- start stderr 尾 15 行（含 set -x 跟踪）---"
             tail -15 "$err"
+            START_MSG=$(cat "$out")
             rm -f "$out" "$err"
             return $rc
           }
@@ -152,6 +154,7 @@ jobs:
           RECOVERED=0   # 僵死态恢复（stop→start）每轮只允许一次，避免反复折腾容器
           for attempt in 1 2; do
             BUDGET=20   # 本轮「探测+等待」共享的轮询次数预算（见下，保证最坏耗时不增加）
+            NOCOMPUTE=0   # 平台明确回复无算力时置 1（仅本轮有效）
             if [ "$STATE" = "Running" ]; then echo "[ok] 已进入 Running"; break; fi
 
             # 过渡态只轮询等待；真实 Error 视为可能瞬时，等待恢复而非立即放弃；
@@ -166,6 +169,28 @@ jobs:
                   echo "[ok] start 返回 0"
                 else
                   echo "[warn] start 返回非 0（平台限流/瞬时故障），将重试"
+                fi
+
+                # D. 无算力快速失败（run #957 根因：平台 stdout 明确回复
+                #    "No compute resources are available for the current specifications"）。
+                #    两个关键事实：① hdspace CLI 此种失败仍退出 0，返回码查不出来，
+                #    只能认 stdout 文本；② 无算力时状态不可能自行迁移到 Running
+                #    （必须 start 真正成功），探测/长轮询纯属空转——实测 #957 里
+                #    13 分钟的全部轮询都停在 Ready。
+                #    故跳过探测窗与长轮询（也跳过僵死态恢复——它治的是状态卡死，
+                #    治不了没资源），短等 60s 后直接重试 start；失败一轮从 ~13.7min
+                #    压到 ~2.5min，且日志出现 [nocompute] 一眼定性。
+                case "$START_MSG" in
+                  *"No compute resources"*)
+                    NOCOMPUTE=1
+                    echo "[nocompute] 平台回复无算力（No compute resources）——跳过状态轮询，短等 60s 后重试 start"
+                    ;;
+                esac
+                if [ "$NOCOMPUTE" = "1" ]; then
+                  sleep 60
+                  STATE=$(get_state)
+                  echo "[nocompute] 短等后复查状态=${STATE:-未知}"
+                  continue
                 fi
 
                 # C. 探测 start 是否真的生效（2026-09-04 连续 5 轮起不来的对策）
