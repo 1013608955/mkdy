@@ -109,7 +109,7 @@ jobs:
           kill $AR 2>/dev/null
           SESSION
 
-      - name: "[2] 查状态 + 按需开机（加固：状态枚举补全 + start 重试 + 返回码检查）"
+      - name: "[2] 查状态 + 按需开机（2 次尝试 · 共享轮询预算 · 僵死态恢复）"
         run: |
           # A. 状态枚举补全：以 hdspace list 真实返回为准（本机实测含 Stopping/Stopped，原模式漏列）
           STATES="Running|Ready|Starting|Stopping|Stopped|Closing|Error"
@@ -150,7 +150,7 @@ jobs:
 
           STATE=$(get_state); echo "初始状态: ${STATE:-未知(list 可能瞬时失败)}"
           RECOVERED=0   # 僵死态恢复（stop→start）每轮只允许一次，避免反复折腾容器
-          for attempt in 1 2 3; do
+          for attempt in 1 2; do
             BUDGET=20   # 本轮「探测+等待」共享的轮询次数预算（见下，保证最坏耗时不增加）
             if [ "$STATE" = "Running" ]; then echo "[ok] 已进入 Running"; break; fi
 
@@ -161,7 +161,7 @@ jobs:
               Error) echo "[warn] 实例 Error（可能瞬时），等待恢复，不立即放弃";;
               *)
                 PRE="$STATE"
-                echo "[start] 第 $attempt/3 次开机（当前态=${STATE:-未知}）"
+                echo "[start] 第 $attempt/2 次开机（当前态=${STATE:-未知}）"
                 if do_start; then
                   echo "[ok] start 返回 0"
                 else
