@@ -151,6 +151,7 @@ jobs:
           STATE=$(get_state); echo "初始状态: ${STATE:-未知(list 可能瞬时失败)}"
           RECOVERED=0   # 僵死态恢复（stop→start）每轮只允许一次，避免反复折腾容器
           for attempt in 1 2 3; do
+            BUDGET=20   # 本轮「探测+等待」共享的轮询次数预算（见下，保证最坏耗时不增加）
             if [ "$STATE" = "Running" ]; then echo "[ok] 已进入 Running"; break; fi
 
             # 过渡态只轮询等待；真实 Error 视为可能瞬时，等待恢复而非立即放弃；
@@ -175,7 +176,7 @@ jobs:
                 MOVED=""
                 for k in 1 2 3 4; do
                   sleep 15
-                  STATE=$(get_state)
+                  STATE=$(get_state); BUDGET=$((BUDGET-1))
                   echo "  [probe$k] 状态=$STATE"
                   if [ "$STATE" != "$PRE" ] || [ "$STATE" = "Running" ]; then MOVED=1; break; fi
                 done
@@ -215,8 +216,11 @@ jobs:
 
             if [ "$STATE" = "Running" ]; then echo "[ok] 已进入 Running"; break; fi
 
-            # 轮询等待进入 Running；Error/未知 仅继续等待，不立即失败（容错瞬时异常）
-            for i in $(seq 1 20); do
+            # 轮询等待进入 Running；Error/未知 仅继续等待，不立即失败（容错瞬时异常）。
+            # 预算共享：探测窗消耗的次数从 20 里扣除，每轮总轮询次数恒 ≤20 ——
+            # 每次轮询实测 ≈19s（sleep 15 + get_state≈4s），若探测不扣预算，
+            # 失败路径最坏耗时会从 ~19.3min 涨到 ~23.6min（我自己刚引入的回归）。
+            for i in $(seq 1 $BUDGET); do
               sleep 15
               STATE=$(get_state)
               echo "  [$i] 状态=$STATE"
