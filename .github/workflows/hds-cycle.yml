@@ -120,11 +120,36 @@ jobs:
               | grep -F "$INSTANCE" | grep -oE "$STATES" | head -1
           }
 
+          # B. 统一的 start 调用：保留真实返回码 + 完整输出（僵死态恢复需要调两次，故抽成函数）。
+          #    原写法 `cmd 2>&1 | tail -3` 有两个致命缺陷：
+          #    ① 管道退出码取自**最后一个命令 tail**（恒为 0），if 判断形同虚设
+          #       —— start 真的失败也会永远打印 "[ok] start 返回 0"；
+          #    ② 2>&1 把 hds_session.sh 的 set -x 跟踪行一并灌进管道，
+          #       而 tail -3 只剩最后 3 行，恰好全是被合并进来的跟踪行
+          #       （+ RC=0 / + kill / + exit 0），hdspace 的真实输出被整段丢弃。
+          #    后果：2026-09-04 02:00-03:55 连续 5 轮容器起不来，
+          #       日志里没有一行平台侧线索，完全无法定位。
+          #    现改为：stdout/stderr 分开落临时文件，rc 取 $? 并作为返回值，输出全量打印。
+          do_start() {
+            local out err rc
+            out=$(mktemp); err=$(mktemp)
+            tools/hds_session.sh devenv start --instance-id="$INSTANCE" </dev/null \
+              > "$out" 2> "$err"
+            rc=$?
+            echo "--- start rc=$rc | stdout ---"
+            cat "$out"
+            echo "--- start stderr 尾 15 行（含 set -x 跟踪）---"
+            tail -15 "$err"
+            rm -f "$out" "$err"
+            return $rc
+          }
+
           if [ "${{ inputs.action || 'wake_verify' }}" = "status" ]; then
             echo "当前状态: $(get_state)"; echo "[done] status 模式完成"; exit 0
           fi
 
           STATE=$(get_state); echo "初始状态: ${STATE:-未知(list 可能瞬时失败)}"
+          RECOVERED=0   # 僵死态恢复（stop→start）每轮只允许一次，避免反复折腾容器
           for attempt in 1 2 3; do
             if [ "$STATE" = "Running" ]; then echo "[ok] 已进入 Running"; break; fi
 
@@ -134,42 +159,70 @@ jobs:
               Running|Starting|Stopping) echo "[info] 过渡态 $STATE，仅等待";;
               Error) echo "[warn] 实例 Error（可能瞬时），等待恢复，不立即放弃";;
               *)
+                PRE="$STATE"
                 echo "[start] 第 $attempt/3 次开机（当前态=${STATE:-未知}）"
-                # B. 捕获 start 的真实返回码 + 完整输出。
-                #    原写法 `cmd 2>&1 | tail -3` 有两个致命缺陷：
-                #    ① 管道退出码取自**最后一个命令 tail**（恒为 0），if 判断形同虚设
-                #       —— start 真的失败也会永远打印 "[ok] start 返回 0"；
-                #    ② 2>&1 把 hds_session.sh 的 set -x 跟踪行一并灌进管道，
-                #       而 tail -3 只剩最后 3 行，恰好全是被合并进来的跟踪行
-                #       （+ RC=0 / + kill / + exit 0），hdspace 的真实输出被整段丢弃。
-                #    后果：2026-09-04 02:00-03:55 连续 5 轮容器起不来，
-                #       日志里没有一行平台侧线索，完全无法定位。
-                #    现改为：stdout/stderr 分开落临时文件，rc 取 $?，输出全量打印。
-                START_OUT=$(mktemp); START_ERR=$(mktemp)
-                tools/hds_session.sh devenv start --instance-id="$INSTANCE" </dev/null \
-                  > "$START_OUT" 2> "$START_ERR"
-                START_RC=$?
-                echo "--- start rc=$START_RC | stdout ---"
-                cat "$START_OUT"
-                echo "--- start stderr 尾 15 行（含 set -x 跟踪）---"
-                tail -15 "$START_ERR"
-                rm -f "$START_OUT" "$START_ERR"
-                if [ "$START_RC" -eq 0 ]; then
+                if do_start; then
                   echo "[ok] start 返回 0"
                 else
-                  echo "[warn] start 返回 $START_RC（平台限流/瞬时故障），将重试"
+                  echo "[warn] start 返回非 0（平台限流/瞬时故障），将重试"
+                fi
+
+                # C. 探测 start 是否真的生效（2026-09-04 连续 5 轮起不来的对策）
+                #    故障特征：start 返回 0，但 60s 内状态连 Starting 都没出现过、
+                #    纹丝不动停在 Ready → 平台接受了请求却没真正分配资源。
+                #    此时再原样重试 start 只是无效 no-op（原逻辑连试 3 次全是 no-op，
+                #    空耗 19-20 分钟后失败），必须先 stop 清一次僵死态。
+                MOVED=""
+                for k in 1 2 3 4; do
+                  sleep 15
+                  STATE=$(get_state)
+                  echo "  [probe$k] 状态=$STATE"
+                  if [ "$STATE" != "$PRE" ] || [ "$STATE" = "Running" ]; then MOVED=1; break; fi
+                done
+
+                # 恢复动作：先 stop 清僵死态，再 start。
+                # 三道护栏，缺一不可：
+                #   ① 仅在「确实没动」(MOVED 为空) 且「本轮没恢复过」时才执行；
+                #   ② 动手前**重新** get_state 复检，只对稳定非运行态(Ready/Stopped/Closing)发 stop；
+                #      Running/Starting/Stopping 一律跳过——否则会把正在用/正在起的容器掐掉；
+                #   ③ RECOVERED 标志确保每轮最多清一次，不反复折腾。
+                if [ -z "$MOVED" ] && [ "$RECOVERED" -eq 0 ]; then
+                  NOW=$(get_state)
+                  case "$NOW" in
+                    Ready|Stopped|Closing)
+                      RECOVERED=1
+                      echo "[recover] start 已接受但 60s 内状态未动（停在 $NOW），判定僵死态：先 stop 再 start 清一次"
+                      if tools/hds_session.sh devenv stop --instance-id="$INSTANCE" </dev/null 2>&1 | tail -5; then
+                        echo "[recover] stop 已发出"
+                      else
+                        echo "[recover][warn] stop 返回非 0（仍继续尝试 start）"
+                      fi
+                      sleep 10
+                      echo "[recover] 重新开机（当前态=$(get_state)）"
+                      if do_start; then
+                        echo "[recover] start 返回 0"
+                      else
+                        echo "[recover][warn] start 返回非 0"
+                      fi
+                      ;;
+                    *)
+                      echo "[recover][skip] 复检状态=${NOW:-未知}，非稳定非运行态，不发 stop（避免误伤）"
+                      ;;
+                  esac
                 fi
                 ;;
             esac
+
+            if [ "$STATE" = "Running" ]; then echo "[ok] 已进入 Running"; break; fi
 
             # 轮询等待进入 Running；Error/未知 仅继续等待，不立即失败（容错瞬时异常）
             for i in $(seq 1 20); do
               sleep 15
               STATE=$(get_state)
               echo "  [$i] 状态=$STATE"
-              [ "$STATE" = "Running" ] && break
+              if [ "$STATE" = "Running" ]; then echo "[ok] 已进入 Running"; break; fi
             done
-            [ "$STATE" = "Running" ] && break
+            if [ "$STATE" = "Running" ]; then echo "[ok] 已进入 Running"; break; fi
             echo "[retry] 第 $attempt 次未进入 Running，准备重试"
           done
           [ "$STATE" = "Running" ] || { echo "[ERR] 容器未能进入 Running（最终态=${STATE:-未知}）"; exit 1; }
