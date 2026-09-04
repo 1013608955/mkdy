@@ -135,11 +135,29 @@ jobs:
               Error) echo "[warn] 实例 Error（可能瞬时），等待恢复，不立即放弃";;
               *)
                 echo "[start] 第 $attempt/3 次开机（当前态=${STATE:-未知}）"
-                # B. 检查 start 返回码，静默失败即告警（应对平台瞬时限流/偶发失效）
-                if tools/hds_session.sh devenv start --instance-id="$INSTANCE" </dev/null 2>&1 | tail -3; then
+                # B. 捕获 start 的真实返回码 + 完整输出。
+                #    原写法 `cmd 2>&1 | tail -3` 有两个致命缺陷：
+                #    ① 管道退出码取自**最后一个命令 tail**（恒为 0），if 判断形同虚设
+                #       —— start 真的失败也会永远打印 "[ok] start 返回 0"；
+                #    ② 2>&1 把 hds_session.sh 的 set -x 跟踪行一并灌进管道，
+                #       而 tail -3 只剩最后 3 行，恰好全是被合并进来的跟踪行
+                #       （+ RC=0 / + kill / + exit 0），hdspace 的真实输出被整段丢弃。
+                #    后果：2026-09-04 02:00-03:55 连续 5 轮容器起不来，
+                #       日志里没有一行平台侧线索，完全无法定位。
+                #    现改为：stdout/stderr 分开落临时文件，rc 取 $?，输出全量打印。
+                START_OUT=$(mktemp); START_ERR=$(mktemp)
+                tools/hds_session.sh devenv start --instance-id="$INSTANCE" </dev/null \
+                  > "$START_OUT" 2> "$START_ERR"
+                START_RC=$?
+                echo "--- start rc=$START_RC | stdout ---"
+                cat "$START_OUT"
+                echo "--- start stderr 尾 15 行（含 set -x 跟踪）---"
+                tail -15 "$START_ERR"
+                rm -f "$START_OUT" "$START_ERR"
+                if [ "$START_RC" -eq 0 ]; then
                   echo "[ok] start 返回 0"
                 else
-                  echo "[warn] start 返回非 0（平台限流/瞬时故障），将重试"
+                  echo "[warn] start 返回 $START_RC（平台限流/瞬时故障），将重试"
                 fi
                 ;;
             esac
