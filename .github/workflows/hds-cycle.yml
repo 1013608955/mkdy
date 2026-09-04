@@ -109,7 +109,7 @@ jobs:
           kill $AR 2>/dev/null
           SESSION
 
-      - name: "[2] 查状态 + 按需开机（2 次尝试 · 共享轮询预算 · 僵死态恢复）"
+      - name: "[2] 查状态 + 按需开机（2 次尝试 · 共享轮询预算 · 僵死态恢复 · 无算力跳过）"
         run: |
           # A. 状态枚举补全：以 hdspace list 真实返回为准（本机实测含 Stopping/Stopped，原模式漏列）
           STATES="Running|Ready|Starting|Stopping|Stopped|Closing|Error"
@@ -152,6 +152,7 @@ jobs:
 
           STATE=$(get_state); echo "初始状态: ${STATE:-未知(list 可能瞬时失败)}"
           RECOVERED=0   # 僵死态恢复（stop→start）每轮只允许一次，避免反复折腾容器
+          LAST_NOCOMPUTE=0   # 跨尝试记忆：最后一次 start 是否被平台回复无算力（决定最终按跳过还是报错）
           for attempt in 1 2; do
             BUDGET=20   # 本轮「探测+等待」共享的轮询次数预算（见下，保证最坏耗时不增加）
             NOCOMPUTE=0   # 平台明确回复无算力时置 1（仅本轮有效）
@@ -164,6 +165,7 @@ jobs:
               Error) echo "[warn] 实例 Error（可能瞬时），等待恢复，不立即放弃";;
               *)
                 PRE="$STATE"
+                LAST_NOCOMPUTE=0
                 echo "[start] 第 $attempt/2 次开机（当前态=${STATE:-未知}）"
                 if do_start; then
                   echo "[ok] start 返回 0"
@@ -183,6 +185,7 @@ jobs:
                 case "$START_MSG" in
                   *"No compute resources"*)
                     NOCOMPUTE=1
+                    LAST_NOCOMPUTE=1
                     echo "[nocompute] 平台回复无算力（No compute resources）——跳过状态轮询，短等 60s 后重试 start"
                     ;;
                 esac
@@ -254,7 +257,19 @@ jobs:
             if [ "$STATE" = "Running" ]; then echo "[ok] 已进入 Running"; break; fi
             echo "[retry] 第 $attempt 次未进入 Running，准备重试"
           done
-          [ "$STATE" = "Running" ] || { echo "[ERR] 容器未能进入 Running（最终态=${STATE:-未知}）"; exit 1; }
+          if [ "$STATE" != "Running" ]; then
+            # 平台「无算力」是区域性瞬时故障（如 2026-09-04 05:00-06:45 连续 8 轮），
+            # 下轮 15 分钟后自动重试即可恢复。若也标 failure，GitHub 每轮都发失败邮件
+            # （用户收件箱被刷屏）。故 2 次尝试均被回复无算力时按「本轮跳过」处理：
+            # exit 0 + NOCOMPUTE_SKIP 标记（[3] 据此跳过），[4]/[5] 照常收尾，[6] 不触发。
+            if [ "$LAST_NOCOMPUTE" = "1" ]; then
+              echo "[nocompute] 平台持续无算力（2 次尝试均被拒），本轮按跳过处理，不告警；下轮自动重试。"
+              echo "NOCOMPUTE_SKIP=1" >> "$GITHUB_ENV"
+              exit 0
+            fi
+            echo "[ERR] 容器未能进入 Running（最终态=${STATE:-未知}）"
+            exit 1
+          fi
 
           echo "===== 重置并获取 SSH 私钥（需容器开机）====="
           echo yes | tools/hds_session.sh devenv ssh-key-reset --instance-id="$INSTANCE" > /tmp/reset.log 2>&1 || true
@@ -266,6 +281,7 @@ jobs:
           fi
 
       - name: "[3] 开隧道 + 分离执行容器验证 + 轮询结果"
+        if: env.NOCOMPUTE_SKIP != '1'   # [2] 判定平台无算力已跳过本轮：容器没开，隧道/验证无从谈起
         timeout-minutes: 14
         run: |
           # 诊断留痕：stdout/stderr 改行缓冲，被 kill 也不丢最后一行
