@@ -396,11 +396,33 @@ jobs:
             echo "[poll$i] SSH 探测（剩余 $(left)s）..."
             TAIL=$(ssh_run 30 "tail -3 $LOG 2>/dev/null" 2>/dev/null || true)
             echo "--- poll$i: ${TAIL##*$'\n'}"
-            case "$TAIL" in *"[boot_job] done"*) DONE=1; break;; esac
+            case "$TAIL" in
+              *"[boot_job] done rc=0"*) DONE=1; break ;;
+              *"[boot_job] done rc="*)  DONE=rcfail; break ;;  # rc≠0：容器侧验证/推送失败
+            esac
           done
-          if [ -z "$DONE" ]; then
-            echo "[ERR] boot_job 未在时限内完成"
+          if [ "$DONE" != "1" ]; then
+            if [ -z "$DONE" ]; then
+              echo "[ERR] boot_job 未在时限内完成"
+            else
+              echo "[ERR] boot_job 以非 0 退出（容器侧验证或推送失败）"
+            fi
             ssh_run 60 "tail -40 $LOG 2>/dev/null" || true
+            # 兜底复核：CI 判失败 ≠ 结果丢失。2026-09-05 run#1088 教训：容器→GitHub
+            # 推送卡顿（每次 1.5~3.5min 才失败），push 重试吃光轮询预算，CI 按失败
+            # 收场并触发告警；结果却在 CI 放弃后由第 3 次 push 正常落库
+            # （3578b38a verify(local): 109/417）。故失败收尾前查远端 main：若已有
+            # 「本轮启动（T0）之后」新落的 verify(local) 提交，说明数据未丢、
+            # update-subs 可正常消费，按成功收尾、不触发 [6] 告警。
+            # concurrency 全局串行保证窗口内不会有别的轮次推送，T0 过滤只防
+            # 上一轮结果迟到落库的极端情形。
+            if timeout 60 git fetch -q origin main 2>/dev/null \
+               && git log --format='%ct %s' HEAD..FETCH_HEAD 2>/dev/null \
+                  | awk -v t0="$T0" '$1+0 >= t0 && $2 == "verify(local):" {f=1} END{exit !f}'; then
+              echo "[ok] 轮询超时但本轮验证结果已落库远端 main，按成功收尾（不触发失败告警）"
+              exit 0
+            fi
+            echo "[ERR] 远端 main 上没有本轮的 verify(local) 结果，维持失败判定"
             exit 1
           fi
           echo "===== boot_job 结果 ====="
