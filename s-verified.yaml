@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=118
+# verified=113
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -134,8 +134,6 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇹🇭_TH_泰国
   - ✅ [ermaozi/get_subscribe]🇲🇾_MY_马来西亚
   - ✅ 🇰🇷KR_2|1.5MB/s
-  - ✅ [peasoft/NoMoreWalls]🇬🇧GB_8|4.1MB/s
-  - ✅ [peasoft/NoMoreWalls]🇮🇪IE_1|2.9MB/s
   - ✅ [ermaozi/get_subscribe]🇫🇷_FR_法国
   - ✅ 🇫🇷FR_8|272KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_14|298KB/s|GPT⁺|NF
@@ -160,9 +158,6 @@ proxy-groups:
   - ✅ 🇳🇱_荷兰_73
   - ✅ 🇭🇰_香港_51
   - ✅ 🇭🇰_香港_56
-  - ✅ [1808.ga]🇫🇷
-  - ✅ 🇭🇰_香港_17
-  - ✅ 🇭🇰_香港_58
 - name: 自动选择
   type: url-test
   proxies:
@@ -255,8 +250,6 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇹🇭_TH_泰国
   - ✅ [ermaozi/get_subscribe]🇲🇾_MY_马来西亚
   - ✅ 🇰🇷KR_2|1.5MB/s
-  - ✅ [peasoft/NoMoreWalls]🇬🇧GB_8|4.1MB/s
-  - ✅ [peasoft/NoMoreWalls]🇮🇪IE_1|2.9MB/s
   - ✅ [ermaozi/get_subscribe]🇫🇷_FR_法国
   - ✅ 🇫🇷FR_8|272KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_14|298KB/s|GPT⁺|NF
@@ -281,9 +274,6 @@ proxy-groups:
   - ✅ 🇳🇱_荷兰_73
   - ✅ 🇭🇰_香港_51
   - ✅ 🇭🇰_香港_56
-  - ✅ [1808.ga]🇫🇷
-  - ✅ 🇭🇰_香港_17
-  - ✅ 🇭🇰_香港_58
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -378,8 +368,6 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇹🇭_TH_泰国
   - ✅ [ermaozi/get_subscribe]🇲🇾_MY_马来西亚
   - ✅ 🇰🇷KR_2|1.5MB/s
-  - ✅ [peasoft/NoMoreWalls]🇬🇧GB_8|4.1MB/s
-  - ✅ [peasoft/NoMoreWalls]🇮🇪IE_1|2.9MB/s
   - ✅ [ermaozi/get_subscribe]🇫🇷_FR_法国
   - ✅ 🇫🇷FR_8|272KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_14|298KB/s|GPT⁺|NF
@@ -404,9 +392,6 @@ proxy-groups:
   - ✅ 🇳🇱_荷兰_73
   - ✅ 🇭🇰_香港_51
   - ✅ 🇭🇰_香港_56
-  - ✅ [1808.ga]🇫🇷
-  - ✅ 🇭🇰_香港_17
-  - ✅ 🇭🇰_香港_58
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -1527,24 +1512,6 @@ proxies:
   server: 121.46.230.138
   type: ss
   udp: true
-- name: ✅ [peasoft/NoMoreWalls]🇬🇧GB_8|4.1MB/s
-  type: ss
-  server: 35.178.200.252
-  port: 443
-  cipher: aes-256-cfb
-  password: amazonskr05
-  security_scheme: none
-  proto: ss
-  peer: 35.178.200.252
-- name: ✅ [peasoft/NoMoreWalls]🇮🇪IE_1|2.9MB/s
-  type: ss
-  server: 54.229.177.209
-  port: 443
-  cipher: aes-256-cfb
-  password: amazonskr05
-  security_scheme: none
-  proto: ss
-  peer: 54.229.177.209
 - name: ✅ [ermaozi/get_subscribe]🇫🇷_FR_法国
   type: ss
   server: 95.170.13.47
@@ -1902,42 +1869,3 @@ proxies:
   sni: v33.hdacd.com
   proto: vmess
   peer: v33.hdacd.com
-- name: ✅ [1808.ga]🇫🇷
-  type: vmess
-  server: v35.hdacd.com
-  port: 30835
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v35.hdacd.com
-  proto: vmess
-  peer: v35.hdacd.com
-- name: ✅ 🇭🇰_香港_17
-  type: vmess
-  server: v36.hdacd.com
-  port: 30836
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v36.hdacd.com
-  proto: vmess
-  peer: v36.hdacd.com
-- name: ✅ 🇭🇰_香港_58
-  type: vmess
-  server: v4.hdacd.com
-  port: 30804
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v4.hdacd.com
-  proto: vmess
-  peer: v4.hdacd.com
