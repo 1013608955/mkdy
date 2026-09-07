@@ -50,14 +50,7 @@ detection:
     - 1.1.1.1
     timeout: 4
     cache_size: 1000
-  http_test:
-    timeout: 10
-    targets:
-    - http://www.google.com/generate_204
-    - https://api.github.com/
-    - http://httpbin.org/ip
-    - https://api.ipify.org?format=json
-    fallback: http://baidu.com
+  # http_test 已删除（2026-09-08 审查 Q-2）：http 检测早已改为 socket 握手探测，该键从未被消费
   score_threshold: 40
   rt_thresholds:
     vmess:
@@ -78,7 +71,7 @@ detection:
 filter:
   max_remark_bytes: 200
   DEFAULT_PORT: 443
-  SS_DEFAULT_CIPHER: aes-256-gcm
+  # SS_DEFAULT_CIPHER 已删除（2026-09-08 审查 Q-2）：无任何消费点
   SS_VALID_CIPHERS:
   - aes-256-gcm
   - aes-128-gcm

@@ -54,9 +54,8 @@ jobs:
           GITHUB_TOKEN: ""
 
       # ---- 两个抓取脚本（源站可能不稳定，单源失败不影响整体合并） ----
-      # 注：fetch_tuijian.py 已从 CI 移除——其产出 latest_tuijian.txt 从未被
-      # merge_subs 消费（TXT_SOURCES 只有 s.txt/s1.txt/s2.txt），纯白跑；
-      # 脚本保留在仓库中仅供手动使用。
+      # fetch_tuijian.py 已随 2026-09-08 审查清理删除——其产出 latest_tuijian.txt 从未被
+      # merge_subs 消费（TXT_SOURCES 只有 s.txt/s1.txt/s2.txt），纯白跑（git 历史可找回）。
 
       - name: 抓取节点更新 -> s1.txt
         continue-on-error: true

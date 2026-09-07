@@ -1,6 +1,7 @@
 # 依赖清单（CI 与本地统一从此安装；版本为已知兼容下限）
 # 安装：pip install -r requirements.txt
 requests>=2.31
+urllib3>=2.0      # update_nodes.py 直接 import（禁 InsecureRequestWarning），显式声明防传递依赖变动
 PyYAML>=6.0
 beautifulsoup4>=4.12
 pytest>=8.0

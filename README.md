@@ -99,8 +99,8 @@ python fetch_extra.py     # -> s2-clash-3..6.yaml（可 --threshold 调禁赛阈
 python merge_subs.py      # -> s-clash.yaml + s-verified.yaml（读已有 verified.json）
 ```
 
-> 本机 Windows 定时任务路线（run_local.bat / setup_schedule.ps1）已弃用：
-> 本机无 mihomo 二进制，验证统一走华为云容器。
+> 本机 Windows 定时任务路线（run_local.bat / setup_schedule.ps1）已弃用并于
+> 2026-09-08 审查时删除（git 历史可找回）：本机无 mihomo 二进制，验证统一走华为云容器。
 
 ## 安全说明
 

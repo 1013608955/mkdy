@@ -20,6 +20,7 @@ import urllib3
 from typing import Dict, List, Tuple, Optional, Union
 import json
 import yaml
+import source_health  # 源健康状态（与 fetch_extra.py 共享，2026-09-08 审查 Q-1）
 # ========== 配置与初始化 ==========
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # 核心配置（已应用所有优化）
@@ -40,22 +41,13 @@ CONFIG: Dict = {
     "github": {"token": os.getenv("GITHUB_TOKEN", ""), "interval": 0.5, "cache_ttl": 3600, "cache_expire_days": 7},
     "detection": {
         "tcp_timeout": {"vmess": 5, "vless": 5, "trojan": 5, "ss": 4, "hysteria": 6},
-        "tcp_retry": 1, # 优化：从 3 → 2
+        "tcp_retry": 1,
         "max_handshake_probe": 120,  # M5：握手探测总数封顶，超出的节点跳过探测（仅少加分）
         "thread_pool": 8,
         "dns": {"servers": ["223.5.5.5", "119.29.29.29", "8.8.8.8", "1.1.1.1"], "timeout": 4, "cache_size": 1000},
-        "http_test": {
-            "timeout": 10,
-            "targets": [
-                "http://www.google.com/generate_204",
-                "https://api.github.com/",
-                "http://httpbin.org/ip",
-                "https://api.ipify.org?format=json"
-            ],
-            "fallback": "http://baidu.com"
-        },
+        # （2026-09-08 审查 Q-2：删除死键 http_test——http 检测早已改为 socket 握手探测）
         "score_threshold": 40,
-        "rt_thresholds": { # 优化：所有协议 max 统一提升到 9s
+        "rt_thresholds": {
             "vmess": {"min": 0.02, "max": 12},
             "vless": {"min": 0.02, "max": 12},
             "trojan": {"min": 0.02, "max": 12},
@@ -66,10 +58,9 @@ CONFIG: Dict = {
     "filter": {
         "private_ip": re.compile(r"^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[0-1])\.|127\.|0\.0\.0\.0)"),
         # cn_ip_ranges 已弃用：is_cn_ip 改为基于 cn_ranges.txt 的 CIDR 成员判定（见 _load_cn_ranges）
-        "ports": range(1, 65535),
+        # （2026-09-08 审查 Q-2：删除死键 ports / SS_DEFAULT_CIPHER——定义即弃，无任何消费点）
         "max_remark_bytes": 200,
         "DEFAULT_PORT": 443,
-        "SS_DEFAULT_CIPHER": "aes-256-gcm",
         "SS_VALID_CIPHERS": ["aes-256-gcm", "aes-128-gcm", "chacha20-ietf-poly1305", "aes-256-cfb", "aes-128-cfb"],
         "score_rules": {
             "protocol": {"vless": 20, "trojan": 18, "vmess": 18, "hysteria": 15, "ss": 12, "other": 0},
@@ -83,8 +74,8 @@ CONFIG: Dict = {
                 "hysteria": {"fast": 10, "normal": 5, "slow": 1}
             },
             "dns_valid": 8,
-            "http_valid": 8, # 优化：22 → 10
-            "cn_ip": -5, # 优化：-40 → -10
+            "http_valid": 8,
+            "cn_ip": -5,
             "response_time_abnormal": -20,
             "stability": 5,
             "ip_type": {"residential": 15, "dc": 10, "unknown": 5}
@@ -865,39 +856,8 @@ def adjust_score_threshold(valid_nodes_info: List[Dict]) -> int:
   
     return dynamic_threshold
 # ---------- 源健康跟踪（连续失败自动跳过）----------
-# 状态存仓库根 source_health.json（与 fetch_extra.py 共用），CI 每轮随产物提交，
-# 跨运行持久：某源连续失败 ≥ failure_threshold 次则跳过请求，恢复成功即清零。
-SOURCE_HEALTH_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "source_health.json")
-
-
-def _load_source_health() -> Dict:
-    try:
-        with open(SOURCE_HEALTH_FILE, encoding="utf-8") as f:
-            data = json.load(f)
-        return data if isinstance(data, dict) else {}
-    except Exception:  # noqa: BLE001
-        return {}
-
-
-def _save_source_health(health: Dict) -> None:
-    try:
-        with open(SOURCE_HEALTH_FILE, "w", encoding="utf-8") as f:
-            json.dump(health, f, ensure_ascii=False, indent=1, sort_keys=True)
-    except OSError as e:
-        LOG.warning(f"⚠️ 源健康状态写入失败: {str(e)[:50]}")
-
-
-def _now_utc() -> str:
-    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-
-
-def _ts_utc(s: str) -> float:
-    """UTC 时间串 -> epoch 秒；解析失败返回 0（视为冷却已满，允许探活）。"""
-    try:
-        import calendar
-        return calendar.timegm(time.strptime(s, "%Y-%m-%dT%H:%M:%SZ"))
-    except Exception:  # noqa: BLE001
-        return 0.0
+# 2026-09-08 审查 Q-1：load/save/now/ts/禁赛判定/成败记账统一抽到 source_health.py
+# （与 fetch_extra.py 共用同一份 source_health.json 与同一套语义），本文件只做编排。
 
 
 def fetch_all_sources() -> Tuple[List[Dict], Dict[str, Dict]]:
@@ -906,23 +866,17 @@ def fetch_all_sources() -> Tuple[List[Dict], Dict[str, Dict]]:
 
     threshold = int(CONFIG["request"].get("failure_threshold", 5))
     probe_hours = float(CONFIG["request"].get("probe_interval_hours", 24))
-    health = _load_source_health()
-
-    def _fails(url: str) -> int:
-        return int((health.get(url) or {}).get("consecutive_failures", 0))
+    health = source_health.load()
 
     # 禁赛判定 + 冷却探活：禁赛源每 probe_hours 小时自动试探一次（自愈）
     skipped, active, probing = [], [], set()
     for src in CONFIG["sources"]:
         url = src["url"]
-        n = _fails(url)
-        if n < threshold:
+        action, n = source_health.judge(health, url, threshold, probe_hours)
+        if action == "active":
             active.append(src)
-            continue
-        last_probe = str((health.get(url) or {}).get("last_probe") or "")
-        if (time.time() - _ts_utc(last_probe)) >= probe_hours * 3600:
+        elif action == "probe":
             LOG.info(f"[probe] 源禁赛冷却期满，试探性重试: {url}")
-            health.setdefault(url, {})["last_probe"] = _now_utc()
             probing.add(url)
             active.append(src)
         else:
@@ -943,27 +897,18 @@ def fetch_all_sources() -> Tuple[List[Dict], Dict[str, Dict]]:
                 lines, weight, ok_run = [], 0, False
 
             # 更新健康状态：拉到节点=成功清零；空/异常=失败+1（探活失败保持禁赛不涨）
-            rec = health.get(url) or {}
             if ok_run:
-                if rec.get("consecutive_failures"):
+                prev_fails = int((health.get(url) or {}).get("consecutive_failures", 0))
+                was_benched = source_health.record_success(health, url, len(lines))
+                if was_benched:
                     tag = "探活成功，恢复可用" if url in probing else "恢复可用"
-                    LOG.info(f"✅ {tag}（此前连续失败 {rec['consecutive_failures']} 次）: {url}")
-                health[url] = {"consecutive_failures": 0, "last_ok": _now_utc(),
-                               "nodes": len(lines)}
-                health[url].pop("last_probe", None)
+                    LOG.info(f"✅ {tag}（此前连续失败 {prev_fails} 次）: {url}")
             elif url in probing:
-                rec["consecutive_failures"] = max(int(rec.get("consecutive_failures", 0)),
-                                                  threshold)
-                rec["last_probe"] = _now_utc()
-                rec["last_fail"] = _now_utc()
-                health[url] = rec
+                source_health.record_failure(health, url, threshold, probing=True)
                 LOG.warning(f"⛔ [probe-fail] 探活失败，继续禁赛"
                             f"（{probe_hours:.0f}h 后再探）: {url}")
             else:
-                rec["consecutive_failures"] = int(rec.get("consecutive_failures", 0)) + 1
-                rec["last_fail"] = _now_utc()
-                health[url] = rec
-                n = rec["consecutive_failures"]
+                n = source_health.record_failure(health, url, threshold, probing=False)
                 level = "⛔ 达阈值，进入禁赛" if n >= threshold else "连续失败"
                 LOG.warning(f"⚠️ 源{level} {n}/{threshold}: {url}")
 
@@ -984,7 +929,7 @@ def fetch_all_sources() -> Tuple[List[Dict], Dict[str, Dict]]:
             "proto_count": count_proto([]), "retained_count": 0,
         }
 
-    _save_source_health(health)
+    source_health.save(health)
     LOG.info(f"\n📥 所有数据源拉取完成：累计原始节点 {len(all_nodes)} 条"
              f"（跳过失效源 {len(skipped)} 个）")
     return all_nodes, source_records
