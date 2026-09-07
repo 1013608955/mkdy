@@ -178,14 +178,26 @@ CN_RANGES = _load_cn_ranges()
 def init_session() -> requests.Session:
     sess = requests.Session()
     sess.trust_env = False
-    headers = {"User-Agent": CONFIG["request"]["ua"], "Accept": "*/*"}
-    if CONFIG["github"]["token"]:
-        headers["Authorization"] = f"token {CONFIG['github']['token']}"
+    # 安全（2026-09-08 审查 B-2）：Authorization 头不再挂在全局 SESSION 上——
+    # 同一 SESSION 还要请求 8 个第三方免费源站与 ipinfo.io，全局挂头会把
+    # GITHUB_TOKEN 泄漏给它们。改为仅 github 域名请求按需附加（_github_auth_headers）。
+    sess.headers.update({"User-Agent": CONFIG["request"]["ua"], "Accept": "*/*"})
+    # （连带修复：原代码构造了 headers 却从未 sess.headers.update，自定义 UA 一直没生效）
     adapter = requests.adapters.HTTPAdapter(pool_connections=8, pool_maxsize=16, max_retries=2)
     sess.mount("https://", adapter)
     sess.mount("http://", adapter)
     return sess
 SESSION = init_session()
+
+def _github_auth_headers(extra: dict = None, url: str = "") -> dict:
+    """仅对 github.com / *.githubusercontent.com 请求附加 GITHUB_TOKEN（审查 B-2）。"""
+    headers = dict(extra or {})
+    if CONFIG["github"]["token"] and url:
+        host = (urlparse(url).hostname or "").lower()
+        if host == "github.com" or host.endswith(".github.com") \
+                or host.endswith(".githubusercontent.com"):
+            headers["Authorization"] = f"token {CONFIG['github']['token']}"
+    return headers
 # ========== 工具函数（优化后）==========
 def validate_port(port: Union[str, int]) -> int:
     try:
@@ -717,7 +729,8 @@ def fetch_source_data(url: str, weight: int) -> Tuple[List[str], int]:
                 timeout=CONFIG["request"]["timeout"],
                 # 默认校验证书(verify=True)防 MITM；仅 allow_insecure=True 时降级为不校验
                 verify=(not CONFIG["request"].get("allow_insecure", False)),
-                headers={"Connection": "close"}
+                # token 只随 github 域名请求发出（审查 B-2），第三方源站不带凭证
+                headers=_github_auth_headers({"Connection": "close"}, url)
             )
             resp.raise_for_status()
             raw_content = resp.text
@@ -1127,7 +1140,7 @@ def main() -> None:
   
     valid_lines, valid_nodes_info, threshold = process_nodes_final(unique_nodes)
   
-    generate_final_stats(all_nodes, unique_nodes, valid_lines, valid_nodes_info, start_time, source_records)
+    generate_final_stats(all_nodes, unique_nodes, valid_lines, valid_nodes_info, start_time, source_records, threshold)
     try:
         SESSION.close()
         LOG.info("🔌 关闭请求会话")
