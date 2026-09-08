@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=98
+# verified=101
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -80,6 +80,7 @@ proxy-groups:
   - ✅ ❓Other_64|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
+  - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_8|2.0MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
@@ -142,6 +143,8 @@ proxy-groups:
   - ✅ 🇷🇺_俄罗斯_102
   - ✅ 🇷🇺_俄罗斯_114
   - ✅ 🇺🇸US_4|2.4MB/s|YT-US|GPT⁺-US|GM-US
+  - ✅ 未知22
+  - ✅ DE 🇩🇪 | @Raydikalx | 165088
   - ✅ 🇭🇰_香港_31
 - name: 自动选择
   type: url-test
@@ -181,6 +184,7 @@ proxy-groups:
   - ✅ ❓Other_64|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
+  - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_8|2.0MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
@@ -243,6 +247,8 @@ proxy-groups:
   - ✅ 🇷🇺_俄罗斯_102
   - ✅ 🇷🇺_俄罗斯_114
   - ✅ 🇺🇸US_4|2.4MB/s|YT-US|GPT⁺-US|GM-US
+  - ✅ 未知22
+  - ✅ DE 🇩🇪 | @Raydikalx | 165088
   - ✅ 🇭🇰_香港_31
   url: http://www.gstatic.com/generate_204
   interval: 86400
@@ -284,6 +290,7 @@ proxy-groups:
   - ✅ ❓Other_64|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
+  - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_8|2.0MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
@@ -346,6 +353,8 @@ proxy-groups:
   - ✅ 🇷🇺_俄罗斯_102
   - ✅ 🇷🇺_俄罗斯_114
   - ✅ 🇺🇸US_4|2.4MB/s|YT-US|GPT⁺-US|GM-US
+  - ✅ 未知22
+  - ✅ DE 🇩🇪 | @Raydikalx | 165088
   - ✅ 🇭🇰_香港_31
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -1097,6 +1106,13 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- name: ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
+  port: 443
+  server: 154.47.29.174
+  sin: https://t.me/WangCai2🇨🇳
+  skip-cert-verify: true
+  tls: true
+  type: http
 - name: ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   port: 8443
   server: 154.81.36.92
@@ -1607,6 +1623,42 @@ proxies:
     host: xuius.907737.xyz
     mode: auto
     path: /
+- name: ✅ 未知22
+  type: vmess
+  server: 5.255.109.47
+  port: 443
+  uuid: db50a20e-7ff5-4e70-948f-17cc9ca7c154
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /api/v1/gpu-stream/socket
+    headers:
+      Host: renderer-stream-2-62.mirra.now
+  servername: renderer-stream-2-62.mirra.now
+  security_scheme: tls
+  sni: renderer-stream-2-62.mirra.now
+  proto: vmess
+  peer: renderer-stream-2-62.mirra.now
+- name: ✅ DE 🇩🇪 | @Raydikalx | 165088
+  type: vmess
+  server: 64.188.106.254
+  port: 443
+  uuid: db50a20e-7ff5-4e70-948f-17cc9ca7c154
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /api/v1/gpu-stream/socket
+    headers:
+      Host: renderer-stream-2-62.mirra.now
+  servername: renderer-stream-2-62.mirra.now
+  security_scheme: tls
+  sni: renderer-stream-2-62.mirra.now
+  proto: vmess
+  peer: renderer-stream-2-62.mirra.now
 - name: ✅ 🇭🇰_香港_31
   type: vmess
   server: v35.hdacd.com
