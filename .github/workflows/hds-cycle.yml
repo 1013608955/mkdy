@@ -118,6 +118,8 @@ jobs:
 
       - name: "[2] 查状态 + 按需开机（2 次尝试 · 共享轮询预算 · 僵死态恢复 · 无算力跳过）"
         if: steps.gate.outputs.skip != '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           # A. 状态枚举补全：以 hdspace list 真实返回为准（本机实测含 Stopping/Stopped，原模式漏列）
           STATES="Running|Ready|Starting|Stopping|Stopped|Closing|Error"
@@ -275,11 +277,33 @@ jobs:
               echo "[ERR] 容器未能进入 Running（最终态=${STATE:-未知}）"
               exit 1
             fi
-            # ── 兜底实例切换（2026-09-08 新增）：主实例无算力 ≠ 兜底规格无算力 ──
+            # ── 连续性门槛（2026-09-08）：连续第 2 轮无算力（≈30 分钟）才动用兜底实例 ──
+            # 单轮无算力是瞬时抖动，跳过等下轮自愈即可；连续 2 轮才算持续短缺。
+            # 判据：上一轮已完成 run 的步骤签名 = success/skipped（[2]=success 且 [3]=skipped，
+            # 与 [2b] 同口径；门卫跳过轮 [2]=skipped 不会误计）。查不到/上一轮正常 →
+            # 本轮按「首轮无算力」处理：跳过不切，下轮再无算力才够格触发兜底。
+            PREV_NOCOMPUTE=0
+            REPO="${{ github.repository }}"
+            PREV_RID=$(gh api "repos/$REPO/actions/workflows/hds-cycle.yml/runs?per_page=6" \
+              --jq '[.workflow_runs[] | select(.status == "completed" and .id != '"${{ github.run_id }}"')][0].id // ""' 2>/dev/null || true)
+            if [ -n "$PREV_RID" ]; then
+              PREV_SIG=$(gh api "repos/$REPO/actions/runs/$PREV_RID/jobs" \
+                --jq '(.jobs[0].steps | map(select(.name | startswith("[2] ")))[0].conclusion // "none") + "/" + (.jobs[0].steps | map(select(.name | startswith("[3]")))[0].conclusion // "none")' 2>/dev/null || echo none)
+              echo "[nocompute] 上一轮（run $PREV_RID）签名=${PREV_SIG:-none}（success/skipped = 上轮也无算力）"
+              if [ "$PREV_SIG" = "success/skipped" ]; then PREV_NOCOMPUTE=1; fi
+            else
+              echo "[nocompute] 查不到上一轮已完成 run，按首轮无算力处理"
+            fi
+            if [ "$PREV_NOCOMPUTE" != "1" ]; then
+              echo "[nocompute] 首轮无算力（上一轮正常），本轮按跳过处理；下轮仍无算力才启用兜底实例。"
+              echo "NOCOMPUTE_SKIP=1" >> "$GITHUB_ENV"
+              exit 0
+            fi
+            # ── 兜底实例切换：主实例无算力 ≠ 兜底规格无算力 ──
             # 主实例 2vCPU/4GiB 被平台拒绝时，先尝试 4vCPU/8GiB 兜底实例；
             # 兜底也进不了 Running 才按「本轮跳过」收场（NOCOMPUTE_SKIP，不告警）。
             # 成功则把 ACTIVE_INSTANCE 写入 GITHUB_ENV，[3]/[4] 据此对兜底实例开隧道/关机。
-            echo "[fallback] 主实例无算力（2 次尝试均被拒），尝试兜底实例 $FALLBACK_INSTANCE（4vCPU/8GiB）"
+            echo "[fallback] 主实例连续第 2 轮无算力，尝试兜底实例 $FALLBACK_INSTANCE（4vCPU/8GiB）"
             FB_STATE=$(tools/hds_session.sh devenv list </dev/null 2>&1 | grep -F "$FALLBACK_INSTANCE" | grep -oE "$STATES" | head -1)
             echo "[fallback] 兜底实例当前态=${FB_STATE:-未知}"
             if [ "$FB_STATE" != "Running" ]; then
