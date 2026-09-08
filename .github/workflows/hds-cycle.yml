@@ -23,7 +23,8 @@ on:
         default: "21ce28b8230a43f2ab414327f68bb1a0"
 
 env:
-  INSTANCE: "21ce28b8230a43f2ab414327f68bb1a0"
+  INSTANCE: "21ce28b8230a43f2ab414327f68bb1a0"          # 主实例 DevEnvC_W4yNKt（ARM 2vCPU/4GiB）
+  FALLBACK_INSTANCE: "30b343ba477f4944b5344300b63a3549" # 兜底实例 DevEnvC_FA6Ihu（ARM 4vCPU/8GiB），主实例无算力时切换
 
 concurrency:
   group: hds-cycle
@@ -264,22 +265,61 @@ jobs:
             if [ "$STATE" = "Running" ]; then echo "[ok] 已进入 Running"; break; fi
             echo "[retry] 第 $attempt 次未进入 Running，准备重试"
           done
+          TARGET_INSTANCE="$INSTANCE"   # 本轮实际使用的实例（默认主实例；无算力切换后为兜底实例）
           if [ "$STATE" != "Running" ]; then
             # 平台「无算力」是区域性瞬时故障（如 2026-09-04 05:00-06:45 连续 8 轮），
             # 下轮 15 分钟后自动重试即可恢复。若也标 failure，GitHub 每轮都发失败邮件
             # （用户收件箱被刷屏）。故 2 次尝试均被回复无算力时按「本轮跳过」处理：
             # exit 0 + NOCOMPUTE_SKIP 标记（[3] 据此跳过），[4]/[5] 照常收尾，[6] 不触发。
-            if [ "$LAST_NOCOMPUTE" = "1" ]; then
-              echo "[nocompute] 平台持续无算力（2 次尝试均被拒），本轮按跳过处理，不告警；下轮自动重试。"
+            if [ "$LAST_NOCOMPUTE" != "1" ]; then
+              echo "[ERR] 容器未能进入 Running（最终态=${STATE:-未知}）"
+              exit 1
+            fi
+            # ── 兜底实例切换（2026-09-08 新增）：主实例无算力 ≠ 兜底规格无算力 ──
+            # 主实例 2vCPU/4GiB 被平台拒绝时，先尝试 4vCPU/8GiB 兜底实例；
+            # 兜底也进不了 Running 才按「本轮跳过」收场（NOCOMPUTE_SKIP，不告警）。
+            # 成功则把 ACTIVE_INSTANCE 写入 GITHUB_ENV，[3]/[4] 据此对兜底实例开隧道/关机。
+            echo "[fallback] 主实例无算力（2 次尝试均被拒），尝试兜底实例 $FALLBACK_INSTANCE（4vCPU/8GiB）"
+            FB_STATE=$(tools/hds_session.sh devenv list </dev/null 2>&1 | grep -F "$FALLBACK_INSTANCE" | grep -oE "$STATES" | head -1)
+            echo "[fallback] 兜底实例当前态=${FB_STATE:-未知}"
+            if [ "$FB_STATE" != "Running" ]; then
+              FB_OUT=$(mktemp); FB_ERR=$(mktemp)
+              tools/hds_session.sh devenv start --instance-id="$FALLBACK_INSTANCE" </dev/null > "$FB_OUT" 2> "$FB_ERR"
+              fb_rc=$?
+              echo "--- fallback start rc=$fb_rc | stdout ---"
+              cat "$FB_OUT"
+              FB_MSG=$(cat "$FB_OUT")
+              rm -f "$FB_OUT" "$FB_ERR"
+              case "$FB_MSG" in
+                *"No compute resources"*)
+                  echo "[fallback] 兜底实例也无算力（4v8G 规格同样被拒）"
+                  ;;
+                *)
+                  # start 未被拒：轮询兜底实例进入 Running（10 次 × 15s ≈ 2.5min，可控）
+                  for i in $(seq 1 10); do
+                    sleep 15
+                    FB_STATE=$(tools/hds_session.sh devenv list </dev/null 2>&1 | grep -F "$FALLBACK_INSTANCE" | grep -oE "$STATES" | head -1)
+                    echo "  [fb$i] 兜底状态=$FB_STATE"
+                    if [ "$FB_STATE" = "Running" ]; then break; fi
+                  done
+                  ;;
+              esac
+            fi
+            if [ "$FB_STATE" = "Running" ]; then
+              echo "[ok] 兜底实例已进入 Running，本轮切换到兜底实例执行验证"
+              TARGET_INSTANCE="$FALLBACK_INSTANCE"
+              echo "ACTIVE_INSTANCE=$FALLBACK_INSTANCE" >> "$GITHUB_ENV"
+            else
+              echo "[nocompute] 主实例与兜底实例均未能运行（无算力），本轮按跳过处理，不告警；下轮自动重试。"
+              # start 已被平台接受但未达 Running 的兜底实例 best-effort 关掉，避免空转烧核时
+              tools/hds_session.sh devenv stop --instance-id="$FALLBACK_INSTANCE" </dev/null >/dev/null 2>&1 || true
               echo "NOCOMPUTE_SKIP=1" >> "$GITHUB_ENV"
               exit 0
             fi
-            echo "[ERR] 容器未能进入 Running（最终态=${STATE:-未知}）"
-            exit 1
           fi
 
           echo "===== 重置并获取 SSH 私钥（需容器开机）====="
-          echo yes | tools/hds_session.sh devenv ssh-key-reset --instance-id="$INSTANCE" > /tmp/reset.log 2>&1 || true
+          echo yes | tools/hds_session.sh devenv ssh-key-reset --instance-id="$TARGET_INSTANCE" > /tmp/reset.log 2>&1 || true
           echo "--- reset 输出尾 ---"
           tail -5 /tmp/reset.log
 
@@ -363,8 +403,13 @@ jobs:
               -o ConnectTimeout=10 -o BatchMode=yes root@127.0.0.1 "$@"
           }
 
+          # 本轮实际使用的实例：[2] 无算力切换成功时 ACTIVE_INSTANCE=兜底实例（GITHUB_ENV），
+          # 否则默认主实例。隧道 / 私钥 / 关机全部跟随它。
+          TGT="${ACTIVE_INSTANCE:-$INSTANCE}"
+          echo "[target] 本轮实例=$TGT（ACTIVE_INSTANCE=${ACTIVE_INSTANCE:-未设置，用主实例}）"
+
           HDS_NO_TIMEOUT=1 tools/hds_session.sh devenv start-tunnel \
-            --instance-id="$INSTANCE" --ports=10022:22 >/tmp/tunnel.log 2>&1 &
+            --instance-id="$TGT" --ports=10022:22 >/tmp/tunnel.log 2>&1 &
           TUN=$!
           echo "[tunnel] 等待端口 10022（预算内 $(left)s）"
           for i in $(seq 1 30); do
@@ -376,7 +421,7 @@ jobs:
           echo "--- 近 5 分钟 .devenv 新增文件 ---"
           find "$HOME/.devenv" -type f -newermt '-5 minutes' 2>/dev/null
           # reset 成功后私钥固定生成在 ~/.devenv/.ssh/IdentityFile/<实例ID>
-          KEYFILE="$HOME/.devenv/.ssh/IdentityFile/$INSTANCE"
+          KEYFILE="$HOME/.devenv/.ssh/IdentityFile/$TGT"
           echo "KEYFILE=$KEYFILE"
           [ -n "$KEYFILE" ] || { echo "[ERR] 私钥未找到"; exit 1; }
           chmod 600 "$KEYFILE"
@@ -440,8 +485,10 @@ jobs:
       - name: "[4] 关机（无论成败必执行）"
         if: always() && steps.gate.outputs.skip != '1'   # 门卫冗余轮没碰过容器，无需关机
         run: |
-          tools/hds_session.sh devenv stop --instance-id="$INSTANCE" </dev/null 2>&1 | head -3
-          echo "[done] 已发出关机指令"
+          # 关本轮实际用的实例：无算力切换成功时 ACTIVE_INSTANCE=兜底实例，否则主实例
+          TGT="${ACTIVE_INSTANCE:-$INSTANCE}"
+          tools/hds_session.sh devenv stop --instance-id="$TGT" </dev/null 2>&1 | head -3
+          echo "[done] 已发出关机指令（实例=$TGT）"
 
       - name: "[5] 复核最终状态"
         if: always() && steps.gate.outputs.skip != '1'
