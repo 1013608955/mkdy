@@ -59,11 +59,23 @@ jobs:
           fi
           echo "[pass] 无冗余轮次，继续执行。"
 
-      - name: 安装依赖
+      - name: 安装依赖（apt 镜像偶发抖动，带重试）
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq gnome-keyring dbus-x11 libsecret-1-0 \
-            python3-secretstorage xvfb xdotool openbox >/dev/null
+          # 2026-09-09 #1520-1522 三连败实证：runner 的 Azure apt 镜像瞬时抖动
+          # （同代码 #1523 自愈），零重试写法一步抖就整轮 failure + 触发 [6] 告警邮件。
+          # 3 次重试最坏多耗 ~2.5min，30min job 预算内完全可控。
+          for i in 1 2 3; do
+            if sudo apt-get update -qq \
+               && sudo apt-get install -y -qq gnome-keyring dbus-x11 libsecret-1-0 \
+                    python3-secretstorage xvfb xdotool openbox >/dev/null; then
+              echo "[ok] 依赖安装成功（第 $i 次尝试）"
+              exit 0
+            fi
+            echo "[retry] apt 第 $i 次失败，30s 后重试"
+            sleep 30
+          done
+          echo "[ERR] apt 连续 3 次失败（非瞬时抖动），按真失败处理"
+          exit 1
 
       - name: 准备（hdspace / SSH key / Xvfb）
         env:
