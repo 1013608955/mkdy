@@ -1,6 +1,6 @@
 # Auto-merged subscription (mkdy) — full Clash config with rules
 # sources: s.txt, s1.txt, s2.txt + s2-clash-1.yaml, s2-clash-2.yaml, s2-clash-3.yaml, s2-clash-4.yaml, s2-clash-5.yaml, s2-clash-6.yaml
-# raw=1067 unique=582 groups=3 rules=516
+# raw=1064 unique=580 groups=3 rules=516
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -617,8 +617,6 @@ proxy-groups:
   - 🇩🇪_德国_345
   - 🇨🇿_捷克_41
   - FI 🇫🇮 | @Raydikalx | 891ECD
-  - 🇺🇸US-172.236.108.16-1359
-  - 🇺🇸US-172.239.193.153-4228
   - DE 🇩🇪 | @Raydikalx | 7B9920
   - 🇹🇷_土耳其_9
   - 未知12
@@ -1202,8 +1200,6 @@ proxy-groups:
   - 🇩🇪_德国_345
   - 🇨🇿_捷克_41
   - FI 🇫🇮 | @Raydikalx | 891ECD
-  - 🇺🇸US-172.236.108.16-1359
-  - 🇺🇸US-172.239.193.153-4228
   - DE 🇩🇪 | @Raydikalx | 7B9920
   - 🇹🇷_土耳其_9
   - 未知12
@@ -1789,8 +1785,6 @@ proxy-groups:
   - 🇩🇪_德国_345
   - 🇨🇿_捷克_41
   - FI 🇫🇮 | @Raydikalx | 891ECD
-  - 🇺🇸US-172.236.108.16-1359
-  - 🇺🇸US-172.239.193.153-4228
   - DE 🇩🇪 | @Raydikalx | 7B9920
   - 🇹🇷_土耳其_9
   - 未知12
@@ -9258,41 +9252,6 @@ proxies:
   sni: NNnmJJu.131.PP.Ua
   proto: vmess
   peer: NNnmJJu.131.PP.Ua
-- name: 🇺🇸US-172.236.108.16-1359
-  type: vmess
-  server: buyvm.sharecentre.online
-  port: 443
-  uuid: 20e92881-5fb4-4b05-bc77-57929476dc69
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /shirker
-    headers:
-      Host: buyvm.sharecentre.online
-  servername: buyvm.sharecentre.online
-  security_scheme: tls
-  sni: buyvm.sharecentre.online
-  proto: vmess
-  peer: buyvm.sharecentre.online
-- name: 🇺🇸US-172.239.193.153-4228
-  type: vmess
-  server: cf-lt.sharecentre.online
-  port: 443
-  uuid: 20e92881-5fb4-4b05-bc77-57929476dc69
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /shirker
-    headers:
-      Host: lu.sharecentre.online
-  security_scheme: tls
-  sni: lu.sharecentre.online
-  proto: vmess
-  peer: lu.sharecentre.online
 - name: DE 🇩🇪 | @Raydikalx | 7B9920
   type: vmess
   server: planb.mojcn.com.linuxlh.xin
