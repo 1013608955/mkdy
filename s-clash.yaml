@@ -1,6 +1,6 @@
 # Auto-merged subscription (mkdy) — full Clash config with rules
 # sources: s.txt, s1.txt, s2.txt + s2-clash-1.yaml, s2-clash-2.yaml, s2-clash-3.yaml, s2-clash-4.yaml, s2-clash-5.yaml, s2-clash-6.yaml
-# raw=1083 unique=589 groups=3 rules=516
+# raw=1084 unique=590 groups=3 rules=516
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -620,6 +620,7 @@ proxy-groups:
   - 捷克(mibei77.com 米贝节点分享)
   - IR 🇮🇷 | @Raydikalx | A4025C
   - IR 🇮🇷 | @Raydikalx | EC6E4E
+  - HK 🇭🇰 | @Raydikalx | 9643FA
   - HK 🇭🇰 | @Raydikalx | 66A22C
   - DE 🇩🇪 | @Raydikalx | 11025A
   - HK 🇭🇰 | @Raydikalx | B5AE6B
@@ -1212,6 +1213,7 @@ proxy-groups:
   - 捷克(mibei77.com 米贝节点分享)
   - IR 🇮🇷 | @Raydikalx | A4025C
   - IR 🇮🇷 | @Raydikalx | EC6E4E
+  - HK 🇭🇰 | @Raydikalx | 9643FA
   - HK 🇭🇰 | @Raydikalx | 66A22C
   - DE 🇩🇪 | @Raydikalx | 11025A
   - HK 🇭🇰 | @Raydikalx | B5AE6B
@@ -1806,6 +1808,7 @@ proxy-groups:
   - 捷克(mibei77.com 米贝节点分享)
   - IR 🇮🇷 | @Raydikalx | A4025C
   - IR 🇮🇷 | @Raydikalx | EC6E4E
+  - HK 🇭🇰 | @Raydikalx | 9643FA
   - HK 🇭🇰 | @Raydikalx | 66A22C
   - DE 🇩🇪 | @Raydikalx | 11025A
   - HK 🇭🇰 | @Raydikalx | B5AE6B
@@ -9252,6 +9255,19 @@ proxies:
   sni: dashboard.rozinhost.top
   proto: vmess
   peer: dashboard.rozinhost.top
+- name: HK 🇭🇰 | @Raydikalx | 9643FA
+  type: vmess
+  server: dog-hk.kunlun01dns.com
+  port: 21041
+  uuid: 9464ca40-dd75-3742-a628-d931a9f413b2
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: dog-hk.kunlun01dns.com
+  proto: vmess
+  peer: dog-hk.kunlun01dns.com
 - name: HK 🇭🇰 | @Raydikalx | 66A22C
   type: vmess
   server: drbkg16egf3fzlm3.v.3dns.vip
