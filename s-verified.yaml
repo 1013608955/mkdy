@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=117
+# verified=116
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -133,7 +133,6 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇲🇾_MY_马来西亚
   - ✅ 🇰🇷KR_2|1.5MB/s
   - ✅ 🇬🇧_GB_英国_2
-  - ✅ [ermaozi/get_subscribe]🇮🇪_IE_爱尔兰
   - ✅ 美国+加利福尼亚
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_8|272KB/s|GPT⁺|NF
@@ -145,8 +144,8 @@ proxy-groups:
   - ✅ 🇫🇷FR_4|299KB/s|GPT⁺|NF
   - ✅ 🇯🇵_JP_日本->🇾🇪_YE_也门
   - ✅ [ermaozi/get_subscribe]🇧🇹BT_1|1.8MB/s
+  - ✅ 🏳️_未知_105
   - ✅ 西班牙+V2CROSS.COM
-  - ✅ 🇹🇼 🇨🇳 台湾 | TWN
   - ✅ 🏳️_未知_71
   - ✅ 🏳️_未知_156
   - ✅ 🏳️_未知_108
@@ -253,7 +252,6 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇲🇾_MY_马来西亚
   - ✅ 🇰🇷KR_2|1.5MB/s
   - ✅ 🇬🇧_GB_英国_2
-  - ✅ [ermaozi/get_subscribe]🇮🇪_IE_爱尔兰
   - ✅ 美国+加利福尼亚
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_8|272KB/s|GPT⁺|NF
@@ -265,8 +263,8 @@ proxy-groups:
   - ✅ 🇫🇷FR_4|299KB/s|GPT⁺|NF
   - ✅ 🇯🇵_JP_日本->🇾🇪_YE_也门
   - ✅ [ermaozi/get_subscribe]🇧🇹BT_1|1.8MB/s
+  - ✅ 🏳️_未知_105
   - ✅ 西班牙+V2CROSS.COM
-  - ✅ 🇹🇼 🇨🇳 台湾 | TWN
   - ✅ 🏳️_未知_71
   - ✅ 🏳️_未知_156
   - ✅ 🏳️_未知_108
@@ -375,7 +373,6 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇲🇾_MY_马来西亚
   - ✅ 🇰🇷KR_2|1.5MB/s
   - ✅ 🇬🇧_GB_英国_2
-  - ✅ [ermaozi/get_subscribe]🇮🇪_IE_爱尔兰
   - ✅ 美国+加利福尼亚
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_8|272KB/s|GPT⁺|NF
@@ -387,8 +384,8 @@ proxy-groups:
   - ✅ 🇫🇷FR_4|299KB/s|GPT⁺|NF
   - ✅ 🇯🇵_JP_日本->🇾🇪_YE_也门
   - ✅ [ermaozi/get_subscribe]🇧🇹BT_1|1.8MB/s
+  - ✅ 🏳️_未知_105
   - ✅ 西班牙+V2CROSS.COM
-  - ✅ 🇹🇼 🇨🇳 台湾 | TWN
   - ✅ 🏳️_未知_71
   - ✅ 🏳️_未知_156
   - ✅ 🏳️_未知_108
@@ -1527,15 +1524,6 @@ proxies:
   security_scheme: none
   proto: ss
   peer: 3.8.209.170
-- name: ✅ [ermaozi/get_subscribe]🇮🇪_IE_爱尔兰
-  type: ss
-  server: 54.171.218.140
-  port: 443
-  cipher: aes-256-cfb
-  password: amazonskr05
-  security_scheme: none
-  proto: ss
-  peer: 54.171.218.140
 - name: ✅ 美国+加利福尼亚
   type: ss
   server: 64.177.32.29
@@ -1681,6 +1669,22 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: www.cloudflare.com
+- name: ✅ 🏳️_未知_105
+  type: vless
+  server: 104.21.92.49
+  port: 443
+  uuid: a90c264d-3853-4eef-9a3d-628b2d02d15e
+  tls: true
+  network: ws
+  sni: 7-m19.omAn-linK.KdNS.FR
+  servername: 7-m19.omAn-linK.KdNS.FR
+  ws-opts:
+    path: /CjBjB9sn5pCvaSwScc
+    headers:
+      Host: 7-m19.OmAn-link.kdnS.FR
+  security_scheme: tls
+  proto: vless
+  peer: 7-m19.omAn-linK.KdNS.FR
 - name: ✅ 西班牙+V2CROSS.COM
   type: vless
   server: 150.241.68.208
@@ -1697,22 +1701,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: cf13.rumedia-cdn.com
-- name: ✅ 🇹🇼 🇨🇳 台湾 | TWN
-  type: vless
-  server: 151.242.189.40
-  port: 443
-  uuid: 9b18ccef-b9e0-41d1-8990-9d970569e142
-  tls: true
-  network: ws
-  sni: web-socket.tgdaosheng.ggff.net
-  servername: web-socket.tgdaosheng.ggff.net
-  ws-opts:
-    path: MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN
-    headers:
-      Host: web-socket.tgdaosheng.ggff.net
-  security_scheme: tls
-  proto: vless
-  peer: web-socket.tgdaosheng.ggff.net
 - name: ✅ 🏳️_未知_71
   type: vless
   server: 172.67.139.129
