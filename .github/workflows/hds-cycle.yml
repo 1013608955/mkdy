@@ -415,7 +415,7 @@ jobs:
 
       - name: "[3] 开隧道 + 分离执行容器验证 + 轮询结果"
         if: steps.gate.outputs.skip != '1' && env.NOCOMPUTE_SKIP != '1'   # 门卫冗余轮 或 [2] 判定无算力跳过：容器没开/无需本轮，隧道/验证无从谈起
-        timeout-minutes: 14
+        timeout-minutes: 17   # 2026-09-10 #1548：验证 ok 但 push merge-retry（ghproxy 慢）耗到 ~11min，660s 预算+14min 步骤上限双双吃紧，放宽
         run: |
           # 诊断留痕：stdout/stderr 改行缓冲，被 kill 也不丢最后一行
           exec > >(stdbuf -oL cat) 2> >(stdbuf -eL cat)
@@ -424,7 +424,7 @@ jobs:
           # 2026-09-02 run#812 教训：旧 DEADLINE 设在「上传命令」之后，上传一旦卡死，
           # 轮询循环连同硬上限永远轮不到执行，步骤被 14min 超时强杀且毫无 [ERR]/[warn] 留痕。
           T0=$(date +%s)
-          DEADLINE=$(( T0 + 660 ))
+          DEADLINE=$(( T0 + 780 ))   # 660→780（#1548：验证 ~6.5min + push merge-retry 2~4min，660s 会死在 push 半途）
           left() { echo $(( DEADLINE - $(date +%s) )); }
           # 统一 SSH 入口：外置 timeout 兜底。ConnectTimeout/ServerAlive 只能发现「传输层已死」，
           # 拦不住「sshd 活着但会话通道不 EOF / ssh 阻塞在写」这类卡死，故每条 SSH 必须显式 timeout。
@@ -506,10 +506,22 @@ jobs:
             # update-subs 可正常消费，按成功收尾、不触发 [6] 告警。
             # concurrency 全局串行保证窗口内不会有别的轮次推送，T0 过滤只防
             # 上一轮结果迟到落库的极端情形。
-            if timeout 60 git fetch -q origin main 2>/dev/null \
-               && git log --format='%ct %s' HEAD..FETCH_HEAD 2>/dev/null \
-                  | awk -v t0="$T0" '$1+0 >= t0 && $2 == "verify(local):" {f=1} END{exit !f}'; then
+            # 2026-09-10 #1548 加强为两段式：push 被拒后的 merge-retry 走 ghproxy 慢
+            # 路径，结果在 CI 放弃后 ~1min 才落库，单次复核（放弃后仅隔 ~3s）没接住。
+            # 首查未命中 → 等 90s 再查一次再定论（宽限窗口，job 预算内可控）。
+            check_landed() {
+              timeout 60 git fetch -q origin main 2>/dev/null \
+                && git log --format='%ct %s' HEAD..FETCH_HEAD 2>/dev/null \
+                   | awk -v t0="$T0" '$1+0 >= t0 && $2 == "verify(local):" {f=1} END{exit !f}'
+            }
+            if check_landed; then
               echo "[ok] 轮询超时但本轮验证结果已落库远端 main，按成功收尾（不触发失败告警）"
+              exit 0
+            fi
+            echo "[grace] 首查未命中，等 90s 复查一次（#1548：merge-retry 落库比预算慢 ~1min）"
+            sleep 90
+            if check_landed; then
+              echo "[ok] 宽限复查命中：本轮验证结果已落库远端 main，按成功收尾（不触发失败告警）"
               exit 0
             fi
             echo "[ERR] 远端 main 上没有本轮的 verify(local) 结果，维持失败判定"
