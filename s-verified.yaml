@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=113
+# verified=117
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -134,6 +134,7 @@ proxy-groups:
   - ✅ 🇰🇷KR_2|1.5MB/s
   - ✅ 🇬🇧_GB_英国_2
   - ✅ [ermaozi/get_subscribe]🇮🇪_IE_爱尔兰
+  - ✅ 美国+加利福尼亚
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_8|272KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_14|298KB/s|GPT⁺|NF
@@ -144,10 +145,13 @@ proxy-groups:
   - ✅ 🇫🇷FR_4|299KB/s|GPT⁺|NF
   - ✅ 🇯🇵_JP_日本->🇾🇪_YE_也门
   - ✅ [ermaozi/get_subscribe]🇧🇹BT_1|1.8MB/s
-  - ✅ 🏳️_未知_105
   - ✅ 西班牙+V2CROSS.COM
+  - ✅ 🇹🇼 🇨🇳 台湾 | TWN
   - ✅ 🏳️_未知_71
+  - ✅ 🏳️_未知_156
   - ✅ 🏳️_未知_108
+  - ✅ 🏳️_未知_101
+  - ✅ 🏳️_未知_111
   - ✅ 🇷🇺_俄罗斯_117
   - ✅ 🇬🇧 英国 | GBR
   - ✅ 🇷🇺_俄罗斯_56
@@ -250,6 +254,7 @@ proxy-groups:
   - ✅ 🇰🇷KR_2|1.5MB/s
   - ✅ 🇬🇧_GB_英国_2
   - ✅ [ermaozi/get_subscribe]🇮🇪_IE_爱尔兰
+  - ✅ 美国+加利福尼亚
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_8|272KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_14|298KB/s|GPT⁺|NF
@@ -260,10 +265,13 @@ proxy-groups:
   - ✅ 🇫🇷FR_4|299KB/s|GPT⁺|NF
   - ✅ 🇯🇵_JP_日本->🇾🇪_YE_也门
   - ✅ [ermaozi/get_subscribe]🇧🇹BT_1|1.8MB/s
-  - ✅ 🏳️_未知_105
   - ✅ 西班牙+V2CROSS.COM
+  - ✅ 🇹🇼 🇨🇳 台湾 | TWN
   - ✅ 🏳️_未知_71
+  - ✅ 🏳️_未知_156
   - ✅ 🏳️_未知_108
+  - ✅ 🏳️_未知_101
+  - ✅ 🏳️_未知_111
   - ✅ 🇷🇺_俄罗斯_117
   - ✅ 🇬🇧 英国 | GBR
   - ✅ 🇷🇺_俄罗斯_56
@@ -368,6 +376,7 @@ proxy-groups:
   - ✅ 🇰🇷KR_2|1.5MB/s
   - ✅ 🇬🇧_GB_英国_2
   - ✅ [ermaozi/get_subscribe]🇮🇪_IE_爱尔兰
+  - ✅ 美国+加利福尼亚
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_8|272KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_14|298KB/s|GPT⁺|NF
@@ -378,10 +387,13 @@ proxy-groups:
   - ✅ 🇫🇷FR_4|299KB/s|GPT⁺|NF
   - ✅ 🇯🇵_JP_日本->🇾🇪_YE_也门
   - ✅ [ermaozi/get_subscribe]🇧🇹BT_1|1.8MB/s
-  - ✅ 🏳️_未知_105
   - ✅ 西班牙+V2CROSS.COM
+  - ✅ 🇹🇼 🇨🇳 台湾 | TWN
   - ✅ 🏳️_未知_71
+  - ✅ 🏳️_未知_156
   - ✅ 🏳️_未知_108
+  - ✅ 🏳️_未知_101
+  - ✅ 🏳️_未知_111
   - ✅ 🇷🇺_俄罗斯_117
   - ✅ 🇬🇧 英国 | GBR
   - ✅ 🇷🇺_俄罗斯_56
@@ -1524,6 +1536,15 @@ proxies:
   security_scheme: none
   proto: ss
   peer: 54.171.218.140
+- name: ✅ 美国+加利福尼亚
+  type: ss
+  server: 64.177.32.29
+  port: 8388
+  cipher: aes-256-gcm
+  password: wBYiDjDDyFqcBnNl
+  security_scheme: aead
+  proto: ss
+  peer: 64.177.32.29
 - client-fingerprint: chrome
   name: ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   network: ws
@@ -1660,22 +1681,6 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: www.cloudflare.com
-- name: ✅ 🏳️_未知_105
-  type: vless
-  server: 104.21.92.49
-  port: 443
-  uuid: a90c264d-3853-4eef-9a3d-628b2d02d15e
-  tls: true
-  network: ws
-  sni: 7-m19.omAn-linK.KdNS.FR
-  servername: 7-m19.omAn-linK.KdNS.FR
-  ws-opts:
-    path: /CjBjB9sn5pCvaSwScc
-    headers:
-      Host: 7-m19.OmAn-link.kdnS.FR
-  security_scheme: tls
-  proto: vless
-  peer: 7-m19.omAn-linK.KdNS.FR
 - name: ✅ 西班牙+V2CROSS.COM
   type: vless
   server: 150.241.68.208
@@ -1692,6 +1697,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: cf13.rumedia-cdn.com
+- name: ✅ 🇹🇼 🇨🇳 台湾 | TWN
+  type: vless
+  server: 151.242.189.40
+  port: 443
+  uuid: 9b18ccef-b9e0-41d1-8990-9d970569e142
+  tls: true
+  network: ws
+  sni: web-socket.tgdaosheng.ggff.net
+  servername: web-socket.tgdaosheng.ggff.net
+  ws-opts:
+    path: MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN-MTMVPN
+    headers:
+      Host: web-socket.tgdaosheng.ggff.net
+  security_scheme: tls
+  proto: vless
+  peer: web-socket.tgdaosheng.ggff.net
 - name: ✅ 🏳️_未知_71
   type: vless
   server: 172.67.139.129
@@ -1708,6 +1729,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: 7-m20.c79324d6-7c42-4d44-be57-c3e1debe6c59.kdns.fr
+- name: ✅ 🏳️_未知_156
+  type: vless
+  server: 172.67.164.249
+  port: 443
+  uuid: 2240d8f8-898f-4988-8c08-ac724aa06ddb
+  tls: true
+  network: ws
+  sni: 6-m9.e29eacc3-4cf6-48c2-a90e-c53b3da8b1ef.kdns.fr
+  servername: 6-m9.e29eacc3-4cf6-48c2-a90e-c53b3da8b1ef.kdns.fr
+  ws-opts:
+    path: /BzuntJ8qZN0TRKbC8TveMxJ0
+    headers:
+      Host: 6-m9.e29eacc3-4cf6-48c2-a90e-c53b3da8b1ef.kdns.fr
+  security_scheme: tls
+  proto: vless
+  peer: 6-m9.e29eacc3-4cf6-48c2-a90e-c53b3da8b1ef.kdns.fr
 - name: ✅ 🏳️_未知_108
   type: vless
   server: 172.67.196.178
@@ -1724,6 +1761,38 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: 4-m9.pattaya-4.kdns.fr
+- name: ✅ 🏳️_未知_101
+  type: vless
+  server: 172.67.198.209
+  port: 443
+  uuid: 2240d8f8-898f-4988-8c08-ac724aa06ddb
+  tls: true
+  network: ws
+  sni: 2-m9.56e2241d-b6f5-4eb7-8ed9-c89e0e22d6b4.kdns.fr
+  servername: 2-m9.56e2241d-b6f5-4eb7-8ed9-c89e0e22d6b4.kdns.fr
+  ws-opts:
+    path: /BzuntJ8qZN0TRKbC8TveMxJ0
+    headers:
+      Host: 2-m9.56e2241d-b6f5-4eb7-8ed9-c89e0e22d6b4.kdns.fr
+  security_scheme: tls
+  proto: vless
+  peer: 2-m9.56e2241d-b6f5-4eb7-8ed9-c89e0e22d6b4.kdns.fr
+- name: ✅ 🏳️_未知_111
+  type: vless
+  server: 172.67.206.119
+  port: 443
+  uuid: 2240d8f8-898f-4988-8c08-ac724aa06ddb
+  tls: true
+  network: ws
+  sni: 8-m9.fa481bc3-db71-45d0-b251-3cd830fd1b94.kdns.fr
+  servername: 8-m9.fa481bc3-db71-45d0-b251-3cd830fd1b94.kdns.fr
+  ws-opts:
+    path: /BzuntJ8qZN0TRKbC8TveMxJ0
+    headers:
+      Host: 8-m9.fa481bc3-db71-45d0-b251-3cd830fd1b94.kdns.fr
+  security_scheme: tls
+  proto: vless
+  peer: 8-m9.fa481bc3-db71-45d0-b251-3cd830fd1b94.kdns.fr
 - name: ✅ 🇷🇺_俄罗斯_117
   type: vless
   server: 95.163.232.171
