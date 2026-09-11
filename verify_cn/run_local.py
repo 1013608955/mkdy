@@ -416,7 +416,7 @@ def _write_results(results, names, t0):
 
 
 def _push_results(verified, shutdown_after):
-    """git add/commit/push verified.json（3 次重试 + FETCH_HEAD 合并）。"""
+    """git add/commit/push verified.json（最多 5 次重试 + ls-remote 终判）。"""
     _git(["add", "verify_cn/verified.json"])
     code, out = _git(["commit", "-m",
                       f"verify(local): {verified['ok']}/{verified['count']} 节点可用"],
@@ -424,25 +424,48 @@ def _push_results(verified, shutdown_after):
     if "nothing to commit" in out:
         print("[push] verified.json 无变化，跳过提交。")
         return
-    for attempt in range(3):
+    for attempt in range(5):
+        t0 = time.time()
         code, out = _git(["push", "origin", "main"], check=False)
         if code == 0:
             print("[push] 推送成功；GitHub 端 update-subs 将自动合并产出 s-verified.yaml。")
             _maybe_shutdown(shutdown_after)
             return
-        print(f"[push] 第 {attempt+1} 次被拒，合并远端后重试…")
-        _git(["fetch", "origin", "main"], check=False)
-        # 用 FETCH_HEAD 而非 origin/main：本仓库 origin/main 跟踪引用偶发 stuck 在旧
-        # commit（packed-refs/CRLF 老问题，git update-ref 也修不动）。FETCH_HEAD 由
-        # 上面的 fetch 现写，永远是最新真实 tip，避免把陈旧引用合进历史。
-        # -X ours：verify_cn/verified.json 每次整体重写，多验证器并发推送时必冲突，
-        # 取"本地刚实测的最新结果"才正确（本机/云端双验证器场景）。
-        mc, mo = _git(["merge", "--no-edit", "-X", "ours", "FETCH_HEAD"], check=False)
-        if mc != 0:
-            print(f"[push][ERROR] 合并 origin/main 失败（需人工处理）：{mo}",
-                  file=sys.stderr)
-            sys.exit(1)
-    print("[push][ERROR] push 连续 3 次失败。", file=sys.stderr)
+        # 2026-09-11 #1658/#1666 根因：容器→GitHub 直连偶发「上传已到服务端但响应
+        # stall」，push 慢挂 1.5~3.5min 后报错，此时本地与服务端都没问题，fetch+merge
+        # 纯属白等（直连 fetch 本身也要 stall 1~2min），3 次重试全打空、结果搁浅到
+        # 下一轮才被捎带落库。故只有 non-fast-forward（瞬时真拒绝）才需要 fetch+merge；
+        # stall 型失败短等 20s 直接重试 push（每次重试都是全新 HTTP 连接，有自愈机会）。
+        if ("non-fast-forward" in out or "fetch first" in out
+                or "[rejected]" in out):
+            print(f"[push] 第 {attempt+1} 次被拒（non-fast-forward），合并远端后重试…")
+            _git(["fetch", "origin", "main"], check=False)
+            # 用 FETCH_HEAD 而非 origin/main：本仓库 origin/main 跟踪引用偶发 stuck 在旧
+            # commit（packed-refs/CRLF 老问题，git update-ref 也修不动）。FETCH_HEAD 由
+            # 上面的 fetch 现写，永远是最新真实 tip，避免把陈旧引用合进历史。
+            # -X ours：verify_cn/verified.json 每次整体重写，多验证器并发推送时必冲突，
+            # 取"本地刚实测的最新结果"才正确（本机/云端双验证器场景）。
+            mc, mo = _git(["merge", "--no-edit", "-X", "ours", "FETCH_HEAD"], check=False)
+            if mc != 0:
+                print(f"[push][ERROR] 合并 origin/main 失败（需人工处理）：{mo}",
+                      file=sys.stderr)
+                sys.exit(1)
+        else:
+            print(f"[push] 第 {attempt+1} 次失败（疑似响应 stall，耗时 "
+                  f"{time.time()-t0:.0f}s），20s 后重试…")
+            time.sleep(20)
+    # 终判：push 客户端报错 ≠ 服务端没收下（响应 stall 场景服务端可能已更新 ref）。
+    # ls-remote 是极小请求，远比 push/fetch 抗 stall；HEAD 已是远端 tip 的祖先
+    # ⇒ 数据确定已落库，按成功收尾，不再误报失败。
+    lc, lo = _git(["ls-remote", "origin", "main"], check=False)
+    if lc == 0 and lo.strip():
+        remote_tip = lo.split()[0]
+        ac, _ = _git(["merge-base", "--is-ancestor", "HEAD", remote_tip], check=False)
+        if ac == 0:
+            print("[push] push 客户端超时但结果已落库远端（响应 stall），按成功处理。")
+            _maybe_shutdown(shutdown_after)
+            return
+    print("[push][ERROR] push 连续 5 次失败。", file=sys.stderr)
     sys.exit(1)
 
 
