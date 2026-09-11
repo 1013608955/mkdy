@@ -31,8 +31,16 @@ esac
 #    pull 失败 → 本地 main 落后 → push non-fast-forward 连拒 3 次 →
 #    verified.json 更新断链数小时。git 协议直连 GitHub 从容器一直可用，
 #    当初走镜像只是防 raw 文件超时的习惯，git 操作不需要它。
-git pull --ff-only origin main \
-  || echo "[WARN] git pull 失败，沿用本地代码继续"
+#    2026-09-11 #1658：pull 偶发失败会让本地基线落后，第一推必然 non-FF
+#    被拒。加 90s 上限（stall 不空等）+ 1 次重试；再失败交给 run_local 的
+#    push 重试（non-FF 会自动 fetch+merge）自愈。
+PULLED=""
+for i in 1 2; do
+  if timeout 90 git pull --ff-only origin main; then PULLED=1; break; fi
+  echo "[WARN] git pull 第 $i 次失败（或 90s 超时），20s 后重试"
+  sleep 20
+done
+[ -n "$PULLED" ] || echo "[WARN] git pull 两次均失败，沿用本地代码继续（push 阶段会自动合并远端）"
 
 # 4) 迁移保护：杀掉常驻循环（按需模式下由 CI 决定何时再验）
 #    坑（run #863 根因）：run_loop.sh 会 fork 出 `python3 verify_cn/run_local.py`

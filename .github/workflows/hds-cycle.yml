@@ -497,7 +497,19 @@ jobs:
             else
               echo "[ERR] boot_job 以非 0 退出（容器侧验证或推送失败）"
             fi
-            ssh_run 60 "tail -40 $LOG 2>/dev/null" || true
+            TAILBIG=$(ssh_run 60 "tail -100 $LOG 2>/dev/null" || true)
+            echo "----- ci_boot.log 尾 100 行 -----"
+            echo "$TAILBIG"
+            # 2026-09-11 #1658/#1666：容器→GitHub 直连 push 偶发「响应 stall」——
+            # 验证本身已完成（日志有 [done] ... 可用），但 push 连续失败，结果要等
+            # 下一轮容器 boot pull 时才被捎带落库（update-subs 最终可消费，只是延迟
+            # 15~30min）。这类轮次按成功收尾、不触发失败邮件；推送搁浅以 [warn] 留痕。
+            case "$TAILBIG" in
+              *"[done] "*可*)
+                echo "[warn] 验证已完成、仅推送搁浅（网络 stall），结果将由下一轮捎带落库；本轮按成功收尾，不触发失败邮件。"
+                exit 0
+                ;;
+            esac
             # 兜底复核：CI 判失败 ≠ 结果丢失。2026-09-05 run#1088 教训：容器→GitHub
             # 推送卡顿（每次 1.5~3.5min 才失败），push 重试吃光轮询预算，CI 按失败
             # 收场并触发告警；结果却在 CI 放弃后由第 3 次 push 正常落库
