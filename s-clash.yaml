@@ -1,6 +1,6 @@
 # Auto-merged subscription (mkdy) — full Clash config with rules
 # sources: s.txt, s1.txt, s2.txt + s2-clash-1.yaml, s2-clash-2.yaml, s2-clash-3.yaml, s2-clash-4.yaml, s2-clash-5.yaml, s2-clash-6.yaml
-# raw=1127 unique=562 groups=3 rules=516
+# raw=1125 unique=560 groups=3 rules=516
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -509,7 +509,6 @@ proxy-groups:
   - US美国(mibei77.com 米贝节点分享)_67
   - 🇩🇪 德国 | DEU
   - 🇳🇱 荷兰 | NLD_2
-  - 🏳️_未知_45
   - 🇺🇸US_5|290KB/s|YT-NL|GPT⁺|NF|0%
   - ✅ 🇷🇺_俄罗斯_56
   - 🇺🇸US_8|259KB/s|YT-US|GPT⁺|NF|0%
@@ -594,7 +593,6 @@ proxy-groups:
   - 未知3
   - DE 🇩🇪 | @Raydikalx | F00EF1
   - JP 🇯🇵 | @Raydikalx | 45285F
-  - HK 🇭🇰 | @Raydikalx | 661359
   - IR 🇮🇷 | @Raydikalx | D281F5
   - IR 🇮🇷 | @Raydikalx | 0CBEEB
   - HK 🇭🇰 | @Raydikalx | 547626
@@ -1074,7 +1072,6 @@ proxy-groups:
   - US美国(mibei77.com 米贝节点分享)_67
   - 🇩🇪 德国 | DEU
   - 🇳🇱 荷兰 | NLD_2
-  - 🏳️_未知_45
   - 🇺🇸US_5|290KB/s|YT-NL|GPT⁺|NF|0%
   - ✅ 🇷🇺_俄罗斯_56
   - 🇺🇸US_8|259KB/s|YT-US|GPT⁺|NF|0%
@@ -1159,7 +1156,6 @@ proxy-groups:
   - 未知3
   - DE 🇩🇪 | @Raydikalx | F00EF1
   - JP 🇯🇵 | @Raydikalx | 45285F
-  - HK 🇭🇰 | @Raydikalx | 661359
   - IR 🇮🇷 | @Raydikalx | D281F5
   - IR 🇮🇷 | @Raydikalx | 0CBEEB
   - HK 🇭🇰 | @Raydikalx | 547626
@@ -1641,7 +1637,6 @@ proxy-groups:
   - US美国(mibei77.com 米贝节点分享)_67
   - 🇩🇪 德国 | DEU
   - 🇳🇱 荷兰 | NLD_2
-  - 🏳️_未知_45
   - 🇺🇸US_5|290KB/s|YT-NL|GPT⁺|NF|0%
   - ✅ 🇷🇺_俄罗斯_56
   - 🇺🇸US_8|259KB/s|YT-US|GPT⁺|NF|0%
@@ -1726,7 +1721,6 @@ proxy-groups:
   - 未知3
   - DE 🇩🇪 | @Raydikalx | F00EF1
   - JP 🇯🇵 | @Raydikalx | 45285F
-  - HK 🇭🇰 | @Raydikalx | 661359
   - IR 🇮🇷 | @Raydikalx | D281F5
   - IR 🇮🇷 | @Raydikalx | 0CBEEB
   - HK 🇭🇰 | @Raydikalx | 547626
@@ -7596,22 +7590,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: vusr-6aa2cf2b.adhil.uk
-- name: 🏳️_未知_45
-  type: vless
-  server: onetrust.com
-  port: 443
-  uuid: 49b5c5d1-8fb0-4fd2-8129-01bd2178e8d1
-  tls: true
-  network: ws
-  sni: gy-cffc6-node-31z7yxejlog9qfu0.lancelot.dpdns.org
-  servername: gy-cffc6-node-31z7yxejlog9qfu0.lancelot.dpdns.org
-  ws-opts:
-    path: /posts/proxyip=ProxyIP.KR.CMLiussss.net?ed=2560
-    headers:
-      Host: gy-cffc6-node-31z7yxejlog9qfu0.lancelot.dpdns.org
-  security_scheme: tls
-  proto: vless
-  peer: gy-cffc6-node-31z7yxejlog9qfu0.lancelot.dpdns.org
 - alpn:
   - http/1.1
   client-fingerprint: chrome
@@ -8845,19 +8823,6 @@ proxies:
   sni: cc28.goingside.site
   proto: vmess
   peer: cc28.goingside.site
-- name: HK 🇭🇰 | @Raydikalx | 661359
-  type: vmess
-  server: dog-jp.kunlun01dns.com
-  port: 21016
-  uuid: 9464ca40-dd75-3742-a628-d931a9f413b2
-  alterId: 0
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: dog-jp.kunlun01dns.com
-  proto: vmess
-  peer: dog-jp.kunlun01dns.com
 - name: IR 🇮🇷 | @Raydikalx | D281F5
   type: vmess
   server: green.mobonline.info
