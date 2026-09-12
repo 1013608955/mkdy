@@ -84,7 +84,6 @@ proxy-groups:
   - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_8|2.0MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
@@ -126,6 +125,7 @@ proxy-groups:
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ 🇬🇧GB_3|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ 🇷🇺_RU_俄罗斯->🇩🇪_DE_德国
+  - ✅ 🇷🇺_RU_俄罗斯->🇪🇪_EE_爱沙尼亚
   - ✅ [ermaozi/get_subscribe]🇲🇾_MY_马来西亚
   - ✅ 🇫🇷FR_19|338KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_15|374KB/s|YT-US|GPT⁺|NF
@@ -179,7 +179,6 @@ proxy-groups:
   - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_8|2.0MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
@@ -221,6 +220,7 @@ proxy-groups:
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ 🇬🇧GB_3|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ 🇷🇺_RU_俄罗斯->🇩🇪_DE_德国
+  - ✅ 🇷🇺_RU_俄罗斯->🇪🇪_EE_爱沙尼亚
   - ✅ [ermaozi/get_subscribe]🇲🇾_MY_马来西亚
   - ✅ 🇫🇷FR_19|338KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_15|374KB/s|YT-US|GPT⁺|NF
@@ -276,7 +276,6 @@ proxy-groups:
   - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_8|2.0MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
@@ -318,6 +317,7 @@ proxy-groups:
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ 🇬🇧GB_3|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ 🇷🇺_RU_俄罗斯->🇩🇪_DE_德国
+  - ✅ 🇷🇺_RU_俄罗斯->🇪🇪_EE_爱沙尼亚
   - ✅ [ermaozi/get_subscribe]🇲🇾_MY_马来西亚
   - ✅ 🇫🇷FR_19|338KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_15|374KB/s|YT-US|GPT⁺|NF
@@ -1105,13 +1105,6 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
-  port: 443
-  server: 156.146.56.97
-  sin: https://t.me/WangCai2🇨🇳
-  skip-cert-verify: true
-  tls: true
-  type: http
 - name: ✅ 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   port: 8443
   server: 158.247.204.254
@@ -1391,6 +1384,17 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: gta.internet-card.sbs
+- name: ✅ 🇷🇺_RU_俄罗斯->🇪🇪_EE_爱沙尼亚
+  type: hysteria2
+  server: news.gazette.help
+  port: 443
+  password: sOiWCQ2AdIV0OWNuqQVyWp4JZnRxdyLROSjX
+  sni: news.gazette.help
+  skip-cert-verify: true
+  tls: true
+  security_scheme: tls
+  proto: hysteria2
+  peer: news.gazette.help
 - name: ✅ [ermaozi/get_subscribe]🇲🇾_MY_马来西亚
   type: ss
   server: 118.107.222.231
