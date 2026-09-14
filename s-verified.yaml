@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=98
+# verified=100
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -82,6 +82,7 @@ proxy-groups:
   - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
+  - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
@@ -126,6 +127,7 @@ proxy-groups:
   - ✅ 俄罗斯
   - ✅ FR法国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸 美国 | USA_5
+  - ✅ 🇫🇷FR_1|2.7MB/s
   - ✅ 🇬🇧 英国 | GBR_2
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_19|338KB/s|GPT⁺|NF
@@ -183,6 +185,7 @@ proxy-groups:
   - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
+  - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
@@ -227,6 +230,7 @@ proxy-groups:
   - ✅ 俄罗斯
   - ✅ FR法国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸 美国 | USA_5
+  - ✅ 🇫🇷FR_1|2.7MB/s
   - ✅ 🇬🇧 英国 | GBR_2
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_19|338KB/s|GPT⁺|NF
@@ -286,6 +290,7 @@ proxy-groups:
   - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
+  - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
@@ -330,6 +335,7 @@ proxy-groups:
   - ✅ 俄罗斯
   - ✅ FR法国(mibei77.com 米贝节点分享)_3
   - ✅ 🇺🇸 美国 | USA_5
+  - ✅ 🇫🇷FR_1|2.7MB/s
   - ✅ 🇬🇧 英国 | GBR_2
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_19|338KB/s|GPT⁺|NF
@@ -1110,6 +1116,13 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- name: ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
+  port: 443
+  server: 156.146.56.110
+  sin: https://t.me/WangCai2🇨🇳
+  skip-cert-verify: true
+  tls: true
+  type: http
 - name: ✅ 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   port: 8443
   server: 158.247.204.254
@@ -1433,6 +1446,15 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: xship.top
+- name: ✅ 🇫🇷FR_1|2.7MB/s
+  type: ss
+  server: 15.237.218.241
+  port: 443
+  cipher: aes-256-cfb
+  password: amazonskr05
+  security_scheme: none
+  proto: ss
+  peer: 15.237.218.241
 - name: ✅ 🇬🇧 英国 | GBR_2
   type: ss
   server: 158.173.221.214
