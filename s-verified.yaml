@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=96
+# verified=98
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -134,9 +134,11 @@ proxy-groups:
   - ✅ 🇫🇷FR_15|374KB/s|YT-US|GPT⁺|NF
   - ✅ 🇫🇷FR_12|306KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_16|261KB/s|GPT
+  - ✅ HK香港(mibei77.com 米贝节点分享)_6
   - ✅ 🇷🇺_俄罗斯_117
   - ✅ 🇷🇺_俄罗斯_37
   - ✅ 🇺🇸US_4|2.4MB/s|YT-US|GPT⁺-US|GM-US
+  - ✅ DE 🇩🇪 | @Raydikalx | EC21A7
   - ✅ 🇭🇰_香港_40
   - ✅ 🇭🇰_香港_42
   - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
@@ -233,9 +235,11 @@ proxy-groups:
   - ✅ 🇫🇷FR_15|374KB/s|YT-US|GPT⁺|NF
   - ✅ 🇫🇷FR_12|306KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_16|261KB/s|GPT
+  - ✅ HK香港(mibei77.com 米贝节点分享)_6
   - ✅ 🇷🇺_俄罗斯_117
   - ✅ 🇷🇺_俄罗斯_37
   - ✅ 🇺🇸US_4|2.4MB/s|YT-US|GPT⁺-US|GM-US
+  - ✅ DE 🇩🇪 | @Raydikalx | EC21A7
   - ✅ 🇭🇰_香港_40
   - ✅ 🇭🇰_香港_42
   - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
@@ -334,9 +338,11 @@ proxy-groups:
   - ✅ 🇫🇷FR_15|374KB/s|YT-US|GPT⁺|NF
   - ✅ 🇫🇷FR_12|306KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_16|261KB/s|GPT
+  - ✅ HK香港(mibei77.com 米贝节点分享)_6
   - ✅ 🇷🇺_俄罗斯_117
   - ✅ 🇷🇺_俄罗斯_37
   - ✅ 🇺🇸US_4|2.4MB/s|YT-US|GPT⁺-US|GM-US
+  - ✅ DE 🇩🇪 | @Raydikalx | EC21A7
   - ✅ 🇭🇰_香港_40
   - ✅ 🇭🇰_香港_42
   - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
@@ -1514,6 +1520,22 @@ proxies:
     headers:
       User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36
     path: /assignment
+- name: ✅ HK香港(mibei77.com 米贝节点分享)_6
+  type: vless
+  server: 172.67.205.153
+  port: 443
+  uuid: 7e26fd8f-d75a-473d-84ba-9f4e3f47d086
+  tls: true
+  network: ws
+  sni: 1-m20.c98a10b6-5ab2-4974-8750-c24cffb2c622.kdns.fr
+  servername: 1-m20.c98a10b6-5ab2-4974-8750-c24cffb2c622.kdns.fr
+  ws-opts:
+    path: /8qMLgNapWf6SBxo8fhQlVPYO
+    headers:
+      Host: 1-m20.c98a10b6-5ab2-4974-8750-c24cffb2c622.kdns.fr
+  security_scheme: tls
+  proto: vless
+  peer: 1-m20.c98a10b6-5ab2-4974-8750-c24cffb2c622.kdns.fr
 - name: ✅ 🇷🇺_俄罗斯_117
   type: vless
   server: 95.163.232.171
@@ -1568,6 +1590,24 @@ proxies:
     host: xuius.907737.xyz
     mode: auto
     path: /
+- name: ✅ DE 🇩🇪 | @Raydikalx | EC21A7
+  type: vmess
+  server: 111.88.74.167
+  port: 443
+  uuid: db50a20e-7ff5-4e70-948f-17cc9ca7c154
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /api/v1/gpu-stream/socket
+    headers:
+      Host: renderer-stream-2-62.mirra.now
+  servername: renderer-stream-2-62.mirra.now
+  security_scheme: tls
+  sni: renderer-stream-2-62.mirra.now
+  proto: vmess
+  peer: renderer-stream-2-62.mirra.now
 - name: ✅ 🇭🇰_香港_40
   type: vmess
   server: v10.hdacd.com
