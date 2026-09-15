@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=117
+# verified=115
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -147,6 +147,7 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_24
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ HK香港(mibei77.com 米贝节点分享)_4
+  - ✅ 美国+CloudFlare节点_2
   - ✅ HK香港(mibei77.com 米贝节点分享)_5
   - ✅ US美国(mibei77.com 米贝节点分享)_21
   - ✅ US美国(mibei77.com 米贝节点分享)_12
@@ -159,9 +160,6 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_22
   - ✅ 🇷🇺_俄罗斯_117
   - ✅ 🇷🇺_俄罗斯_37
-  - ✅ 🇭🇰_香港_40
-  - ✅ 🇭🇰_香港_42
-  - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
 - name: 自动选择
   type: url-test
   proxies:
@@ -267,6 +265,7 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_24
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ HK香港(mibei77.com 米贝节点分享)_4
+  - ✅ 美国+CloudFlare节点_2
   - ✅ HK香港(mibei77.com 米贝节点分享)_5
   - ✅ US美国(mibei77.com 米贝节点分享)_21
   - ✅ US美国(mibei77.com 米贝节点分享)_12
@@ -279,9 +278,6 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_22
   - ✅ 🇷🇺_俄罗斯_117
   - ✅ 🇷🇺_俄罗斯_37
-  - ✅ 🇭🇰_香港_40
-  - ✅ 🇭🇰_香港_42
-  - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -389,6 +385,7 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_24
   - ✅ US美国(mibei77.com 米贝节点分享)_18
   - ✅ HK香港(mibei77.com 米贝节点分享)_4
+  - ✅ 美国+CloudFlare节点_2
   - ✅ HK香港(mibei77.com 米贝节点分享)_5
   - ✅ US美国(mibei77.com 米贝节点分享)_21
   - ✅ US美国(mibei77.com 米贝节点分享)_12
@@ -401,9 +398,6 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_22
   - ✅ 🇷🇺_俄罗斯_117
   - ✅ 🇷🇺_俄罗斯_37
-  - ✅ 🇭🇰_香港_40
-  - ✅ 🇭🇰_香港_42
-  - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -1788,6 +1782,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: feixiang1981.ccwu.cc
+- name: ✅ 美国+CloudFlare节点_2
+  type: vless
+  server: 104.21.86.133
+  port: 443
+  uuid: 1aa96574-c28b-4ee9-855d-ebdbbf1f7e90
+  tls: true
+  network: ws
+  sni: 1-m13.AyutThAya-9.KDNs.fr
+  servername: 1-m13.AyutThAya-9.KDNs.fr
+  ws-opts:
+    path: /ED3ZQPu7lqyeDGD58KabZ
+    headers:
+      Host: 1-m13.aYuTThaYA-9.kDNS.fR
+  security_scheme: tls
+  proto: vless
+  peer: 1-m13.AyutThAya-9.KDNs.fr
 - name: ✅ HK香港(mibei77.com 米贝节点分享)_5
   type: vless
   server: 104.26.12.193
@@ -1968,42 +1978,3 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: pr-media.pepro.site
-- name: ✅ 🇭🇰_香港_40
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
-- name: ✅ 🇭🇰_香港_42
-  type: vmess
-  server: v35.hdacd.com
-  port: 30835
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v35.hdacd.com
-  proto: vmess
-  peer: v35.hdacd.com
-- name: ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
-  type: vmess
-  server: v4.hdacd.com
-  port: 30804
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v4.hdacd.com
-  proto: vmess
-  peer: v4.hdacd.com
