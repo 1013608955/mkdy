@@ -61,7 +61,6 @@ proxy-groups:
   - ✅ 🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES
   - ✅ 🇯🇵JP_1|3.1MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ 🇰🇷KR_3|4.8MB/s|YT-KR|GPT⁺-KR|GM-KR
-  - ✅ 🇹🇭TH_1|2.5MB/s|YT-TH|GPT⁺-TH|GM-TH
   - ✅ 🇧🇪BE_1|4.7MB/s|TK-BE|GPT⁺-BE|GM-BE
   - ✅ 🇸🇪SE_1|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ ❓Other_45|2.1MB/s|TK-AT|GPT⁺-AT|GM-AT
@@ -132,8 +131,9 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇺🇸 美国 | USA
   - ✅ 🏳️_未知_96
+  - ✅ 🇯🇵_JP_日本
   - ✅ 🇹🇼 🇨🇳 台湾 | TWN
-  - ✅ FI 🇫🇮 | @Raydikalx | 447A55
+  - ✅ 香港|@ripaojiedian
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇺🇸_US_美国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - ✅ CA 🇨🇦 | @Raydikalx | 618C2B
@@ -156,7 +156,6 @@ proxy-groups:
   - ✅ 🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES
   - ✅ 🇯🇵JP_1|3.1MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ 🇰🇷KR_3|4.8MB/s|YT-KR|GPT⁺-KR|GM-KR
-  - ✅ 🇹🇭TH_1|2.5MB/s|YT-TH|GPT⁺-TH|GM-TH
   - ✅ 🇧🇪BE_1|4.7MB/s|TK-BE|GPT⁺-BE|GM-BE
   - ✅ 🇸🇪SE_1|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ ❓Other_45|2.1MB/s|TK-AT|GPT⁺-AT|GM-AT
@@ -227,8 +226,9 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇺🇸 美国 | USA
   - ✅ 🏳️_未知_96
+  - ✅ 🇯🇵_JP_日本
   - ✅ 🇹🇼 🇨🇳 台湾 | TWN
-  - ✅ FI 🇫🇮 | @Raydikalx | 447A55
+  - ✅ 香港|@ripaojiedian
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇺🇸_US_美国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - ✅ CA 🇨🇦 | @Raydikalx | 618C2B
@@ -253,7 +253,6 @@ proxy-groups:
   - ✅ 🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES
   - ✅ 🇯🇵JP_1|3.1MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ 🇰🇷KR_3|4.8MB/s|YT-KR|GPT⁺-KR|GM-KR
-  - ✅ 🇹🇭TH_1|2.5MB/s|YT-TH|GPT⁺-TH|GM-TH
   - ✅ 🇧🇪BE_1|4.7MB/s|TK-BE|GPT⁺-BE|GM-BE
   - ✅ 🇸🇪SE_1|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ ❓Other_45|2.1MB/s|TK-AT|GPT⁺-AT|GM-AT
@@ -324,8 +323,9 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇺🇸 美国 | USA
   - ✅ 🏳️_未知_96
+  - ✅ 🇯🇵_JP_日本
   - ✅ 🇹🇼 🇨🇳 台湾 | TWN
-  - ✅ FI 🇫🇮 | @Raydikalx | 447A55
+  - ✅ 香港|@ripaojiedian
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇺🇸_US_美国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - ✅ CA 🇨🇦 | @Raydikalx | 618C2B
@@ -953,12 +953,6 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ 🇹🇭TH_1|2.5MB/s|YT-TH|GPT⁺-TH|GM-TH
-  port: 443
-  server: 141.98.19.221
-  skip-cert-verify: true
-  tls: true
-  type: http
 - name: ✅ 🇧🇪BE_1|4.7MB/s|TK-BE|GPT⁺-BE|GM-BE
   port: 443
   server: 146.70.176.242
@@ -1486,6 +1480,19 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: or.mirikhan.dpdns.org
+- name: ✅ 🇯🇵_JP_日本
+  type: vmess
+  server: 38.47.121.14
+  port: 49432
+  uuid: ce94f204-ffa6-4fa8-a1dc-ecfccfd463cb
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: http
+  security_scheme: none
+  sni: 38.47.121.14
+  proto: vmess
+  peer: 38.47.121.14
 - name: ✅ 🇹🇼 🇨🇳 台湾 | TWN
   type: vmess
   server: 82259754d625.oylfmxz.cn
@@ -1503,24 +1510,19 @@ proxies:
   sni: 82259754d625.oylfmxz.cn
   proto: vmess
   peer: 82259754d625.oylfmxz.cn
-- name: ✅ FI 🇫🇮 | @Raydikalx | 447A55
+- name: ✅ 香港|@ripaojiedian
   type: vmess
-  server: 95.81.126.119
-  port: 443
-  uuid: db50a20e-7ff5-4e70-948f-17cc9ca7c154
-  alterId: 0
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
   cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /api/v1/gpu-stream/socket
-    headers:
-      Host: renderer-stream-2-62.mirra.now
-  servername: renderer-stream-2-62.mirra.now
-  security_scheme: tls
-  sni: renderer-stream-2-62.mirra.now
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.hdacd.com
   proto: vmess
-  peer: renderer-stream-2-62.mirra.now
+  peer: v10.hdacd.com
 - name: ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇺🇸_US_美国
   type: vmess
   server: v4.hdacd.com
