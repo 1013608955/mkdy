@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=90
+# verified=91
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -114,7 +114,7 @@ proxy-groups:
   - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
+  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
@@ -132,8 +132,9 @@ proxy-groups:
   - ✅ 美国+V2CROSS.COM
   - ✅ 美国+V2CROSS.COM_2
   - ✅ 🏳️_未知_96
-  - ✅ 🇵🇱 波兰 | POL
   - ✅ 🇱🇻 拉脱维亚 | LVA
+  - ✅ [1808.ga]🇫🇷
+  - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
 - name: 自动选择
   type: url-test
@@ -207,7 +208,7 @@ proxy-groups:
   - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
+  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
@@ -225,8 +226,9 @@ proxy-groups:
   - ✅ 美国+V2CROSS.COM
   - ✅ 美国+V2CROSS.COM_2
   - ✅ 🏳️_未知_96
-  - ✅ 🇵🇱 波兰 | POL
   - ✅ 🇱🇻 拉脱维亚 | LVA
+  - ✅ [1808.ga]🇫🇷
+  - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   url: http://www.gstatic.com/generate_204
   interval: 86400
@@ -302,7 +304,7 @@ proxy-groups:
   - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
+  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
@@ -320,8 +322,9 @@ proxy-groups:
   - ✅ 美国+V2CROSS.COM
   - ✅ 美国+V2CROSS.COM_2
   - ✅ 🏳️_未知_96
-  - ✅ 🇵🇱 波兰 | POL
   - ✅ 🇱🇻 拉脱维亚 | LVA
+  - ✅ [1808.ga]🇫🇷
+  - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -1303,9 +1306,9 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
+- name: ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
   port: 443
-  server: 82.102.25.50
+  server: 82.102.25.210
   sin: https://t.me/WangCai2🇨🇳
   skip-cert-verify: true
   tls: true
@@ -1501,22 +1504,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: or.mirikhan.dpdns.org
-- name: ✅ 🇵🇱 波兰 | POL
-  type: vless
-  server: 94.183.157.223
-  port: 8090
-  uuid: 818eaf39-544f-4d1d-977e-87be7e33eecf
-  tls: true
-  network: ws
-  sni: askuhgfdsg.space.coupons
-  servername: askuhgfdsg.space.coupons
-  ws-opts:
-    path: /ws
-    headers:
-      Host: askuhgfdsg.space.coupons
-  security_scheme: tls
-  proto: vless
-  peer: askuhgfdsg.space.coupons
 - name: ✅ 🇱🇻 拉脱维亚 | LVA
   type: vless
   server: atomic-prase23893.my-vm.work
@@ -1531,6 +1518,32 @@ proxies:
   security_scheme: none
   proto: vless
   peer: atomic-prase23893.my-vm.work
+- name: ✅ [1808.ga]🇫🇷
+  type: vmess
+  server: v35.hdacd.com
+  port: 30835
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v35.hdacd.com
+  proto: vmess
+  peer: v35.hdacd.com
+- name: ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
+  type: vmess
+  server: v4.hdacd.com
+  port: 30804
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v4.hdacd.com
+  proto: vmess
+  peer: v4.hdacd.com
 - name: ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   type: vmess
   server: v6.hdacd.com
