@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=94
+# verified=93
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -134,7 +134,6 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_76
   - ✅ US美国(mibei77.com 米贝节点分享)_45
   - ✅ 🇺🇸 美国 | USA_8
-  - ✅ 🇭🇰HK_1|2.5MB/s
   - ✅ HK香港(mibei77.com 米贝节点分享)
   - ✅ 香港|@ripaojiedian
   - ✅ [1808.ga]🇫🇷
@@ -231,7 +230,6 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_76
   - ✅ US美国(mibei77.com 米贝节点分享)_45
   - ✅ 🇺🇸 美国 | USA_8
-  - ✅ 🇭🇰HK_1|2.5MB/s
   - ✅ HK香港(mibei77.com 米贝节点分享)
   - ✅ 香港|@ripaojiedian
   - ✅ [1808.ga]🇫🇷
@@ -330,7 +328,6 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_76
   - ✅ US美国(mibei77.com 米贝节点分享)_45
   - ✅ 🇺🇸 美国 | USA_8
-  - ✅ 🇭🇰HK_1|2.5MB/s
   - ✅ HK香港(mibei77.com 米贝节点分享)
   - ✅ 香港|@ripaojiedian
   - ✅ [1808.ga]🇫🇷
@@ -1519,23 +1516,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: 8.CS2-2-1.KDnS.fR
-- name: ✅ 🇭🇰HK_1|2.5MB/s
-  type: vless
-  server: 23.249.18.144
-  port: 8581
-  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
-  tls: true
-  network: ws
-  sni: cdn8848.776676.xyz
-  servername: cdn8848.776676.xyz
-  skip-cert-verify: true
-  ws-opts:
-    path: /channels/act?ed=2560fp=chrome
-    headers:
-      Host: cdn8848.776676.xyz
-  security_scheme: tls
-  proto: vless
-  peer: cdn8848.776676.xyz
 - name: ✅ HK香港(mibei77.com 米贝节点分享)
   type: vmess
   server: 124.151.45.60
