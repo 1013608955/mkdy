@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=87
+# verified=91
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -124,13 +124,17 @@ proxy-groups:
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ 俄罗斯
   - ✅ 英国+V2CROSS.COM
+  - ✅ 🇺🇸 美国 | USA_5
+  - ✅ [ermaozi/get_subscribe]🇫🇷_FR_法国
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_15|374KB/s|YT-US|GPT⁺|NF
   - ✅ 🇫🇷FR_12|306KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ US美国(mibei77.com 米贝节点分享)_75
+  - ✅ US美国(mibei77.com 米贝节点分享)_36
   - ✅ 🇺🇸 美国 | USA_8
   - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ [1808.ga]🇫🇷
   - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
 - name: 自动选择
   type: url-test
@@ -214,13 +218,17 @@ proxy-groups:
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ 俄罗斯
   - ✅ 英国+V2CROSS.COM
+  - ✅ 🇺🇸 美国 | USA_5
+  - ✅ [ermaozi/get_subscribe]🇫🇷_FR_法国
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_15|374KB/s|YT-US|GPT⁺|NF
   - ✅ 🇫🇷FR_12|306KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ US美国(mibei77.com 米贝节点分享)_75
+  - ✅ US美国(mibei77.com 米贝节点分享)_36
   - ✅ 🇺🇸 美国 | USA_8
   - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ [1808.ga]🇫🇷
   - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
   url: http://www.gstatic.com/generate_204
   interval: 86400
@@ -306,13 +314,17 @@ proxy-groups:
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ 俄罗斯
   - ✅ 英国+V2CROSS.COM
+  - ✅ 🇺🇸 美国 | USA_5
+  - ✅ [ermaozi/get_subscribe]🇫🇷_FR_法国
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_15|374KB/s|YT-US|GPT⁺|NF
   - ✅ 🇫🇷FR_12|306KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ US美国(mibei77.com 米贝节点分享)_75
+  - ✅ US美国(mibei77.com 米贝节点分享)_36
   - ✅ 🇺🇸 美国 | USA_8
   - ✅ HK香港(mibei77.com 米贝节点分享)
+  - ✅ [1808.ga]🇫🇷
   - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -1364,6 +1376,26 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: news.gazette.help
+- name: ✅ 🇺🇸 美国 | USA_5
+  type: hysteria2
+  server: starlink-ft.251313.xyz
+  port: 443
+  password: https://xship.top
+  sni: xship.top
+  skip-cert-verify: true
+  tls: true
+  security_scheme: tls
+  proto: hysteria2
+  peer: xship.top
+- name: ✅ [ermaozi/get_subscribe]🇫🇷_FR_法国
+  type: ss
+  server: 15.237.137.134
+  port: 443
+  cipher: aes-256-cfb
+  password: amazonskr05
+  security_scheme: none
+  proto: ss
+  peer: 15.237.137.134
 - client-fingerprint: chrome
   name: ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   network: ws
@@ -1436,6 +1468,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: 5-M19.NortH-kOrea-FloW.kDns.FR
+- name: ✅ US美国(mibei77.com 米贝节点分享)_36
+  type: vless
+  server: 172.67.145.113
+  port: 443
+  uuid: ef5c5d5c-08c6-4549-b05e-d1ff29ecc8ba
+  tls: true
+  network: ws
+  sni: 6-m16.aYuttHAyA2028.Kdns.Fr
+  servername: 6-m16.aYuttHAyA2028.Kdns.Fr
+  ws-opts:
+    path: /JRr6VGcSLFc034DC6sDbwyWJLbB
+    headers:
+      Host: 6-M16.AYUTThaYA2028.KdNs.fr
+  security_scheme: tls
+  proto: vless
+  peer: 6-m16.aYuttHAyA2028.Kdns.Fr
 - name: ✅ 🇺🇸 美国 | USA_8
   type: vless
   server: 172.67.165.32
@@ -1465,6 +1513,19 @@ proxies:
   sni: 124.151.45.60
   proto: vmess
   peer: 124.151.45.60
+- name: ✅ [1808.ga]🇫🇷
+  type: vmess
+  server: v35.hdacd.com
+  port: 30835
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v35.hdacd.com
+  proto: vmess
+  peer: v35.hdacd.com
 - name: ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
   type: vmess
   server: v4.hdacd.com
