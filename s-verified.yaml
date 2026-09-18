@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=93
+# verified=91
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -121,7 +121,6 @@ proxy-groups:
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ 🇳🇱NL_1|2.5MB/s
-  - ✅ 俄罗斯
   - ✅ 阿联酋
   - ✅ 🇺🇸 美国 | USA_2
   - ✅ 🇫🇷 法国 | FRA_2
@@ -133,9 +132,8 @@ proxy-groups:
   - ✅ [peasoft/NoMoreWalls]🇺🇸US_2|1.4MB/s
   - ✅ 🇺🇸 美国 | USA_5
   - ✅ 🇳🇱 荷兰 | NLD
-  - ✅ 🇨🇳_CN_中国->🇺🇸_US_美国
   - ✅ FI 🇫🇮 | @Raydikalx | A64CB9
-  - ✅ 🇧🇦_波斯尼亚和黑塞哥维那_115
+  - ✅ 🇭🇰_香港_16
   - ✅ 🇭🇰_HK_中国香港->🇩🇪_DE_德国
   - ✅ 🇭🇰_香港_20
 - name: 自动选择
@@ -217,7 +215,6 @@ proxy-groups:
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ 🇳🇱NL_1|2.5MB/s
-  - ✅ 俄罗斯
   - ✅ 阿联酋
   - ✅ 🇺🇸 美国 | USA_2
   - ✅ 🇫🇷 法国 | FRA_2
@@ -229,9 +226,8 @@ proxy-groups:
   - ✅ [peasoft/NoMoreWalls]🇺🇸US_2|1.4MB/s
   - ✅ 🇺🇸 美国 | USA_5
   - ✅ 🇳🇱 荷兰 | NLD
-  - ✅ 🇨🇳_CN_中国->🇺🇸_US_美国
   - ✅ FI 🇫🇮 | @Raydikalx | A64CB9
-  - ✅ 🇧🇦_波斯尼亚和黑塞哥维那_115
+  - ✅ 🇭🇰_香港_16
   - ✅ 🇭🇰_HK_中国香港->🇩🇪_DE_德国
   - ✅ 🇭🇰_香港_20
   url: http://www.gstatic.com/generate_204
@@ -315,7 +311,6 @@ proxy-groups:
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ 🇳🇱NL_1|2.5MB/s
-  - ✅ 俄罗斯
   - ✅ 阿联酋
   - ✅ 🇺🇸 美国 | USA_2
   - ✅ 🇫🇷 法国 | FRA_2
@@ -327,9 +322,8 @@ proxy-groups:
   - ✅ [peasoft/NoMoreWalls]🇺🇸US_2|1.4MB/s
   - ✅ 🇺🇸 美国 | USA_5
   - ✅ 🇳🇱 荷兰 | NLD
-  - ✅ 🇨🇳_CN_中国->🇺🇸_US_美国
   - ✅ FI 🇫🇮 | @Raydikalx | A64CB9
-  - ✅ 🇧🇦_波斯尼亚和黑塞哥维那_115
+  - ✅ 🇭🇰_香港_16
   - ✅ 🇭🇰_HK_中国香港->🇩🇪_DE_德国
   - ✅ 🇭🇰_香港_20
   url: http://www.gstatic.com/generate_204
@@ -1360,17 +1354,6 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: www.microsoft.com
-- name: ✅ 俄罗斯
-  type: hysteria2
-  server: gta.internet-card.sbs
-  port: 443
-  password: mkL3AfdSZIpTWRB9TcWPn9vywPGN89MRHg3ToRDj
-  sni: gta.internet-card.sbs
-  skip-cert-verify: true
-  tls: true
-  security_scheme: tls
-  proto: hysteria2
-  peer: gta.internet-card.sbs
 - name: ✅ 阿联酋
   type: hysteria2
   server: news.gazette.help
@@ -1501,16 +1484,6 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 158.101.211.111
-- name: ✅ 🇨🇳_CN_中国->🇺🇸_US_美国
-  type: vless
-  server: us22.sofast.live
-  port: 58011
-  uuid: 0afc6426-606c-48e7-bd70-3c424a416842
-  tls: false
-  network: tcp
-  security_scheme: none
-  proto: vless
-  peer: us22.sofast.live
 - name: ✅ FI 🇫🇮 | @Raydikalx | A64CB9
   type: vmess
   server: 185.230.190.29
@@ -1529,23 +1502,19 @@ proxies:
   sni: renderer-stream-2-62.mirra.now
   proto: vmess
   peer: renderer-stream-2-62.mirra.now
-- name: ✅ 🇧🇦_波斯尼亚和黑塞哥维那_115
+- name: ✅ 🇭🇰_香港_16
   type: vmess
-  server: 185.99.2.175
-  port: 443
-  uuid: db50a20e-7ff5-4e70-948f-17cc9ca7c154
-  alterId: 0
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
   cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /api/v1/gpu-stream/socket
-    headers:
-      Host: renderer-stream-2-62.mirra.now
-  security_scheme: tls
-  sni: renderer-stream-2-62.mirra.now
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.hdacd.com
   proto: vmess
-  peer: renderer-stream-2-62.mirra.now
+  peer: v10.hdacd.com
 - name: ✅ 🇭🇰_HK_中国香港->🇩🇪_DE_德国
   type: vmess
   server: v33.hdacd.com
