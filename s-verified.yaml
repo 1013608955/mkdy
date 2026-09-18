@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=91
+# verified=90
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -132,7 +132,6 @@ proxy-groups:
   - ✅ [peasoft/NoMoreWalls]🇺🇸US_2|1.4MB/s
   - ✅ 🇺🇸 美国 | USA_5
   - ✅ 🇳🇱 荷兰 | NLD
-  - ✅ FI 🇫🇮 | @Raydikalx | A64CB9
   - ✅ 🇭🇰_香港_16
   - ✅ 🇭🇰_HK_中国香港->🇩🇪_DE_德国
   - ✅ 🇭🇰_香港_20
@@ -226,7 +225,6 @@ proxy-groups:
   - ✅ [peasoft/NoMoreWalls]🇺🇸US_2|1.4MB/s
   - ✅ 🇺🇸 美国 | USA_5
   - ✅ 🇳🇱 荷兰 | NLD
-  - ✅ FI 🇫🇮 | @Raydikalx | A64CB9
   - ✅ 🇭🇰_香港_16
   - ✅ 🇭🇰_HK_中国香港->🇩🇪_DE_德国
   - ✅ 🇭🇰_香港_20
@@ -322,7 +320,6 @@ proxy-groups:
   - ✅ [peasoft/NoMoreWalls]🇺🇸US_2|1.4MB/s
   - ✅ 🇺🇸 美国 | USA_5
   - ✅ 🇳🇱 荷兰 | NLD
-  - ✅ FI 🇫🇮 | @Raydikalx | A64CB9
   - ✅ 🇭🇰_香港_16
   - ✅ 🇭🇰_HK_中国香港->🇩🇪_DE_德国
   - ✅ 🇭🇰_香港_20
@@ -1484,24 +1481,6 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 158.101.211.111
-- name: ✅ FI 🇫🇮 | @Raydikalx | A64CB9
-  type: vmess
-  server: 185.230.190.29
-  port: 443
-  uuid: db50a20e-7ff5-4e70-948f-17cc9ca7c154
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /api/v1/gpu-stream/socket
-    headers:
-      Host: renderer-stream-2-62.mirra.now
-  servername: renderer-stream-2-62.mirra.now
-  security_scheme: tls
-  sni: renderer-stream-2-62.mirra.now
-  proto: vmess
-  peer: renderer-stream-2-62.mirra.now
 - name: ✅ 🇭🇰_香港_16
   type: vmess
   server: v10.hdacd.com
