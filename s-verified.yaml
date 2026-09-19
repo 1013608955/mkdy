@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=85
+# verified=86
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -48,7 +48,6 @@ proxy-groups:
   - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇦🇺AU_2|3.0MB/s|YT-AU|GPT⁺|GM-AU
   - ✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU
-  - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇦🇺AU_4|3.2MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
   - ✅ ❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG
@@ -128,6 +127,8 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_10
   - ✅ 🇫🇷FR_17|257KB/s|GPT⁺
   - ✅ JP日本(mibei77.com 米贝节点分享)
+  - ✅ 🇧🇿_伯利兹_434
+  - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - ✅ 🏳️_未知_340
 - name: 自动选择
@@ -136,7 +137,6 @@ proxy-groups:
   - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇦🇺AU_2|3.0MB/s|YT-AU|GPT⁺|GM-AU
   - ✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU
-  - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇦🇺AU_4|3.2MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
   - ✅ ❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG
@@ -216,6 +216,8 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_10
   - ✅ 🇫🇷FR_17|257KB/s|GPT⁺
   - ✅ JP日本(mibei77.com 米贝节点分享)
+  - ✅ 🇧🇿_伯利兹_434
+  - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - ✅ 🏳️_未知_340
   url: http://www.gstatic.com/generate_204
@@ -226,7 +228,6 @@ proxy-groups:
   - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇦🇺AU_2|3.0MB/s|YT-AU|GPT⁺|GM-AU
   - ✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU
-  - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇦🇺AU_4|3.2MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
   - ✅ ❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG
@@ -306,6 +307,8 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_10
   - ✅ 🇫🇷FR_17|257KB/s|GPT⁺
   - ✅ JP日本(mibei77.com 米贝节点分享)
+  - ✅ 🇧🇿_伯利兹_434
+  - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - ✅ 🏳️_未知_340
   url: http://www.gstatic.com/generate_204
@@ -845,13 +848,6 @@ proxies:
 - name: ✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU
   port: 9443
   server: 103.107.197.146
-  skip-cert-verify: true
-  tls: true
-  type: http
-- name: ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
-  port: 443
-  server: 103.107.198.226
-  sin: https://t.me/WangCai2🇨🇳
   skip-cert-verify: true
   tls: true
   type: http
@@ -1432,6 +1428,35 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: cdn8848.776676.xyz
+- name: ✅ 🇧🇿_伯利兹_434
+  type: vless
+  server: 202.181.177.8
+  port: 8443
+  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
+  tls: true
+  network: ws
+  sni: cdn8848.776676.xyz
+  servername: cdn8848.776676.xyz
+  ws-opts:
+    path: /channels/act
+    headers:
+      Host: cdn8848.776676.xyz
+  security_scheme: tls
+  proto: vless
+  peer: cdn8848.776676.xyz
+- name: ✅ 香港|@ripaojiedian
+  type: vmess
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v10.hdacd.com
+  proto: vmess
+  peer: v10.hdacd.com
 - name: ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   type: vmess
   server: v6.hdacd.com
