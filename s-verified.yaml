@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=87
+# verified=85
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -127,9 +127,7 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇫🇷FR_17|257KB/s|GPT⁺
   - ✅ JP日本(mibei77.com 米贝节点分享)
-  - ✅ 🇧🇿_伯利兹_434
   - ✅ TW 🇹🇼 | @Raydikalx | 4F0C8F
-  - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - ✅ 🏳️_未知_340
 - name: 自动选择
@@ -217,9 +215,7 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇫🇷FR_17|257KB/s|GPT⁺
   - ✅ JP日本(mibei77.com 米贝节点分享)
-  - ✅ 🇧🇿_伯利兹_434
   - ✅ TW 🇹🇼 | @Raydikalx | 4F0C8F
-  - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - ✅ 🏳️_未知_340
   url: http://www.gstatic.com/generate_204
@@ -309,9 +305,7 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇫🇷FR_17|257KB/s|GPT⁺
   - ✅ JP日本(mibei77.com 米贝节点分享)
-  - ✅ 🇧🇿_伯利兹_434
   - ✅ TW 🇹🇼 | @Raydikalx | 4F0C8F
-  - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - ✅ 🏳️_未知_340
   url: http://www.gstatic.com/generate_204
@@ -1423,22 +1417,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: cdn8848.776676.xyz
-- name: ✅ 🇧🇿_伯利兹_434
-  type: vless
-  server: 202.181.177.8
-  port: 8443
-  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
-  tls: true
-  network: ws
-  sni: cdn8848.776676.xyz
-  servername: cdn8848.776676.xyz
-  ws-opts:
-    path: /channels/act
-    headers:
-      Host: cdn8848.776676.xyz
-  security_scheme: tls
-  proto: vless
-  peer: cdn8848.776676.xyz
 - name: ✅ TW 🇹🇼 | @Raydikalx | 4F0C8F
   type: vmess
   server: dee2309db4944c248b6d4672c6641e25.oylfmxz.cn
@@ -1457,19 +1435,6 @@ proxies:
   sni: dee2309db4944c248b6d4672c6641e25.oylfmxz.cn
   proto: vmess
   peer: dee2309db4944c248b6d4672c6641e25.oylfmxz.cn
-- name: ✅ 香港|@ripaojiedian
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
 - name: ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   type: vmess
   server: v6.hdacd.com
