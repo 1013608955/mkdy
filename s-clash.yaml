@@ -1,6 +1,6 @@
 # Auto-merged subscription (mkdy) — full Clash config with rules
 # sources: s.txt, s1.txt, s2.txt + s2-clash-1.yaml, s2-clash-2.yaml, s2-clash-3.yaml, s2-clash-4.yaml, s2-clash-5.yaml, s2-clash-6.yaml
-# raw=1116 unique=553 groups=3 rules=516
+# raw=1117 unique=554 groups=3 rules=516
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -588,6 +588,7 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | 2EDE11
   - CN 🇨🇳 | @Raydikalx | EA8CD3
   - CN 🇨🇳 | @Raydikalx | 9754ED
+  - 🇭🇰_香港_12
   - HK 🇭🇰 | @Raydikalx | E2644D
   - 🇺🇸US-162.0.232.36-1136
   - DE 🇩🇪 | @Raydikalx | F354F2
@@ -1144,6 +1145,7 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | 2EDE11
   - CN 🇨🇳 | @Raydikalx | EA8CD3
   - CN 🇨🇳 | @Raydikalx | 9754ED
+  - 🇭🇰_香港_12
   - HK 🇭🇰 | @Raydikalx | E2644D
   - 🇺🇸US-162.0.232.36-1136
   - DE 🇩🇪 | @Raydikalx | F354F2
@@ -1702,6 +1704,7 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | 2EDE11
   - CN 🇨🇳 | @Raydikalx | EA8CD3
   - CN 🇨🇳 | @Raydikalx | 9754ED
+  - 🇭🇰_香港_12
   - HK 🇭🇰 | @Raydikalx | E2644D
   - 🇺🇸US-162.0.232.36-1136
   - DE 🇩🇪 | @Raydikalx | F354F2
@@ -8781,6 +8784,19 @@ proxies:
   sni: cu4.ainivp.com
   proto: vmess
   peer: cu4.ainivp.com
+- name: 🇭🇰_香港_12
+  type: vmess
+  server: dog-hk.kunlun01dns.com
+  port: 21019
+  uuid: 9464ca40-dd75-3742-a628-d931a9f413b2
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: dog-hk.kunlun01dns.com
+  proto: vmess
+  peer: dog-hk.kunlun01dns.com
 - name: HK 🇭🇰 | @Raydikalx | E2644D
   type: vmess
   server: ex1ogt73nzpqkac2.v.3dns.vip
