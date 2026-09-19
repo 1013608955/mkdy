@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=85
+# verified=84
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -84,6 +84,7 @@ proxy-groups:
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
+  - ✅ ❓Other_23|2.7MB/s|GPT-US
   - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
@@ -126,8 +127,6 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_10
   - ✅ 🇫🇷FR_17|257KB/s|GPT⁺
   - ✅ JP日本(mibei77.com 米贝节点分享)
-  - ✅ 🇯🇵JP_1|1.1MB/s
-  - ✅ 🇸🇪_瑞典_441
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - ✅ 🏳️_未知_340
 - name: 自动选择
@@ -172,6 +171,7 @@ proxy-groups:
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
+  - ✅ ❓Other_23|2.7MB/s|GPT-US
   - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
@@ -214,8 +214,6 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_10
   - ✅ 🇫🇷FR_17|257KB/s|GPT⁺
   - ✅ JP日本(mibei77.com 米贝节点分享)
-  - ✅ 🇯🇵JP_1|1.1MB/s
-  - ✅ 🇸🇪_瑞典_441
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - ✅ 🏳️_未知_340
   url: http://www.gstatic.com/generate_204
@@ -262,6 +260,7 @@ proxy-groups:
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
+  - ✅ ❓Other_23|2.7MB/s|GPT-US
   - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
@@ -304,8 +303,6 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_10
   - ✅ 🇫🇷FR_17|257KB/s|GPT⁺
   - ✅ JP日本(mibei77.com 米贝节点分享)
-  - ✅ 🇯🇵JP_1|1.1MB/s
-  - ✅ 🇸🇪_瑞典_441
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - ✅ 🏳️_未知_340
   url: http://www.gstatic.com/generate_204
@@ -1084,6 +1081,13 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- name: ✅ ❓Other_23|2.7MB/s|GPT-US
+  port: 443
+  server: 167.88.60.242
+  sin: https://t.me/WangCai2🇨🇳
+  skip-cert-verify: true
+  tls: true
+  type: http
 - name: ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   port: 9443
   server: 181.215.52.122
@@ -1413,39 +1417,6 @@ proxies:
   servername: cdn8848.776676.xyz
   ws-opts:
     path: /episode/files?ed=2560
-    headers:
-      Host: cdn8848.776676.xyz
-  security_scheme: tls
-  proto: vless
-  peer: cdn8848.776676.xyz
-- name: ✅ 🇯🇵JP_1|1.1MB/s
-  type: vless
-  server: 64.176.60.226
-  port: 443
-  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
-  tls: true
-  network: ws
-  sni: cdn8848.776676.xyz
-  servername: cdn8848.776676.xyz
-  skip-cert-verify: true
-  ws-opts:
-    path: /documents?ed=2560fp=chrome
-    headers:
-      Host: cdn8848.776676.xyz
-  security_scheme: tls
-  proto: vless
-  peer: cdn8848.776676.xyz
-- name: ✅ 🇸🇪_瑞典_441
-  type: vless
-  server: 84.32.217.120
-  port: 8443
-  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
-  tls: true
-  network: ws
-  sni: cdn8848.776676.xyz
-  servername: cdn8848.776676.xyz
-  ws-opts:
-    path: /channels/act
     headers:
       Host: cdn8848.776676.xyz
   security_scheme: tls
