@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=99
+# verified=100
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -126,6 +126,7 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA_2
   - ✅ 🇫🇷 法国 | FRA_2
   - ✅ 🇩🇪_DE_德国
+  - ✅ 🇺🇸US_1|1.5MB/s
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_12|306KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_16|261KB/s|GPT
@@ -228,6 +229,7 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA_2
   - ✅ 🇫🇷 法国 | FRA_2
   - ✅ 🇩🇪_DE_德国
+  - ✅ 🇺🇸US_1|1.5MB/s
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_12|306KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_16|261KB/s|GPT
@@ -332,6 +334,7 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA_2
   - ✅ 🇫🇷 法国 | FRA_2
   - ✅ 🇩🇪_DE_德国
+  - ✅ 🇺🇸US_1|1.5MB/s
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_12|306KB/s|GPT⁺|NF
   - ✅ 🇫🇷FR_16|261KB/s|GPT
@@ -1428,6 +1431,15 @@ proxies:
   security_scheme: none
   proto: ss
   peer: 18.194.210.177
+- name: ✅ 🇺🇸US_1|1.5MB/s
+  type: ss
+  server: 3.141.200.225
+  port: 443
+  cipher: aes-256-cfb
+  password: amazonskr05
+  security_scheme: none
+  proto: ss
+  peer: 3.141.200.225
 - client-fingerprint: chrome
   name: ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
   network: ws
