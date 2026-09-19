@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=86
+# verified=84
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -82,7 +82,6 @@ proxy-groups:
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
@@ -127,7 +126,6 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇫🇷FR_17|257KB/s|GPT⁺
   - ✅ JP日本(mibei77.com 米贝节点分享)
-  - ✅ 🇧🇿_伯利兹_434
   - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - ✅ 🏳️_未知_340
@@ -171,7 +169,6 @@ proxy-groups:
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
@@ -216,7 +213,6 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇫🇷FR_17|257KB/s|GPT⁺
   - ✅ JP日本(mibei77.com 米贝节点分享)
-  - ✅ 🇧🇿_伯利兹_434
   - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - ✅ 🏳️_未知_340
@@ -262,7 +258,6 @@ proxy-groups:
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
@@ -307,7 +302,6 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇫🇷FR_17|257KB/s|GPT⁺
   - ✅ JP日本(mibei77.com 米贝节点分享)
-  - ✅ 🇧🇿_伯利兹_434
   - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - ✅ 🏳️_未知_340
@@ -1075,13 +1069,6 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
-  port: 443
-  server: 156.146.56.97
-  sin: https://t.me/WangCai2🇨🇳
-  skip-cert-verify: true
-  tls: true
-  type: http
 - name: ✅ 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   port: 8443
   server: 158.247.204.254
@@ -1415,22 +1402,6 @@ proxies:
   servername: cdn8848.776676.xyz
   ws-opts:
     path: /episode/files?ed=2560
-    headers:
-      Host: cdn8848.776676.xyz
-  security_scheme: tls
-  proto: vless
-  peer: cdn8848.776676.xyz
-- name: ✅ 🇧🇿_伯利兹_434
-  type: vless
-  server: 202.181.177.8
-  port: 8443
-  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
-  tls: true
-  network: ws
-  sni: cdn8848.776676.xyz
-  servername: cdn8848.776676.xyz
-  ws-opts:
-    path: /channels/act
     headers:
       Host: cdn8848.776676.xyz
   security_scheme: tls
