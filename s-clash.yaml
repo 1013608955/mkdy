@@ -1,6 +1,6 @@
 # Auto-merged subscription (mkdy) — full Clash config with rules
 # sources: s.txt, s1.txt, s2.txt + s2-clash-1.yaml, s2-clash-2.yaml, s2-clash-3.yaml, s2-clash-4.yaml, s2-clash-5.yaml, s2-clash-6.yaml
-# raw=1120 unique=567 groups=3 rules=516
+# raw=1122 unique=568 groups=3 rules=516
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -233,7 +233,7 @@ proxy-groups:
   - 🇭🇰HK_3|1.6MB/s
   - 🇭🇰HK_1|1.3MB/s
   - 🇸🇬SG_1|1.0MB/s
-  - 🇺🇸 美国3
+  - '[ermaozi/get_subscribe]美国3|@ripaojiedian'
   - US美国(mibei77.com 米贝节点分享)_47
   - US美国(mibei77.com 米贝节点分享)_67
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
@@ -346,6 +346,7 @@ proxy-groups:
   - 🇺🇸_美国_18
   - 🇯🇵 日本 | JPN_4
   - 🇳🇱_荷兰_21
+  - 🇺🇸 美国 | USA
   - 🇳🇱_荷兰_301
   - 🇫🇷 法国 | FRA
   - 🇨🇿 捷克 | CZE
@@ -803,7 +804,7 @@ proxy-groups:
   - 🇭🇰HK_3|1.6MB/s
   - 🇭🇰HK_1|1.3MB/s
   - 🇸🇬SG_1|1.0MB/s
-  - 🇺🇸 美国3
+  - '[ermaozi/get_subscribe]美国3|@ripaojiedian'
   - US美国(mibei77.com 米贝节点分享)_47
   - US美国(mibei77.com 米贝节点分享)_67
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
@@ -916,6 +917,7 @@ proxy-groups:
   - 🇺🇸_美国_18
   - 🇯🇵 日本 | JPN_4
   - 🇳🇱_荷兰_21
+  - 🇺🇸 美国 | USA
   - 🇳🇱_荷兰_301
   - 🇫🇷 法国 | FRA
   - 🇨🇿 捷克 | CZE
@@ -1375,7 +1377,7 @@ proxy-groups:
   - 🇭🇰HK_3|1.6MB/s
   - 🇭🇰HK_1|1.3MB/s
   - 🇸🇬SG_1|1.0MB/s
-  - 🇺🇸 美国3
+  - '[ermaozi/get_subscribe]美国3|@ripaojiedian'
   - US美国(mibei77.com 米贝节点分享)_47
   - US美国(mibei77.com 米贝节点分享)_67
   - ✅ 🇫🇷FR_3|314KB/s|GPT⁺|NF
@@ -1488,6 +1490,7 @@ proxy-groups:
   - 🇺🇸_美国_18
   - 🇯🇵 日本 | JPN_4
   - 🇳🇱_荷兰_21
+  - 🇺🇸 美国 | USA
   - 🇳🇱_荷兰_301
   - 🇫🇷 法国 | FRA
   - 🇨🇿 捷克 | CZE
@@ -3657,13 +3660,18 @@ proxies:
   server: mn.qwer-cn.org
   type: ss
   udp: true
-- name: 🇺🇸 美国3
+- name: '[ermaozi/get_subscribe]美国3|@ripaojiedian'
+  type: trojan
   server: 100.42.228.109
   port: 443
-  type: trojan
   password: BxceQaOe
-  sni: t.me%2Fripaojiedian
+  tls: true
+  network: tcp
+  sni: t.me/ripaojiedian
   skip-cert-verify: true
+  security_scheme: tls
+  proto: trojan
+  peer: t.me/ripaojiedian
 - name: US美国(mibei77.com 米贝节点分享)_47
   type: trojan
   server: 104.16.174.101
@@ -5263,6 +5271,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: api-maps.yandex.ru
+- name: 🇺🇸 美国 | USA
+  type: vless
+  server: 146.235.230.165
+  port: 443
+  uuid: 47fcef29-ab4e-4aa6-932b-d95a18f28a4e
+  tls: true
+  network: ws
+  sni: hszme.xax0.x8p.hh.vavava.kdns.fr
+  servername: hszme.xax0.x8p.hh.vavava.kdns.fr
+  ws-opts:
+    path: /?ed=2560
+    headers:
+      Host: hszme.xax0.x8p.hh.vavava.kdns.fr
+  security_scheme: tls
+  proto: vless
+  peer: hszme.xax0.x8p.hh.vavava.kdns.fr
 - name: 🇳🇱_荷兰_301
   type: vless
   server: 147.90.229.204
