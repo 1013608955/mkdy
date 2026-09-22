@@ -129,6 +129,11 @@ jobs:
           SESSION
 
       - name: "[2] 查状态 + 按需开机（2 次尝试 · 共享轮询预算 · 僵死态恢复 · 无算力跳过）"
+        # 2026-09-22 审查（I-1）：本步骤原先没有 timeout-minutes，而 [1]（含 timeout 170）
+        # + apt 重试 + 两轮轮询的最坏路径已贴近 24min；新增的私钥重试（内置 DEADLINE=300s）
+        # 再叠加就可能顶穿 30min 的 job 上限——job 被取消时 [4] 关机（always()）不会执行，
+        # 容器将留在 Running 空烧核时。故给出 25min 的确定性上限。
+        timeout-minutes: 25
         if: steps.gate.outputs.skip != '1'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -355,9 +360,33 @@ jobs:
           fi
 
           echo "===== 重置并获取 SSH 私钥（需容器开机）====="
-          echo yes | tools/hds_session.sh devenv ssh-key-reset --instance-id="$TARGET_INSTANCE" > /tmp/reset.log 2>&1 || true
-          echo "--- reset 输出尾 ---"
-          tail -5 /tmp/reset.log
+          # 2026-09-22 run#2777 根因修复：旧写法
+          #   `echo yes | ... ssh-key-reset ... > /tmp/reset.log 2>&1 || true`
+          # 把平台限流错误（Too many requests）整个吞掉——既不重试也不留任何标记，
+          # 一路走到 [3] 的 chmod 才炸：日志里只有一行 `chmod: cannot access ...`，
+          # 零病因，且把本应按「跳过、不告警」收尾的轮次升级成真失败 + 失败告警邮件。
+          # 现交给带退避重试的 tools/hds_key_reset.sh，以「私钥文件是否真实落盘」为唯一判据：
+          #   退出 0  → 私钥已就绪（chmod 已由脚本完成），本轮继续；
+          #   退出 10 → 重试耗尽且末次错误为平台限流（瞬时故障）→ 按既有跳过语义收尾；
+          #   退出其他 → 真失败，照常向上失败（不放宽任何真实故障的判定）。
+          KEY_RESET_RC=0
+          # 外置 timeout 兜底：脚本自身有 DEADLINE=300s 的内置上限，这里再加一层，
+          # 保证本阶段耗时确定有界（124 = 被此处打断，同属平台侧瞬时故障）。
+          timeout -k 5 420 bash tools/hds_key_reset.sh "$TARGET_INSTANCE" || KEY_RESET_RC=$?
+          if [ "$KEY_RESET_RC" -eq 10 ] || [ "$KEY_RESET_RC" -eq 124 ]; then
+            echo "[keyreset] 私钥不可得（rc=$KEY_RESET_RC，平台瞬时故障）；本轮按跳过处理（不告警），下轮自动重试。"
+            # 容器已开机却本轮用不上：best-effort 关机释放核时（与无算力跳过同口径）
+            tools/hds_session.sh devenv stop --instance-id="$TARGET_INSTANCE" </dev/null >/dev/null 2>&1 || true
+            echo "NOCOMPUTE_SKIP=1" >> "$GITHUB_ENV"
+            # 病因留痕（不改 NOCOMPUTE_SKIP 的兼容语义）：[2b] 的连击计数与告警文案据此可
+            # 区分「平台限流致私钥不可得」与「真无算力」，避免误报「已连续 N 轮无算力」。
+            echo "KEY_RESET_SKIP=1" >> "$GITHUB_ENV"
+            exit 0
+          fi
+          if [ "$KEY_RESET_RC" -ne 0 ]; then
+            echo "[ERR] 私钥重置失败（退出码=$KEY_RESET_RC，非平台限流类故障），不按跳过处理"
+            exit "$KEY_RESET_RC"
+          fi
 
           if [ "${{ inputs.action || 'wake_verify' }}" = "wake" ]; then
             echo "[done] 仅开机模式，保持 Running"; exit 0
@@ -404,14 +433,18 @@ jobs:
           echo "连续无算力跳过轮数: $CONSEC（阈值 $N）"
           [ "$CONSEC" -eq "$N" ] || { echo "[skip] 未达阈值，不告警"; exit 0; }
 
-          MSG="mkdy 容器已连续 $N 轮（约 $((N*15/60)) 小时+）无算力被跳过。平台算力持续短缺，请关注华为云区域容量或考虑更换规格。最近一次: $RUN_URL"
+          # 病因区分（2026-09-22）：本轮若是「平台限流致私钥不可得」的跳过（KEY_RESET_SKIP=1），
+          # 文案不得断言「无算力」——否则连击达到阈值时会把病因误报给用户。
+          CAUSE="无算力"
+          [ "${KEY_RESET_SKIP:-0}" = "1" ] && CAUSE="SSH 私钥不可得（平台限流/瞬时故障）"
+          MSG="mkdy 容器已连续 $N 轮（约 $((N*15/60)) 小时+）因平台侧原因被跳过（本轮病因：$CAUSE）。请关注华为云区域容量/服务状态。最近一次: $RUN_URL"
           if [ -n "$SERVERCHAN_KEY" ]; then
-            curl -s --max-time 15 -o /dev/null               "https://sctapi.ftqq.com/${SERVERCHAN_KEY}.send?title=mkdy连续无算力&desp=$(printf %s "$MSG" | sed s/&/%26/g)" || true
+            curl -s --max-time 15 -o /dev/null               "https://sctapi.ftqq.com/${SERVERCHAN_KEY}.send?title=mkdy连续跳过(${CAUSE})&desp=$(printf %s "$MSG" | sed s/&/%26/g)" || true
           fi
           if [ -n "$TG_BOT_TOKEN" ] && [ -n "$TG_CHAT_ID" ]; then
             curl -s --max-time 15 -o /dev/null               "https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage"               -d chat_id="$TG_CHAT_ID" --data-urlencode text="$MSG" || true
           fi
-          echo "[alert] 已发送连续无算力兜底告警"
+          echo "[alert] 已发送连续跳过兜底告警（病因：$CAUSE）"
 
       - name: "[3] 开隧道 + 分离执行容器验证 + 轮询结果"
         if: steps.gate.outputs.skip != '1' && env.NOCOMPUTE_SKIP != '1'   # 门卫冗余轮 或 [2] 判定无算力跳过：容器没开/无需本轮，隧道/验证无从谈起
@@ -459,7 +492,14 @@ jobs:
           # reset 成功后私钥固定生成在 ~/.devenv/.ssh/IdentityFile/<实例ID>
           KEYFILE="$HOME/.devenv/.ssh/IdentityFile/$TGT"
           echo "KEYFILE=$KEYFILE"
-          [ -n "$KEYFILE" ] || { echo "[ERR] 私钥未找到"; exit 1; }
+          # 死代码修复（run#2777）：原 `[ -n "$KEYFILE" ]` 判的是「变量非空」，而变量上一行
+          # 刚被赋成固定路径字符串，恒为真——守卫从未生效，失败实际发生在下一行 chmod，
+          # 只留一行裸英文报错。改为判断文件真实存在，并打印路径与处置说明。
+          if [ ! -f "$KEYFILE" ]; then
+            echo "[ERR] 私钥未找到：$KEYFILE（文件不存在；[2] 的私钥重置应已保证其存在）"
+            echo "[ERR] 常见原因：平台限流致 ssh-key-reset 未成功、或实例切换后私钥未随之生成。"
+            exit 1
+          fi
           chmod 600 "$KEYFILE"
 
           # 上传并真正分离启动 boot_job（关键修正，run#812 根因）：
