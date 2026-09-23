@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-09-23T12:37:50Z",
+ "generated_at": "2026-09-23T12:50:59Z",
  "target": "https://www.google.com/generate_204",
- "count": 477,
- "ok": 77,
+ "count": 486,
+ "ok": 73,
  "nodes": [
   {
    "name": "✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU",
    "proto": "http",
-   "ok": true,
-   "latency": 1.373,
+   "ok": false,
+   "latency": 0.0,
    "proxy": {
     "name": "✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU",
     "port": 443,
@@ -18,13 +18,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 1373ms)"
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "✅ 🇦🇺AU_2|3.0MB/s|YT-AU|GPT⁺|GM-AU",
    "proto": "http",
    "ok": true,
-   "latency": 0.239,
+   "latency": 0.22,
    "proxy": {
     "name": "✅ 🇦🇺AU_2|3.0MB/s|YT-AU|GPT⁺|GM-AU",
     "port": 443,
@@ -34,13 +34,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 239ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 220ms)"
   },
   {
    "name": "✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU",
    "proto": "http",
    "ok": true,
-   "latency": 0.32,
+   "latency": 0.334,
    "proxy": {
     "name": "✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU",
     "port": 9443,
@@ -49,13 +49,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 320ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 334ms)"
   },
   {
    "name": "✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG",
    "proto": "http",
-   "ok": true,
-   "latency": 0.343,
+   "ok": false,
+   "latency": 0.0,
    "proxy": {
     "name": "✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG",
     "port": 443,
@@ -65,13 +65,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 343ms)"
+   "detail": "Timeout"
   },
   {
    "name": "✅ 🇦🇺AU_4|3.2MB/s|YT-AU|GPT⁺-AU|GM-AU",
    "proto": "http",
    "ok": true,
-   "latency": 0.233,
+   "latency": 0.252,
    "proxy": {
     "name": "✅ 🇦🇺AU_4|3.2MB/s|YT-AU|GPT⁺-AU|GM-AU",
     "port": 443,
@@ -81,13 +81,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 233ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 252ms)"
   },
   {
    "name": "✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN",
    "proto": "http",
    "ok": true,
-   "latency": 0.302,
+   "latency": 0.357,
    "proxy": {
     "name": "✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN",
     "port": 443,
@@ -97,7 +97,7 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 302ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 357ms)"
   },
   {
    "name": "❓Other_9|1.0MB/s|TK-US|YT-US|GPT⁺-US",
@@ -115,25 +115,25 @@
    "detail": "An error occurred in the delay test"
   },
   {
-   "name": "✅ ❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG",
+   "name": "❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG",
    "proto": "http",
-   "ok": false,
-   "latency": 0.0,
+   "ok": true,
+   "latency": 0.244,
    "proxy": {
-    "name": "✅ ❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG",
+    "name": "❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG",
     "port": 443,
     "server": "109.204.88.17",
     "skip-cert-verify": true,
     "tls": true,
     "type": "http"
    },
-   "detail": "Timeout"
+   "detail": "ok via https://www.google.com/generate_204 (delay 244ms)"
   },
   {
    "name": "✅ ❓Other_43|2.1MB/s|YT-US|GPT⁺-LV",
    "proto": "http",
-   "ok": true,
-   "latency": 0.22,
+   "ok": false,
+   "latency": 0.0,
    "proxy": {
     "name": "✅ ❓Other_43|2.1MB/s|YT-US|GPT⁺-LV",
     "port": 443,
@@ -143,13 +143,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 220ms)"
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "✅ 🇯🇵JP_2|6.5MB/s|YT-US|GPT⁺-JP|GM-US",
    "proto": "http",
    "ok": true,
-   "latency": 0.104,
+   "latency": 0.1,
    "proxy": {
     "name": "✅ 🇯🇵JP_2|6.5MB/s|YT-US|GPT⁺-JP|GM-US",
     "port": 1443,
@@ -158,13 +158,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 104ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 100ms)"
   },
   {
    "name": "✅ 🇯🇵JP_3|8.4MB/s|YT-US|GPT⁺-JP|GM-US",
    "proto": "http",
    "ok": true,
-   "latency": 0.116,
+   "latency": 0.098,
    "proxy": {
     "name": "✅ 🇯🇵JP_3|8.4MB/s|YT-US|GPT⁺-JP|GM-US",
     "port": 1443,
@@ -173,13 +173,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 116ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 98ms)"
   },
   {
    "name": "✅ ❓Other_18|2.2MB/s|TK-US|YT-US|GPT⁺-US",
    "proto": "http",
    "ok": true,
-   "latency": 0.247,
+   "latency": 0.229,
    "proxy": {
     "name": "✅ ❓Other_18|2.2MB/s|TK-US|YT-US|GPT⁺-US",
     "port": 443,
@@ -188,13 +188,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 247ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 229ms)"
   },
   {
    "name": "✅ 🇪🇸ES_2|3.4MB/s|TK-ES|GPT⁺-ES|GM-ES",
    "proto": "http",
    "ok": true,
-   "latency": 0.26,
+   "latency": 0.258,
    "proxy": {
     "name": "✅ 🇪🇸ES_2|3.4MB/s|TK-ES|GPT⁺-ES|GM-ES",
     "port": 443,
@@ -204,15 +204,15 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 260ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 258ms)"
   },
   {
-   "name": "✅ 🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES",
+   "name": "🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES",
    "proto": "http",
-   "ok": false,
-   "latency": 0.0,
+   "ok": true,
+   "latency": 0.254,
    "proxy": {
-    "name": "✅ 🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES",
+    "name": "🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES",
     "port": 443,
     "server": "130.195.250.34",
     "sin": "https://t.me/WangCai2🇨🇳",
@@ -220,13 +220,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "Timeout"
+   "detail": "ok via https://www.google.com/generate_204 (delay 254ms)"
   },
   {
    "name": "✅ 🇯🇵JP_1|3.1MB/s|YT-JP|GPT⁺-JP|GM-JP",
    "proto": "http",
    "ok": true,
-   "latency": 0.121,
+   "latency": 0.071,
    "proxy": {
     "name": "✅ 🇯🇵JP_1|3.1MB/s|YT-JP|GPT⁺-JP|GM-JP",
     "port": 343,
@@ -235,13 +235,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 121ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 71ms)"
   },
   {
    "name": "✅ 🇰🇷KR_3|4.8MB/s|YT-KR|GPT⁺-KR|GM-KR",
    "proto": "http",
    "ok": true,
-   "latency": 0.674,
+   "latency": 0.114,
    "proxy": {
     "name": "✅ 🇰🇷KR_3|4.8MB/s|YT-KR|GPT⁺-KR|GM-KR",
     "port": 443,
@@ -250,13 +250,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 674ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 114ms)"
   },
   {
    "name": "✅ 🇹🇭TH_1|2.5MB/s|YT-TH|GPT⁺-TH|GM-TH",
    "proto": "http",
    "ok": true,
-   "latency": 0.262,
+   "latency": 0.277,
    "proxy": {
     "name": "✅ 🇹🇭TH_1|2.5MB/s|YT-TH|GPT⁺-TH|GM-TH",
     "port": 443,
@@ -265,13 +265,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 262ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 277ms)"
   },
   {
    "name": "✅ 🇧🇪BE_1|4.7MB/s|TK-BE|GPT⁺-BE|GM-BE",
    "proto": "http",
    "ok": true,
-   "latency": 0.194,
+   "latency": 0.17,
    "proxy": {
     "name": "✅ 🇧🇪BE_1|4.7MB/s|TK-BE|GPT⁺-BE|GM-BE",
     "port": 443,
@@ -281,13 +281,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 194ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 170ms)"
   },
   {
    "name": "✅ 🇸🇪SE_1|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE",
    "proto": "http",
    "ok": true,
-   "latency": 0.205,
+   "latency": 0.206,
    "proxy": {
     "name": "✅ 🇸🇪SE_1|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE",
     "port": 443,
@@ -297,13 +297,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 205ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 206ms)"
   },
   {
    "name": "✅ ❓Other_45|2.1MB/s|TK-AT|GPT⁺-AT|GM-AT",
    "proto": "http",
-   "ok": true,
-   "latency": 0.269,
+   "ok": false,
+   "latency": 0.0,
    "proxy": {
     "name": "✅ ❓Other_45|2.1MB/s|TK-AT|GPT⁺-AT|GM-AT",
     "port": 443,
@@ -313,15 +313,15 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 269ms)"
+   "detail": "An error occurred in the delay test"
   },
   {
-   "name": "✅ 🇸🇬SG_3|3.4MB/s|TK-SG|YT-ID|GPT⁺-SG|GM-ID",
+   "name": "🇸🇬SG_3|3.4MB/s|TK-SG|YT-ID|GPT⁺-SG|GM-ID",
    "proto": "http",
    "ok": false,
    "latency": 0.0,
    "proxy": {
-    "name": "✅ 🇸🇬SG_3|3.4MB/s|TK-SG|YT-ID|GPT⁺-SG|GM-ID",
+    "name": "🇸🇬SG_3|3.4MB/s|TK-SG|YT-ID|GPT⁺-SG|GM-ID",
     "password": "e4b72b531a2d10900519",
     "port": 443,
     "server": "146.70.29.45",
@@ -336,7 +336,7 @@
    "name": "✅ 🇭🇰HK_1|5.0MB/s|YT-HK",
    "proto": "http",
    "ok": true,
-   "latency": 0.23,
+   "latency": 0.292,
    "proxy": {
     "name": "✅ 🇭🇰HK_1|5.0MB/s|YT-HK",
     "port": 443,
@@ -346,13 +346,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 230ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 292ms)"
   },
   {
    "name": "✅ ❓Other_49|2.2MB/s|TK-FR|GPT⁺-FR|GM-FR",
    "proto": "http",
    "ok": true,
-   "latency": 0.244,
+   "latency": 0.252,
    "proxy": {
     "name": "✅ ❓Other_49|2.2MB/s|TK-FR|GPT⁺-FR|GM-FR",
     "port": 443,
@@ -362,13 +362,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 244ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 252ms)"
   },
   {
    "name": "✅ ❓Other_44|2.2MB/s|TK-US|YT-US|GPT⁺-US|GM-US",
    "proto": "http",
    "ok": true,
-   "latency": 0.236,
+   "latency": 0.311,
    "proxy": {
     "name": "✅ ❓Other_44|2.2MB/s|TK-US|YT-US|GPT⁺-US|GM-US",
     "port": 443,
@@ -377,13 +377,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 236ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 311ms)"
   },
   {
    "name": "✅ ❓Other_13|2.5MB/s|TK-DE|GPT⁺-DE|GM-DE",
    "proto": "http",
    "ok": true,
-   "latency": 0.224,
+   "latency": 0.212,
    "proxy": {
     "name": "✅ ❓Other_13|2.5MB/s|TK-DE|GPT⁺-DE|GM-DE",
     "port": 443,
@@ -393,13 +393,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 224ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 212ms)"
   },
   {
    "name": "✅ ❓Other_50|2.4MB/s|GPT⁺-DE|GM-DE",
    "proto": "http",
    "ok": true,
-   "latency": 0.251,
+   "latency": 0.233,
    "proxy": {
     "name": "✅ ❓Other_50|2.4MB/s|GPT⁺-DE|GM-DE",
     "port": 443,
@@ -409,13 +409,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 251ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 233ms)"
   },
   {
    "name": "✅ ❓Other_51|2.3MB/s|TK-DE|GPT⁺-DE|GM-DE",
    "proto": "http",
    "ok": true,
-   "latency": 0.231,
+   "latency": 0.242,
    "proxy": {
     "name": "✅ ❓Other_51|2.3MB/s|TK-DE|GPT⁺-DE|GM-DE",
     "port": 443,
@@ -425,13 +425,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 231ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 242ms)"
   },
   {
    "name": "✅ ❓Other_28|2.9MB/s|TK-NL|GPT⁺-NL|GM-NL",
    "proto": "http",
    "ok": true,
-   "latency": 0.835,
+   "latency": 0.216,
    "proxy": {
     "name": "✅ ❓Other_28|2.9MB/s|TK-NL|GPT⁺-NL|GM-NL",
     "port": 443,
@@ -441,13 +441,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 835ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 216ms)"
   },
   {
    "name": "✅ ❓Other_38|1.8MB/s|TK-US|YT-US|GPT⁺-US|GM-US",
    "proto": "http",
    "ok": true,
-   "latency": 0.232,
+   "latency": 0.23,
    "proxy": {
     "name": "✅ ❓Other_38|1.8MB/s|TK-US|YT-US|GPT⁺-US|GM-US",
     "port": 9443,
@@ -456,30 +456,30 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 232ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 230ms)"
   },
   {
-   "name": "❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH",
+   "name": "✅ ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH",
    "proto": "http",
    "ok": true,
-   "latency": 0.791,
+   "latency": 0.208,
    "proxy": {
-    "name": "❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH",
+    "name": "✅ ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH",
     "port": 9443,
     "server": "149.88.27.46",
     "skip-cert-verify": true,
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 791ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 208ms)"
   },
   {
-   "name": "✅ ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB",
+   "name": "❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB",
    "proto": "http",
    "ok": false,
    "latency": 0.0,
    "proxy": {
-    "name": "✅ ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB",
+    "name": "❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB",
     "port": 9443,
     "server": "149.88.99.209",
     "skip-cert-verify": true,
@@ -492,7 +492,7 @@
    "name": "✅ 🇨🇦CA_1|2.3MB/s|YT-CA|GPT⁺-CA|GM-CA",
    "proto": "http",
    "ok": true,
-   "latency": 0.231,
+   "latency": 0.226,
    "proxy": {
     "name": "✅ 🇨🇦CA_1|2.3MB/s|YT-CA|GPT⁺-CA|GM-CA",
     "port": 443,
@@ -501,13 +501,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 231ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 226ms)"
   },
   {
    "name": "✅ ❓Other_64|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA",
    "proto": "http",
    "ok": true,
-   "latency": 0.225,
+   "latency": 0.252,
    "proxy": {
     "name": "✅ ❓Other_64|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA",
     "port": 443,
@@ -516,13 +516,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 225ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 252ms)"
   },
   {
    "name": "✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE",
    "proto": "http",
    "ok": true,
-   "latency": 0.194,
+   "latency": 0.221,
    "proxy": {
     "name": "✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE",
     "port": 443,
@@ -531,13 +531,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 194ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 221ms)"
   },
   {
    "name": "✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG",
    "proto": "http",
-   "ok": true,
-   "latency": 1.119,
+   "ok": false,
+   "latency": 0.0,
    "proxy": {
     "name": "✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG",
     "port": 443,
@@ -547,13 +547,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 1119ms)"
+   "detail": "Timeout"
   },
   {
    "name": "✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR",
    "proto": "http",
    "ok": true,
-   "latency": 0.264,
+   "latency": 0.258,
    "proxy": {
     "name": "✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR",
     "port": 443,
@@ -563,13 +563,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 264ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 258ms)"
   },
   {
    "name": "✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US",
    "proto": "http",
    "ok": true,
-   "latency": 0.156,
+   "latency": 0.147,
    "proxy": {
     "name": "✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US",
     "port": 8443,
@@ -578,7 +578,7 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 156ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 147ms)"
   },
   {
    "name": "❓Other_8|2.0MB/s|YT-US|GPT⁺-US|GM-US",
@@ -598,8 +598,8 @@
   {
    "name": "❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG",
    "proto": "http",
-   "ok": false,
-   "latency": 0.0,
+   "ok": true,
+   "latency": 0.833,
    "proxy": {
     "name": "❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG",
     "port": 443,
@@ -609,13 +609,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "Timeout"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 833ms)"
   },
   {
    "name": "❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG",
    "proto": "http",
-   "ok": false,
-   "latency": 0.0,
+   "ok": true,
+   "latency": 0.267,
    "proxy": {
     "name": "❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG",
     "port": 443,
@@ -625,7 +625,7 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "Timeout"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 267ms)"
   },
   {
    "name": "❓Other_11|2.1MB/s|TK-US|GPT⁺-US|GM-US",
@@ -644,7 +644,7 @@
     "type": "http",
     "vv": 260626.1313
    },
-   "detail": "An error occurred in the delay test"
+   "detail": "Timeout"
   },
   {
    "name": "❓Other_42|1.6MB/s|GPT⁺-US|GM-US",
@@ -660,7 +660,7 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "Timeout"
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR",
@@ -681,7 +681,7 @@
    "name": "✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL",
    "proto": "http",
    "ok": true,
-   "latency": 0.351,
+   "latency": 0.408,
    "proxy": {
     "name": "✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL",
     "port": 443,
@@ -690,15 +690,15 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 351ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 408ms)"
   },
   {
-   "name": "❓Other_23|2.7MB/s|GPT-US",
+   "name": "✅ ❓Other_23|2.7MB/s|GPT-US",
    "proto": "http",
    "ok": true,
-   "latency": 0.273,
+   "latency": 0.234,
    "proxy": {
-    "name": "❓Other_23|2.7MB/s|GPT-US",
+    "name": "✅ ❓Other_23|2.7MB/s|GPT-US",
     "port": 443,
     "server": "167.88.60.242",
     "sin": "https://t.me/WangCai2🇨🇳",
@@ -706,13 +706,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 273ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 234ms)"
   },
   {
    "name": "✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA",
    "proto": "http",
    "ok": true,
-   "latency": 0.218,
+   "latency": 1.229,
    "proxy": {
     "name": "✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA",
     "port": 9443,
@@ -721,13 +721,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 218ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 1229ms)"
   },
   {
    "name": "✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT",
    "proto": "http",
    "ok": true,
-   "latency": 0.232,
+   "latency": 0.292,
    "proxy": {
     "name": "✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT",
     "port": 443,
@@ -737,13 +737,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 232ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 292ms)"
   },
   {
    "name": "✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ",
    "proto": "http",
    "ok": true,
-   "latency": 0.214,
+   "latency": 0.242,
    "proxy": {
     "name": "✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ",
     "port": 443,
@@ -753,13 +753,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 214ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 242ms)"
   },
   {
    "name": "✅ ❓Other_25|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB",
    "proto": "http",
-   "ok": true,
-   "latency": 0.914,
+   "ok": false,
+   "latency": 0.0,
    "proxy": {
     "name": "✅ ❓Other_25|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB",
     "port": 443,
@@ -769,13 +769,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 914ms)"
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "✅ ❓Other_61|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB",
    "proto": "http",
-   "ok": true,
-   "latency": 0.207,
+   "ok": false,
+   "latency": 0.0,
    "proxy": {
     "name": "✅ ❓Other_61|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB",
     "port": 443,
@@ -785,13 +785,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 207ms)"
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "✅ ❓Other_35|3.0MB/s|TK-RU|YT-US",
    "proto": "http",
    "ok": true,
-   "latency": 0.272,
+   "latency": 0.277,
    "proxy": {
     "name": "✅ ❓Other_35|3.0MB/s|TK-RU|YT-US",
     "port": 9443,
@@ -800,13 +800,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 272ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 277ms)"
   },
   {
    "name": "✅ 🇷🇴RO_5|1.7MB/s|TK-RO|GPT⁺-RO|GM-RO",
    "proto": "http",
    "ok": true,
-   "latency": 0.207,
+   "latency": 0.295,
    "proxy": {
     "name": "✅ 🇷🇴RO_5|1.7MB/s|TK-RO|GPT⁺-RO|GM-RO",
     "port": 9002,
@@ -815,13 +815,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 207ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 295ms)"
   },
   {
    "name": "✅ 🇷🇴RO_7|1.7MB/s|TK-RO|GPT⁺-RO",
    "proto": "http",
    "ok": true,
-   "latency": 0.245,
+   "latency": 1.151,
    "proxy": {
     "name": "✅ 🇷🇴RO_7|1.7MB/s|TK-RO|GPT⁺-RO",
     "password": "None",
@@ -831,7 +831,7 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 245ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 1151ms)"
   },
   {
    "name": "❓Other_7|1.7MB/s|TK-US|YT-US|GPT⁺-US|GM-US",
@@ -852,7 +852,7 @@
    "name": "✅ ❓Other_59|2.7MB/s|TK-US|YT-US|GPT⁺-US|GM-US",
    "proto": "http",
    "ok": true,
-   "latency": 0.272,
+   "latency": 0.198,
    "proxy": {
     "name": "✅ ❓Other_59|2.7MB/s|TK-US|YT-US|GPT⁺-US|GM-US",
     "port": 443,
@@ -862,7 +862,7 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 272ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 198ms)"
   },
   {
    "name": "❓Other_24|2.1MB/s|TK-GB|GPT⁺-GB|GM-GB",
@@ -885,7 +885,7 @@
    "name": "✅ ❓Other_60|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA",
    "proto": "http",
    "ok": true,
-   "latency": 0.225,
+   "latency": 0.258,
    "proxy": {
     "name": "✅ ❓Other_60|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA",
     "port": 443,
@@ -895,13 +895,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 225ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 258ms)"
   },
   {
    "name": "✅ ❓Other_48|2.0MB/s|YT-CA|GPT⁺-CA|GM-CA",
    "proto": "http",
    "ok": true,
-   "latency": 0.249,
+   "latency": 0.227,
    "proxy": {
     "name": "✅ ❓Other_48|2.0MB/s|YT-CA|GPT⁺-CA|GM-CA",
     "port": 443,
@@ -911,13 +911,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 249ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 227ms)"
   },
   {
    "name": "❓Other_12|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB",
    "proto": "http",
-   "ok": false,
-   "latency": 0.0,
+   "ok": true,
+   "latency": 0.24,
    "proxy": {
     "name": "❓Other_12|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB",
     "port": 443,
@@ -927,13 +927,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "An error occurred in the delay test"
+   "detail": "ok via https://www.google.com/generate_204 (delay 240ms)"
   },
   {
    "name": "✅ ❓Other_22|2.5MB/s|TK-CY|YT-US|GPT⁺-CY",
    "proto": "http",
    "ok": true,
-   "latency": 0.333,
+   "latency": 0.337,
    "proxy": {
     "name": "✅ ❓Other_22|2.5MB/s|TK-CY|YT-US|GPT⁺-CY",
     "port": 443,
@@ -942,13 +942,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 333ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 337ms)"
   },
   {
    "name": "✅ ❓Other_57|1.5MB/s|YT-US|GPT⁺-US|GM-US",
    "proto": "http",
-   "ok": true,
-   "latency": 0.241,
+   "ok": false,
+   "latency": 0.0,
    "proxy": {
     "name": "✅ ❓Other_57|1.5MB/s|YT-US|GPT⁺-US|GM-US",
     "port": 443,
@@ -957,13 +957,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 241ms)"
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "✅ ❓Other_30|3.2MB/s|TK-CH|YT-PA|GPT⁺-CH|GM-PA",
    "proto": "http",
    "ok": true,
-   "latency": 0.222,
+   "latency": 0.594,
    "proxy": {
     "name": "✅ ❓Other_30|3.2MB/s|TK-CH|YT-PA|GPT⁺-CH|GM-PA",
     "port": 443,
@@ -973,7 +973,7 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 222ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 594ms)"
   },
   {
    "name": "❓Other_1|1.6MB/s|YT-CN|GPT⁺-US",
@@ -996,7 +996,7 @@
    "name": "✅ ❓Other_55|2.3MB/s|TK-PL|GPT⁺-PL",
    "proto": "http",
    "ok": true,
-   "latency": 0.233,
+   "latency": 0.171,
    "proxy": {
     "name": "✅ ❓Other_55|2.3MB/s|TK-PL|GPT⁺-PL",
     "port": 443,
@@ -1006,13 +1006,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 233ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 171ms)"
   },
   {
    "name": "✅ ❓Other_15|2.1MB/s|TK-GB|GPT⁺-GB|GM-GB",
    "proto": "http",
    "ok": true,
-   "latency": 0.684,
+   "latency": 0.21,
    "proxy": {
     "name": "✅ ❓Other_15|2.1MB/s|TK-GB|GPT⁺-GB|GM-GB",
     "port": 443,
@@ -1022,13 +1022,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 684ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 210ms)"
   },
   {
    "name": "✅ ❓Other_20|1.5MB/s|TK-GB|GPT⁺-GB|GM-GB",
    "proto": "http",
    "ok": true,
-   "latency": 0.202,
+   "latency": 0.262,
    "proxy": {
     "name": "✅ ❓Other_20|1.5MB/s|TK-GB|GPT⁺-GB|GM-GB",
     "port": 9443,
@@ -1037,13 +1037,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 202ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 262ms)"
   },
   {
    "name": "✅ ❓Other_41|2.2MB/s|YT-EC|GPT⁺-EC|GM-EC",
    "proto": "http",
    "ok": true,
-   "latency": 0.31,
+   "latency": 0.98,
    "proxy": {
     "name": "✅ ❓Other_41|2.2MB/s|YT-EC|GPT⁺-EC|GM-EC",
     "port": 9443,
@@ -1052,13 +1052,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 310ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 980ms)"
   },
   {
    "name": "✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US",
    "proto": "http",
    "ok": true,
-   "latency": 0.174,
+   "latency": 0.654,
    "proxy": {
     "name": "✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US",
     "port": 9443,
@@ -1067,13 +1067,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 174ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 654ms)"
   },
   {
    "name": "✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US",
    "proto": "http",
    "ok": true,
-   "latency": 0.184,
+   "latency": 0.182,
    "proxy": {
     "name": "✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US",
     "port": 9443,
@@ -1082,13 +1082,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 184ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 182ms)"
   },
   {
    "name": "✅ ❓Other_14|1.0MB/s|YT-US|GPT⁺-US|GM-US",
    "proto": "http",
    "ok": true,
-   "latency": 0.77,
+   "latency": 0.228,
    "proxy": {
     "name": "✅ ❓Other_14|1.0MB/s|YT-US|GPT⁺-US|GM-US",
     "port": 443,
@@ -1098,7 +1098,7 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 770ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 228ms)"
   },
   {
    "name": "🇺🇸US_1|2.2MB/s|YT-US|GPT⁺-US|GM-US",
@@ -1119,7 +1119,7 @@
    "name": "✅ 🇷🇺RU_1|2.0MB/s|YT-RU",
    "proto": "http",
    "ok": true,
-   "latency": 0.184,
+   "latency": 0.191,
    "proxy": {
     "name": "✅ 🇷🇺RU_1|2.0MB/s|YT-RU",
     "port": 1446,
@@ -1128,7 +1128,7 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 184ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 191ms)"
   },
   {
    "name": "❓Other_3|2.3MB/s|TK-FI|YT-RU|GPT⁺-LV",
@@ -1163,8 +1163,8 @@
   {
    "name": "🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL",
    "proto": "http",
-   "ok": false,
-   "latency": 0.0,
+   "ok": true,
+   "latency": 0.336,
    "proxy": {
     "cc": 0,
     "delay": 258,
@@ -1177,13 +1177,13 @@
     "type": "http",
     "vv": 260626.1313
    },
-   "detail": "Timeout"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 336ms)"
   },
   {
    "name": "✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP",
    "proto": "http",
    "ok": true,
-   "latency": 0.848,
+   "latency": 0.245,
    "proxy": {
     "name": "✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP",
     "port": 8443,
@@ -1192,7 +1192,7 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 848ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 245ms)"
   },
   {
    "name": "🇺🇸US_7|3.5MB/s|YT-US|GPT⁺-US|GM-US",
@@ -1228,7 +1228,7 @@
    "name": "✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE",
    "proto": "http",
    "ok": true,
-   "latency": 0.217,
+   "latency": 0.235,
    "proxy": {
     "name": "✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE",
     "port": 443,
@@ -1238,15 +1238,15 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 217ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 235ms)"
   },
   {
-   "name": "✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG",
+   "name": "🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG",
    "proto": "http",
    "ok": false,
    "latency": 0.0,
    "proxy": {
-    "name": "✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG",
+    "name": "🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG",
     "port": 443,
     "server": "82.102.25.210",
     "sin": "https://t.me/WangCai2🇨🇳",
@@ -1257,12 +1257,12 @@
    "detail": "Timeout"
   },
   {
-   "name": "✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP",
+   "name": "🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP",
    "proto": "http",
    "ok": false,
    "latency": 0.0,
    "proxy": {
-    "name": "✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP",
+    "name": "🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP",
     "port": 443,
     "server": "82.102.25.50",
     "sin": "https://t.me/WangCai2🇨🇳",
@@ -1291,7 +1291,7 @@
    "name": "✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB",
    "proto": "http",
    "ok": true,
-   "latency": 0.266,
+   "latency": 0.28,
    "proxy": {
     "name": "✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB",
     "port": 443,
@@ -1301,7 +1301,7 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 266ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 280ms)"
   },
   {
    "name": "✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US",
@@ -1364,7 +1364,7 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "An error occurred in the delay test"
+   "detail": "Timeout"
   },
   {
    "name": "❓Other_52|1.6MB/s|TK-RO|YT-UA|GPT⁺-RO",
@@ -1379,7 +1379,7 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "An error occurred in the delay test"
+   "detail": "Timeout"
   },
   {
    "name": "❓Other_47|1.4MB/s|TK-RO|GPT⁺-RO",
@@ -1443,13 +1443,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "An error occurred in the delay test"
+   "detail": "Timeout"
   },
   {
    "name": "✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV",
    "proto": "http",
    "ok": true,
-   "latency": 0.243,
+   "latency": 0.946,
    "proxy": {
     "name": "✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV",
     "port": 443,
@@ -1458,13 +1458,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 243ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 946ms)"
   },
   {
    "name": "✅ ❓Other_56|2.3MB/s|TK-AL|YT-US|GPT⁺-AL|GM-AL",
    "proto": "http",
    "ok": true,
-   "latency": 0.942,
+   "latency": 0.288,
    "proxy": {
     "name": "✅ ❓Other_56|2.3MB/s|TK-AL|YT-US|GPT⁺-AL|GM-AL",
     "port": 443,
@@ -1474,13 +1474,13 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 942ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 288ms)"
   },
   {
    "name": "✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE",
    "proto": "http",
    "ok": true,
-   "latency": 0.245,
+   "latency": 0.256,
    "proxy": {
     "name": "✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE",
     "port": 443,
@@ -1490,7 +1490,7 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 245ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 256ms)"
   },
   {
    "name": "❓Other_4|3.5MB/s|YT-KR|GPT⁺-KR|GM-KR",
@@ -1513,7 +1513,7 @@
    "name": "✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE",
    "proto": "http",
    "ok": true,
-   "latency": 0.635,
+   "latency": 0.194,
    "proxy": {
     "name": "✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE",
     "port": 9443,
@@ -1522,7 +1522,7 @@
     "tls": true,
     "type": "http"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 635ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 194ms)"
   },
   {
    "name": "🇬🇧GB_3|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB",
@@ -1960,26 +1960,6 @@
    "detail": "An error occurred in the delay test"
   },
   {
-   "name": "巴西",
-   "proto": "hysteria2",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "巴西",
-    "type": "hysteria2",
-    "server": "go.wwwinternetvideo.click",
-    "port": 443,
-    "password": "YutbgyXL1mGaSlBXDoEucWvYbrDCINgUcQ6R6_At5Pjr2xCc",
-    "sni": "admin.wwwinternetvideo.click",
-    "skip-cert-verify": true,
-    "tls": true,
-    "security_scheme": "tls",
-    "proto": "hysteria2",
-    "peer": "admin.wwwinternetvideo.click"
-   },
-   "detail": "An error occurred in the delay test"
-  },
-  {
    "name": "🇱🇻LV_1|3.2MB/s|TK-LV|YT-RU|GPT⁺-LV",
    "proto": "hysteria2",
    "ok": false,
@@ -2264,24 +2244,6 @@
    "detail": "Timeout"
   },
   {
-   "name": "✅ [ermaozi/get_subscribe]🇯🇵JP_4|5.0MB/s",
-   "proto": "ss",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "✅ [ermaozi/get_subscribe]🇯🇵JP_4|5.0MB/s",
-    "type": "ss",
-    "server": "13.230.153.249",
-    "port": 443,
-    "cipher": "aes-256-cfb",
-    "password": "amazonskr05",
-    "security_scheme": "none",
-    "proto": "ss",
-    "peer": "13.230.153.249"
-   },
-   "detail": "An error occurred in the delay test"
-  },
-  {
    "name": "🇰🇷 KOREA-1B",
    "proto": "ss",
    "ok": false,
@@ -2407,7 +2369,7 @@
     "password": "be6cbb46-ebb0-4726-9202-6a3bac1d0afb",
     "udp": true
    },
-   "detail": "An error occurred in the delay test"
+   "detail": "Timeout"
   },
   {
    "name": "🇸🇬 SINGAPORE-1B",
@@ -2524,12 +2486,30 @@
    "detail": "Timeout"
   },
   {
-   "name": "[peasoft/NoMoreWalls]🇺🇸US_2|1.1MB/s",
+   "name": "🇯🇵JP_2|5.4MB/s",
    "proto": "ss",
    "ok": true,
-   "latency": 0.228,
+   "latency": 0.109,
    "proxy": {
-    "name": "[peasoft/NoMoreWalls]🇺🇸US_2|1.1MB/s",
+    "name": "🇯🇵JP_2|5.4MB/s",
+    "type": "ss",
+    "server": "18.179.111.96",
+    "port": 443,
+    "cipher": "aes-256-cfb",
+    "password": "amazonskr05",
+    "security_scheme": "none",
+    "proto": "ss",
+    "peer": "18.179.111.96"
+   },
+   "detail": "ok via https://www.google.com/generate_204 (delay 109ms)"
+  },
+  {
+   "name": "✅ [peasoft/NoMoreWalls]🇺🇸US_2|1.1MB/s",
+   "proto": "ss",
+   "ok": true,
+   "latency": 0.227,
+   "proxy": {
+    "name": "✅ [peasoft/NoMoreWalls]🇺🇸US_2|1.1MB/s",
     "type": "ss",
     "server": "18.207.155.184",
     "port": 443,
@@ -2539,25 +2519,7 @@
     "proto": "ss",
     "peer": "18.207.155.184"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 228ms)"
-  },
-  {
-   "name": "[ermaozi/get_subscribe]🇺🇸US_5|1.1MB/s",
-   "proto": "ss",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "[ermaozi/get_subscribe]🇺🇸US_5|1.1MB/s",
-    "type": "ss",
-    "server": "18.213.0.46",
-    "port": 443,
-    "cipher": "aes-256-cfb",
-    "password": "amazonskr05",
-    "security_scheme": "none",
-    "proto": "ss",
-    "peer": "18.213.0.46"
-   },
-   "detail": "Timeout"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 227ms)"
   },
   {
    "name": "⚡ b2n.ir/v2ray-configs | 949",
@@ -2645,12 +2607,12 @@
    "detail": "Timeout"
   },
   {
-   "name": "[peasoft/NoMoreWalls]🇯🇵JP_3|5.3MB/s",
+   "name": "✅ [peasoft/NoMoreWalls]🇯🇵JP_3|5.3MB/s",
    "proto": "ss",
    "ok": true,
-   "latency": 0.102,
+   "latency": 0.116,
    "proxy": {
-    "name": "[peasoft/NoMoreWalls]🇯🇵JP_3|5.3MB/s",
+    "name": "✅ [peasoft/NoMoreWalls]🇯🇵JP_3|5.3MB/s",
     "type": "ss",
     "server": "3.112.209.209",
     "port": 443,
@@ -2660,7 +2622,7 @@
     "proto": "ss",
     "peer": "3.112.209.209"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 102ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 116ms)"
   },
   {
    "name": "🇨🇳 台湾",
@@ -2743,7 +2705,7 @@
     "type": "ss",
     "udp": true
    },
-   "detail": "Timeout"
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "🇫🇷FR_2|1.2MB/s",
@@ -2759,7 +2721,7 @@
     "type": "ss",
     "udp": true
    },
-   "detail": "Timeout"
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "🇵🇭PH_1|1.3MB/s",
@@ -2775,7 +2737,7 @@
     "type": "ss",
     "udp": true
    },
-   "detail": "Timeout"
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "🇯🇵JP_1|1.3MB/s",
@@ -2890,18 +2852,23 @@
    "detail": "Timeout"
   },
   {
-   "name": "🇺🇸 美国3",
+   "name": "[peasoft/NoMoreWalls]美国3|@ripaojiedian",
    "proto": "trojan",
    "ok": false,
    "latency": 0.0,
    "proxy": {
-    "name": "🇺🇸 美国3",
+    "name": "[peasoft/NoMoreWalls]美国3|@ripaojiedian",
+    "type": "trojan",
     "server": "100.42.228.109",
     "port": 443,
-    "type": "trojan",
     "password": "BxceQaOe",
-    "sni": "t.me%2Fripaojiedian",
-    "skip-cert-verify": true
+    "tls": true,
+    "network": "tcp",
+    "sni": "t.me/ripaojiedian",
+    "skip-cert-verify": true,
+    "security_scheme": "tls",
+    "proto": "trojan",
+    "peer": "t.me/ripaojiedian"
    },
    "detail": "Timeout"
   },
@@ -3059,7 +3026,7 @@
     "proto": "trojan",
     "peer": "www.ignitelimit.com"
    },
-   "detail": "An error occurred in the delay test"
+   "detail": "Timeout"
   },
   {
    "name": "US美国(mibei77.com 米贝节点分享)_51",
@@ -4001,7 +3968,7 @@
    "name": "✅ 🇫🇷FR_1|274KB/s|GPT⁺|NF",
    "proto": "trojan",
    "ok": true,
-   "latency": 0.391,
+   "latency": 1.027,
    "proxy": {
     "client-fingerprint": "chrome",
     "name": "✅ 🇫🇷FR_1|274KB/s|GPT⁺|NF",
@@ -4020,7 +3987,7 @@
      "path": "/assignment"
     }
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 391ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 1027ms)"
   },
   {
    "name": "US美国(mibei77.com 米贝节点分享)_49",
@@ -4514,7 +4481,7 @@
     "proto": "trojan",
     "peer": "www.ignitelimit.com"
    },
-   "detail": "An error occurred in the delay test"
+   "detail": "Timeout"
   },
   {
    "name": "US美国(mibei77.com 米贝节点分享)_28",
@@ -4592,7 +4559,7 @@
     "proto": "trojan",
     "peer": "www.ignitelimit.com"
    },
-   "detail": "An error occurred in the delay test"
+   "detail": "Timeout"
   },
   {
    "name": "🇭🇰 香港5",
@@ -4637,26 +4604,6 @@
    "detail": "An error occurred in the delay test"
   },
   {
-   "name": "⚡ b2n.ir/v2ray-configs | 758",
-   "proto": "trojan",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "⚡ b2n.ir/v2ray-configs | 758",
-    "type": "trojan",
-    "server": "135.148.148.4",
-    "port": 80,
-    "password": "ee2bccd3-0f30-42d4-86d6-3d393ad230bd",
-    "tls": true,
-    "network": "tcp",
-    "sni": "us3.trojanvh.xyz",
-    "security_scheme": "tls",
-    "proto": "trojan",
-    "peer": "us3.trojanvh.xyz"
-   },
-   "detail": "An error occurred in the delay test"
-  },
-  {
    "name": "🇸🇬 新加坡-SINGAPORE-1-1B",
    "proto": "trojan",
    "ok": false,
@@ -4677,7 +4624,7 @@
    "name": "✅ 🇫🇷FR_16|261KB/s|GPT",
    "proto": "trojan",
    "ok": true,
-   "latency": 0.383,
+   "latency": 0.479,
    "proxy": {
     "client-fingerprint": "chrome",
     "name": "✅ 🇫🇷FR_16|261KB/s|GPT",
@@ -4696,13 +4643,13 @@
      "path": "/assignment"
     }
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 383ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 479ms)"
   },
   {
    "name": "✅ 美国+乔治亚洲亚特兰大Fastly节点",
    "proto": "trojan",
    "ok": true,
-   "latency": 0.157,
+   "latency": 0.167,
    "proxy": {
     "name": "✅ 美国+乔治亚洲亚特兰大Fastly节点",
     "type": "trojan",
@@ -4722,7 +4669,7 @@
     "proto": "trojan",
     "peer": "ssl.fastly.com"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 157ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 167ms)"
   },
   {
    "name": "US美国(mibei77.com 米贝节点分享)_8",
@@ -4780,7 +4727,7 @@
    "name": "✅ 🇫🇷FR_13|372KB/s|YT-US|GPT⁺|NF",
    "proto": "trojan",
    "ok": true,
-   "latency": 0.703,
+   "latency": 0.573,
    "proxy": {
     "client-fingerprint": "chrome",
     "name": "✅ 🇫🇷FR_13|372KB/s|YT-US|GPT⁺|NF",
@@ -4799,7 +4746,7 @@
      "path": "/assignment"
     }
    },
-   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 703ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 573ms)"
   },
   {
    "name": "US美国(mibei77.com 米贝节点分享)_31",
@@ -5018,7 +4965,7 @@
    "name": "✅ 🇩🇪 德国 | DEU_4",
    "proto": "trojan",
    "ok": true,
-   "latency": 0.191,
+   "latency": 3.37,
    "proxy": {
     "name": "✅ 🇩🇪 德国 | DEU_4",
     "type": "trojan",
@@ -5033,7 +4980,7 @@
     "proto": "trojan",
     "peer": "ash.d50f6225-23b4-3a7b-9f15-a0fb2fc16803.kailib.com"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 191ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 3370ms)"
   },
   {
    "name": "🇸🇬 新加坡3",
@@ -5055,7 +5002,7 @@
    "name": "✅ 🇫🇷FR_17|257KB/s|GPT⁺",
    "proto": "trojan",
    "ok": true,
-   "latency": 1.588,
+   "latency": 0.367,
    "proxy": {
     "client-fingerprint": "chrome",
     "name": "✅ 🇫🇷FR_17|257KB/s|GPT⁺",
@@ -5074,7 +5021,7 @@
      "path": "/assignment"
     }
    },
-   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 1588ms)"
+   "detail": "ok via https://www.google.com/generate_204 (delay 367ms)"
   },
   {
    "name": "US美国(mibei77.com 米贝节点分享)_30",
@@ -5265,7 +5212,7 @@
      "path": "/@BlueKnight_net--@BlueKnight_net--@BlueKnight_net"
     }
    },
-   "detail": "An error occurred in the delay test"
+   "detail": "Timeout"
   },
   {
    "name": "FR法国(mibei77.com 米贝节点分享)_3",
@@ -5373,33 +5320,6 @@
    "detail": "Timeout"
   },
   {
-   "name": "🇩🇪DE_1|1.5MB/s",
-   "proto": "vless",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "🇩🇪DE_1|1.5MB/s",
-    "type": "vless",
-    "server": "103.63.30.73",
-    "port": 443,
-    "uuid": "b2593749-691c-428c-9481-14979cba3446",
-    "tls": true,
-    "network": "ws",
-    "sni": "xi.tbv.ccwu.cc",
-    "servername": "xi.tbv.ccwu.cc",
-    "ws-opts": {
-     "path": "/proxyip=us.xiabibi.cffp=chrome",
-     "headers": {
-      "Host": "xi.tbv.ccwu.cc"
-     }
-    },
-    "security_scheme": "tls",
-    "proto": "vless",
-    "peer": "xi.tbv.ccwu.cc"
-   },
-   "detail": "Timeout"
-  },
-  {
    "name": "🇺🇸US_1|354KB/s|YT-US|GPT⁺|NF|20%",
    "proto": "vless",
    "ok": false,
@@ -5426,7 +5346,7 @@
      "path": "/proxyip=179.255.104.87,179.255.116.198,179.255.101.56,142.248.218.6,142.248.218.4,45.76.79.239,179.255.152.163,208.68.180.240"
     }
    },
-   "detail": "An error occurred in the delay test"
+   "detail": "Timeout"
   },
   {
    "name": "🇬🇧_英国_28",
@@ -5483,6 +5403,33 @@
    "detail": "An error occurred in the delay test"
   },
   {
+   "name": "🇺🇸_美国_54",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇺🇸_美国_54",
+    "type": "vless",
+    "server": "107.175.239.32",
+    "port": 8443,
+    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
+    "tls": true,
+    "network": "ws",
+    "sni": "shuma.ccwu.cc",
+    "servername": "shuma.ccwu.cc",
+    "ws-opts": {
+     "path": "/",
+     "headers": {
+      "Host": "shuma.ccwu.cc"
+     }
+    },
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "shuma.ccwu.cc"
+   },
+   "detail": "An error occurred in the delay test"
+  },
+  {
    "name": "🇩🇪_德国_37",
    "proto": "vless",
    "ok": false,
@@ -5491,6 +5438,33 @@
     "name": "🇩🇪_德国_37",
     "type": "vless",
     "server": "109.120.138.192",
+    "port": 443,
+    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
+    "tls": true,
+    "network": "ws",
+    "sni": "shuma.ccwu.cc",
+    "servername": "shuma.ccwu.cc",
+    "ws-opts": {
+     "path": "/",
+     "headers": {
+      "Host": "shuma.ccwu.cc"
+     }
+    },
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "shuma.ccwu.cc"
+   },
+   "detail": "An error occurred in the delay test"
+  },
+  {
+   "name": "🇺🇸_美国_67",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇺🇸_美国_67",
+    "type": "vless",
+    "server": "113.20.15.175",
     "port": 443,
     "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
     "tls": true,
@@ -5564,15 +5538,15 @@
    "detail": "An error occurred in the delay test"
   },
   {
-   "name": "🇺🇸_美国_78",
+   "name": "🇺🇸_美国_52",
    "proto": "vless",
    "ok": false,
    "latency": 0.0,
    "proxy": {
-    "name": "🇺🇸_美国_78",
+    "name": "🇺🇸_美国_52",
     "type": "vless",
-    "server": "129.158.198.241",
-    "port": 8443,
+    "server": "129.153.74.231",
+    "port": 443,
     "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
     "tls": true,
     "network": "ws",
@@ -5645,26 +5619,58 @@
    "detail": "Timeout"
   },
   {
-   "name": "🇧🇬BG_1|2.8MB/s",
+   "name": "🇺🇸_美国_44",
    "proto": "vless",
    "ok": false,
    "latency": 0.0,
    "proxy": {
-    "name": "🇧🇬BG_1|2.8MB/s",
+    "name": "🇺🇸_美国_44",
     "type": "vless",
-    "server": "136.175.82.85",
-    "port": 18775,
-    "uuid": "9ae5940b-0278-403d-a1e1-9dddc47bdcf6",
-    "flow": "xtls-rprx-vision-udp443",
+    "server": "136.175.179.113",
+    "port": 8443,
+    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
     "tls": true,
-    "network": "tcp",
-    "sni": "addons.mozilla.org",
-    "servername": "addons.mozilla.org",
+    "network": "ws",
+    "sni": "shuma.ccwu.cc",
+    "servername": "shuma.ccwu.cc",
+    "ws-opts": {
+     "path": "/",
+     "headers": {
+      "Host": "shuma.ccwu.cc"
+     }
+    },
     "security_scheme": "tls",
     "proto": "vless",
-    "peer": "addons.mozilla.org"
+    "peer": "shuma.ccwu.cc"
    },
    "detail": "Timeout"
+  },
+  {
+   "name": "🇺🇸_美国_114",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇺🇸_美国_114",
+    "type": "vless",
+    "server": "141.148.179.159",
+    "port": 8443,
+    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
+    "tls": true,
+    "network": "ws",
+    "sni": "shuma.ccwu.cc",
+    "servername": "shuma.ccwu.cc",
+    "ws-opts": {
+     "path": "/",
+     "headers": {
+      "Host": "shuma.ccwu.cc"
+     }
+    },
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "shuma.ccwu.cc"
+   },
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "🇫🇷_法国_99",
@@ -5851,6 +5857,153 @@
    "detail": "An error occurred in the delay test"
   },
   {
+   "name": "US_speednode_0136",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "US_speednode_0136",
+    "type": "vless",
+    "server": "155.117.199.13",
+    "port": 29893,
+    "uuid": "f06c6039-a489-3d78-a676-ed43be6deca3",
+    "flow": "xtls-rprx-vision-udp443",
+    "tls": true,
+    "network": "tcp",
+    "sni": "cdnjs.cloudflare.com",
+    "servername": "cdnjs.cloudflare.com",
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "cdnjs.cloudflare.com"
+   },
+   "detail": "An error occurred in the delay test"
+  },
+  {
+   "name": "US_speednode_0142",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "US_speednode_0142",
+    "type": "vless",
+    "server": "155.117.199.13",
+    "port": 39211,
+    "uuid": "f06c6039-a489-3d78-a676-ed43be6deca3",
+    "flow": "xtls-rprx-vision-udp443",
+    "tls": true,
+    "network": "tcp",
+    "sni": "cdnjs.cloudflare.com",
+    "servername": "cdnjs.cloudflare.com",
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "cdnjs.cloudflare.com"
+   },
+   "detail": "An error occurred in the delay test"
+  },
+  {
+   "name": "US_speednode_0137",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "US_speednode_0137",
+    "type": "vless",
+    "server": "155.117.199.13",
+    "port": 39399,
+    "uuid": "f06c6039-a489-3d78-a676-ed43be6deca3",
+    "flow": "xtls-rprx-vision-udp443",
+    "tls": true,
+    "network": "tcp",
+    "sni": "cdnjs.cloudflare.com",
+    "servername": "cdnjs.cloudflare.com",
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "cdnjs.cloudflare.com"
+   },
+   "detail": "An error occurred in the delay test"
+  },
+  {
+   "name": "🇺🇸_美国_80",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇺🇸_美国_80",
+    "type": "vless",
+    "server": "157.245.181.20",
+    "port": 443,
+    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
+    "tls": true,
+    "network": "ws",
+    "sni": "shuma.ccwu.cc",
+    "servername": "shuma.ccwu.cc",
+    "ws-opts": {
+     "path": "/",
+     "headers": {
+      "Host": "shuma.ccwu.cc"
+     }
+    },
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "shuma.ccwu.cc"
+   },
+   "detail": "An error occurred in the delay test"
+  },
+  {
+   "name": "🇺🇸_美国_128",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇺🇸_美国_128",
+    "type": "vless",
+    "server": "157.245.181.20",
+    "port": 8443,
+    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
+    "tls": true,
+    "network": "ws",
+    "sni": "shuma.ccwu.cc",
+    "servername": "shuma.ccwu.cc",
+    "ws-opts": {
+     "path": "/",
+     "headers": {
+      "Host": "shuma.ccwu.cc"
+     }
+    },
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "shuma.ccwu.cc"
+   },
+   "detail": "Timeout"
+  },
+  {
+   "name": "🇺🇸_美国_55",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇺🇸_美国_55",
+    "type": "vless",
+    "server": "158.51.124.62",
+    "port": 443,
+    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
+    "tls": true,
+    "network": "ws",
+    "sni": "shuma.ccwu.cc",
+    "servername": "shuma.ccwu.cc",
+    "ws-opts": {
+     "path": "/",
+     "headers": {
+      "Host": "shuma.ccwu.cc"
+     }
+    },
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "shuma.ccwu.cc"
+   },
+   "detail": "An error occurred in the delay test"
+  },
+  {
    "name": "🇳🇱_荷兰_119",
    "proto": "vless",
    "ok": false,
@@ -5886,6 +6039,33 @@
     "name": "🇩🇪_德国_132",
     "type": "vless",
     "server": "159.223.20.232",
+    "port": 443,
+    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
+    "tls": true,
+    "network": "ws",
+    "sni": "shuma.ccwu.cc",
+    "servername": "shuma.ccwu.cc",
+    "ws-opts": {
+     "path": "/",
+     "headers": {
+      "Host": "shuma.ccwu.cc"
+     }
+    },
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "shuma.ccwu.cc"
+   },
+   "detail": "An error occurred in the delay test"
+  },
+  {
+   "name": "🇺🇸_美国_76",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇺🇸_美国_76",
+    "type": "vless",
+    "server": "165.227.3.101",
     "port": 443,
     "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
     "tls": true,
@@ -5956,7 +6136,7 @@
     "proto": "vless",
     "peer": "shuma.ccwu.cc"
    },
-   "detail": "An error occurred in the delay test"
+   "detail": "Timeout"
   },
   {
    "name": "🇩🇪_德国_127",
@@ -5983,7 +6163,7 @@
     "proto": "vless",
     "peer": "shuma.ccwu.cc"
    },
-   "detail": "Timeout"
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "🇩🇪_德国_137",
@@ -6202,6 +6382,33 @@
    "detail": "Timeout"
   },
   {
+   "name": "🇺🇸_美国_60",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇺🇸_美国_60",
+    "type": "vless",
+    "server": "172.96.254.25",
+    "port": 443,
+    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
+    "tls": true,
+    "network": "ws",
+    "sni": "shuma.ccwu.cc",
+    "servername": "shuma.ccwu.cc",
+    "ws-opts": {
+     "path": "/",
+     "headers": {
+      "Host": "shuma.ccwu.cc"
+     }
+    },
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "shuma.ccwu.cc"
+   },
+   "detail": "An error occurred in the delay test"
+  },
+  {
    "name": "🇳🇱_荷兰_71",
    "proto": "vless",
    "ok": false,
@@ -6226,7 +6433,7 @@
     "proto": "vless",
     "peer": "shuma.ccwu.cc"
    },
-   "detail": "Timeout"
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "🇳🇱_荷兰_117",
@@ -6256,26 +6463,112 @@
    "detail": "An error occurred in the delay test"
   },
   {
-   "name": "🇩🇪DE_5|3.1MB/s",
+   "name": "🇺🇸_美国_42",
    "proto": "vless",
    "ok": false,
    "latency": 0.0,
    "proxy": {
-    "name": "🇩🇪DE_5|3.1MB/s",
+    "name": "🇺🇸_美国_42",
     "type": "vless",
-    "server": "185.121.179.105",
-    "port": 7444,
-    "uuid": "44e1105d-b46e-402f-933b-eaa136fcbb24",
-    "flow": "xtls-rprx-vision-udp443",
+    "server": "179.255.109.171",
+    "port": 443,
+    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
     "tls": true,
-    "network": "tcp",
-    "sni": "de777.lavivas.org",
-    "servername": "de777.lavivas.org",
+    "network": "ws",
+    "sni": "shuma.ccwu.cc",
+    "servername": "shuma.ccwu.cc",
+    "ws-opts": {
+     "path": "/",
+     "headers": {
+      "Host": "shuma.ccwu.cc"
+     }
+    },
     "security_scheme": "tls",
     "proto": "vless",
-    "peer": "de777.lavivas.org"
+    "peer": "shuma.ccwu.cc"
    },
    "detail": "Timeout"
+  },
+  {
+   "name": "🇺🇸_美国_38",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇺🇸_美国_38",
+    "type": "vless",
+    "server": "179.255.144.153",
+    "port": 443,
+    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
+    "tls": true,
+    "network": "ws",
+    "sni": "shuma.ccwu.cc",
+    "servername": "shuma.ccwu.cc",
+    "ws-opts": {
+     "path": "/",
+     "headers": {
+      "Host": "shuma.ccwu.cc"
+     }
+    },
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "shuma.ccwu.cc"
+   },
+   "detail": "Timeout"
+  },
+  {
+   "name": "🇸🇬 新加坡 | SGP",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇸🇬 新加坡 | SGP",
+    "type": "vless",
+    "server": "18.141.237.52",
+    "port": 443,
+    "uuid": "47fcef29-ab4e-4aa6-932b-d95a18f28a4e",
+    "tls": true,
+    "network": "ws",
+    "sni": "meu4s.dmgb.475.hh.vavava.kdns.fr",
+    "servername": "meu4s.dmgb.475.hh.vavava.kdns.fr",
+    "ws-opts": {
+     "path": "/?ed=2560",
+     "headers": {
+      "Host": "meu4s.dmgb.475.hh.vavava.kdns.fr"
+     }
+    },
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "meu4s.dmgb.475.hh.vavava.kdns.fr"
+   },
+   "detail": "An error occurred in the delay test"
+  },
+  {
+   "name": "🇭🇰 香港 | HKG",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇭🇰 香港 | HKG",
+    "type": "vless",
+    "server": "185.155.235.235",
+    "port": 443,
+    "uuid": "47fcef29-ab4e-4aa6-932b-d95a18f28a4e",
+    "tls": true,
+    "network": "ws",
+    "sni": "meu4s.dmgb.475.hh.vavava.kdns.fr",
+    "servername": "meu4s.dmgb.475.hh.vavava.kdns.fr",
+    "ws-opts": {
+     "path": "/?ed=2560",
+     "headers": {
+      "Host": "meu4s.dmgb.475.hh.vavava.kdns.fr"
+     }
+    },
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "meu4s.dmgb.475.hh.vavava.kdns.fr"
+   },
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "🇸🇪_瑞典_136",
@@ -6680,14 +6973,14 @@
    "detail": "An error occurred in the delay test"
   },
   {
-   "name": "🇺🇸_美国_70",
+   "name": "🇺🇸_美国_49",
    "proto": "vless",
    "ok": false,
    "latency": 0.0,
    "proxy": {
-    "name": "🇺🇸_美国_70",
+    "name": "🇺🇸_美国_49",
     "type": "vless",
-    "server": "212.43.153.216",
+    "server": "205.186.76.242",
     "port": 443,
     "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
     "tls": true,
@@ -6703,55 +6996,6 @@
     "security_scheme": "tls",
     "proto": "vless",
     "peer": "shuma.ccwu.cc"
-   },
-   "detail": "An error occurred in the delay test"
-  },
-  {
-   "name": "🇩🇪 德国 | DEU_2",
-   "proto": "vless",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "🇩🇪 德国 | DEU_2",
-    "type": "vless",
-    "server": "213.165.56.169",
-    "port": 443,
-    "uuid": "974f2c7e-a292-4207-8315-ef4151bdca41",
-    "flow": "xtls-rprx-vision",
-    "tls": true,
-    "network": "tcp",
-    "sni": "fl-api.bachidze.com",
-    "servername": "fl-api.bachidze.com",
-    "reality-opts": {
-     "public-key": "LMcNHcOzPISa2fmZWt2JraL6_a_IObpS2znQW70gyDo",
-     "short-id": "",
-     "spider-x": "",
-     "fingerprint": "firefox"
-    },
-    "security_scheme": "reality",
-    "proto": "vless",
-    "peer": "fl-api.bachidze.com"
-   },
-   "detail": "Timeout"
-  },
-  {
-   "name": "🇷🇸RS_2|4.4MB/s",
-   "proto": "vless",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "🇷🇸RS_2|4.4MB/s",
-    "type": "vless",
-    "server": "213.171.25.29",
-    "port": 9889,
-    "uuid": "5d16ac22-6eea-426f-b778-6f4c2961faef",
-    "tls": true,
-    "network": "grpc",
-    "sni": "dl.google.com",
-    "servername": "dl.google.com",
-    "security_scheme": "tls",
-    "proto": "vless",
-    "peer": "dl.google.com"
    },
    "detail": "An error occurred in the delay test"
   },
@@ -6837,33 +7081,6 @@
    "detail": "Timeout"
   },
   {
-   "name": "🇺🇸_美国_68",
-   "proto": "vless",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "🇺🇸_美国_68",
-    "type": "vless",
-    "server": "3.234.249.2",
-    "port": 443,
-    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
-    "tls": true,
-    "network": "ws",
-    "sni": "shuma.ccwu.cc",
-    "servername": "shuma.ccwu.cc",
-    "ws-opts": {
-     "path": "/",
-     "headers": {
-      "Host": "shuma.ccwu.cc"
-     }
-    },
-    "security_scheme": "tls",
-    "proto": "vless",
-    "peer": "shuma.ccwu.cc"
-   },
-   "detail": "An error occurred in the delay test"
-  },
-  {
    "name": "🇳🇱_荷兰_133",
    "proto": "vless",
    "ok": false,
@@ -6887,33 +7104,6 @@
     "security_scheme": "tls",
     "proto": "vless",
     "peer": "shuma.ccwu.cc"
-   },
-   "detail": "An error occurred in the delay test"
-  },
-  {
-   "name": "🇩🇪 德国 | DEU",
-   "proto": "vless",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "🇩🇪 德国 | DEU",
-    "type": "vless",
-    "server": "31.76.226.100",
-    "port": 443,
-    "uuid": "d9d0f208-d582-41d5-bb7b-742671402810",
-    "tls": true,
-    "network": "ws",
-    "sni": "hub-fi-03.hanvpn.cc",
-    "servername": "hub-fi-03.hanvpn.cc",
-    "ws-opts": {
-     "path": "/fi03-ws-8e47a",
-     "headers": {
-      "Host": "hub-fi-03.hanvpn.cc"
-     }
-    },
-    "security_scheme": "tls",
-    "proto": "vless",
-    "peer": "hub-fi-03.hanvpn.cc"
    },
    "detail": "An error occurred in the delay test"
   },
@@ -7101,87 +7291,6 @@
    "detail": "An error occurred in the delay test"
   },
   {
-   "name": "🇨🇦_加拿大_61",
-   "proto": "vless",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "🇨🇦_加拿大_61",
-    "type": "vless",
-    "server": "45.133.16.41",
-    "port": 443,
-    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
-    "tls": true,
-    "network": "ws",
-    "sni": "shuma.ccwu.cc",
-    "servername": "shuma.ccwu.cc",
-    "ws-opts": {
-     "path": "/",
-     "headers": {
-      "Host": "shuma.ccwu.cc"
-     }
-    },
-    "security_scheme": "tls",
-    "proto": "vless",
-    "peer": "shuma.ccwu.cc"
-   },
-   "detail": "Timeout"
-  },
-  {
-   "name": "🇨🇦_加拿大_122",
-   "proto": "vless",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "🇨🇦_加拿大_122",
-    "type": "vless",
-    "server": "45.133.17.118",
-    "port": 443,
-    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
-    "tls": true,
-    "network": "ws",
-    "sni": "shuma.ccwu.cc",
-    "servername": "shuma.ccwu.cc",
-    "ws-opts": {
-     "path": "/",
-     "headers": {
-      "Host": "shuma.ccwu.cc"
-     }
-    },
-    "security_scheme": "tls",
-    "proto": "vless",
-    "peer": "shuma.ccwu.cc"
-   },
-   "detail": "An error occurred in the delay test"
-  },
-  {
-   "name": "🇺🇸_美国_74",
-   "proto": "vless",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "🇺🇸_美国_74",
-    "type": "vless",
-    "server": "45.144.112.50",
-    "port": 8443,
-    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
-    "tls": true,
-    "network": "ws",
-    "sni": "shuma.ccwu.cc",
-    "servername": "shuma.ccwu.cc",
-    "ws-opts": {
-     "path": "/",
-     "headers": {
-      "Host": "shuma.ccwu.cc"
-     }
-    },
-    "security_scheme": "tls",
-    "proto": "vless",
-    "peer": "shuma.ccwu.cc"
-   },
-   "detail": "An error occurred in the delay test"
-  },
-  {
    "name": "🇯🇵_日本_30",
    "proto": "vless",
    "ok": false,
@@ -7284,33 +7393,6 @@
    "detail": "An error occurred in the delay test"
   },
   {
-   "name": "🇺🇸_美国_75",
-   "proto": "vless",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "🇺🇸_美国_75",
-    "type": "vless",
-    "server": "45.63.21.52",
-    "port": 443,
-    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
-    "tls": true,
-    "network": "ws",
-    "sni": "shuma.ccwu.cc",
-    "servername": "shuma.ccwu.cc",
-    "ws-opts": {
-     "path": "/",
-     "headers": {
-      "Host": "shuma.ccwu.cc"
-     }
-    },
-    "security_scheme": "tls",
-    "proto": "vless",
-    "peer": "shuma.ccwu.cc"
-   },
-   "detail": "An error occurred in the delay test"
-  },
-  {
    "name": "🇯🇵_日本_35",
    "proto": "vless",
    "ok": false,
@@ -7335,7 +7417,34 @@
     "proto": "vless",
     "peer": "shuma.ccwu.cc"
    },
-   "detail": "Timeout"
+   "detail": "An error occurred in the delay test"
+  },
+  {
+   "name": "🇺🇸_美国_39",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇺🇸_美国_39",
+    "type": "vless",
+    "server": "45.77.185.184",
+    "port": 443,
+    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
+    "tls": true,
+    "network": "ws",
+    "sni": "shuma.ccwu.cc",
+    "servername": "shuma.ccwu.cc",
+    "ws-opts": {
+     "path": "/",
+     "headers": {
+      "Host": "shuma.ccwu.cc"
+     }
+    },
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "shuma.ccwu.cc"
+   },
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "SG新加坡(mibei77.com 米贝节点分享)",
@@ -7361,6 +7470,33 @@
     "security_scheme": "tls",
     "proto": "vless",
     "peer": "mia7.pages.dev"
+   },
+   "detail": "An error occurred in the delay test"
+  },
+  {
+   "name": "🇺🇸_美国_69",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇺🇸_美国_69",
+    "type": "vless",
+    "server": "47.251.95.178",
+    "port": 443,
+    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
+    "tls": true,
+    "network": "ws",
+    "sni": "shuma.ccwu.cc",
+    "servername": "shuma.ccwu.cc",
+    "ws-opts": {
+     "path": "/",
+     "headers": {
+      "Host": "shuma.ccwu.cc"
+     }
+    },
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "shuma.ccwu.cc"
    },
    "detail": "An error occurred in the delay test"
   },
@@ -7392,58 +7528,58 @@
    "detail": "An error occurred in the delay test"
   },
   {
-   "name": "🇹🇼 🇨🇳 台湾 | TWN",
+   "name": "🇺🇸_美国_79",
    "proto": "vless",
    "ok": false,
    "latency": 0.0,
    "proxy": {
-    "name": "🇹🇼 🇨🇳 台湾 | TWN",
+    "name": "🇺🇸_美国_79",
     "type": "vless",
-    "server": "59.125.69.24",
+    "server": "54.191.77.34",
     "port": 443,
-    "uuid": "06e177f7-240d-4687-bd85-235505801a5e",
+    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
     "tls": true,
     "network": "ws",
-    "sni": "ty986gfazs.cainiaohub.xyz",
-    "servername": "ty986gfazs.cainiaohub.xyz",
+    "sni": "shuma.ccwu.cc",
+    "servername": "shuma.ccwu.cc",
     "ws-opts": {
-     "path": "/81574b6b-c9d7-44a0-b83d-dad56e8cb530",
+     "path": "/",
      "headers": {
-      "Host": "ty986gfazs.cainiaohub.xyz"
+      "Host": "shuma.ccwu.cc"
      }
     },
     "security_scheme": "tls",
     "proto": "vless",
-    "peer": "ty986gfazs.cainiaohub.xyz"
+    "peer": "shuma.ccwu.cc"
    },
    "detail": "Timeout"
   },
   {
-   "name": "🇹🇼 🇨🇳 台湾 | TWN_2",
+   "name": "🇧🇾 BY_14",
    "proto": "vless",
    "ok": false,
    "latency": 0.0,
    "proxy": {
-    "name": "🇹🇼 🇨🇳 台湾 | TWN_2",
+    "name": "🇧🇾 BY_14",
     "type": "vless",
-    "server": "60.248.219.54",
+    "server": "62.182.102.93",
     "port": 443,
-    "uuid": "06e177f7-240d-4687-bd85-235505801a5e",
+    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
     "tls": true,
     "network": "ws",
-    "sni": "ty986gfazs.cainiaohub.xyz",
-    "servername": "ty986gfazs.cainiaohub.xyz",
+    "sni": "shuma.ccwu.cc",
+    "servername": "shuma.ccwu.cc",
     "ws-opts": {
-     "path": "/81574b6b-c9d7-44a0-b83d-dad56e8cb530",
+     "path": "/",
      "headers": {
-      "Host": "ty986gfazs.cainiaohub.xyz"
+      "Host": "shuma.ccwu.cc"
      }
     },
     "security_scheme": "tls",
     "proto": "vless",
-    "peer": "ty986gfazs.cainiaohub.xyz"
+    "peer": "shuma.ccwu.cc"
    },
-   "detail": "Timeout"
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "🇳🇱_荷兰_109",
@@ -7500,6 +7636,33 @@
    "detail": "An error occurred in the delay test"
   },
   {
+   "name": "🇺🇸_美国_81",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇺🇸_美国_81",
+    "type": "vless",
+    "server": "64.112.42.28",
+    "port": 443,
+    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
+    "tls": true,
+    "network": "ws",
+    "sni": "shuma.ccwu.cc",
+    "servername": "shuma.ccwu.cc",
+    "ws-opts": {
+     "path": "/",
+     "headers": {
+      "Host": "shuma.ccwu.cc"
+     }
+    },
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "shuma.ccwu.cc"
+   },
+   "detail": "Timeout"
+  },
+  {
    "name": "🇯🇵_日本_46",
    "proto": "vless",
    "ok": false,
@@ -7551,7 +7714,7 @@
     "proto": "vless",
     "peer": "shuma.ccwu.cc"
    },
-   "detail": "Timeout"
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "🇫🇮_芬兰_130",
@@ -7581,15 +7744,15 @@
    "detail": "An error occurred in the delay test"
   },
   {
-   "name": "🇨🇦_加拿大_66",
+   "name": "🇺🇸_美国_58",
    "proto": "vless",
    "ok": false,
    "latency": 0.0,
    "proxy": {
-    "name": "🇨🇦_加拿大_66",
+    "name": "🇺🇸_美国_58",
     "type": "vless",
-    "server": "66.154.127.165",
-    "port": 443,
+    "server": "66.187.5.142",
+    "port": 8443,
     "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
     "tls": true,
     "network": "ws",
@@ -7745,60 +7908,6 @@
    "detail": "An error occurred in the delay test"
   },
   {
-   "name": "🇺🇸_美国_65",
-   "proto": "vless",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "🇺🇸_美国_65",
-    "type": "vless",
-    "server": "77.110.123.82",
-    "port": 443,
-    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
-    "tls": true,
-    "network": "ws",
-    "sni": "shuma.ccwu.cc",
-    "servername": "shuma.ccwu.cc",
-    "ws-opts": {
-     "path": "/",
-     "headers": {
-      "Host": "shuma.ccwu.cc"
-     }
-    },
-    "security_scheme": "tls",
-    "proto": "vless",
-    "peer": "shuma.ccwu.cc"
-   },
-   "detail": "An error occurred in the delay test"
-  },
-  {
-   "name": "🇺🇸_美国_63",
-   "proto": "vless",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "🇺🇸_美国_63",
-    "type": "vless",
-    "server": "77.110.123.82",
-    "port": 8443,
-    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
-    "tls": true,
-    "network": "ws",
-    "sni": "shuma.ccwu.cc",
-    "servername": "shuma.ccwu.cc",
-    "ws-opts": {
-     "path": "/",
-     "headers": {
-      "Host": "shuma.ccwu.cc"
-     }
-    },
-    "security_scheme": "tls",
-    "proto": "vless",
-    "peer": "shuma.ccwu.cc"
-   },
-   "detail": "An error occurred in the delay test"
-  },
-  {
    "name": "DE德国(mibei77.com 米贝节点分享)",
    "proto": "vless",
    "ok": false,
@@ -7822,6 +7931,28 @@
     "security_scheme": "tls",
     "proto": "vless",
     "peer": "shuma.ccwu.cc"
+   },
+   "detail": "An error occurred in the delay test"
+  },
+  {
+   "name": "🇲🇩 摩尔多瓦 | MDA",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇲🇩 摩尔多瓦 | MDA",
+    "type": "vless",
+    "server": "80.96.109.15",
+    "port": 443,
+    "uuid": "cd3bb7d9-7df3-4644-ac05-c260990ac277",
+    "flow": "xtls-rprx-vision",
+    "tls": true,
+    "network": "tcp",
+    "sni": "moldova.failspace.top",
+    "servername": "moldova.failspace.top",
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "moldova.failspace.top"
    },
    "detail": "An error occurred in the delay test"
   },
@@ -7851,6 +7982,60 @@
     "peer": "shuma.ccwu.cc"
    },
    "detail": "An error occurred in the delay test"
+  },
+  {
+   "name": "🇳🇱 荷兰 | NLD",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇳🇱 荷兰 | NLD",
+    "type": "vless",
+    "server": "84.201.180.13",
+    "port": 443,
+    "uuid": "1e2b9c0c-4f9b-56f5-a062-1c4f2d2aa200",
+    "tls": true,
+    "network": "xhttp",
+    "sni": "api-maps.yandex.ru",
+    "servername": "api-maps.yandex.ru",
+    "reality-opts": {
+     "public-key": "DuxQy3KWEZTU_sBhXSfeo_1Q0-0lMcSnx21bWvUi5hQ",
+     "short-id": "",
+     "spider-x": "",
+     "fingerprint": "firefox"
+    },
+    "security_scheme": "reality",
+    "proto": "vless",
+    "peer": "api-maps.yandex.ru"
+   },
+   "detail": "An error occurred in the delay test"
+  },
+  {
+   "name": "🇷🇴 罗马尼亚 | ROU",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇷🇴 罗马尼亚 | ROU",
+    "type": "vless",
+    "server": "85.115.209.232",
+    "port": 8443,
+    "uuid": "8d2196c0-2ec7-4867-8d66-d5d19bf8fb23",
+    "tls": true,
+    "network": "ws",
+    "sni": "de7.bbobr.win",
+    "servername": "de7.bbobr.win",
+    "ws-opts": {
+     "path": "/ws",
+     "headers": {
+      "Host": "de7.bbobr.win"
+     }
+    },
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "de7.bbobr.win"
+   },
+   "detail": "Timeout"
   },
   {
    "name": "🇳🇱_荷兰_106",
@@ -7958,7 +8143,7 @@
     "proto": "vless",
     "peer": "shuma.ccwu.cc"
    },
-   "detail": "An error occurred in the delay test"
+   "detail": "Timeout"
   },
   {
    "name": "🇩🇪_德国_118",
@@ -7996,6 +8181,33 @@
     "name": "🇫🇮_芬兰_56",
     "type": "vless",
     "server": "95.217.129.198",
+    "port": 443,
+    "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
+    "tls": true,
+    "network": "ws",
+    "sni": "shuma.ccwu.cc",
+    "servername": "shuma.ccwu.cc",
+    "ws-opts": {
+     "path": "/",
+     "headers": {
+      "Host": "shuma.ccwu.cc"
+     }
+    },
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "shuma.ccwu.cc"
+   },
+   "detail": "An error occurred in the delay test"
+  },
+  {
+   "name": "🇺🇸_美国_57",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇺🇸_美国_57",
+    "type": "vless",
+    "server": "96.44.184.33",
     "port": 443,
     "uuid": "c18b978e-1c4e-415c-8bea-07942b563a64",
     "tls": true,
@@ -8084,6 +8296,28 @@
    "detail": "An error occurred in the delay test"
   },
   {
+   "name": "🇩🇪 德国 | DEU_3",
+   "proto": "vless",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇩🇪 德国 | DEU_3",
+    "type": "vless",
+    "server": "dedicated.pivo.lol",
+    "port": 7443,
+    "uuid": "44e1105d-b46e-402f-933b-eaa136fcbb24",
+    "flow": "xtls-rprx-vision",
+    "tls": true,
+    "network": "tcp",
+    "sni": "dedicated.pivo.lol",
+    "servername": "dedicated.pivo.lol",
+    "security_scheme": "tls",
+    "proto": "vless",
+    "peer": "dedicated.pivo.lol"
+   },
+   "detail": "An error occurred in the delay test"
+  },
+  {
    "name": "NL荷兰(mibei77.com 米贝节点分享)_2",
    "proto": "vless",
    "ok": false,
@@ -8133,12 +8367,12 @@
    "detail": "Timeout"
   },
   {
-   "name": "🇩🇪_德国_362",
+   "name": "✅ 🇩🇪_德国_362",
    "proto": "vless",
-   "ok": true,
-   "latency": 0.327,
+   "ok": false,
+   "latency": 0.0,
    "proxy": {
-    "name": "🇩🇪_德国_362",
+    "name": "✅ 🇩🇪_德国_362",
     "type": "vless",
     "server": "free.sahanwickramasinghe.me",
     "port": 80,
@@ -8154,33 +8388,6 @@
     "security_scheme": "none",
     "proto": "vless",
     "peer": "free.sahanwickramasinghe.me"
-   },
-   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 327ms)"
-  },
-  {
-   "name": "🇫🇮_FI_芬兰",
-   "proto": "vless",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "🇫🇮_FI_芬兰",
-    "type": "vless",
-    "server": "hub-fi-03.hanvpn.cc",
-    "port": 443,
-    "uuid": "d9d0f208-d582-41d5-bb7b-742671402810",
-    "tls": true,
-    "network": "ws",
-    "sni": "hub-fi-03.hanvpn.cc",
-    "servername": "hub-fi-03.hanvpn.cc",
-    "ws-opts": {
-     "path": "/fi03-ws-8e47a",
-     "headers": {
-      "Host": "hub-fi-03.hanvpn.cc"
-     }
-    },
-    "security_scheme": "tls",
-    "proto": "vless",
-    "peer": "hub-fi-03.hanvpn.cc"
    },
    "detail": "An error occurred in the delay test"
   },
@@ -8214,28 +8421,6 @@
      "path": "/ws/7a2e8d77-fef6-77a9-5b70-b233dff53db4"
     },
     "xudp": true
-   },
-   "detail": "An error occurred in the delay test"
-  },
-  {
-   "name": "🇲🇩 摩尔多瓦 | MDA",
-   "proto": "vless",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "🇲🇩 摩尔多瓦 | MDA",
-    "type": "vless",
-    "server": "moldova.failspace.top",
-    "port": 443,
-    "uuid": "cd3bb7d9-7df3-4644-ac05-c260990ac277",
-    "flow": "xtls-rprx-vision",
-    "tls": true,
-    "network": "tcp",
-    "sni": "moldova.failspace.top",
-    "servername": "moldova.failspace.top",
-    "security_scheme": "tls",
-    "proto": "vless",
-    "peer": "moldova.failspace.top"
    },
    "detail": "An error occurred in the delay test"
   },
@@ -8291,33 +8476,6 @@
     "xudp": true
    },
    "detail": "An error occurred in the delay test"
-  },
-  {
-   "name": "🇨🇱 智利 | CHL",
-   "proto": "vless",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "🇨🇱 智利 | CHL",
-    "type": "vless",
-    "server": "platform113.golnamakcert.top",
-    "port": 80,
-    "uuid": "e13cf851-b4fd-413b-8d49-146e6eb8e5d4",
-    "tls": false,
-    "network": "ws",
-    "sni": "platform113.halalkhor.info",
-    "servername": "platform113.halalkhor.info",
-    "ws-opts": {
-     "path": "/platform113",
-     "headers": {
-      "Host": "platform113.halalkhor.info"
-     }
-    },
-    "security_scheme": "none",
-    "proto": "vless",
-    "peer": "platform113.halalkhor.info"
-   },
-   "detail": "Timeout"
   },
   {
    "name": "🇨🇱_智利_102",
@@ -8376,12 +8534,12 @@
    "detail": "An error occurred in the delay test"
   },
   {
-   "name": "✅ 🇷🇺_俄罗斯_365",
+   "name": "🇷🇺_俄罗斯_365",
    "proto": "vless",
    "ok": false,
    "latency": 0.0,
    "proxy": {
-    "name": "✅ 🇷🇺_俄罗斯_365",
+    "name": "🇷🇺_俄罗斯_365",
     "type": "vless",
     "server": "tr3.wba-pn.ru",
     "port": 443,
@@ -8398,7 +8556,7 @@
     "proto": "vless",
     "peer": "tr3.wba-pn.ru"
    },
-   "detail": "An error occurred in the delay test"
+   "detail": "Timeout"
   },
   {
    "name": "土耳其(mibei77.com 米贝节点分享)_3",
@@ -9352,7 +9510,7 @@
     },
     "udp": true
    },
-   "detail": "Timeout"
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "🇺🇸 美国 01 联通电信推荐-1F",
@@ -9377,7 +9535,7 @@
     },
     "udp": true
    },
-   "detail": "Timeout"
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "🇺🇸 美国 01 联通电信推荐-1A",
@@ -9717,7 +9875,7 @@
     "proto": "vmess",
     "peer": "156.245.232.239"
    },
-   "detail": "An error occurred in the delay test"
+   "detail": "Timeout"
   },
   {
    "name": "FI 🇫🇮 | @Raydikalx | A8E03B",
@@ -9745,6 +9903,34 @@
     "sni": "renderer-stream-2-62.mirra.now",
     "proto": "vmess",
     "peer": "renderer-stream-2-62.mirra.now"
+   },
+   "detail": "An error occurred in the delay test"
+  },
+  {
+   "name": "🇦🇺AU-103.224.212.211-0999",
+   "proto": "vmess",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇦🇺AU-103.224.212.211-0999",
+    "type": "vmess",
+    "server": "25.72img.xyz",
+    "port": 443,
+    "uuid": "81d93f62-15a2-4994-adb9-0b5d906aac7e",
+    "alterId": 0,
+    "cipher": "auto",
+    "tls": true,
+    "network": "ws",
+    "ws-opts": {
+     "path": "/",
+     "headers": {
+      "Host": "25.72img.xyz"
+     }
+    },
+    "security_scheme": "tls",
+    "sni": "25.72img.xyz",
+    "proto": "vmess",
+    "peer": "25.72img.xyz"
    },
    "detail": "An error occurred in the delay test"
   },
@@ -9981,6 +10167,73 @@
    "detail": "An error occurred in the delay test"
   },
   {
+   "name": "US 🇺🇸 | @Raydikalx | 34CAC1",
+   "proto": "vmess",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "US 🇺🇸 | @Raydikalx | 34CAC1",
+    "type": "vmess",
+    "server": "82.198.246.250",
+    "port": 180,
+    "uuid": "d13fc2f5-3e05-4795-81eb-44143a09e552",
+    "alterId": 0,
+    "cipher": "auto",
+    "tls": false,
+    "network": "tcp",
+    "servername": "fra34.chasem2026sud.com",
+    "security_scheme": "none",
+    "sni": "fra34.chasem2026sud.com",
+    "proto": "vmess",
+    "peer": "fra34.chasem2026sud.com"
+   },
+   "detail": "Timeout"
+  },
+  {
+   "name": "US 🇺🇸 | @Raydikalx | 9B6A17",
+   "proto": "vmess",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "US 🇺🇸 | @Raydikalx | 9B6A17",
+    "type": "vmess",
+    "server": "82.198.246.37",
+    "port": 180,
+    "uuid": "d13fc2f5-3e05-4795-81eb-44143a09e552",
+    "alterId": 0,
+    "cipher": "auto",
+    "tls": false,
+    "network": "tcp",
+    "security_scheme": "none",
+    "sni": "82.198.246.37",
+    "proto": "vmess",
+    "peer": "82.198.246.37"
+   },
+   "detail": "Timeout"
+  },
+  {
+   "name": "US 🇺🇸 | @Raydikalx | 002623",
+   "proto": "vmess",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "US 🇺🇸 | @Raydikalx | 002623",
+    "type": "vmess",
+    "server": "82.198.246.97",
+    "port": 180,
+    "uuid": "d13fc2f5-3e05-4795-81eb-44143a09e552",
+    "alterId": 0,
+    "cipher": "auto",
+    "tls": false,
+    "network": "tcp",
+    "security_scheme": "none",
+    "sni": "2001:bc8:32d7:302::10",
+    "proto": "vmess",
+    "peer": "2001:bc8:32d7:302::10"
+   },
+   "detail": "Timeout"
+  },
+  {
    "name": "HK 🇭🇰 | @Raydikalx | 85F731",
    "proto": "vmess",
    "ok": false,
@@ -10123,7 +10376,7 @@
     "proto": "vmess",
     "peer": "dee2309db4944c248b6d4372c6641e7b.oylfmxz.cn"
    },
-   "detail": "An error occurred in the delay test"
+   "detail": "Timeout"
   },
   {
    "name": "HK 🇭🇰 | @Raydikalx | 030E86",
@@ -10154,12 +10407,12 @@
    "detail": "Timeout"
   },
   {
-   "name": "✅ 🏳️_未知_361",
+   "name": "🏳️_未知_361",
    "proto": "vmess",
    "ok": false,
    "latency": 0.0,
    "proxy": {
-    "name": "✅ 🏳️_未知_361",
+    "name": "🏳️_未知_361",
     "type": "vmess",
     "server": "google.whatsapp.snapp.torob.basalam.fortresshost.ir.",
     "port": 80,
@@ -10185,7 +10438,7 @@
    "name": "✅ 🇺🇸_US_美国",
    "proto": "vmess",
    "ok": true,
-   "latency": 0.345,
+   "latency": 0.662,
    "proxy": {
     "name": "✅ 🇺🇸_US_美国",
     "type": "vmess",
@@ -10208,7 +10461,35 @@
     "proto": "vmess",
     "peer": "guanwang.awsno.com"
    },
-   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 345ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 662ms)"
+  },
+  {
+   "name": "🇭🇰_香港_363",
+   "proto": "vmess",
+   "ok": false,
+   "latency": 0.0,
+   "proxy": {
+    "name": "🇭🇰_香港_363",
+    "type": "vmess",
+    "server": "hkgb707.ifastcdncache.com",
+    "port": 60852,
+    "uuid": "f8eca8df-a1a5-4918-a194-d34112a3673f",
+    "alterId": 2,
+    "cipher": "auto",
+    "tls": false,
+    "network": "ws",
+    "ws-opts": {
+     "path": "/",
+     "headers": {
+      "Host": "hkgb707.ifastcdncache.com"
+     }
+    },
+    "security_scheme": "none",
+    "sni": "hkgb707.ifastcdncache.com",
+    "proto": "vmess",
+    "peer": "hkgb707.ifastcdncache.com"
+   },
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "HK 🇭🇰 | @Raydikalx | 3C365E",
@@ -10424,12 +10705,12 @@
    "detail": "An error occurred in the delay test"
   },
   {
-   "name": "🇭🇰_香港_21",
+   "name": "✅ 🇭🇰_香港_21",
    "proto": "vmess",
-   "ok": true,
-   "latency": 1.446,
+   "ok": false,
+   "latency": 0.0,
    "proxy": {
-    "name": "🇭🇰_香港_21",
+    "name": "✅ 🇭🇰_香港_21",
     "type": "vmess",
     "server": "v10.hdacd.com",
     "port": 30807,
@@ -10443,15 +10724,15 @@
     "proto": "vmess",
     "peer": "v10.hdacd.com"
    },
-   "detail": "ok via https://www.google.com/generate_204 (delay 1446ms)"
+   "detail": "Timeout"
   },
   {
-   "name": "[ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇩🇪_DE_德国",
+   "name": "✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇩🇪_DE_德国",
    "proto": "vmess",
-   "ok": true,
-   "latency": 0.562,
+   "ok": false,
+   "latency": 0.0,
    "proxy": {
-    "name": "[ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇩🇪_DE_德国",
+    "name": "✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇩🇪_DE_德国",
     "type": "vmess",
     "server": "v33.hdacd.com",
     "port": 30833,
@@ -10464,28 +10745,6 @@
     "sni": "v33.hdacd.com",
     "proto": "vmess",
     "peer": "v33.hdacd.com"
-   },
-   "detail": "ok via https://www.google.com/generate_204 (delay 562ms)"
-  },
-  {
-   "name": "🇭🇰_HK_中国香港->🇺🇸_US_美国",
-   "proto": "vmess",
-   "ok": false,
-   "latency": 0.0,
-   "proxy": {
-    "name": "🇭🇰_HK_中国香港->🇺🇸_US_美国",
-    "type": "vmess",
-    "server": "v4.hdacd.com",
-    "port": 30804,
-    "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484",
-    "alterId": 2,
-    "cipher": "auto",
-    "tls": false,
-    "network": "tcp",
-    "security_scheme": "none",
-    "sni": "v4.hdacd.com",
-    "proto": "vmess",
-    "peer": "v4.hdacd.com"
    },
    "detail": "Timeout"
   },
@@ -10515,13 +10774,13 @@
     "proto": "vmess",
     "peer": "wwafj5LHl6bI8aU9.v.3dns.vip"
    },
-   "detail": "Timeout"
+   "detail": "An error occurred in the delay test"
   },
   {
    "name": "✅ 🏳️_未知_519",
    "proto": "vmess",
    "ok": true,
-   "latency": 0.256,
+   "latency": 0.209,
    "proxy": {
     "name": "✅ 🏳️_未知_519",
     "type": "vmess",
@@ -10544,7 +10803,7 @@
     "proto": "vmess",
     "peer": "guanwang.awsno.com"
    },
-   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 256ms)"
+   "detail": "ok via https://www.cloudflare.com/cdn-cgi/trace (delay 209ms)"
   }
  ]
 }
