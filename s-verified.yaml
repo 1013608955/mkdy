@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=80
+# verified=83
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -82,8 +82,10 @@ proxy-groups:
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
+  - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_25|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
@@ -122,6 +124,7 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 美国+乔治亚洲亚特兰大Fastly节点
   - ✅ 🇫🇷FR_13|372KB/s|YT-US|GPT⁺|NF
+  - ✅ 🏳️_未知_361
   - ✅ 🇺🇸_US_美国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇩🇪_DE_德国
   - ✅ 🏳️_未知_519
@@ -165,8 +168,10 @@ proxy-groups:
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
+  - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_25|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
@@ -205,6 +210,7 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 美国+乔治亚洲亚特兰大Fastly节点
   - ✅ 🇫🇷FR_13|372KB/s|YT-US|GPT⁺|NF
+  - ✅ 🏳️_未知_361
   - ✅ 🇺🇸_US_美国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇩🇪_DE_德国
   - ✅ 🏳️_未知_519
@@ -250,8 +256,10 @@ proxy-groups:
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
+  - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_25|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
@@ -290,6 +298,7 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 美国+乔治亚洲亚特兰大Fastly节点
   - ✅ 🇫🇷FR_13|372KB/s|YT-US|GPT⁺|NF
+  - ✅ 🏳️_未知_361
   - ✅ 🇺🇸_US_美国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇩🇪_DE_德国
   - ✅ 🏳️_未知_519
@@ -1057,6 +1066,13 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- name: ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
+  port: 443
+  server: 156.146.56.97
+  sin: https://t.me/WangCai2🇨🇳
+  skip-cert-verify: true
+  tls: true
+  type: http
 - name: ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   port: 443
   server: 161.129.60.66
@@ -1067,6 +1083,12 @@ proxies:
   port: 443
   server: 167.88.60.242
   sin: https://t.me/WangCai2🇨🇳
+  skip-cert-verify: true
+  tls: true
+  type: http
+- name: ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
+  port: 9443
+  server: 181.215.52.122
   skip-cert-verify: true
   tls: true
   type: http
@@ -1354,6 +1376,23 @@ proxies:
     headers:
       User-Agent: Mozilla/5.0 (Linux; Android 4.4.2; SM-G7102 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.84 Mobile Safari/537.36
     path: /assignment
+- name: ✅ 🏳️_未知_361
+  type: vmess
+  server: google.whatsapp.snapp.torob.basalam.fortresshost.ir.
+  port: 80
+  uuid: 479526cd-5011-43cf-a788-504da95e07c2
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: google.whatsapp.snapp.torob.basalam.fortresshost.ir.
+  security_scheme: none
+  sni: google.whatsapp.snapp.torob.basalam.fortresshost.ir.
+  proto: vmess
+  peer: google.whatsapp.snapp.torob.basalam.fortresshost.ir.
 - name: ✅ 🇺🇸_US_美国
   type: vmess
   server: guanwang.awsno.com
