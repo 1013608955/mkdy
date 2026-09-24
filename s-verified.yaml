@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=78
+# verified=76
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -83,7 +83,6 @@ proxy-groups:
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
   - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
-  - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_25|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_61|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
@@ -117,7 +116,6 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇫🇷FR_13|372KB/s|YT-US|GPT⁺|NF
   - ✅ 俄罗斯+V2CROSS.COM
-  - ✅ 🇷🇺_俄罗斯_338
   - ✅ 🇭🇰_香港_436
   - ✅ 🏳️_未知_360
   - ✅ 🇭🇰_香港_95
@@ -164,7 +162,6 @@ proxy-groups:
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
   - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
-  - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_25|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_61|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
@@ -198,7 +195,6 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇫🇷FR_13|372KB/s|YT-US|GPT⁺|NF
   - ✅ 俄罗斯+V2CROSS.COM
-  - ✅ 🇷🇺_俄罗斯_338
   - ✅ 🇭🇰_香港_436
   - ✅ 🏳️_未知_360
   - ✅ 🇭🇰_香港_95
@@ -247,7 +243,6 @@ proxy-groups:
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
   - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
-  - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_25|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_61|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
@@ -281,7 +276,6 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇫🇷FR_13|372KB/s|YT-US|GPT⁺|NF
   - ✅ 俄罗斯+V2CROSS.COM
-  - ✅ 🇷🇺_俄罗斯_338
   - ✅ 🇭🇰_香港_436
   - ✅ 🏳️_未知_360
   - ✅ 🇭🇰_香港_95
@@ -1061,13 +1055,6 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
-  port: 443
-  server: 185.183.105.146
-  sin: https://t.me/WangCai2🇨🇳
-  skip-cert-verify: true
-  tls: true
-  type: http
 - name: ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   port: 443
   server: 185.216.35.66
@@ -1315,20 +1302,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: fbsv6.guardora.pro
-- name: ✅ 🇷🇺_俄罗斯_338
-  type: vless
-  server: tr3.wba-pn.ru
-  port: 443
-  uuid: af2a0c18-b08c-471f-baa3-259ac2ce3a85
-  tls: true
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: tr3.wba-pn.ru
-  security_scheme: tls
-  proto: vless
-  peer: tr3.wba-pn.ru
 - name: ✅ 🇭🇰_香港_436
   type: vmess
   server: ex1ogt73nzpqkac2.v.3dns.vip
