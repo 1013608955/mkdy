@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=101
+# verified=103
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -100,6 +100,7 @@ proxy-groups:
   - ✅ ❓Other_57|1.5MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_30|3.2MB/s|TK-CH|YT-PA|GPT⁺-CH|GM-PA
   - ✅ ❓Other_55|2.3MB/s|TK-PL|GPT⁺-PL
+  - ✅ ❓Other_15|2.1MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_20|1.5MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_41|2.2MB/s|YT-EC|GPT⁺-EC|GM-EC
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
@@ -139,6 +140,7 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_70
   - ✅ 🇬🇧 英国 | GBR_4
   - ✅ 🇮🇱 以色列 | ISR
+  - ✅ 🇷🇺_俄罗斯_106
   - ✅ 🇺🇸_US_美国
   - ✅ 香港|@ripaojiedian
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇩🇪_DE_德国
@@ -204,6 +206,7 @@ proxy-groups:
   - ✅ ❓Other_57|1.5MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_30|3.2MB/s|TK-CH|YT-PA|GPT⁺-CH|GM-PA
   - ✅ ❓Other_55|2.3MB/s|TK-PL|GPT⁺-PL
+  - ✅ ❓Other_15|2.1MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_20|1.5MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_41|2.2MB/s|YT-EC|GPT⁺-EC|GM-EC
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
@@ -243,6 +246,7 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_70
   - ✅ 🇬🇧 英国 | GBR_4
   - ✅ 🇮🇱 以色列 | ISR
+  - ✅ 🇷🇺_俄罗斯_106
   - ✅ 🇺🇸_US_美国
   - ✅ 香港|@ripaojiedian
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇩🇪_DE_德国
@@ -310,6 +314,7 @@ proxy-groups:
   - ✅ ❓Other_57|1.5MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_30|3.2MB/s|TK-CH|YT-PA|GPT⁺-CH|GM-PA
   - ✅ ❓Other_55|2.3MB/s|TK-PL|GPT⁺-PL
+  - ✅ ❓Other_15|2.1MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_20|1.5MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_41|2.2MB/s|YT-EC|GPT⁺-EC|GM-EC
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
@@ -349,6 +354,7 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_70
   - ✅ 🇬🇧 英国 | GBR_4
   - ✅ 🇮🇱 以色列 | ISR
+  - ✅ 🇷🇺_俄罗斯_106
   - ✅ 🇺🇸_US_美国
   - ✅ 香港|@ripaojiedian
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇩🇪_DE_德国
@@ -1247,6 +1253,13 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- name: ✅ ❓Other_15|2.1MB/s|TK-GB|GPT⁺-GB|GM-GB
+  port: 443
+  server: 37.120.233.34
+  sin: https://t.me/WangCai2🇨🇳
+  skip-cert-verify: true
+  tls: true
+  type: http
 - name: ✅ ❓Other_20|1.5MB/s|TK-GB|GPT⁺-GB|GM-GB
   port: 9443
   server: 37.120.233.50
@@ -1656,6 +1669,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: fserver-worker-001.mapleridgeway.top
+- name: ✅ 🇷🇺_俄罗斯_106
+  type: vless
+  server: tr3.wba-pn.ru
+  port: 443
+  uuid: af2a0c18-b08c-471f-baa3-259ac2ce3a85
+  tls: true
+  network: ws
+  sni: tr3.wba-pn.ru
+  servername: tr3.wba-pn.ru
+  ws-opts:
+    path: /
+    headers:
+      Host: tr3.wba-pn.ru
+  security_scheme: tls
+  proto: vless
+  peer: tr3.wba-pn.ru
 - name: ✅ 🇺🇸_US_美国
   type: vmess
   server: guanwang.awsno.com
