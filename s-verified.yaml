@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=93
+# verified=92
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -131,7 +131,6 @@ proxy-groups:
   - ✅ 🇺🇸_美国_484
   - ✅ RU俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇷🇺_俄罗斯_117
-  - ✅ 🇷🇺_俄罗斯_485
   - ✅ 🇺🇸_US_美国
   - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港
@@ -227,7 +226,6 @@ proxy-groups:
   - ✅ 🇺🇸_美国_484
   - ✅ RU俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇷🇺_俄罗斯_117
-  - ✅ 🇷🇺_俄罗斯_485
   - ✅ 🇺🇸_US_美国
   - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港
@@ -325,7 +323,6 @@ proxy-groups:
   - ✅ 🇺🇸_美国_484
   - ✅ RU俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇷🇺_俄罗斯_117
-  - ✅ 🇷🇺_俄罗斯_485
   - ✅ 🇺🇸_US_美国
   - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港
@@ -1497,22 +1494,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: fbsv6.guardora.pro
-- name: ✅ 🇷🇺_俄罗斯_485
-  type: vless
-  server: tr3.wba-pn.ru
-  port: 443
-  uuid: af2a0c18-b08c-471f-baa3-259ac2ce3a85
-  tls: true
-  network: ws
-  sni: tr3.wba-pn.ru
-  servername: tr3.wba-pn.ru
-  ws-opts:
-    path: /
-    headers:
-      Host: tr3.wba-pn.ru
-  security_scheme: tls
-  proto: vless
-  peer: tr3.wba-pn.ru
 - name: ✅ 🇺🇸_US_美国
   type: vmess
   server: guanwang.awsno.com
