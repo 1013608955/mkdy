@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=92
+# verified=87
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -128,15 +128,10 @@ proxy-groups:
   - ✅ 🇸🇪 瑞典 | SWE_2
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇫🇷FR_17|257KB/s|GPT⁺
-  - ✅ 🇺🇸_美国_484
   - ✅ RU俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇷🇺_俄罗斯_117
+  - ✅ 🇷🇺_俄罗斯_485
   - ✅ 🇺🇸_US_美国
-  - ✅ 香港|@ripaojiedian
-  - ✅ 🇭🇰_HK_中国香港
-  - ✅ 🇭🇰_HK_中国香港->🇬🇧_GB_英国
-  - ✅ 🇭🇰_HK_中国香港_2
-  - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
 - name: 自动选择
   type: url-test
   proxies:
@@ -223,15 +218,10 @@ proxy-groups:
   - ✅ 🇸🇪 瑞典 | SWE_2
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇫🇷FR_17|257KB/s|GPT⁺
-  - ✅ 🇺🇸_美国_484
   - ✅ RU俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇷🇺_俄罗斯_117
+  - ✅ 🇷🇺_俄罗斯_485
   - ✅ 🇺🇸_US_美国
-  - ✅ 香港|@ripaojiedian
-  - ✅ 🇭🇰_HK_中国香港
-  - ✅ 🇭🇰_HK_中国香港->🇬🇧_GB_英国
-  - ✅ 🇭🇰_HK_中国香港_2
-  - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -320,15 +310,10 @@ proxy-groups:
   - ✅ 🇸🇪 瑞典 | SWE_2
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇫🇷FR_17|257KB/s|GPT⁺
-  - ✅ 🇺🇸_美国_484
   - ✅ RU俄罗斯(mibei77.com 米贝节点分享)
   - ✅ 🇷🇺_俄罗斯_117
+  - ✅ 🇷🇺_俄罗斯_485
   - ✅ 🇺🇸_US_美国
-  - ✅ 香港|@ripaojiedian
-  - ✅ 🇭🇰_HK_中国香港
-  - ✅ 🇭🇰_HK_中国香港->🇬🇧_GB_英国
-  - ✅ 🇭🇰_HK_中国香港_2
-  - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -1446,22 +1431,6 @@ proxies:
     headers:
       User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36
     path: /assignment
-- name: ✅ 🇺🇸_美国_484
-  type: vless
-  server: 154.17.228.81
-  port: 59686
-  uuid: 88ee0e1e-a2a2-477e-88ce-4875c058aeba
-  tls: true
-  network: ws
-  sni: 123.714541.xyz
-  servername: 123.714541.xyz
-  ws-opts:
-    path: /Ra-vl
-    headers:
-      Host: 123.714541.xyz
-  security_scheme: tls
-  proto: vless
-  peer: 123.714541.xyz
 - name: ✅ RU俄罗斯(mibei77.com 米贝节点分享)
   type: vless
   server: 95.163.232.171
@@ -1494,6 +1463,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: fbsv6.guardora.pro
+- name: ✅ 🇷🇺_俄罗斯_485
+  type: vless
+  server: tr3.wba-pn.ru
+  port: 443
+  uuid: af2a0c18-b08c-471f-baa3-259ac2ce3a85
+  tls: true
+  network: ws
+  sni: tr3.wba-pn.ru
+  servername: tr3.wba-pn.ru
+  ws-opts:
+    path: /
+    headers:
+      Host: tr3.wba-pn.ru
+  security_scheme: tls
+  proto: vless
+  peer: tr3.wba-pn.ru
 - name: ✅ 🇺🇸_US_美国
   type: vmess
   server: guanwang.awsno.com
@@ -1512,68 +1497,3 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
-- name: ✅ 香港|@ripaojiedian
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
-- name: ✅ 🇭🇰_HK_中国香港
-  type: vmess
-  server: v35.hdacd.com
-  port: 30835
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v35.hdacd.com
-  proto: vmess
-  peer: v35.hdacd.com
-- name: ✅ 🇭🇰_HK_中国香港->🇬🇧_GB_英国
-  type: vmess
-  server: v36.hdacd.com
-  port: 30836
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v36.hdacd.com
-  proto: vmess
-  peer: v36.hdacd.com
-- name: ✅ 🇭🇰_HK_中国香港_2
-  type: vmess
-  server: v4.hdacd.com
-  port: 30804
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v4.hdacd.com
-  proto: vmess
-  peer: v4.hdacd.com
-- name: ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
-  type: vmess
-  server: v6.hdacd.com
-  port: 30806
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v6.hdacd.com
-  proto: vmess
-  peer: v6.hdacd.com
