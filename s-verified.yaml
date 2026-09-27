@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=88
+# verified=90
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -130,6 +130,8 @@ proxy-groups:
   - ✅ 🇷🇺_俄罗斯_32
   - ✅ 🇨🇱_智利_332
   - ✅ 🇨🇱 智利 | CHL
+  - ✅ US美国(mibei77.com 米贝节点分享)_72
+  - ✅ FR法国(mibei77.com 米贝节点分享)_9
   - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
   - ✅ 🇭🇰_HK_中国香港->🇩🇪_DE_德国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇺🇸_US_美国
@@ -221,6 +223,8 @@ proxy-groups:
   - ✅ 🇷🇺_俄罗斯_32
   - ✅ 🇨🇱_智利_332
   - ✅ 🇨🇱 智利 | CHL
+  - ✅ US美国(mibei77.com 米贝节点分享)_72
+  - ✅ FR法国(mibei77.com 米贝节点分享)_9
   - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
   - ✅ 🇭🇰_HK_中国香港->🇩🇪_DE_德国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇺🇸_US_美国
@@ -314,6 +318,8 @@ proxy-groups:
   - ✅ 🇷🇺_俄罗斯_32
   - ✅ 🇨🇱_智利_332
   - ✅ 🇨🇱 智利 | CHL
+  - ✅ US美国(mibei77.com 米贝节点分享)_72
+  - ✅ FR法国(mibei77.com 米贝节点分享)_9
   - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
   - ✅ 🇭🇰_HK_中国香港->🇩🇪_DE_德国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇺🇸_US_美国
@@ -1477,6 +1483,38 @@ proxies:
   security_scheme: none
   proto: vless
   peer: platform107.halalkhor.info
+- name: ✅ US美国(mibei77.com 米贝节点分享)_72
+  type: vless
+  server: tg.juntham.cn
+  port: 443
+  uuid: da8aa4cc-4f76-4248-a289-41f25713b6e2
+  tls: true
+  network: ws
+  sni: tg.juntham.cn
+  servername: tg.juntham.cn
+  ws-opts:
+    path: /
+    headers:
+      Host: tg.juntham.cn
+  security_scheme: tls
+  proto: vless
+  peer: tg.juntham.cn
+- name: ✅ FR法国(mibei77.com 米贝节点分享)_9
+  type: vless
+  server: vl.cocopon.top
+  port: 443
+  uuid: 44f06ad1-982c-4e03-849f-899c1c8dc14f
+  tls: true
+  network: ws
+  sni: vl.cocopon.top
+  servername: vl.cocopon.top
+  ws-opts:
+    path: /?ed=2560
+    headers:
+      Host: vl.cocopon.top
+  security_scheme: tls
+  proto: vless
+  peer: vl.cocopon.top
 - name: ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
   type: vmess
   server: v24.hdacd.com
