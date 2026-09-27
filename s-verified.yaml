@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=86
+# verified=88
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -109,6 +109,7 @@ proxy-groups:
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
+  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
@@ -128,6 +129,7 @@ proxy-groups:
   - ✅ 🇷🇺_俄罗斯_117
   - ✅ 🇺🇸_US_美国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇺🇸_US_美国
+  - ✅ 🇭🇰_HK_中国香港->🇫🇷_FR_法国
   - ✅ 🇭🇰_HK_中国香港->🇬🇧_GB_英国
   - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
@@ -198,6 +200,7 @@ proxy-groups:
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
+  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
@@ -217,6 +220,7 @@ proxy-groups:
   - ✅ 🇷🇺_俄罗斯_117
   - ✅ 🇺🇸_US_美国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇺🇸_US_美国
+  - ✅ 🇭🇰_HK_中国香港->🇫🇷_FR_法国
   - ✅ 🇭🇰_HK_中国香港->🇬🇧_GB_英国
   - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
@@ -289,6 +293,7 @@ proxy-groups:
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
+  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
@@ -308,6 +313,7 @@ proxy-groups:
   - ✅ 🇷🇺_俄罗斯_117
   - ✅ 🇺🇸_US_美国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇺🇸_US_美国
+  - ✅ 🇭🇰_HK_中国香港->🇫🇷_FR_法国
   - ✅ 🇭🇰_HK_中国香港->🇬🇧_GB_英国
   - ✅ 🇭🇰_HK_中国香港->🇺🇸_US_美国
   - ✅ 🇭🇰_HK_中国香港->🇯🇵_JP_日本
@@ -1256,6 +1262,13 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- name: ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+  port: 443
+  server: 82.102.25.210
+  sin: https://t.me/WangCai2🇨🇳
+  skip-cert-verify: true
+  tls: true
+  type: http
 - name: ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   port: 443
   server: 84.17.50.193
@@ -1466,6 +1479,19 @@ proxies:
   sni: v24.hdacd.com
   proto: vmess
   peer: v24.hdacd.com
+- name: ✅ 🇭🇰_HK_中国香港->🇫🇷_FR_法国
+  type: vmess
+  server: v35.hdacd.com
+  port: 30835
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v35.hdacd.com
+  proto: vmess
+  peer: v35.hdacd.com
 - name: ✅ 🇭🇰_HK_中国香港->🇬🇧_GB_英国
   type: vmess
   server: v36.hdacd.com
