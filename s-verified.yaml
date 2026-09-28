@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=91
+# verified=89
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -89,7 +89,6 @@ proxy-groups:
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_25|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_61|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
-  - ✅ ❓Other_35|3.0MB/s|TK-RU|YT-US
   - ✅ 🇷🇴RO_5|1.7MB/s|TK-RO|GPT⁺-RO|GM-RO
   - ✅ 🇷🇴RO_7|1.7MB/s|TK-RO|GPT⁺-RO
   - ✅ ❓Other_59|2.7MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -128,7 +127,6 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇫🇷FR_13|372KB/s|YT-US|GPT⁺|NF
   - ✅ 🇺🇸 美国 | USA_2
-  - ✅ 🇺🇸 美国 | USA
   - ✅ 🇬🇧_英国_115
   - ✅ 🇸🇬 新加坡 | SGP_2
   - ✅ RU俄罗斯(mibei77.com 米贝节点分享)
@@ -183,7 +181,6 @@ proxy-groups:
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_25|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_61|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
-  - ✅ ❓Other_35|3.0MB/s|TK-RU|YT-US
   - ✅ 🇷🇴RO_5|1.7MB/s|TK-RO|GPT⁺-RO|GM-RO
   - ✅ 🇷🇴RO_7|1.7MB/s|TK-RO|GPT⁺-RO
   - ✅ ❓Other_59|2.7MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -222,7 +219,6 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇫🇷FR_13|372KB/s|YT-US|GPT⁺|NF
   - ✅ 🇺🇸 美国 | USA_2
-  - ✅ 🇺🇸 美国 | USA
   - ✅ 🇬🇧_英国_115
   - ✅ 🇸🇬 新加坡 | SGP_2
   - ✅ RU俄罗斯(mibei77.com 米贝节点分享)
@@ -279,7 +275,6 @@ proxy-groups:
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_25|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_61|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
-  - ✅ ❓Other_35|3.0MB/s|TK-RU|YT-US
   - ✅ 🇷🇴RO_5|1.7MB/s|TK-RO|GPT⁺-RO|GM-RO
   - ✅ 🇷🇴RO_7|1.7MB/s|TK-RO|GPT⁺-RO
   - ✅ ❓Other_59|2.7MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -318,7 +313,6 @@ proxy-groups:
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇫🇷FR_13|372KB/s|YT-US|GPT⁺|NF
   - ✅ 🇺🇸 美国 | USA_2
-  - ✅ 🇺🇸 美国 | USA
   - ✅ 🇬🇧_英国_115
   - ✅ 🇸🇬 新加坡 | SGP_2
   - ✅ RU俄罗斯(mibei77.com 米贝节点分享)
@@ -1141,12 +1135,6 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ ❓Other_35|3.0MB/s|TK-RU|YT-US
-  port: 9443
-  server: 192.159.101.174
-  skip-cert-verify: true
-  tls: true
-  type: http
 - name: ✅ 🇷🇴RO_5|1.7MB/s|TK-RO|GPT⁺-RO|GM-RO
   port: 9002
   server: 193.176.84.30
@@ -1450,22 +1438,6 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: 192.236.151.43
-- name: ✅ 🇺🇸 美国 | USA
-  type: vless
-  server: 117.55.233.250
-  port: 443
-  uuid: 9e3132b8-b595-444a-833a-2de44789f9d7
-  tls: true
-  network: ws
-  sni: shephe.dpdns.org
-  servername: shephe.dpdns.org
-  ws-opts:
-    path: /
-    headers:
-      Host: shephe.dpdns.org
-  security_scheme: tls
-  proto: vless
-  peer: shephe.dpdns.org
 - name: ✅ 🇬🇧_英国_115
   type: vless
   server: 91.193.58.15
