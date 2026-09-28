@@ -173,6 +173,22 @@ jobs:
             return $rc
           }
 
+          # ── 账号级受限识别（2026-09-28）：华为云开发者空间要求重签协议后，账号被限制，
+          #    devenv list 返回 "the account not sign agreement"，start 退出 0 但零输出，
+          #    状态永远解析为空 → [2] 白跑 ~15min 后 exit 1 → 每 15 分钟一封失败邮件
+          #    （#3421-#3432 连续 12 轮实证，本机 hdspace 同样报错 = 账号级而非 CI 凭证问题）。
+          #    识别到该类签名即按「平台侧跳过」处理：不告警、不发失败邮件，账号恢复后自动继续。
+          LIST_RAW=$(tools/hds_session.sh devenv list </dev/null 2>&1 || true)
+          case "$LIST_RAW" in
+            *"not sign agreement"*|*"not real name"*)
+              echo "[blocked] 账号级受限：$(printf '%s' "$LIST_RAW" | grep -iE 'account not|not sign|not real' | head -1)"
+              echo "[blocked] 需人工在华为云开发者空间重新签署服务协议；本轮跳过不告警，账号恢复后自愈。"
+              echo "NOCOMPUTE_SKIP=1" >> "$GITHUB_ENV"
+              echo "ACCOUNT_BLOCKED=1" >> "$GITHUB_ENV"
+              exit 0
+              ;;
+          esac
+
           if [ "${{ inputs.action || 'wake_verify' }}" = "status" ]; then
             echo "当前状态: $(get_state)"; echo "[done] status 模式完成"; exit 0
           fi
@@ -437,7 +453,10 @@ jobs:
           # 文案不得断言「无算力」——否则连击达到阈值时会把病因误报给用户。
           CAUSE="无算力"
           [ "${KEY_RESET_SKIP:-0}" = "1" ] && CAUSE="SSH 私钥不可得（平台限流/瞬时故障）"
+          [ "${ACCOUNT_BLOCKED:-0}" = "1" ] && CAUSE="华为云账号受限（需重签开发者空间服务协议，人工处理）"
           MSG="mkdy 容器已连续 $N 轮（约 $((N*15/60)) 小时+）因平台侧原因被跳过（本轮病因：$CAUSE）。请关注华为云区域容量/服务状态。最近一次: $RUN_URL"
+          # 账号受限类病因：补一句明确的处理动作，避免只看到「看服务状态」不知所措。
+          [ "${ACCOUNT_BLOCKED:-0}" = "1" ] && MSG="mkdy 容器已连续 $N 轮（约 $((N*15/60)) 小时+）因账号受限被跳过（需在华为云开发者空间重新签署《开发者服务协议/开发平台服务协议》，人工操作后自动恢复）。最近一次: $RUN_URL"
           if [ -n "$SERVERCHAN_KEY" ]; then
             curl -s --max-time 15 -o /dev/null               "https://sctapi.ftqq.com/${SERVERCHAN_KEY}.send?title=mkdy连续跳过(${CAUSE})&desp=$(printf %s "$MSG" | sed s/&/%26/g)" || true
           fi
