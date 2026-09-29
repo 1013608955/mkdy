@@ -50,6 +50,7 @@ proxy-groups:
   - ✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇦🇺AU_4|3.2MB/s|YT-AU|GPT⁺-AU|GM-AU
+  - ✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
   - ✅ ❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG
   - ✅ ❓Other_43|2.1MB/s|YT-US|GPT⁺-LV
   - ✅ 🇯🇵JP_2|6.5MB/s|YT-US|GPT⁺-JP|GM-US
@@ -124,11 +125,10 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇸🇪 瑞典 | SWE
   - ✅ 🇸🇪 瑞典 | SWE_2
   - ✅ 🇸🇪_SE_瑞典
-  - ✅ 🇫🇷FR_12|306KB/s|GPT⁺|NF
+  - ✅ [ermaozi/get_subscribe]🇺🇸_US_美国
+  - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇺🇸 美国 | USA_2
-  - ✅ 🇭🇰_香港_461
   - ✅ 🇺🇸 美国 | USA
-  - ✅ 🇺🇸_美国_477
   - ✅ 🇺🇸 美国 | USA_2_2
   - ✅ 🇦🇹AT_1|1.7MB/s
   - ✅ 🇷🇺_俄罗斯_441
@@ -145,6 +145,7 @@ proxy-groups:
   - ✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇦🇺AU_4|3.2MB/s|YT-AU|GPT⁺-AU|GM-AU
+  - ✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
   - ✅ ❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG
   - ✅ ❓Other_43|2.1MB/s|YT-US|GPT⁺-LV
   - ✅ 🇯🇵JP_2|6.5MB/s|YT-US|GPT⁺-JP|GM-US
@@ -219,11 +220,10 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇸🇪 瑞典 | SWE
   - ✅ 🇸🇪 瑞典 | SWE_2
   - ✅ 🇸🇪_SE_瑞典
-  - ✅ 🇫🇷FR_12|306KB/s|GPT⁺|NF
+  - ✅ [ermaozi/get_subscribe]🇺🇸_US_美国
+  - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇺🇸 美国 | USA_2
-  - ✅ 🇭🇰_香港_461
   - ✅ 🇺🇸 美国 | USA
-  - ✅ 🇺🇸_美国_477
   - ✅ 🇺🇸 美国 | USA_2_2
   - ✅ 🇦🇹AT_1|1.7MB/s
   - ✅ 🇷🇺_俄罗斯_441
@@ -242,6 +242,7 @@ proxy-groups:
   - ✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇦🇺AU_4|3.2MB/s|YT-AU|GPT⁺-AU|GM-AU
+  - ✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
   - ✅ ❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG
   - ✅ ❓Other_43|2.1MB/s|YT-US|GPT⁺-LV
   - ✅ 🇯🇵JP_2|6.5MB/s|YT-US|GPT⁺-JP|GM-US
@@ -316,11 +317,10 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇸🇪 瑞典 | SWE
   - ✅ 🇸🇪 瑞典 | SWE_2
   - ✅ 🇸🇪_SE_瑞典
-  - ✅ 🇫🇷FR_12|306KB/s|GPT⁺|NF
+  - ✅ [ermaozi/get_subscribe]🇺🇸_US_美国
+  - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇺🇸 美国 | USA_2
-  - ✅ 🇭🇰_香港_461
   - ✅ 🇺🇸 美国 | USA
-  - ✅ 🇺🇸_美国_477
   - ✅ 🇺🇸 美国 | USA_2_2
   - ✅ 🇦🇹AT_1|1.7MB/s
   - ✅ 🇷🇺_俄罗斯_441
@@ -883,6 +883,13 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- name: ✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
+  port: 443
+  server: 103.26.207.94
+  sin: https://t.me/WangCai2🇨🇳
+  skip-cert-verify: true
+  tls: true
+  type: http
 - name: ✅ ❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG
   port: 443
   server: 109.204.88.17
@@ -1403,19 +1410,28 @@ proxies:
   security_scheme: none
   proto: ss
   peer: 51.20.86.152
+- name: ✅ [ermaozi/get_subscribe]🇺🇸_US_美国
+  type: ss
+  server: 54.90.169.61
+  port: 443
+  cipher: aes-256-cfb
+  password: amazonskr05
+  security_scheme: none
+  proto: ss
+  peer: 54.90.169.61
 - client-fingerprint: chrome
-  name: ✅ 🇫🇷FR_12|306KB/s|GPT⁺|NF
+  name: ✅ 🇫🇷FR_16|261KB/s|GPT
   network: ws
   password: humanity
   port: '443'
-  server: 104.16.174.72
+  server: 141.101.90.101
   skip-cert-verify: false
   sni: www.ignitelimit.com
   type: trojan
   udp: true
   ws-opts:
     headers:
-      User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36
+      User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36
     path: /assignment
 - name: ✅ 🇺🇸 美国 | USA_2
   type: trojan
@@ -1429,22 +1445,6 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: 192.236.151.43
-- name: ✅ 🇭🇰_香港_461
-  type: vless
-  server: 103.143.81.178
-  port: 443
-  uuid: 37665857-8b6e-4daa-8231-3e2927221558
-  tls: true
-  network: ws
-  sni: spjd.cbc.qzz.io
-  servername: spjd.cbc.qzz.io
-  ws-opts:
-    path: /proxyip=ProxyIP.US.CMLiussss.net
-    headers:
-      Host: spjd.cbc.qzz.io
-  security_scheme: tls
-  proto: vless
-  peer: spjd.cbc.qzz.io
 - name: ✅ 🇺🇸 美国 | USA
   type: vless
   server: 103.71.23.247
@@ -1461,22 +1461,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: hk.152568.xyz
-- name: ✅ 🇺🇸_美国_477
-  type: vless
-  server: 154.17.228.81
-  port: 59686
-  uuid: 88ee0e1e-a2a2-477e-88ce-4875c058aeba
-  tls: true
-  network: ws
-  sni: 123.714541.xyz
-  servername: 123.714541.xyz
-  ws-opts:
-    path: /Ra-vl
-    headers:
-      Host: 123.714541.xyz
-  security_scheme: tls
-  proto: vless
-  peer: 123.714541.xyz
 - name: ✅ 🇺🇸 美国 | USA_2_2
   type: vless
   server: 207.57.135.199
