@@ -123,12 +123,12 @@ proxy-groups:
   - ✅ 香港+特别行政区_2
   - ✅ 🇺🇸 美国 | USA_4
   - ✅ [ermaozi/get_subscribe]🇸🇪 瑞典 | SWE
-  - ✅ ⚡ b2n.ir/v2ray-configs | 172
   - ✅ [ermaozi/get_subscribe]🇺🇸_US_美国
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇺🇸 美国 | USA_2
   - ✅ 🇭🇰_香港_461
   - ✅ 🇺🇸 美国 | USA
+  - ✅ 🇺🇸_美国_477
   - ✅ 🇺🇸 美国 | USA_2_2
   - ✅ 🇷🇺_俄罗斯_441
   - ✅ 荷兰+V2CROSS.COM
@@ -217,12 +217,12 @@ proxy-groups:
   - ✅ 香港+特别行政区_2
   - ✅ 🇺🇸 美国 | USA_4
   - ✅ [ermaozi/get_subscribe]🇸🇪 瑞典 | SWE
-  - ✅ ⚡ b2n.ir/v2ray-configs | 172
   - ✅ [ermaozi/get_subscribe]🇺🇸_US_美国
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇺🇸 美国 | USA_2
   - ✅ 🇭🇰_香港_461
   - ✅ 🇺🇸 美国 | USA
+  - ✅ 🇺🇸_美国_477
   - ✅ 🇺🇸 美国 | USA_2_2
   - ✅ 🇷🇺_俄罗斯_441
   - ✅ 荷兰+V2CROSS.COM
@@ -313,12 +313,12 @@ proxy-groups:
   - ✅ 香港+特别行政区_2
   - ✅ 🇺🇸 美国 | USA_4
   - ✅ [ermaozi/get_subscribe]🇸🇪 瑞典 | SWE
-  - ✅ ⚡ b2n.ir/v2ray-configs | 172
   - ✅ [ermaozi/get_subscribe]🇺🇸_US_美国
   - ✅ 🇫🇷FR_16|261KB/s|GPT
   - ✅ 🇺🇸 美国 | USA_2
   - ✅ 🇭🇰_香港_461
   - ✅ 🇺🇸 美国 | USA
+  - ✅ 🇺🇸_美国_477
   - ✅ 🇺🇸 美国 | USA_2_2
   - ✅ 🇷🇺_俄罗斯_441
   - ✅ 荷兰+V2CROSS.COM
@@ -1389,15 +1389,6 @@ proxies:
   security_scheme: none
   proto: ss
   peer: 13.60.213.145
-- name: ✅ ⚡ b2n.ir/v2ray-configs | 172
-  type: ss
-  server: 51.20.72.15
-  port: 443
-  cipher: aes-256-cfb
-  password: amazonskr05
-  security_scheme: none
-  proto: ss
-  peer: 51.20.72.15
 - name: ✅ [ermaozi/get_subscribe]🇺🇸_US_美国
   type: ss
   server: 54.90.169.61
@@ -1465,6 +1456,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: hk.152568.xyz
+- name: ✅ 🇺🇸_美国_477
+  type: vless
+  server: 154.17.228.81
+  port: 59686
+  uuid: 88ee0e1e-a2a2-477e-88ce-4875c058aeba
+  tls: true
+  network: ws
+  sni: 123.714541.xyz
+  servername: 123.714541.xyz
+  ws-opts:
+    path: /Ra-vl
+    headers:
+      Host: 123.714541.xyz
+  security_scheme: tls
+  proto: vless
+  peer: 123.714541.xyz
 - name: ✅ 🇺🇸 美国 | USA_2_2
   type: vless
   server: 207.57.135.199
