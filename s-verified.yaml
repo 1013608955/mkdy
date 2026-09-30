@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=85
+# verified=83
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -127,8 +127,6 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA_4
   - ✅ 🇩🇪_DE_德国_2
   - ✅ 🇺🇸_US_美国
-  - ✅ [1808.ga]香港  | 线路定制：@QS00008
-  - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
 - name: 自动选择
   type: url-test
@@ -215,8 +213,6 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA_4
   - ✅ 🇩🇪_DE_德国_2
   - ✅ 🇺🇸_US_美国
-  - ✅ [1808.ga]香港  | 线路定制：@QS00008
-  - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
   url: http://www.gstatic.com/generate_204
   interval: 86400
@@ -305,8 +301,6 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA_4
   - ✅ 🇩🇪_DE_德国_2
   - ✅ 🇺🇸_US_美国
-  - ✅ [1808.ga]香港  | 线路定制：@QS00008
-  - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -1445,32 +1439,6 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
-- name: ✅ [1808.ga]香港  | 线路定制：@QS00008
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
-- name: ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
-  type: vmess
-  server: v35.hdacd.com
-  port: 30835
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v35.hdacd.com
-  proto: vmess
-  peer: v35.hdacd.com
 - name: ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
   type: vmess
   server: v6.hdacd.com

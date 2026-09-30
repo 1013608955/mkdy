@@ -1,6 +1,6 @@
 # Auto-merged subscription (mkdy) — full Clash config with rules
 # sources: s.txt, s1.txt, s2.txt + s2-clash-1.yaml, s2-clash-2.yaml, s2-clash-3.yaml, s2-clash-4.yaml, s2-clash-5.yaml, s2-clash-6.yaml
-# raw=1116 unique=552 groups=3 rules=516
+# raw=1115 unique=553 groups=3 rules=516
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -388,6 +388,7 @@ proxy-groups:
   - FR法国(mibei77.com 米贝节点分享)_8
   - US美国(mibei77.com 米贝节点分享)_78
   - 电报群：https://t.me/vvkj11
+  - 🇺🇸 美国 | USA_3
   - ⚡ b2n.ir/v2ray-configs | 297
   - 🇺🇸 美国高速-AI专用-1B
   - 🇺🇸 美国直连-备用
@@ -594,8 +595,8 @@ proxy-groups:
   - IR 🇮🇷 | @Raydikalx | CE092B
   - 🇭🇰 香港5
   - 🇭🇰HK_2|753KB/s
-  - ✅ [1808.ga]香港  | 线路定制：@QS00008
-  - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
+  - '[1808.ga]香港  | 线路定制：@QS00008'
+  - '[ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国'
   - '[ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇬🇧_GB_英国'
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
 - name: 自动选择
@@ -943,6 +944,7 @@ proxy-groups:
   - FR法国(mibei77.com 米贝节点分享)_8
   - US美国(mibei77.com 米贝节点分享)_78
   - 电报群：https://t.me/vvkj11
+  - 🇺🇸 美国 | USA_3
   - ⚡ b2n.ir/v2ray-configs | 297
   - 🇺🇸 美国高速-AI专用-1B
   - 🇺🇸 美国直连-备用
@@ -1149,8 +1151,8 @@ proxy-groups:
   - IR 🇮🇷 | @Raydikalx | CE092B
   - 🇭🇰 香港5
   - 🇭🇰HK_2|753KB/s
-  - ✅ [1808.ga]香港  | 线路定制：@QS00008
-  - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
+  - '[1808.ga]香港  | 线路定制：@QS00008'
+  - '[ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国'
   - '[ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇬🇧_GB_英国'
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
   url: http://www.gstatic.com/generate_204
@@ -1500,6 +1502,7 @@ proxy-groups:
   - FR法国(mibei77.com 米贝节点分享)_8
   - US美国(mibei77.com 米贝节点分享)_78
   - 电报群：https://t.me/vvkj11
+  - 🇺🇸 美国 | USA_3
   - ⚡ b2n.ir/v2ray-configs | 297
   - 🇺🇸 美国高速-AI专用-1B
   - 🇺🇸 美国直连-备用
@@ -1706,8 +1709,8 @@ proxy-groups:
   - IR 🇮🇷 | @Raydikalx | CE092B
   - 🇭🇰 香港5
   - 🇭🇰HK_2|753KB/s
-  - ✅ [1808.ga]香港  | 线路定制：@QS00008
-  - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
+  - '[1808.ga]香港  | 线路定制：@QS00008'
+  - '[ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国'
   - '[ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇬🇧_GB_英国'
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
   url: http://www.gstatic.com/generate_204
@@ -6130,6 +6133,24 @@ proxies:
   security_scheme: none
   proto: vless
   peer: batmanali.savfasf.ir
+- name: 🇺🇸 美国 | USA_3
+  type: vless
+  server: bgroup.us2.ilovegairport.com
+  port: 443
+  uuid: 8079ccd4-4b4b-44e2-92f0-8f0367ad9c24
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: us-west-2.console.aws.amazon.com
+  servername: us-west-2.console.aws.amazon.com
+  reality-opts:
+    public-key: s8KrYQFpXXkbCvW6ORmVrm4yC5GpVxCHfIoV9Z_FiUY
+    short-id: afe73effea
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: us-west-2.console.aws.amazon.com
 - name: ⚡ b2n.ir/v2ray-configs | 297
   type: vless
   server: c22020ec94c75137.RaVEnlO.iR
@@ -9083,7 +9104,7 @@ proxies:
       Host: 82d16f3a12ad1d0871e0270510bf2ef6.mobgslb.tbcache.com
     path: /
   xudp: true
-- name: ✅ [1808.ga]香港  | 线路定制：@QS00008
+- name: '[1808.ga]香港  | 线路定制：@QS00008'
   type: vmess
   server: v10.hdacd.com
   port: 30807
@@ -9096,7 +9117,7 @@ proxies:
   sni: v10.hdacd.com
   proto: vmess
   peer: v10.hdacd.com
-- name: ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
+- name: '[ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国'
   type: vmess
   server: v35.hdacd.com
   port: 30835
