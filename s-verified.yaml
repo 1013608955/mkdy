@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=81
+# verified=78
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -74,6 +74,7 @@ proxy-groups:
   - ✅ ❓Other_28|2.9MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_38|1.8MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
+  - ✅ ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
@@ -120,12 +121,8 @@ proxy-groups:
   - ✅ 🇵🇱 波兰 | POL
   - ✅ 🇺🇸 美国 | USA_2
   - ✅ 🇵🇱PL_1|4.0MB/s
-  - ✅ 🇺🇸 美国 | USA_4
   - ✅ 🏳️_未知_98
   - ✅ HK香港(mibei77.com 米贝节点分享)_3
-  - ✅ 🇰🇷_韩国_105
-  - ✅ 🇷🇺_俄罗斯_441
-  - ✅ 🇷🇺_俄罗斯_132
 - name: 自动选择
   type: url-test
   proxies:
@@ -158,6 +155,7 @@ proxy-groups:
   - ✅ ❓Other_28|2.9MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_38|1.8MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
+  - ✅ ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
@@ -204,12 +202,8 @@ proxy-groups:
   - ✅ 🇵🇱 波兰 | POL
   - ✅ 🇺🇸 美国 | USA_2
   - ✅ 🇵🇱PL_1|4.0MB/s
-  - ✅ 🇺🇸 美国 | USA_4
   - ✅ 🏳️_未知_98
   - ✅ HK香港(mibei77.com 米贝节点分享)_3
-  - ✅ 🇰🇷_韩国_105
-  - ✅ 🇷🇺_俄罗斯_441
-  - ✅ 🇷🇺_俄罗斯_132
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -244,6 +238,7 @@ proxy-groups:
   - ✅ ❓Other_28|2.9MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_38|1.8MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
+  - ✅ ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
@@ -290,12 +285,8 @@ proxy-groups:
   - ✅ 🇵🇱 波兰 | POL
   - ✅ 🇺🇸 美国 | USA_2
   - ✅ 🇵🇱PL_1|4.0MB/s
-  - ✅ 🇺🇸 美国 | USA_4
   - ✅ 🏳️_未知_98
   - ✅ HK香港(mibei77.com 米贝节点分享)_3
-  - ✅ 🇰🇷_韩国_105
-  - ✅ 🇷🇺_俄罗斯_441
-  - ✅ 🇷🇺_俄罗斯_132
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -1009,6 +1000,12 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- name: ✅ ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB
+  port: 9443
+  server: 149.88.99.209
+  skip-cert-verify: true
+  tls: true
+  type: http
 - name: ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
   port: 443
   server: 152.233.20.206
@@ -1338,17 +1335,6 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: admin.wwwinternetvideo.click
-- name: ✅ 🇺🇸 美国 | USA_4
-  type: hysteria2
-  server: starlink-ft.251313.xyz
-  port: 443
-  password: https://xship.top
-  sni: xship.top
-  skip-cert-verify: true
-  tls: true
-  security_scheme: tls
-  proto: hysteria2
-  peer: xship.top
 - name: ✅ 🏳️_未知_98
   type: vless
   server: 104.26.0.138
@@ -1381,51 +1367,3 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: jp3.yohototo.top
-- name: ✅ 🇰🇷_韩国_105
-  type: vless
-  server: 158.247.222.168
-  port: 443
-  uuid: 37665857-8b6e-4daa-8231-3e2927221558
-  tls: true
-  network: ws
-  sni: spjd.cbc.qzz.io
-  servername: spjd.cbc.qzz.io
-  ws-opts:
-    path: /proxyip=ProxyIP.US.CMLiussss.net
-    headers:
-      Host: spjd.cbc.qzz.io
-  security_scheme: tls
-  proto: vless
-  peer: spjd.cbc.qzz.io
-- name: ✅ 🇷🇺_俄罗斯_441
-  type: vless
-  server: 84.38.183.237
-  port: 443
-  uuid: 9737cc16-7266-45ce-94d9-6e05a45e0b9c
-  tls: true
-  network: ws
-  sni: ws.nightproducts.ru
-  servername: ws.nightproducts.ru
-  ws-opts:
-    path: /vless#/?Telegram---PLANB_NET---PLANB_NET---PLANB_NET---PLANB_NET
-    headers:
-      Host: ws.nightproducts.ru
-  security_scheme: tls
-  proto: vless
-  peer: ws.nightproducts.ru
-- name: ✅ 🇷🇺_俄罗斯_132
-  type: vless
-  server: fbsv6.guardora.pro
-  port: 443
-  uuid: bc5ec86c-3e65-4272-994c-59a924c72a68
-  tls: true
-  network: ws
-  sni: fbsv6.guardora.pro
-  servername: fbsv6.guardora.pro
-  ws-opts:
-    path: /ws
-    headers:
-      Host: fbsv6.guardora.pro
-  security_scheme: tls
-  proto: vless
-  peer: fbsv6.guardora.pro
