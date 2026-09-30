@@ -51,6 +51,7 @@ proxy-groups:
   - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇦🇺AU_4|3.2MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
+  - ✅ ❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG
   - ✅ ❓Other_43|2.1MB/s|YT-US|GPT⁺-LV
   - ✅ 🇯🇵JP_2|6.5MB/s|YT-US|GPT⁺-JP|GM-US
   - ✅ 🇯🇵JP_3|8.4MB/s|YT-US|GPT⁺-JP|GM-US
@@ -127,7 +128,6 @@ proxy-groups:
   - ✅ 🇩🇪_DE_德国_2
   - ✅ 🇺🇸_US_美国
   - ✅ [1808.ga]香港  | 线路定制：@QS00008
-  - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
 - name: 自动选择
   type: url-test
@@ -138,6 +138,7 @@ proxy-groups:
   - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇦🇺AU_4|3.2MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
+  - ✅ ❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG
   - ✅ ❓Other_43|2.1MB/s|YT-US|GPT⁺-LV
   - ✅ 🇯🇵JP_2|6.5MB/s|YT-US|GPT⁺-JP|GM-US
   - ✅ 🇯🇵JP_3|8.4MB/s|YT-US|GPT⁺-JP|GM-US
@@ -214,7 +215,6 @@ proxy-groups:
   - ✅ 🇩🇪_DE_德国_2
   - ✅ 🇺🇸_US_美国
   - ✅ [1808.ga]香港  | 线路定制：@QS00008
-  - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
   url: http://www.gstatic.com/generate_204
   interval: 86400
@@ -227,6 +227,7 @@ proxy-groups:
   - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇦🇺AU_4|3.2MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
+  - ✅ ❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG
   - ✅ ❓Other_43|2.1MB/s|YT-US|GPT⁺-LV
   - ✅ 🇯🇵JP_2|6.5MB/s|YT-US|GPT⁺-JP|GM-US
   - ✅ 🇯🇵JP_3|8.4MB/s|YT-US|GPT⁺-JP|GM-US
@@ -303,7 +304,6 @@ proxy-groups:
   - ✅ 🇩🇪_DE_德国_2
   - ✅ 🇺🇸_US_美国
   - ✅ [1808.ga]香港  | 线路定制：@QS00008
-  - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -863,6 +863,12 @@ proxies:
   port: 443
   server: 103.26.207.94
   sin: https://t.me/WangCai2🇨🇳
+  skip-cert-verify: true
+  tls: true
+  type: http
+- name: ✅ ❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG
+  port: 443
+  server: 109.204.88.17
   skip-cert-verify: true
   tls: true
   type: http
@@ -1449,19 +1455,6 @@ proxies:
   sni: v10.hdacd.com
   proto: vmess
   peer: v10.hdacd.com
-- name: ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
-  type: vmess
-  server: v35.hdacd.com
-  port: 30835
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v35.hdacd.com
-  proto: vmess
-  peer: v35.hdacd.com
 - name: ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
   type: vmess
   server: v6.hdacd.com
