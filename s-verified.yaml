@@ -78,7 +78,6 @@ proxy-groups:
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
-  - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
@@ -128,6 +127,7 @@ proxy-groups:
   - ✅ 🇩🇪_DE_德国_2
   - ✅ 🇺🇸_US_美国
   - ✅ [1808.ga]香港  | 线路定制：@QS00008
+  - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
 - name: 自动选择
   type: url-test
@@ -165,7 +165,6 @@ proxy-groups:
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
-  - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
@@ -215,6 +214,7 @@ proxy-groups:
   - ✅ 🇩🇪_DE_德国_2
   - ✅ 🇺🇸_US_美国
   - ✅ [1808.ga]香港  | 线路定制：@QS00008
+  - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
   url: http://www.gstatic.com/generate_204
   interval: 86400
@@ -254,7 +254,6 @@ proxy-groups:
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
-  - ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
@@ -304,6 +303,7 @@ proxy-groups:
   - ✅ 🇩🇪_DE_德国_2
   - ✅ 🇺🇸_US_美国
   - ✅ [1808.ga]香港  | 线路定制：@QS00008
+  - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -1044,12 +1044,6 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
-  port: 8443
-  server: 154.81.36.92
-  skip-cert-verify: true
-  tls: true
-  type: http
 - name: ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
   port: 443
   server: 156.146.56.110
@@ -1455,6 +1449,19 @@ proxies:
   sni: v10.hdacd.com
   proto: vmess
   peer: v10.hdacd.com
+- name: ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
+  type: vmess
+  server: v35.hdacd.com
+  port: 30835
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v35.hdacd.com
+  proto: vmess
+  peer: v35.hdacd.com
 - name: ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇯🇵_JP_日本
   type: vmess
   server: v6.hdacd.com
