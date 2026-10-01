@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=84
+# verified=85
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -94,6 +94,7 @@ proxy-groups:
   - ✅ ❓Other_59|2.7MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_24|2.1MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_60|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA
+  - ✅ ❓Other_48|2.0MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ✅ ❓Other_12|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_22|2.5MB/s|TK-CY|YT-US|GPT⁺-CY
   - ✅ ❓Other_57|1.5MB/s|YT-US|GPT⁺-US|GM-US
@@ -181,6 +182,7 @@ proxy-groups:
   - ✅ ❓Other_59|2.7MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_24|2.1MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_60|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA
+  - ✅ ❓Other_48|2.0MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ✅ ❓Other_12|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_22|2.5MB/s|TK-CY|YT-US|GPT⁺-CY
   - ✅ ❓Other_57|1.5MB/s|YT-US|GPT⁺-US|GM-US
@@ -270,6 +272,7 @@ proxy-groups:
   - ✅ ❓Other_59|2.7MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_24|2.1MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_60|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA
+  - ✅ ❓Other_48|2.0MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ✅ ❓Other_12|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_22|2.5MB/s|TK-CY|YT-US|GPT⁺-CY
   - ✅ ❓Other_57|1.5MB/s|YT-US|GPT⁺-US|GM-US
@@ -1148,6 +1151,13 @@ proxies:
 - name: ✅ ❓Other_60|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA
   port: 443
   server: 206.223.161.47
+  sin: https://t.me/WangCai2🇨🇳
+  skip-cert-verify: true
+  tls: true
+  type: http
+- name: ✅ ❓Other_48|2.0MB/s|YT-CA|GPT⁺-CA|GM-CA
+  port: 443
+  server: 206.223.183.16
   sin: https://t.me/WangCai2🇨🇳
   skip-cert-verify: true
   tls: true
