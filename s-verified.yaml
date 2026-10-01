@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=88
+# verified=86
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -47,7 +47,6 @@ proxy-groups:
   - 故障转移
   - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇦🇺AU_2|3.0MB/s|YT-AU|GPT⁺|GM-AU
-  - ✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇦🇺AU_4|3.2MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
@@ -127,18 +126,16 @@ proxy-groups:
   - ✅ 🏳️_未知_104
   - ✅ 🇺🇸 美国 | USA
   - ✅ HK香港(mibei77.com 米贝节点分享)_15
-  - ✅ 🇪🇪 爱沙尼亚 | EST
+  - ✅ 🏳️_未知_98
   - ✅ 🇰🇷_韩国_109
-  - ✅ 🇪🇪 爱沙尼亚 | EST_2
   - ✅ 俄罗斯+V2CROSS.COM
+  - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_US_美国_2
-  - ✅ 🇭🇰_香港_80
 - name: 自动选择
   type: url-test
   proxies:
   - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇦🇺AU_2|3.0MB/s|YT-AU|GPT⁺|GM-AU
-  - ✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇦🇺AU_4|3.2MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
@@ -218,12 +215,11 @@ proxy-groups:
   - ✅ 🏳️_未知_104
   - ✅ 🇺🇸 美国 | USA
   - ✅ HK香港(mibei77.com 米贝节点分享)_15
-  - ✅ 🇪🇪 爱沙尼亚 | EST
+  - ✅ 🏳️_未知_98
   - ✅ 🇰🇷_韩国_109
-  - ✅ 🇪🇪 爱沙尼亚 | EST_2
   - ✅ 俄罗斯+V2CROSS.COM
+  - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_US_美国_2
-  - ✅ 🇭🇰_香港_80
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -231,7 +227,6 @@ proxy-groups:
   proxies:
   - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇦🇺AU_2|3.0MB/s|YT-AU|GPT⁺|GM-AU
-  - ✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇦🇺AU_4|3.2MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
@@ -311,12 +306,11 @@ proxy-groups:
   - ✅ 🏳️_未知_104
   - ✅ 🇺🇸 美国 | USA
   - ✅ HK香港(mibei77.com 米贝节点分享)_15
-  - ✅ 🇪🇪 爱沙尼亚 | EST
+  - ✅ 🏳️_未知_98
   - ✅ 🇰🇷_韩国_109
-  - ✅ 🇪🇪 爱沙尼亚 | EST_2
   - ✅ 俄罗斯+V2CROSS.COM
+  - ✅ 🇺🇸_US_美国
   - ✅ 🇺🇸_US_美国_2
-  - ✅ 🇭🇰_香港_80
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -848,12 +842,6 @@ proxies:
   port: 443
   server: 103.1.213.210
   sin: https://t.me/WangCai2🇨🇳
-  skip-cert-verify: true
-  tls: true
-  type: http
-- name: ✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU
-  port: 9443
-  server: 103.107.197.146
   skip-cert-verify: true
   tls: true
   type: http
@@ -1432,22 +1420,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: jp3.yohototo.top
-- name: ✅ 🇪🇪 爱沙尼亚 | EST
+- name: ✅ 🏳️_未知_98
   type: vless
-  server: 194.26.141.148
+  server: 188.114.96.3
   port: 8443
-  uuid: 6c713691-3ca2-4446-ad25-113d1bed6b03
+  uuid: 69848b7f-3ee7-4c30-b035-6cff5e08ac4a
   tls: true
   network: ws
-  sni: fdghyt.com
-  servername: fdghyt.com
+  sni: us.luxes.network
+  servername: us.luxes.network
   ws-opts:
-    path: /vpn-wss/fluxor/59011/
+    path: /assets?ed
     headers:
-      Host: fdghyt.com
+      Host: us.luxes.network
   security_scheme: tls
   proto: vless
-  peer: fdghyt.com
+  peer: us.luxes.network
 - name: ✅ 🇰🇷_韩国_109
   type: vless
   server: 211.229.56.86
@@ -1464,22 +1452,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: 123.714541.xyz
-- name: ✅ 🇪🇪 爱沙尼亚 | EST_2
-  type: vless
-  server: ee10.zazazuza.ru
-  port: 8443
-  uuid: 6c713691-3ca2-4446-ad25-113d1bed6b03
-  tls: true
-  network: ws
-  sni: fdghyt.com
-  servername: fdghyt.com
-  ws-opts:
-    path: /vpn-wss/fluxor/59011/
-    headers:
-      Host: fdghyt.com
-  security_scheme: tls
-  proto: vless
-  peer: fdghyt.com
 - name: ✅ 俄罗斯+V2CROSS.COM
   type: vless
   server: germany.tofreedom.ru
@@ -1496,6 +1468,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: germany.tofreedom.ru
+- name: ✅ 🇺🇸_US_美国
+  type: vless
+  server: hk.152568.xyz
+  port: 443
+  uuid: 0250424c-ae75-4b6b-890f-3fe26fae36c3
+  tls: true
+  network: ws
+  sni: hk.152568.xyz
+  servername: hk.152568.xyz
+  ws-opts:
+    path: /cdn/packages/runtime-core.tar.gz
+    headers:
+      Host: hk.152568.xyz
+  security_scheme: tls
+  proto: vless
+  peer: hk.152568.xyz
 - name: ✅ 🇺🇸_US_美国_2
   type: vmess
   server: guanwang.awsno.com
@@ -1514,16 +1502,3 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
-- name: ✅ 🇭🇰_香港_80
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
