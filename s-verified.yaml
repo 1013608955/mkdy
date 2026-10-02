@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=83
+# verified=80
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -121,13 +121,10 @@ proxy-groups:
   - ✅ KR韩国(mibei77.com 米贝节点分享)
   - ✅ 巴西+V2CROSS.COM_2
   - ✅ 🇺🇸 美国 | USA 13
-  - '✅ 🇫🇷[www.v2nodes.com] trojan-FR-... #5'
-  - ✅ KR韩国(mibei77.com 米贝节点分享)
   - ✅ 🇸🇬_新加坡_26
   - ✅ 美国+V2CROSS.COM
   - ✅ 🇸🇬_SG_新加坡->🇱🇰_LK_斯里兰卡
   - ✅ 🇺🇸_US_美国_2
-  - ✅ 香港|@ripaojiedian
 - name: 自动选择
   type: url-test
   proxies:
@@ -207,13 +204,10 @@ proxy-groups:
   - ✅ KR韩国(mibei77.com 米贝节点分享)
   - ✅ 巴西+V2CROSS.COM_2
   - ✅ 🇺🇸 美国 | USA 13
-  - '✅ 🇫🇷[www.v2nodes.com] trojan-FR-... #5'
-  - ✅ KR韩国(mibei77.com 米贝节点分享)
   - ✅ 🇸🇬_新加坡_26
   - ✅ 美国+V2CROSS.COM
   - ✅ 🇸🇬_SG_新加坡->🇱🇰_LK_斯里兰卡
   - ✅ 🇺🇸_US_美国_2
-  - ✅ 香港|@ripaojiedian
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -295,13 +289,10 @@ proxy-groups:
   - ✅ KR韩国(mibei77.com 米贝节点分享)
   - ✅ 巴西+V2CROSS.COM_2
   - ✅ 🇺🇸 美国 | USA 13
-  - '✅ 🇫🇷[www.v2nodes.com] trojan-FR-... #5'
-  - ✅ KR韩国(mibei77.com 米贝节点分享)
   - ✅ 🇸🇬_新加坡_26
   - ✅ 美国+V2CROSS.COM
   - ✅ 🇸🇬_SG_新加坡->🇱🇰_LK_斯里兰卡
   - ✅ 🇺🇸_US_美国_2
-  - ✅ 香港|@ripaojiedian
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -1346,37 +1337,6 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: xship.top
-- name: '✅ 🇫🇷[www.v2nodes.com] trojan-FR-... #5'
-  type: trojan
-  server: 185.114.72.31
-  port: 2053
-  password: humanity
-  tls: true
-  network: ws
-  sni: www.calmlunch.com
-  ws-opts:
-    path: /assignment
-    headers:
-      Host: www.calmlunch.com
-  security_scheme: tls
-  proto: trojan
-  peer: www.calmlunch.com
-- name: ✅ KR韩国(mibei77.com 米贝节点分享)
-  type: vless
-  server: 211.229.56.86
-  port: 30021
-  uuid: 88ee0e1e-a2a2-477e-88ce-4875c058aeba
-  tls: true
-  network: ws
-  sni: 123.714541.xyz
-  servername: 123.714541.xyz
-  ws-opts:
-    path: /Ra-vl
-    headers:
-      Host: 123.714541.xyz
-  security_scheme: tls
-  proto: vless
-  peer: 123.714541.xyz
 - name: ✅ 🇸🇬_新加坡_26
   type: vless
   server: 5.223.19.211
@@ -1437,16 +1397,3 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
-- name: ✅ 香港|@ripaojiedian
-  type: vmess
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v10.hdacd.com
-  proto: vmess
-  peer: v10.hdacd.com
