@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=78
+# verified=80
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -103,11 +103,13 @@ proxy-groups:
   - ✅ ❓Other_20|1.5MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_41|2.2MB/s|YT-EC|GPT⁺-EC|GM-EC
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
+  - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_14|1.0MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
@@ -184,11 +186,13 @@ proxy-groups:
   - ✅ ❓Other_20|1.5MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_41|2.2MB/s|YT-EC|GPT⁺-EC|GM-EC
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
+  - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_14|1.0MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
@@ -267,11 +271,13 @@ proxy-groups:
   - ✅ ❓Other_20|1.5MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_41|2.2MB/s|YT-EC|GPT⁺-EC|GM-EC
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
+  - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_14|1.0MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
@@ -1193,6 +1199,12 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- name: ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
+  port: 9443
+  server: 38.95.111.226
+  skip-cert-verify: true
+  tls: true
+  type: http
 - name: ✅ ❓Other_14|1.0MB/s|YT-US|GPT⁺-US|GM-US
   port: 443
   server: 44.198.49.169
@@ -1222,6 +1234,13 @@ proxies:
 - name: ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
   port: 443
   server: 82.102.25.210
+  sin: https://t.me/WangCai2🇨🇳
+  skip-cert-verify: true
+  tls: true
+  type: http
+- name: ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
+  port: 443
+  server: 82.102.25.50
   sin: https://t.me/WangCai2🇨🇳
   skip-cert-verify: true
   tls: true
