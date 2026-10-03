@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=102
+# verified=104
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -64,6 +64,7 @@ proxy-groups:
   - ✅ 🇹🇭TH_1|2.5MB/s|YT-TH|GPT⁺-TH|GM-TH
   - ✅ 🇧🇪BE_1|4.7MB/s|TK-BE|GPT⁺-BE|GM-BE
   - ✅ 🇸🇪SE_1|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
+  - ✅ ❓Other_45|2.1MB/s|TK-AT|GPT⁺-AT|GM-AT
   - ✅ 🇸🇬SG_3|3.4MB/s|TK-SG|YT-ID|GPT⁺-SG|GM-ID
   - ✅ 🇭🇰HK_1|5.0MB/s|YT-HK
   - ✅ ❓Other_49|2.2MB/s|TK-FR|GPT⁺-FR|GM-FR
@@ -142,6 +143,7 @@ proxy-groups:
   - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #6'
   - '✅ [peasoft/NoMoreWalls]🇭🇰 香港 | HKG #1'
   - ✅ US美国(mibei77.com 米贝节点分享)_6
+  - ✅ HK香港(mibei77.com 米贝节点分享)
   - ✅ 🇷🇺_俄罗斯_111
   - '✅ 🇳🇱 荷兰 | NLD #2'
   - ✅ 🇸🇬_SG_新加坡->🇱🇰_LK_斯里兰卡
@@ -169,6 +171,7 @@ proxy-groups:
   - ✅ 🇹🇭TH_1|2.5MB/s|YT-TH|GPT⁺-TH|GM-TH
   - ✅ 🇧🇪BE_1|4.7MB/s|TK-BE|GPT⁺-BE|GM-BE
   - ✅ 🇸🇪SE_1|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
+  - ✅ ❓Other_45|2.1MB/s|TK-AT|GPT⁺-AT|GM-AT
   - ✅ 🇸🇬SG_3|3.4MB/s|TK-SG|YT-ID|GPT⁺-SG|GM-ID
   - ✅ 🇭🇰HK_1|5.0MB/s|YT-HK
   - ✅ ❓Other_49|2.2MB/s|TK-FR|GPT⁺-FR|GM-FR
@@ -247,6 +250,7 @@ proxy-groups:
   - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #6'
   - '✅ [peasoft/NoMoreWalls]🇭🇰 香港 | HKG #1'
   - ✅ US美国(mibei77.com 米贝节点分享)_6
+  - ✅ HK香港(mibei77.com 米贝节点分享)
   - ✅ 🇷🇺_俄罗斯_111
   - '✅ 🇳🇱 荷兰 | NLD #2'
   - ✅ 🇸🇬_SG_新加坡->🇱🇰_LK_斯里兰卡
@@ -276,6 +280,7 @@ proxy-groups:
   - ✅ 🇹🇭TH_1|2.5MB/s|YT-TH|GPT⁺-TH|GM-TH
   - ✅ 🇧🇪BE_1|4.7MB/s|TK-BE|GPT⁺-BE|GM-BE
   - ✅ 🇸🇪SE_1|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
+  - ✅ ❓Other_45|2.1MB/s|TK-AT|GPT⁺-AT|GM-AT
   - ✅ 🇸🇬SG_3|3.4MB/s|TK-SG|YT-ID|GPT⁺-SG|GM-ID
   - ✅ 🇭🇰HK_1|5.0MB/s|YT-HK
   - ✅ ❓Other_49|2.2MB/s|TK-FR|GPT⁺-FR|GM-FR
@@ -354,6 +359,7 @@ proxy-groups:
   - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #6'
   - '✅ [peasoft/NoMoreWalls]🇭🇰 香港 | HKG #1'
   - ✅ US美国(mibei77.com 米贝节点分享)_6
+  - ✅ HK香港(mibei77.com 米贝节点分享)
   - ✅ 🇷🇺_俄罗斯_111
   - '✅ 🇳🇱 荷兰 | NLD #2'
   - ✅ 🇸🇬_SG_新加坡->🇱🇰_LK_斯里兰卡
@@ -1002,6 +1008,13 @@ proxies:
 - name: ✅ 🇸🇪SE_1|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   port: 443
   server: 146.70.242.130
+  sin: https://t.me/WangCai2🇨🇳
+  skip-cert-verify: true
+  tls: true
+  type: http
+- name: ✅ ❓Other_45|2.1MB/s|TK-AT|GPT⁺-AT|GM-AT
+  port: 443
+  server: 146.70.244.2
   sin: https://t.me/WangCai2🇨🇳
   skip-cert-verify: true
   tls: true
@@ -1655,6 +1668,22 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: avengers5.yang-1989.xyz
+- name: ✅ HK香港(mibei77.com 米贝节点分享)
+  type: vless
+  server: 129.211.188.184
+  port: 8443
+  uuid: 4e4f1f70-5e56-4a76-bb9d-db087f4690c4
+  tls: true
+  network: ws
+  sni: jp3.yohototo.top
+  servername: jp3.yohototo.top
+  ws-opts:
+    path: /tyxyws
+    headers:
+      Host: jp3.yohototo.top
+  security_scheme: tls
+  proto: vless
+  peer: jp3.yohototo.top
 - name: ✅ 🇷🇺_俄罗斯_111
   type: vless
   server: 78.159.246.110
