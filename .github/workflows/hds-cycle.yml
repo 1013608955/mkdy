@@ -496,16 +496,38 @@ jobs:
           TGT="${ACTIVE_INSTANCE:-$INSTANCE}"
           echo "[target] 本轮实例=$TGT（ACTIVE_INSTANCE=${ACTIVE_INSTANCE:-未设置，用主实例}）"
 
-          HDS_NO_TIMEOUT=1 tools/hds_session.sh devenv start-tunnel \
-            --instance-id="$TGT" --ports=10022:22 >/tmp/tunnel.log 2>&1 &
-          TUN=$!
-          echo "[tunnel] 等待端口 10022（预算内 $(left)s）"
-          for i in $(seq 1 30); do
-            (echo > /dev/tcp/127.0.0.1/10022) 2>/dev/null && break
-            [ $(left) -lt 90 ] && { echo "[ERR] 隧道端口 10022 迟迟未通且预算不足"; break; }
+          # 隧道建立：预算驱动等待 + 端口连通性硬校验 + 失败诊断留痕 + 重启重试。
+          # 2026-10-06 run#4184 根因（原实现三宗罪）：
+          #   ① `for i in $(seq 1 30)` = 30×2s≈62s 硬上限，与 780s 预算完全脱钩——
+          #      容器刚开机、容器内 sshd 尚未就绪时必然撞线（run#4184 实测正好 62s 放弃）；
+          #   ② 循环退出后不校验端口是否真通就直接 SSH → `Connection refused` exit 255；
+          #   ③ 隧道进程真实报错写在 /tmp/tunnel.log，却从不打印 → 零诊断线索。
+          # 现改为：每轮最多等 120s、共享一次重启重试；退出前必须校验端口，失败即打隧道日志。
+          port_open() { (echo > /dev/tcp/127.0.0.1/10022) 2>/dev/null; }
+          TUNNEL_OK=0
+          for round in 1 2; do
+            HDS_NO_TIMEOUT=1 tools/hds_session.sh devenv start-tunnel \
+              --instance-id="$TGT" --ports=10022:22 >/tmp/tunnel.log 2>&1 &
+            TUN=$!
+            WAIT_END=$(( $(date +%s) + 120 ))
+            echo "[tunnel] 第 $round/2 次等待端口 10022（本轮上限 120s，全局预算剩 $(left)s）"
+            while [ "$(date +%s)" -lt "$WAIT_END" ] && [ "$(left)" -gt 150 ]; do
+              port_open && { TUNNEL_OK=1; break; }
+              sleep 2
+            done
+            [ "$TUNNEL_OK" = "1" ] && break
+            echo "[tunnel][ERR] 第 $round 次 120s 内端口未通（全局预算剩 $(left)s）"
+            echo "----- /tmp/tunnel.log 尾 20 行（真实失败原因）-----"
+            tail -20 /tmp/tunnel.log 2>/dev/null || echo "  （无日志：隧道进程可能根本未启动）"
+            kill "$TUN" 2>/dev/null || true
+            wait "$TUN" 2>/dev/null || true
             sleep 2
           done
-          sleep 2
+          if [ "$TUNNEL_OK" != "1" ]; then
+            echo "[ERR] 隧道端口 10022 两次重试均未通（全局预算剩 $(left)s），放弃本轮"
+            exit 1
+          fi
+          sleep 2   # 端口刚 listen，给 sshd 会话通道一点建立时间
           echo "--- 近 5 分钟 .devenv 新增文件 ---"
           find "$HOME/.devenv" -type f -newermt '-5 minutes' 2>/dev/null
           # reset 成功后私钥固定生成在 ~/.devenv/.ssh/IdentityFile/<实例ID>
