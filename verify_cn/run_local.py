@@ -24,7 +24,7 @@
 用法：
   python run_local.py --limit 20 --no-push   # 小规模试跑
   python run_local.py                        # 全量 + 推送
-  python run_local.py -c 24 -t 8 --no-pull   # 24 并发、8s 超时、不 pull
+  python run_local.py -c 32 -t 8 --no-pull   # 32 并发、8s 超时、不 pull
 """
 import os
 import sys
@@ -472,7 +472,14 @@ def _push_results(verified, shutdown_after):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=0, help="只验证前 N 个节点(试跑)，0=全量")
-    ap.add_argument("-c", "--concurrency", type=int, default=16)
+    # 2026-10-06 并发 16→32：节点池膨胀（隔离+待验证 582→815，+40%，订阅源侧变化、
+    #   零代码改动）致单轮验证 197s→370s、整轮耗时逼近/超过 15min 触发间隔 → concurrency
+    #   堆积雪崩（3 轮被挤掉标 failure 发假邮件 + 2 轮真失败）。
+    #   验证属 IO 密集（线程池并发调 mihomo delay API，时间花在网络等待），非 CPU 密集，
+    #   故 2vCPU 主实例上翻倍并发以压缩单轮时长。
+    #   回退判据：若通过率显著低于历史 ~15%（mihomo 在 2vCPU 上 CPU 饱和，令请求挤不进
+    #   8s 超时造成假阴性），则降到 24，或改用 -t 10 放宽超时对冲资源竞争。
+    ap.add_argument("-c", "--concurrency", type=int, default=32)
     ap.add_argument("-t", "--timeout", type=int, default=8, help="单次测试超时(秒)")
     ap.add_argument("--no-pull", action="store_true")
     ap.add_argument("--no-push", action="store_true")
