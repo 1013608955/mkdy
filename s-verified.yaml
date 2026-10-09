@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=80
+# verified=77
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -114,14 +114,11 @@ proxy-groups:
   - ✅ ❓Other_56|2.3MB/s|TK-AL|YT-US|GPT⁺-AL|GM-AL
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
+  - ✅ US美国(mibei77.com 米贝节点分享)_7
   - '✅ [peasoft/NoMoreWalls]🇫🇷 法国 | FRA #3'
   - ✅ 🇵🇱 波兰 | POL
   - '✅ [peasoft/NoMoreWalls]🇸🇬 新加坡 | SGP #2'
-  - ✅ 美国+加利福尼亚州洛杉矶
-  - ✅ 🇮🇹_意大利_25
-  - ✅ 🇺🇸_美国_39
-  - ✅ 🇺🇸_美国_48
-  - ✅ 美国纽约州水牛城+ColoCrossing数据中心
+  - ✅ 10G试用智能线路-1F
   - ✅ 🇺🇸_US_美国
   - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
@@ -197,14 +194,11 @@ proxy-groups:
   - ✅ ❓Other_56|2.3MB/s|TK-AL|YT-US|GPT⁺-AL|GM-AL
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
+  - ✅ US美国(mibei77.com 米贝节点分享)_7
   - '✅ [peasoft/NoMoreWalls]🇫🇷 法国 | FRA #3'
   - ✅ 🇵🇱 波兰 | POL
   - '✅ [peasoft/NoMoreWalls]🇸🇬 新加坡 | SGP #2'
-  - ✅ 美国+加利福尼亚州洛杉矶
-  - ✅ 🇮🇹_意大利_25
-  - ✅ 🇺🇸_美国_39
-  - ✅ 🇺🇸_美国_48
-  - ✅ 美国纽约州水牛城+ColoCrossing数据中心
+  - ✅ 10G试用智能线路-1F
   - ✅ 🇺🇸_US_美国
   - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
@@ -282,14 +276,11 @@ proxy-groups:
   - ✅ ❓Other_56|2.3MB/s|TK-AL|YT-US|GPT⁺-AL|GM-AL
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
+  - ✅ US美国(mibei77.com 米贝节点分享)_7
   - '✅ [peasoft/NoMoreWalls]🇫🇷 法国 | FRA #3'
   - ✅ 🇵🇱 波兰 | POL
   - '✅ [peasoft/NoMoreWalls]🇸🇬 新加坡 | SGP #2'
-  - ✅ 美国+加利福尼亚州洛杉矶
-  - ✅ 🇮🇹_意大利_25
-  - ✅ 🇺🇸_美国_39
-  - ✅ 🇺🇸_美国_48
-  - ✅ 美国纽约州水牛城+ColoCrossing数据中心
+  - ✅ 10G试用智能线路-1F
   - ✅ 🇺🇸_US_美国
   - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
@@ -1271,6 +1262,14 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- name: ✅ US美国(mibei77.com 米贝节点分享)_7
+  type: ss
+  server: 47.85.168.157
+  port: 443
+  cipher: 2022-blake3-chacha20-poly1305
+  password: 3NBsnBLanPfG6i3S2GTHineswr6EeSJPb0PCeMQoGoA=
+  skip-cert-verify: true
+  udp: true
 - name: '✅ [peasoft/NoMoreWalls]🇫🇷 法国 | FRA #3'
   type: ss
   server: 51.44.86.16
@@ -1304,71 +1303,20 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: musical-mouse.rooster465.autos
-- name: ✅ 美国+加利福尼亚州洛杉矶
+- name: ✅ 10G试用智能线路-1F
+  server: www.usyun.cc
+  port: 443
   type: vless
-  server: 185.106.96.231
-  port: 10829
-  uuid: 30e52776-55ac-3cb4-8d36-e2910f07e2c3
-  flow: xtls-rprx-vision
+  uuid: d97b8526-ccde-418c-a06d-da25d4e342ec
   tls: true
-  network: tcp
-  sni: u695098u99a93686s848.gogocs.xyz
-  servername: u695098u99a93686s848.gogocs.xyz
-  security_scheme: tls
-  proto: vless
-  peer: u695098u99a93686s848.gogocs.xyz
-- name: ✅ 🇮🇹_意大利_25
-  type: vless
-  server: 185.119.19.105
-  port: 10829
-  uuid: 30e52776-55ac-3cb4-8d36-e2910f07e2c3
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: u695098u2c5f47d6s8746.gogocs.xyz
-  servername: u695098u2c5f47d6s8746.gogocs.xyz
-  security_scheme: tls
-  proto: vless
-  peer: u695098u2c5f47d6s8746.gogocs.xyz
-- name: ✅ 🇺🇸_美国_39
-  type: vless
-  server: 192.227.169.125
-  port: 10829
-  uuid: 30e52776-55ac-3cb4-8d36-e2910f07e2c3
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: u695098u764943ccs478.gogocs.xyz
-  servername: u695098u764943ccs478.gogocs.xyz
-  security_scheme: tls
-  proto: vless
-  peer: u695098u764943ccs478.gogocs.xyz
-- name: ✅ 🇺🇸_美国_48
-  type: vless
-  server: 198.12.124.74
-  port: 10829
-  uuid: 30e52776-55ac-3cb4-8d36-e2910f07e2c3
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: u695098u5e20ed1cs709.gogocs.xyz
-  servername: u695098u5e20ed1cs709.gogocs.xyz
-  security_scheme: tls
-  proto: vless
-  peer: u695098u5e20ed1cs709.gogocs.xyz
-- name: ✅ 美国纽约州水牛城+ColoCrossing数据中心
-  type: vless
-  server: s734.csgfw.top
-  port: 10829
-  uuid: 30e52776-55ac-3cb4-8d36-e2910f07e2c3
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: u695098u5e20ed1cs709.gogocs.xyz
-  servername: u695098u5e20ed1cs709.gogocs.xyz
-  security_scheme: tls
-  proto: vless
-  peer: u695098u5e20ed1cs709.gogocs.xyz
+  servername: usyun.cc
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: /trial-gs-relay
+    headers:
+      Host: usyun.cc
+  udp: true
 - name: ✅ 🇺🇸_US_美国
   type: vmess
   server: guanwang.awsno.com
