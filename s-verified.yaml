@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=82
+# verified=77
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -114,17 +114,12 @@ proxy-groups:
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ US美国(mibei77.com 米贝节点分享)_7
+  - '✅ [peasoft/NoMoreWalls]🇫🇷 法国 | FRA #3'
   - ✅ 🇵🇱 波兰 | POL
-  - ✅ 🇭🇰 香港 | HKG
-  - ✅ 🇯🇵 日本 | JPN
   - '✅ [peasoft/NoMoreWalls]🇸🇬 新加坡 | SGP #2'
-  - ✅ 亚太地区+V2CROSS.COM
   - ✅ 🇮🇹_意大利_25
+  - ✅ 🇺🇸_美国_39
   - ✅ 🇺🇸_美国_48
-  - ✅ 🇺🇸_美国_33
-  - ✅ 美国+纽约州纽约BuyVM
-  - ✅ 美国+纽约州纽约BuyVM
-  - ✅ 🇺🇸_US_美国
   - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
 - name: 自动选择
@@ -199,17 +194,12 @@ proxy-groups:
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ US美国(mibei77.com 米贝节点分享)_7
+  - '✅ [peasoft/NoMoreWalls]🇫🇷 法国 | FRA #3'
   - ✅ 🇵🇱 波兰 | POL
-  - ✅ 🇭🇰 香港 | HKG
-  - ✅ 🇯🇵 日本 | JPN
   - '✅ [peasoft/NoMoreWalls]🇸🇬 新加坡 | SGP #2'
-  - ✅ 亚太地区+V2CROSS.COM
   - ✅ 🇮🇹_意大利_25
+  - ✅ 🇺🇸_美国_39
   - ✅ 🇺🇸_美国_48
-  - ✅ 🇺🇸_美国_33
-  - ✅ 美国+纽约州纽约BuyVM
-  - ✅ 美国+纽约州纽约BuyVM
-  - ✅ 🇺🇸_US_美国
   - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
   url: http://www.gstatic.com/generate_204
@@ -286,17 +276,12 @@ proxy-groups:
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ US美国(mibei77.com 米贝节点分享)_7
+  - '✅ [peasoft/NoMoreWalls]🇫🇷 法国 | FRA #3'
   - ✅ 🇵🇱 波兰 | POL
-  - ✅ 🇭🇰 香港 | HKG
-  - ✅ 🇯🇵 日本 | JPN
   - '✅ [peasoft/NoMoreWalls]🇸🇬 新加坡 | SGP #2'
-  - ✅ 亚太地区+V2CROSS.COM
   - ✅ 🇮🇹_意大利_25
+  - ✅ 🇺🇸_美国_39
   - ✅ 🇺🇸_美国_48
-  - ✅ 🇺🇸_美国_33
-  - ✅ 美国+纽约州纽约BuyVM
-  - ✅ 美国+纽约州纽约BuyVM
-  - ✅ 🇺🇸_US_美国
   - ✅ 香港|@ripaojiedian
   - ✅ 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
   url: http://www.gstatic.com/generate_204
@@ -1279,6 +1264,15 @@ proxies:
   password: 3NBsnBLanPfG6i3S2GTHineswr6EeSJPb0PCeMQoGoA=
   skip-cert-verify: true
   udp: true
+- name: '✅ [peasoft/NoMoreWalls]🇫🇷 法国 | FRA #3'
+  type: ss
+  server: 51.44.86.16
+  port: 443
+  cipher: aes-256-cfb
+  password: amazonskr05
+  security_scheme: none
+  proto: ss
+  peer: 51.44.86.16
 - name: ✅ 🇵🇱 波兰 | POL
   type: trojan
   server: enabling-snipe.rooster465.autos
@@ -1291,30 +1285,6 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: enabling-snipe.rooster465.autos
-- name: ✅ 🇭🇰 香港 | HKG
-  type: trojan
-  server: full-ox.rooster465.autos
-  port: 443
-  password: UX82473651
-  tls: true
-  network: tcp
-  sni: full-ox.rooster465.autos
-  skip-cert-verify: true
-  security_scheme: tls
-  proto: trojan
-  peer: full-ox.rooster465.autos
-- name: ✅ 🇯🇵 日本 | JPN
-  type: trojan
-  server: legible-ram.rooster465.autos
-  port: 443
-  password: UX82473651
-  tls: true
-  network: tcp
-  sni: legible-ram.rooster465.autos
-  skip-cert-verify: true
-  security_scheme: tls
-  proto: trojan
-  peer: legible-ram.rooster465.autos
 - name: '✅ [peasoft/NoMoreWalls]🇸🇬 新加坡 | SGP #2'
   type: trojan
   server: musical-mouse.rooster465.autos
@@ -1327,19 +1297,6 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: musical-mouse.rooster465.autos
-- name: ✅ 亚太地区+V2CROSS.COM
-  type: vless
-  server: 103.173.155.212
-  port: 10829
-  uuid: 30e52776-55ac-3cb4-8d36-e2910f07e2c3
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: u695098u4d99b056s591.csgfw.top
-  servername: u695098u4d99b056s591.csgfw.top
-  security_scheme: tls
-  proto: vless
-  peer: u695098u4d99b056s591.csgfw.top
 - name: ✅ 🇮🇹_意大利_25
   type: vless
   server: 185.119.19.105
@@ -1353,6 +1310,19 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: u695098u2c5f47d6s8746.gogocs.xyz
+- name: ✅ 🇺🇸_美国_39
+  type: vless
+  server: 192.227.169.125
+  port: 10829
+  uuid: 30e52776-55ac-3cb4-8d36-e2910f07e2c3
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: u695098u764943ccs478.gogocs.xyz
+  servername: u695098u764943ccs478.gogocs.xyz
+  security_scheme: tls
+  proto: vless
+  peer: u695098u764943ccs478.gogocs.xyz
 - name: ✅ 🇺🇸_美国_48
   type: vless
   server: 198.12.124.74
@@ -1366,63 +1336,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: u695098u5e20ed1cs709.gogocs.xyz
-- name: ✅ 🇺🇸_美国_33
-  type: vless
-  server: 198.98.48.110
-  port: 57233
-  uuid: 30e52776-55ac-3cb4-8d36-e2910f07e2c3
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: u695098u8fad5a44s552.gogocs.xyz
-  servername: u695098u8fad5a44s552.gogocs.xyz
-  security_scheme: tls
-  proto: vless
-  peer: u695098u8fad5a44s552.gogocs.xyz
-- name: ✅ 美国+纽约州纽约BuyVM
-  type: vless
-  server: s553.sspcccdn.xyz
-  port: 57233
-  uuid: 30e52776-55ac-3cb4-8d36-e2910f07e2c3
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: u695098u8fad5a44s552.gogocs.xyz
-  servername: u695098u8fad5a44s552.gogocs.xyz
-  security_scheme: tls
-  proto: vless
-  peer: u695098u8fad5a44s552.gogocs.xyz
-- name: ✅ 美国+纽约州纽约BuyVM
-  type: vless
-  server: s554.csgfw.top
-  port: 57233
-  uuid: 30e52776-55ac-3cb4-8d36-e2910f07e2c3
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: u695098u8fad5a44s552.gogocs.xyz
-  servername: u695098u8fad5a44s552.gogocs.xyz
-  security_scheme: tls
-  proto: vless
-  peer: u695098u8fad5a44s552.gogocs.xyz
-- name: ✅ 🇺🇸_US_美国
-  type: vmess
-  server: guanwang.awsno.com
-  port: 443
-  uuid: 6a89a215-22bf-4bd7-9642-b95b2e09583a
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /hls/cctv5phd.m3u8
-    headers:
-      Host: guanwang.awsno.com
-  servername: guanwang.awsno.com
-  security_scheme: tls
-  sni: guanwang.awsno.com
-  proto: vmess
-  peer: guanwang.awsno.com
 - name: ✅ 香港|@ripaojiedian
   type: vmess
   server: v10.hdacd.com
