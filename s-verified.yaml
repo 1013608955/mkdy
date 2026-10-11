@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=84
+# verified=83
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -118,10 +118,9 @@ proxy-groups:
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ 🇺🇸 美国 | USA_2
-  - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #1'
-  - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #2'
   - ✅ 德国+V2CROSS.COM
   - ✅ 🇺🇸_美国_6
+  - '✅ 🇪🇸 西班牙 | ESP #1'
   - ✅ 美国+纽约州伊利县威廉斯维尔村ColoCrossing有限公司
   - ✅ 德国+V2CROSS.COM_2
   - ✅ 德国+V2CROSS.COM_3
@@ -205,10 +204,9 @@ proxy-groups:
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ 🇺🇸 美国 | USA_2
-  - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #1'
-  - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #2'
   - ✅ 德国+V2CROSS.COM
   - ✅ 🇺🇸_美国_6
+  - '✅ 🇪🇸 西班牙 | ESP #1'
   - ✅ 美国+纽约州伊利县威廉斯维尔村ColoCrossing有限公司
   - ✅ 德国+V2CROSS.COM_2
   - ✅ 德国+V2CROSS.COM_3
@@ -294,10 +292,9 @@ proxy-groups:
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ 🇺🇸 美国 | USA_2
-  - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #1'
-  - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #2'
   - ✅ 德国+V2CROSS.COM
   - ✅ 🇺🇸_美国_6
+  - '✅ 🇪🇸 西班牙 | ESP #1'
   - ✅ 美国+纽约州伊利县威廉斯维尔村ColoCrossing有限公司
   - ✅ 德国+V2CROSS.COM_2
   - ✅ 德国+V2CROSS.COM_3
@@ -1324,24 +1321,6 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: xship.top
-- name: '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #1'
-  type: ss
-  server: ruot.ayucloudservices.nl
-  port: 22069
-  cipher: aes-256-gcm
-  password: bd962c9a-d6f2-4561-bd80-34206c4d5279
-  security_scheme: aead
-  proto: ss
-  peer: ruot.ayucloudservices.nl
-- name: '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #2'
-  type: ss
-  server: ruot.ayucloudservices.nl
-  port: 22073
-  cipher: aes-256-gcm
-  password: bd962c9a-d6f2-4561-bd80-34206c4d5279
-  security_scheme: aead
-  proto: ss
-  peer: ruot.ayucloudservices.nl
 - name: ✅ 德国+V2CROSS.COM
   type: vless
   server: 185.119.19.105
@@ -1368,6 +1347,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: u695098u764943ccs478.gogocs.xyz
+- name: '✅ 🇪🇸 西班牙 | ESP #1'
+  type: vless
+  server: 31.57.190.49
+  port: 443
+  uuid: e6df2095-a73c-4043-8693-8d5a03686870
+  tls: true
+  network: ws
+  sni: lucasjow.us.ci
+  servername: lucasjow.us.ci
+  ws-opts:
+    path: /cart/docs/www/proxyip=108.160.132.132fp=unsafe
+    headers:
+      Host: lucasjow.us.ci
+  security_scheme: tls
+  proto: vless
+  peer: lucasjow.us.ci
 - name: ✅ 美国+纽约州伊利县威廉斯维尔村ColoCrossing有限公司
   type: vless
   server: s482.wagahaha.xyz
