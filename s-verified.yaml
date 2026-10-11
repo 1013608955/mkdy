@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=78
+# verified=77
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -109,7 +109,7 @@ proxy-groups:
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
@@ -121,7 +121,6 @@ proxy-groups:
   - '✅ [peasoft/NoMoreWalls]🇰🇷 韩国 | KOR #1'
   - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #1'
   - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #2'
-  - ✅ 美国+圣凯瑟琳女子大学
   - ✅ 🇭🇰_香港_91
 - name: 自动选择
   type: url-test
@@ -190,7 +189,7 @@ proxy-groups:
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
@@ -202,7 +201,6 @@ proxy-groups:
   - '✅ [peasoft/NoMoreWalls]🇰🇷 韩国 | KOR #1'
   - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #1'
   - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #2'
-  - ✅ 美国+圣凯瑟琳女子大学
   - ✅ 🇭🇰_香港_91
   url: http://www.gstatic.com/generate_204
   interval: 86400
@@ -273,7 +271,7 @@ proxy-groups:
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
@@ -285,7 +283,6 @@ proxy-groups:
   - '✅ [peasoft/NoMoreWalls]🇰🇷 韩国 | KOR #1'
   - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #1'
   - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #2'
-  - ✅ 美国+圣凯瑟琳女子大学
   - ✅ 🇭🇰_香港_91
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -1242,9 +1239,9 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+- name: ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   port: 443
-  server: 82.102.25.210
+  server: 82.102.25.50
   sin: https://t.me/WangCai2🇨🇳
   skip-cert-verify: true
   tls: true
@@ -1337,22 +1334,6 @@ proxies:
   security_scheme: aead
   proto: ss
   peer: ruot.ayucloudservices.nl
-- name: ✅ 美国+圣凯瑟琳女子大学
-  type: vless
-  server: 140.225.208.50
-  port: 2083
-  uuid: e3c3b722-1264-4cdc-a97c-b0a1bb73cd67
-  tls: true
-  network: ws
-  sni: speedtestmark.com
-  servername: speedtestmark.com
-  ws-opts:
-    path: /vless-ws
-    headers:
-      Host: speedtestmark.com
-  security_scheme: tls
-  proto: vless
-  peer: speedtestmark.com
 - name: ✅ 🇭🇰_香港_91
   type: vmess
   server: v10.hdacd.com
