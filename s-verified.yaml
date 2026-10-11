@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=81
+# verified=84
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -120,8 +120,11 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA_2
   - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #1'
   - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #2'
+  - ✅ 德国+V2CROSS.COM
   - ✅ 🇺🇸_美国_6
   - ✅ 美国+纽约州伊利县威廉斯维尔村ColoCrossing有限公司
+  - ✅ 德国+V2CROSS.COM_2
+  - ✅ 德国+V2CROSS.COM_3
   - ✅ 🏳️_未知_224
   - ✅ 🇭🇰_香港_91
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
@@ -204,8 +207,11 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA_2
   - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #1'
   - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #2'
+  - ✅ 德国+V2CROSS.COM
   - ✅ 🇺🇸_美国_6
   - ✅ 美国+纽约州伊利县威廉斯维尔村ColoCrossing有限公司
+  - ✅ 德国+V2CROSS.COM_2
+  - ✅ 德国+V2CROSS.COM_3
   - ✅ 🏳️_未知_224
   - ✅ 🇭🇰_香港_91
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
@@ -290,8 +296,11 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA_2
   - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #1'
   - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #2'
+  - ✅ 德国+V2CROSS.COM
   - ✅ 🇺🇸_美国_6
   - ✅ 美国+纽约州伊利县威廉斯维尔村ColoCrossing有限公司
+  - ✅ 德国+V2CROSS.COM_2
+  - ✅ 德国+V2CROSS.COM_3
   - ✅ 🏳️_未知_224
   - ✅ 🇭🇰_香港_91
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
@@ -1333,6 +1342,19 @@ proxies:
   security_scheme: aead
   proto: ss
   peer: ruot.ayucloudservices.nl
+- name: ✅ 德国+V2CROSS.COM
+  type: vless
+  server: 185.119.19.105
+  port: 10829
+  uuid: 30e52776-55ac-3cb4-8d36-e2910f07e2c3
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: u695098u2c5f47d6s8746.gogocs.xyz
+  servername: u695098u2c5f47d6s8746.gogocs.xyz
+  security_scheme: tls
+  proto: vless
+  peer: u695098u2c5f47d6s8746.gogocs.xyz
 - name: ✅ 🇺🇸_美国_6
   type: vless
   server: 192.227.169.125
@@ -1359,6 +1381,32 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: u695098u764943ccs478.gogocs.xyz
+- name: ✅ 德国+V2CROSS.COM_2
+  type: vless
+  server: s8747.okgfwbackxyz.xyz
+  port: 10829
+  uuid: 30e52776-55ac-3cb4-8d36-e2910f07e2c3
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: u695098u2c5f47d6s8746.gogocs.xyz
+  servername: u695098u2c5f47d6s8746.gogocs.xyz
+  security_scheme: tls
+  proto: vless
+  peer: u695098u2c5f47d6s8746.gogocs.xyz
+- name: ✅ 德国+V2CROSS.COM_3
+  type: vless
+  server: s8748.okgg.top
+  port: 10829
+  uuid: 30e52776-55ac-3cb4-8d36-e2910f07e2c3
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: u695098u2c5f47d6s8746.gogocs.xyz
+  servername: u695098u2c5f47d6s8746.gogocs.xyz
+  security_scheme: tls
+  proto: vless
+  peer: u695098u2c5f47d6s8746.gogocs.xyz
 - name: ✅ 🏳️_未知_224
   type: vmess
   server: guanwang.awsno.com
