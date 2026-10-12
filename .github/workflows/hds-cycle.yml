@@ -124,7 +124,17 @@ jobs:
             done
           ) &
           AR=$!
-          timeout 170 python3 tools/config_hds.py || true
+          # 2026-10-13 run#4874：原写法 `config_hds.py || true` 把失败静默吞掉——keyring
+          #   写入失败时 [1] 仍显示 success，故障穿透到 [2] 白跑 25min（详见 [2] 凭据探活注释）。
+          #   现捕获退出码并显式告警；不在此处失败：瞬时抖动应交给 [2] 的凭据探活统一识别，
+          #   并按「跳过」语义收尾，避免把可自愈的环境故障升级成失败邮件。
+          CRED_RC=0
+          timeout 170 python3 tools/config_hds.py || CRED_RC=$?
+          if [ "$CRED_RC" -ne 0 ]; then
+            echo "[cred][WARN] config_hds.py 退出码=$CRED_RC（凭据可能未写入 keyring），交由 [2] 凭据探活判定"
+          else
+            echo "[cred][ok] 凭据写入完成（rc=0）"
+          fi
           kill $AR 2>/dev/null
           SESSION
 
@@ -185,6 +195,23 @@ jobs:
               echo "[blocked] 需人工在华为云开发者空间重新签署服务协议；本轮跳过不告警，账号恢复后自愈。"
               echo "NOCOMPUTE_SKIP=1" >> "$GITHUB_ENV"
               echo "ACCOUNT_BLOCKED=1" >> "$GITHUB_ENV"
+              exit 0
+              ;;
+            # ── 凭据不可用识别（2026-10-13 run#4874 根治）：
+            #    [1] 的 `config_hds.py || true` 会吞掉 keyring 写入失败，故障无声穿透到 [2]。
+            #    现象链：devenv list / start 全报 "failed to get AK/SK: credentials not found"
+            #    → 状态恒空 → [2] 反复探测；而每次 hds_session.sh 调用还要白等 90s 的 gcr
+            #    应答循环（凭据坏时密码弹窗永不出现）→ 11 次查询耗尽 25min 撞步骤上限
+            #    （实测每次查询稳定 +107s = 90s 空等 + 17s 执行），并因 concurrency 串行
+            #    阻塞后续 3 轮（4875/4876/4877 排队、4878 被挤掉）。
+            #    此处提前识别并快速跳过：25min → 一次探活。语义对齐「平台侧瞬时故障」
+            #    ——runner 环境抖动下轮自愈则不告警；若持续出现，交由 [2b] 连续计数统一提醒。
+            *"failed to get AK/SK"*|*"credentials not found"*|*"failed to get system credentials"*)
+              echo "[cred] 凭据不可用：$(printf '%s' "$LIST_RAW" | grep -iE 'AK/SK|credential' | head -1)"
+              echo "[cred] 疑似 runner keyring/D-Bus 瞬时故障致写凭据失败；本轮跳过不告警，下轮自愈。"
+              echo "[cred] 若连续多轮出现，请检查仓库 Secrets 的 HDS_AK/HDS_SK 是否失效。"
+              echo "NOCOMPUTE_SKIP=1" >> "$GITHUB_ENV"
+              echo "CRED_FAIL=1" >> "$GITHUB_ENV"
               exit 0
               ;;
           esac
@@ -454,9 +481,13 @@ jobs:
           CAUSE="无算力"
           [ "${KEY_RESET_SKIP:-0}" = "1" ] && CAUSE="SSH 私钥不可得（平台限流/瞬时故障）"
           [ "${ACCOUNT_BLOCKED:-0}" = "1" ] && CAUSE="华为云账号受限（需重签开发者空间服务协议，人工处理）"
+          [ "${CRED_FAIL:-0}" = "1" ] && CAUSE="凭据不可用（AK/SK 未写入 keyring，疑似 runner keyring/D-Bus 故障）"
           MSG="mkdy 容器已连续 $N 轮（约 $((N*15/60)) 小时+）因平台侧原因被跳过（本轮病因：$CAUSE）。请关注华为云区域容量/服务状态。最近一次: $RUN_URL"
           # 账号受限类病因：补一句明确的处理动作，避免只看到「看服务状态」不知所措。
           [ "${ACCOUNT_BLOCKED:-0}" = "1" ] && MSG="mkdy 容器已连续 $N 轮（约 $((N*15/60)) 小时+）因账号受限被跳过（需在华为云开发者空间重新签署《开发者服务协议/开发平台服务协议》，人工操作后自动恢复）。最近一次: $RUN_URL"
+          # 凭据不可用类病因（2026-10-13）：单次多为 runner 环境瞬时抖动（下轮自愈），
+          #   连续多轮才说明 Secret 可能已失效——正是靠这里的「连续 N 轮」判据区分二者。
+          [ "${CRED_FAIL:-0}" = "1" ] && MSG="mkdy 容器已连续 $N 轮（约 $((N*15/60)) 小时+）因凭据不可用被跳过（AK/SK 未能写入 keyring，疑似 runner keyring/D-Bus 故障）。单次抖动可自愈；若持续出现，请检查仓库 Secrets 的 HDS_AK/HDS_SK 是否已失效。最近一次: $RUN_URL"
           if [ -n "$SERVERCHAN_KEY" ]; then
             curl -s --max-time 15 -o /dev/null               "https://sctapi.ftqq.com/${SERVERCHAN_KEY}.send?title=mkdy连续跳过(${CAUSE})&desp=$(printf %s "$MSG" | sed s/&/%26/g)" || true
           fi
