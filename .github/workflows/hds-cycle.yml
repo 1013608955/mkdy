@@ -222,7 +222,7 @@ jobs:
 
           STATE=$(get_state); echo "初始状态: ${STATE:-未知(list 可能瞬时失败)}"
           RECOVERED=0   # 僵死态恢复（stop→start）每轮只允许一次，避免反复折腾容器
-          LAST_NOCOMPUTE=0   # 跨尝试记忆：最后一次 start 是否被平台回复无算力（决定最终按跳过还是报错）
+          LAST_NOCOMPUTE=0   # 跨尝试累积：本轮「任一次」start 是否被回复无算力（决定最终按跳过还是报错）。2026-10-13 前为「最后一次」语义，正是 run#4920 误判的根因，见下方 start 处注释
           for attempt in 1 2; do
             BUDGET=20   # 本轮「探测+等待」共享的轮询次数预算（见下，保证最坏耗时不增加）
             NOCOMPUTE=0   # 平台明确回复无算力时置 1（仅本轮有效）
@@ -235,7 +235,14 @@ jobs:
               Error) echo "[warn] 实例 Error（可能瞬时），等待恢复，不立即放弃";;
               *)
                 PRE="$STATE"
-                LAST_NOCOMPUTE=0
+                # 2026-10-13 run#4920：此处原为 `LAST_NOCOMPUTE=0`（每次尝试开头重置），
+                #   导致第 1 次已识别的无算力在第 2 次被抹掉；而平台对第 2 次 start 可能
+                #   回 rc=0 + "is Starting"（stdout 里没有 "No compute resources" 字样）
+                #   → 第 2 次不设记忆 → 最终判定 LAST_NOCOMPUTE!=1 → 误判 failure 并发出
+                #   失败邮件（实际是「无算力」，本该按跳过静默处理）。
+                #   改为跨尝试累积：本轮「任一次」收到无算力即视为无算力。
+                #   安全性：第 2 次若真的启动成功，会因 STATE=Running 提前 break，
+                #   根本走不到最终判定，故保留记忆不会误伤正常轮次。
                 echo "[start] 第 $attempt/2 次开机（当前态=${STATE:-未知}）"
                 if do_start; then
                   echo "[ok] start 返回 0"
@@ -331,10 +338,17 @@ jobs:
           if [ "$STATE" != "Running" ]; then
             # 平台「无算力」是区域性瞬时故障（如 2026-09-04 05:00-06:45 连续 8 轮），
             # 下轮 15 分钟后自动重试即可恢复。若也标 failure，GitHub 每轮都发失败邮件
-            # （用户收件箱被刷屏）。故 2 次尝试均被回复无算力时按「本轮跳过」处理：
+            # （用户收件箱被刷屏）。故本轮「任一次」尝试被回复无算力时按「本轮跳过」处理
+            # （2026-10-13 run#4920：原判据为「2 次均」，但平台可能对第 2 次 start 回
+            # rc=0+"is Starting"（无无算力字样）→ 第 2 次记忆丢失 → 误判 failure）：
             # exit 0 + NOCOMPUTE_SKIP 标记（[3] 据此跳过），[4]/[5] 照常收尾，[6] 不触发。
             if [ "$LAST_NOCOMPUTE" != "1" ]; then
               echo "[ERR] 容器未能进入 Running（最终态=${STATE:-未知}）"
+              # 诊断留痕（2026-10-13 run#4920）：状态恒空可能是「实例行不在 list 里」，
+              # 也可能是「状态列出现未枚举值（STATES 漏列）」。此前无原始输出可查 →
+              # 排查只能停在「状态恒空」这一层。仅在失败路径打印，零正常开销。
+              echo "[diag] devenv list 原始输出（尾 30 行，用于定位状态解析为空的原因）："
+              timeout 60 tools/hds_session.sh devenv list </dev/null 2>&1 | tail -30 || true
               exit 1
             fi
             # ── 连续性门槛（2026-09-08）：连续第 2 轮无算力（≈30 分钟）才动用兜底实例 ──
