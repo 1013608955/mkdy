@@ -1,6 +1,6 @@
 # Auto-merged subscription (mkdy) — full Clash config with rules
 # sources: s.txt, s1.txt, s2.txt + s2-clash-1.yaml, s2-clash-2.yaml, s2-clash-3.yaml, s2-clash-4.yaml, s2-clash-5.yaml, s2-clash-6.yaml
-# raw=778 unique=633 groups=3 rules=516
+# raw=782 unique=637 groups=3 rules=516
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -87,7 +87,7 @@ proxy-groups:
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ❓Other_8|2.0MB/s|YT-US|GPT⁺-US|GM-US
-  - ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ❓Other_11|2.1MB/s|TK-US|GPT⁺-US|GM-US
   - ❓Other_42|1.6MB/s|GPT⁺-US|GM-US
@@ -128,8 +128,8 @@ proxy-groups:
   - 🇺🇸US_7|3.5MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_6|5.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
+  - 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ❓Other_54|2.6MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -256,7 +256,7 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA_3
   - 🇫🇷FR_17|257KB/s|GPT⁺
   - '[peasoft/NoMoreWalls]🇸🇬[www.v2nodes.com] trojan-SG-... #5'
-  - ✅ [ermaozi/get_subscribe]🇨🇦_CA_加拿大
+  - '[ermaozi/get_subscribe]🇨🇦_CA_加拿大'
   - '[peasoft/NoMoreWalls]🇰🇷[www.v2nodes.com] trojan-KR-... #5'
   - ✅ [peasoft/NoMoreWalls]🇩🇪 德国 | DEU 9
   - ✅ [ermaozi/get_subscribe]🇮🇳 印度 | IND
@@ -552,9 +552,9 @@ proxy-groups:
   - 🇳🇱 荷兰 | NLD_3
   - 🇺🇸US_6|268KB/s|YT-NL|GPT⁺|0%
   - 🇹🇷 土耳其 | TUR
-  - 🇳🇱 荷兰 | NLD
-  - NL荷兰(mibei77.com 米贝节点分享)
   - 🇳🇱 荷兰 | NLD_2
+  - NL荷兰(mibei77.com 米贝节点分享)
+  - 🇳🇱 荷兰 | NLD
   - 🇺🇸US_5|290KB/s|YT-NL|GPT⁺|NF|0%
   - 🇩🇪 德国 | DEU_5
   - 巴西(mibei77.com 米贝节点分享)
@@ -621,6 +621,7 @@ proxy-groups:
   - FI 🇫🇮 | @Raydikalx | DC0D7D
   - 🇫🇷FR-141.95.55.70-8158
   - US4
+  - '[ermaozi/get_subscribe]🇺🇸 美国 | USA'
   - US美国(mibei77.com 米贝节点分享)_50
   - 🇸🇬SG-202.79.172.53-1939
   - JP 🇯🇵 | @Raydikalx | 071DE1
@@ -662,7 +663,6 @@ proxy-groups:
   - 🇹🇼 🇨🇳 台湾 | TWN
   - ✅ 🏳️_未知_273
   - JP 🇯🇵 | @Raydikalx | B7250A
-  - 🇺🇸US-162.0.232.36-1249
   - HK 🇭🇰 | @Raydikalx | 5C0AC9
   - 🇭🇰 香港2
   - 🇯🇵 日本2
@@ -676,6 +676,10 @@ proxy-groups:
   - 🇭🇰HK_2|753KB/s
   - US 🇺🇸 | @Raydikalx | 0859B3
   - 🇭🇰 香港
+  - 🇭🇰_HK_中国香港
+  - HK 🇭🇰 | @Raydikalx | 21C649
+  - '[ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国'
+  - 🇭🇰_HK_中国香港->🇬🇧_GB_英国
   - IR 🇮🇷 | @Raydikalx | B2BE35
   - US美国(mibei77.com 米贝节点分享)_5
   - ZA 🇿🇦 | @Raydikalx | 83ECDC
@@ -723,7 +727,7 @@ proxy-groups:
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ❓Other_8|2.0MB/s|YT-US|GPT⁺-US|GM-US
-  - ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ❓Other_11|2.1MB/s|TK-US|GPT⁺-US|GM-US
   - ❓Other_42|1.6MB/s|GPT⁺-US|GM-US
@@ -764,8 +768,8 @@ proxy-groups:
   - 🇺🇸US_7|3.5MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_6|5.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
+  - 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ❓Other_54|2.6MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -892,7 +896,7 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA_3
   - 🇫🇷FR_17|257KB/s|GPT⁺
   - '[peasoft/NoMoreWalls]🇸🇬[www.v2nodes.com] trojan-SG-... #5'
-  - ✅ [ermaozi/get_subscribe]🇨🇦_CA_加拿大
+  - '[ermaozi/get_subscribe]🇨🇦_CA_加拿大'
   - '[peasoft/NoMoreWalls]🇰🇷[www.v2nodes.com] trojan-KR-... #5'
   - ✅ [peasoft/NoMoreWalls]🇩🇪 德国 | DEU 9
   - ✅ [ermaozi/get_subscribe]🇮🇳 印度 | IND
@@ -1188,9 +1192,9 @@ proxy-groups:
   - 🇳🇱 荷兰 | NLD_3
   - 🇺🇸US_6|268KB/s|YT-NL|GPT⁺|0%
   - 🇹🇷 土耳其 | TUR
-  - 🇳🇱 荷兰 | NLD
-  - NL荷兰(mibei77.com 米贝节点分享)
   - 🇳🇱 荷兰 | NLD_2
+  - NL荷兰(mibei77.com 米贝节点分享)
+  - 🇳🇱 荷兰 | NLD
   - 🇺🇸US_5|290KB/s|YT-NL|GPT⁺|NF|0%
   - 🇩🇪 德国 | DEU_5
   - 巴西(mibei77.com 米贝节点分享)
@@ -1257,6 +1261,7 @@ proxy-groups:
   - FI 🇫🇮 | @Raydikalx | DC0D7D
   - 🇫🇷FR-141.95.55.70-8158
   - US4
+  - '[ermaozi/get_subscribe]🇺🇸 美国 | USA'
   - US美国(mibei77.com 米贝节点分享)_50
   - 🇸🇬SG-202.79.172.53-1939
   - JP 🇯🇵 | @Raydikalx | 071DE1
@@ -1298,7 +1303,6 @@ proxy-groups:
   - 🇹🇼 🇨🇳 台湾 | TWN
   - ✅ 🏳️_未知_273
   - JP 🇯🇵 | @Raydikalx | B7250A
-  - 🇺🇸US-162.0.232.36-1249
   - HK 🇭🇰 | @Raydikalx | 5C0AC9
   - 🇭🇰 香港2
   - 🇯🇵 日本2
@@ -1312,6 +1316,10 @@ proxy-groups:
   - 🇭🇰HK_2|753KB/s
   - US 🇺🇸 | @Raydikalx | 0859B3
   - 🇭🇰 香港
+  - 🇭🇰_HK_中国香港
+  - HK 🇭🇰 | @Raydikalx | 21C649
+  - '[ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国'
+  - 🇭🇰_HK_中国香港->🇬🇧_GB_英国
   - IR 🇮🇷 | @Raydikalx | B2BE35
   - US美国(mibei77.com 米贝节点分享)_5
   - ZA 🇿🇦 | @Raydikalx | 83ECDC
@@ -1361,7 +1369,7 @@ proxy-groups:
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ❓Other_8|2.0MB/s|YT-US|GPT⁺-US|GM-US
-  - ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ❓Other_11|2.1MB/s|TK-US|GPT⁺-US|GM-US
   - ❓Other_42|1.6MB/s|GPT⁺-US|GM-US
@@ -1402,8 +1410,8 @@ proxy-groups:
   - 🇺🇸US_7|3.5MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_6|5.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
+  - 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ❓Other_54|2.6MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -1530,7 +1538,7 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA_3
   - 🇫🇷FR_17|257KB/s|GPT⁺
   - '[peasoft/NoMoreWalls]🇸🇬[www.v2nodes.com] trojan-SG-... #5'
-  - ✅ [ermaozi/get_subscribe]🇨🇦_CA_加拿大
+  - '[ermaozi/get_subscribe]🇨🇦_CA_加拿大'
   - '[peasoft/NoMoreWalls]🇰🇷[www.v2nodes.com] trojan-KR-... #5'
   - ✅ [peasoft/NoMoreWalls]🇩🇪 德国 | DEU 9
   - ✅ [ermaozi/get_subscribe]🇮🇳 印度 | IND
@@ -1826,9 +1834,9 @@ proxy-groups:
   - 🇳🇱 荷兰 | NLD_3
   - 🇺🇸US_6|268KB/s|YT-NL|GPT⁺|0%
   - 🇹🇷 土耳其 | TUR
-  - 🇳🇱 荷兰 | NLD
-  - NL荷兰(mibei77.com 米贝节点分享)
   - 🇳🇱 荷兰 | NLD_2
+  - NL荷兰(mibei77.com 米贝节点分享)
+  - 🇳🇱 荷兰 | NLD
   - 🇺🇸US_5|290KB/s|YT-NL|GPT⁺|NF|0%
   - 🇩🇪 德国 | DEU_5
   - 巴西(mibei77.com 米贝节点分享)
@@ -1895,6 +1903,7 @@ proxy-groups:
   - FI 🇫🇮 | @Raydikalx | DC0D7D
   - 🇫🇷FR-141.95.55.70-8158
   - US4
+  - '[ermaozi/get_subscribe]🇺🇸 美国 | USA'
   - US美国(mibei77.com 米贝节点分享)_50
   - 🇸🇬SG-202.79.172.53-1939
   - JP 🇯🇵 | @Raydikalx | 071DE1
@@ -1936,7 +1945,6 @@ proxy-groups:
   - 🇹🇼 🇨🇳 台湾 | TWN
   - ✅ 🏳️_未知_273
   - JP 🇯🇵 | @Raydikalx | B7250A
-  - 🇺🇸US-162.0.232.36-1249
   - HK 🇭🇰 | @Raydikalx | 5C0AC9
   - 🇭🇰 香港2
   - 🇯🇵 日本2
@@ -1950,6 +1958,10 @@ proxy-groups:
   - 🇭🇰HK_2|753KB/s
   - US 🇺🇸 | @Raydikalx | 0859B3
   - 🇭🇰 香港
+  - 🇭🇰_HK_中国香港
+  - HK 🇭🇰 | @Raydikalx | 21C649
+  - '[ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国'
+  - 🇭🇰_HK_中国香港->🇬🇧_GB_英国
   - IR 🇮🇷 | @Raydikalx | B2BE35
   - US美国(mibei77.com 米贝节点分享)_5
   - ZA 🇿🇦 | @Raydikalx | 83ECDC
@@ -2750,7 +2762,7 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
+- name: ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
   port: 443
   server: 156.146.56.110
   sin: https://t.me/WangCai2🇨🇳
@@ -3026,14 +3038,14 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+- name: 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
   port: 443
   server: 82.102.25.210
   sin: https://t.me/WangCai2🇨🇳
   skip-cert-verify: true
   tls: true
   type: http
-- name: 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
+- name: ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   port: 443
   server: 82.102.25.50
   sin: https://t.me/WangCai2🇨🇳
@@ -4165,7 +4177,7 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: brave-tomcat.rooster465.autos
-- name: ✅ [ermaozi/get_subscribe]🇨🇦_CA_加拿大
+- name: '[ermaozi/get_subscribe]🇨🇦_CA_加拿大'
   type: trojan
   server: ca.tronsg.com
   port: 443
@@ -8627,7 +8639,7 @@ proxies:
   security_scheme: reality
   proto: vless
   peer: meowgenicslab.net
-- name: 🇳🇱 荷兰 | NLD
+- name: 🇳🇱 荷兰 | NLD_2
   type: vless
   server: mog.keyblack.site
   port: 8444
@@ -8661,7 +8673,7 @@ proxies:
     path: /
   skip-cert-verify: true
   udp: true
-- name: 🇳🇱 荷兰 | NLD_2
+- name: 🇳🇱 荷兰 | NLD
   type: vless
   server: nl1.aiage.work
   port: 443
@@ -9669,6 +9681,23 @@ proxies:
   sni: 172.111.38.100
   proto: vmess
   peer: 172.111.38.100
+- name: '[ermaozi/get_subscribe]🇺🇸 美国 | USA'
+  type: vmess
+  server: 172.66.203.67
+  port: 443
+  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: vmess.lbw666.dpdns.org
+  security_scheme: tls
+  sni: vmess.lbw666.dpdns.org
+  proto: vmess
+  peer: vmess.lbw666.dpdns.org
 - name: US美国(mibei77.com 米贝节点分享)_50
   type: vmess
   server: 2001:bc8:32d7:1a9::3
@@ -10289,23 +10318,6 @@ proxies:
   sni: gz1.polymarket.party
   proto: vmess
   peer: gz1.polymarket.party
-- name: 🇺🇸US-162.0.232.36-1249
-  type: vmess
-  server: hohm.microsoft.com
-  port: 443
-  uuid: 2b214122-1906-428a-bbb7-a039cbb7cd5c
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /9JZFDTKE
-    headers:
-      Host: hohm.microsoft.com
-  security_scheme: tls
-  sni: hohm.microsoft.com
-  proto: vmess
-  peer: hohm.microsoft.com
 - name: HK 🇭🇰 | @Raydikalx | 5C0AC9
   type: vmess
   server: i2psm3knof5qjjix.v.3dns.vip
@@ -10509,6 +10521,58 @@ proxies:
   cipher: auto
   tls: false
   skip-cert-verify: false
+- name: 🇭🇰_HK_中国香港
+  type: vmess
+  server: v29.hdacd.com
+  port: 30829
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v29.hdacd.com
+  proto: vmess
+  peer: v29.hdacd.com
+- name: HK 🇭🇰 | @Raydikalx | 21C649
+  type: vmess
+  server: v33.hdacd.com
+  port: 30833
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v33.hdacd.com
+  proto: vmess
+  peer: v33.hdacd.com
+- name: '[ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国'
+  type: vmess
+  server: v35.hdacd.com
+  port: 30835
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v35.hdacd.com
+  proto: vmess
+  peer: v35.hdacd.com
+- name: 🇭🇰_HK_中国香港->🇬🇧_GB_英国
+  type: vmess
+  server: v36.hdacd.com
+  port: 30836
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v36.hdacd.com
+  proto: vmess
+  peer: v36.hdacd.com
 - name: IR 🇮🇷 | @Raydikalx | B2BE35
   type: vmess
   server: xgr.goldnshop.com
