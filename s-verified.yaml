@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=84
+# verified=82
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -47,6 +47,7 @@ proxy-groups:
   - 故障转移
   - ✅ TW台湾(mibei77.com 米贝节点分享)_2
   - ✅ TW台湾(mibei77.com 米贝节点分享)
+  - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇦🇺AU_2|3.0MB/s|YT-AU|GPT⁺|GM-AU
   - ✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
@@ -120,20 +121,18 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇮🇳 印度 | IND
   - ✅ [ermaozi/get_subscribe]🇰🇷 韩国 | KOR
   - ✅ 🇺🇸 美国 | USA_3_2
-  - ✅ 🇫🇷 法国 | FRA
   - ✅ 🇩🇪_DE_德国->🇱🇰_LK_斯里兰卡
   - ✅ 🇺🇸_美国_48
   - ✅ 🇩🇪 德国 | DEU_2
   - ✅ 🇹🇼 🇨🇳 台湾 | TWN
   - ✅ 🏳️_未知_273
-  - ✅ 🇭🇰_HK_中国香港
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
-  - ✅ 🇭🇰_HK_中国香港->🇬🇧_GB_英国
 - name: 自动选择
   type: url-test
   proxies:
   - ✅ TW台湾(mibei77.com 米贝节点分享)_2
   - ✅ TW台湾(mibei77.com 米贝节点分享)
+  - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇦🇺AU_2|3.0MB/s|YT-AU|GPT⁺|GM-AU
   - ✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
@@ -207,15 +206,12 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇮🇳 印度 | IND
   - ✅ [ermaozi/get_subscribe]🇰🇷 韩国 | KOR
   - ✅ 🇺🇸 美国 | USA_3_2
-  - ✅ 🇫🇷 法国 | FRA
   - ✅ 🇩🇪_DE_德国->🇱🇰_LK_斯里兰卡
   - ✅ 🇺🇸_美国_48
   - ✅ 🇩🇪 德国 | DEU_2
   - ✅ 🇹🇼 🇨🇳 台湾 | TWN
   - ✅ 🏳️_未知_273
-  - ✅ 🇭🇰_HK_中国香港
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
-  - ✅ 🇭🇰_HK_中国香港->🇬🇧_GB_英国
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -223,6 +219,7 @@ proxy-groups:
   proxies:
   - ✅ TW台湾(mibei77.com 米贝节点分享)_2
   - ✅ TW台湾(mibei77.com 米贝节点分享)
+  - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇦🇺AU_2|3.0MB/s|YT-AU|GPT⁺|GM-AU
   - ✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
@@ -296,15 +293,12 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇮🇳 印度 | IND
   - ✅ [ermaozi/get_subscribe]🇰🇷 韩国 | KOR
   - ✅ 🇺🇸 美国 | USA_3_2
-  - ✅ 🇫🇷 法国 | FRA
   - ✅ 🇩🇪_DE_德国->🇱🇰_LK_斯里兰卡
   - ✅ 🇺🇸_美国_48
   - ✅ 🇩🇪 德国 | DEU_2
   - ✅ 🇹🇼 🇨🇳 台湾 | TWN
   - ✅ 🏳️_未知_273
-  - ✅ 🇭🇰_HK_中国香港
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
-  - ✅ 🇭🇰_HK_中国香港->🇬🇧_GB_英国
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -844,6 +838,13 @@ proxies:
   skip-cert-verify: true
   tls: true
   udp: true
+- name: ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
+  port: 443
+  server: 103.1.212.242
+  sin: https://t.me/WangCai2🇨🇳
+  skip-cert-verify: true
+  tls: true
+  type: http
 - name: ✅ 🇦🇺AU_2|3.0MB/s|YT-AU|GPT⁺|GM-AU
   port: 443
   server: 103.1.213.210
@@ -1362,22 +1363,6 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 104.207.132.12
-- name: ✅ 🇫🇷 法国 | FRA
-  type: vless
-  server: eu5.998998.best
-  port: 443
-  uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
-  tls: true
-  network: ws
-  sni: nat3.outsidemyheart.space
-  servername: nat3.outsidemyheart.space
-  ws-opts:
-    path: /ew4p98tu34wtghe39?ed=2560
-    headers:
-      Host: nat3.outsidemyheart.space
-  security_scheme: tls
-  proto: vless
-  peer: nat3.outsidemyheart.space
 - name: ✅ 🇩🇪_DE_德国->🇱🇰_LK_斯里兰卡
   type: vless
   server: free.sahanwickramasinghe.me
@@ -1452,19 +1437,6 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
-- name: ✅ 🇭🇰_HK_中国香港
-  type: vmess
-  server: v29.hdacd.com
-  port: 30829
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v29.hdacd.com
-  proto: vmess
-  peer: v29.hdacd.com
 - name: ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
   type: vmess
   server: v35.hdacd.com
@@ -1478,16 +1450,3 @@ proxies:
   sni: v35.hdacd.com
   proto: vmess
   peer: v35.hdacd.com
-- name: ✅ 🇭🇰_HK_中国香港->🇬🇧_GB_英国
-  type: vmess
-  server: v36.hdacd.com
-  port: 30836
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: v36.hdacd.com
-  proto: vmess
-  peer: v36.hdacd.com
