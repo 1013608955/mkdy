@@ -84,7 +84,6 @@ proxy-groups:
   - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
-  - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_35|3.0MB/s|TK-RU|YT-US
@@ -128,6 +127,7 @@ proxy-groups:
   - ✅ 日本 东京Oracle云计算数据中心
   - ✅ 🇭🇰_HK_中国香港
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
+  - ✅ 🇭🇰_HK_中国香港->🇬🇧_GB_英国
 - name: 自动选择
   type: url-test
   proxies:
@@ -170,7 +170,6 @@ proxy-groups:
   - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
-  - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_35|3.0MB/s|TK-RU|YT-US
@@ -214,6 +213,7 @@ proxy-groups:
   - ✅ 日本 东京Oracle云计算数据中心
   - ✅ 🇭🇰_HK_中国香港
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
+  - ✅ 🇭🇰_HK_中国香港->🇬🇧_GB_英国
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -258,7 +258,6 @@ proxy-groups:
   - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
-  - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_35|3.0MB/s|TK-RU|YT-US
@@ -302,6 +301,7 @@ proxy-groups:
   - ✅ 日本 东京Oracle云计算数据中心
   - ✅ 🇭🇰_HK_中国香港
   - ✅ [ermaozi/get_subscribe]🇭🇰_HK_中国香港->🇫🇷_FR_法国
+  - ✅ 🇭🇰_HK_中国香港->🇬🇧_GB_英国
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -1087,12 +1087,6 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
-  port: 9443
-  server: 181.215.52.122
-  skip-cert-verify: true
-  tls: true
-  type: http
 - name: ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   port: 443
   server: 185.183.105.146
@@ -1463,3 +1457,16 @@ proxies:
   sni: v35.hdacd.com
   proto: vmess
   peer: v35.hdacd.com
+- name: ✅ 🇭🇰_HK_中国香港->🇬🇧_GB_英国
+  type: vmess
+  server: v36.hdacd.com
+  port: 30836
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v36.hdacd.com
+  proto: vmess
+  peer: v36.hdacd.com
