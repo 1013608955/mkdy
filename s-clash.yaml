@@ -1,6 +1,6 @@
 # Auto-merged subscription (mkdy) — full Clash config with rules
 # sources: s.txt, s1.txt, s2.txt + s2-clash-1.yaml, s2-clash-2.yaml, s2-clash-3.yaml, s2-clash-4.yaml, s2-clash-5.yaml, s2-clash-6.yaml
-# raw=792 unique=645 groups=3 rules=516
+# raw=819 unique=671 groups=3 rules=516
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -62,20 +62,20 @@ proxy-groups:
   - ✅ 🇯🇵JP_3|8.4MB/s|YT-US|GPT⁺-JP|GM-US
   - ✅ ❓Other_18|2.2MB/s|TK-US|YT-US|GPT⁺-US
   - ✅ 🇪🇸ES_2|3.4MB/s|TK-ES|GPT⁺-ES|GM-ES
-  - ✅ 🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES
+  - 🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES
   - ✅ 🇯🇵JP_1|3.1MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ 🇰🇷KR_3|4.8MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ 🇹🇭TH_1|2.5MB/s|YT-TH|GPT⁺-TH|GM-TH
   - ✅ 🇧🇪BE_1|4.7MB/s|TK-BE|GPT⁺-BE|GM-BE
   - ✅ 🇸🇪SE_1|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ ❓Other_45|2.1MB/s|TK-AT|GPT⁺-AT|GM-AT
-  - ✅ 🇸🇬SG_3|3.4MB/s|TK-SG|YT-ID|GPT⁺-SG|GM-ID
+  - 🇸🇬SG_3|3.4MB/s|TK-SG|YT-ID|GPT⁺-SG|GM-ID
   - ✅ 🇭🇰HK_1|5.0MB/s|YT-HK
   - ✅ ❓Other_49|2.2MB/s|TK-FR|GPT⁺-FR|GM-FR
   - ✅ ❓Other_44|2.2MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_13|2.5MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_50|2.4MB/s|GPT⁺-DE|GM-DE
-  - ❓Other_51|2.3MB/s|TK-DE|GPT⁺-DE|GM-DE
+  - ✅ ❓Other_51|2.3MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_28|2.9MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_38|1.8MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
@@ -120,7 +120,7 @@ proxy-groups:
   - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_14|1.0MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_1|2.2MB/s|YT-US|GPT⁺-US|GM-US
-  - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
+  - 🇷🇺RU_1|2.0MB/s|YT-RU
   - ❓Other_3|2.3MB/s|TK-FI|YT-RU|GPT⁺-LV
   - 🇸🇬SG_1|4.0MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
@@ -128,8 +128,8 @@ proxy-groups:
   - 🇺🇸US_7|3.5MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_6|5.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
+  - 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ❓Other_54|2.6MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -207,9 +207,15 @@ proxy-groups:
   - 🇭🇰 HONG KONG-1B
   - 🇮🇹IT_1|1.6MB/s|YT-RO|GPT⁺-IT|GM-RO
   - '[peasoft/NoMoreWalls]🇸🇬[www.v2nodes.com] ss-SG-1581...'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1538...'
   - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1557...'
-  - 🇨🇦 加拿大-BEAUHARNOIS-2
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1559...'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1546...'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1558...'
   - '[peasoft/NoMoreWalls]🇫🇷[www.v2nodes.com] ss-FR-1536...'
+  - '[peasoft/NoMoreWalls]🏳[www.v2nodes.com] ss-'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1545...'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1559... #1'
   - 🇵🇱 波兰 | POL_2
   - tg频道:@ripaojiedian
   - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1588...'
@@ -285,21 +291,22 @@ proxy-groups:
   - 🇳🇱_荷兰_243
   - 🇵🇱_波兰_216
   - 🇺🇸US_1|354KB/s|YT-US|GPT⁺|NF|20%
+  - ⚡ b2n.ir/v2ray-configs | 849
   - 🇳🇱_荷兰_241
   - 🇯🇵_日本_141
-  - 🇩🇪 德国 | DEU_6
+  - 🇩🇪 德国 | DEU_8
   - 🇰🇿_哈萨克斯坦_32
   - 🇦🇺_澳大利亚_212
   - 🇺🇸_美国_118
   - 🇺🇸_美国_112
   - 🇺🇸_美国_113
   - 🇬🇧_英国_152
-  - 挪威+V2CROSS.COM
-  - 🇩🇪 德国 | DEU_2
+  - 🇩🇪 德国 | DEU_3
   - 🇩🇪 德国 | DEU
   - 🇯🇵_日本_268
   - 🇸🇬_新加坡_258
   - 🇿🇦_南非_101
+  - 美国+圣凯瑟琳女子大学
   - ✅ 🇫🇷 法国 | FRA
   - 🇸🇬_新加坡_121
   - 🇩🇪_德国_257
@@ -308,6 +315,7 @@ proxy-groups:
   - 🇰🇷_韩国_265
   - 🇩🇪_德国_26
   - 🇸🇬_新加坡_201
+  - 比利时+V2CROSS.COM_2
   - 🇳🇱_荷兰_35
   - 🇫🇮_芬兰_38
   - 🇹🇷_土耳其_44
@@ -356,7 +364,7 @@ proxy-groups:
   - 🇳🇱_荷兰_244
   - 🇫🇷_法国_22
   - 🇨🇭_瑞士_185
-  - 🇩🇪 德国 | DEU_5
+  - 🇩🇪 德国 | DEU_7
   - 🇳🇱_荷兰_238
   - 🇨🇿_捷克_240
   - 🇫🇮_芬兰_41
@@ -396,18 +404,25 @@ proxy-groups:
   - 🇯🇵_日本_27
   - 🇩🇪_德国_206
   - 🇭🇰_香港_254
+  - 🇷🇺 俄罗斯 | RUS
   - 🇸🇬_新加坡_168
   - 🇮🇹_意大利_225
+  - 🇨🇦_加拿大_245
+  - 日本+V2CROSS.COM
   - 🇸🇬_新加坡_61
   - 🇭🇰_香港_260
+  - 🇺🇸 美国 | USA
   - 🇳🇱_荷兰_67
   - 🇷🇺_俄罗斯_31
   - 🇷🇺_俄罗斯_28
   - 🇯🇵JP_1|330KB/s|YT-JP|GPT⁺|NF|0%
   - 🇯🇵_日本_267
+  - 🇳🇱 荷兰 | NLD_3
   - 🇩🇪_德国_256
   - 🇸🇪_瑞典_29
   - 🇳🇱_荷兰_202
+  - 🇺🇸_美国_42
+  - ⚡ b2n.ir/v2ray-configs | 42
   - 🇳🇱_荷兰_235
   - 🇺🇸 美国-洛杉矶-PRO-1I
   - 🇺🇸 美国-洛杉矶-PRO-1A
@@ -421,24 +436,29 @@ proxy-groups:
   - 🇷🇺_俄罗斯_39
   - 🇩🇪_德国_75
   - 🇺🇸US_2|1.2MB/s|YT-CN
+  - 🇬🇧 英国 | GBR
   - 🇸🇬_新加坡_132
   - 🇬🇧_英国_71
   - US美国(mibei77.com 米贝节点分享)_41
   - 🇯🇵_日本_100
   - 🇸🇬SG_2|757KB/s
   - ❓Other_39|1.0MB/s|YT-RU|GPT-SG
+  - 🇲🇾 马来西亚 | MYS
   - XRAY-直连01
   - 🇺🇸US_4|250KB/s|YT-NL|GPT⁺|NF|0%
   - 🇺🇸US_9|265KB/s|GPT⁺|NF|0%
+  - 🇳🇱 荷兰 | NLD_2
   - 🇲🇾_马来西亚_161
   - 🇳🇱_荷兰_211
   - 🇧🇬_保加利亚_250
-  - 🇺🇸 美国 | USA
-  - 🇺🇸 美国 | USA_2
+  - 🇺🇸 美国 | USA_3
+  - 🇺🇸 美国 | USA_4
   - 🇳🇱_荷兰_89
+  - 🇩🇪 德国 | DEU_5
   - 🇮🇹_意大利_213
   - 🇳🇱_荷兰_192
   - US美国(mibei77.com 米贝节点分享)_27
+  - 🇹🇷 土耳其 | TUR
   - 🇱🇹_立陶宛_20
   - ❓Other_5|2.4MB/s|TK-NL|YT-US|GPT⁺-NL
   - 🇳🇱NL_1|280KB/s|YT-US|GPT⁺|NF
@@ -450,17 +470,24 @@ proxy-groups:
   - 🇳🇱_荷兰_45
   - 🇩🇪_德国_205
   - US美国(mibei77.com 米贝节点分享)_28
+  - 🇺🇸 美国 | USA_2
   - 🇩🇪_德国_215
   - 🇫🇮_芬兰_18
   - 🇳🇱_荷兰_208
   - 🇳🇱_荷兰_246
+  - 🇳🇱 荷兰 | NLD
+  - 🇲🇾 马来西亚 | MYS_2
+  - 🇩🇪 德国 | DEU_4
+  - 🇻🇳 越南 | VNM
+  - 🇬🇧 英国 | GBR_2
   - DE德国(mibei77.com 米贝节点分享)_1
   - 🇺🇸 美国高速-AI专用-1B
   - 🇺🇸 美国直连-备用
-  - 美国+V2CROSS.COM
   - ✅ US美国(mibei77.com 米贝节点分享)_49
   - ⚡ b2n.ir/v2ray-configs | 789
   - HK香港(mibei77.com 米贝节点分享)
+  - 🇬🇧 英国 | GBR_3
+  - 美国+V2CROSS.COM
   - 🇪🇪EE_1|277KB/s|YT-RU|GPT⁺|NF|50%
   - 🇳🇱NL_1|896KB/s
   - RU俄罗斯(mibei77.com 米贝节点分享)_1
@@ -559,16 +586,16 @@ proxy-groups:
   - FV2026-7-7-4G
   - FV2026-7-7-4A
   - FV2026-7-7-3V
-  - 🇩🇪 德国 | DEU_4
+  - 🇩🇪 德国 | DEU_6
   - 🇺🇸US_6|268KB/s|YT-NL|GPT⁺|0%
   - 🇺🇸_US_美国
   - NL荷兰(mibei77.com 米贝节点分享)
   - 🇺🇸US_5|290KB/s|YT-NL|GPT⁺|NF|0%
   - 🇵🇱 波兰 | POL
-  - 🇷🇺 俄罗斯 | RUS_2
-  - 巴西(mibei77.com 米贝节点分享)
   - 🇷🇺 俄罗斯 | RUS_3
-  - 🇺🇸_美国_48
+  - 巴西(mibei77.com 米贝节点分享)
+  - 🇷🇺 俄罗斯 | RUS_2
+  - ✅ 🇺🇸_美国_48
   - US美国(mibei77.com 米贝节点分享)_2
   - 🇺🇸US_8|259KB/s|YT-US|GPT⁺|NF|0%
   - 🇩🇪DE_4|351KB/s|GPT⁺|NF|17%
@@ -626,10 +653,9 @@ proxy-groups:
   - ❓Other_6|1.8MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_5|2.9MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_4|2.4MB/s|YT-US|GPT⁺-US|GM-US
-  - 🇩🇪 德国 | DEU_3
+  - 🇩🇪 德国 | DEU_2
   - DE 🇩🇪 | @Raydikalx | F75229
   - KR 🇰🇷 | @Raydikalx | D518F1
-  - DE 🇩🇪 | @Raydikalx | F68888
   - JP 🇯🇵 | @Raydikalx | 4F9D7D
   - FR 🇫🇷 | @Raydikalx | 9FDBC9
   - HK 🇭🇰 | @Raydikalx | 570F14
@@ -645,14 +671,14 @@ proxy-groups:
   - 🇺🇸 硅谷-01-1B
   - 🇺🇸 硅谷-01-1C
   - 🇺🇸 硅谷-01-1G
-  - 🇭🇰 香港 | HKG_2
+  - 🇭🇰 香港 | HKG_3
   - HK 🇭🇰 | @Raydikalx | 812E02
   - '[peasoft/NoMoreWalls]🇭🇰 香港 | HKG #7'
   - '[ermaozi/get_subscribe]🇭🇰 香港 | HKG'
   - 🇭🇰HK-47.244.120.197-5067
   - HK 🇭🇰 | @Raydikalx | 4023A7
   - 🇺🇸 美国
-  - 🇭🇰 香港 | HKG_3
+  - 🇭🇰 香港 | HKG_2
   - 🇸🇬 新加坡2
   - 🇩🇪DE-78.46.129.226-3120
   - 🇭🇰 香港 | HKG
@@ -668,9 +694,8 @@ proxy-groups:
   - 🇭🇰 香港4
   - DE 🇩🇪 | @Raydikalx | 3A6795
   - 🇺🇸 美国2
-  - HK 🇭🇰 | @Raydikalx | 72DF1A
   - IR 🇮🇷 | @Raydikalx | 59FFA1
-  - 俄罗斯 V2CROSS.COM
+  - HK 🇭🇰 | @Raydikalx | ED46C4
   - IR 🇮🇷 | @Raydikalx | F184CD
   - '[peasoft/NoMoreWalls]🇭🇰 香港 | HKG #2'
   - IR 🇮🇷 | @Raydikalx | D6FAB1
@@ -684,13 +709,14 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | C2165A
   - 🇳🇱_荷兰_49
   - DE 🇩🇪 | @Raydikalx | 20F25F
-  - 🇷🇺 俄罗斯 | RUS
+  - ✅ 🇷🇺 俄罗斯 | RUS
   - HK 🇭🇰 | @Raydikalx | 6EE3FB
   - 🇭🇰HK_2|753KB/s
   - 🇭🇰 香港
   - HK 🇭🇰 | @Raydikalx | E1CFF1
   - '[1808.ga]🇫🇷'
   - US美国(mibei77.com 米贝节点分享)_5
+  - HK 🇭🇰 | @Raydikalx | 982AC8
 - name: 自动选择
   type: url-test
   proxies:
@@ -710,20 +736,20 @@ proxy-groups:
   - ✅ 🇯🇵JP_3|8.4MB/s|YT-US|GPT⁺-JP|GM-US
   - ✅ ❓Other_18|2.2MB/s|TK-US|YT-US|GPT⁺-US
   - ✅ 🇪🇸ES_2|3.4MB/s|TK-ES|GPT⁺-ES|GM-ES
-  - ✅ 🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES
+  - 🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES
   - ✅ 🇯🇵JP_1|3.1MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ 🇰🇷KR_3|4.8MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ 🇹🇭TH_1|2.5MB/s|YT-TH|GPT⁺-TH|GM-TH
   - ✅ 🇧🇪BE_1|4.7MB/s|TK-BE|GPT⁺-BE|GM-BE
   - ✅ 🇸🇪SE_1|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ ❓Other_45|2.1MB/s|TK-AT|GPT⁺-AT|GM-AT
-  - ✅ 🇸🇬SG_3|3.4MB/s|TK-SG|YT-ID|GPT⁺-SG|GM-ID
+  - 🇸🇬SG_3|3.4MB/s|TK-SG|YT-ID|GPT⁺-SG|GM-ID
   - ✅ 🇭🇰HK_1|5.0MB/s|YT-HK
   - ✅ ❓Other_49|2.2MB/s|TK-FR|GPT⁺-FR|GM-FR
   - ✅ ❓Other_44|2.2MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_13|2.5MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_50|2.4MB/s|GPT⁺-DE|GM-DE
-  - ❓Other_51|2.3MB/s|TK-DE|GPT⁺-DE|GM-DE
+  - ✅ ❓Other_51|2.3MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_28|2.9MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_38|1.8MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
@@ -768,7 +794,7 @@ proxy-groups:
   - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_14|1.0MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_1|2.2MB/s|YT-US|GPT⁺-US|GM-US
-  - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
+  - 🇷🇺RU_1|2.0MB/s|YT-RU
   - ❓Other_3|2.3MB/s|TK-FI|YT-RU|GPT⁺-LV
   - 🇸🇬SG_1|4.0MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
@@ -776,8 +802,8 @@ proxy-groups:
   - 🇺🇸US_7|3.5MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_6|5.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
+  - 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ❓Other_54|2.6MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -855,9 +881,15 @@ proxy-groups:
   - 🇭🇰 HONG KONG-1B
   - 🇮🇹IT_1|1.6MB/s|YT-RO|GPT⁺-IT|GM-RO
   - '[peasoft/NoMoreWalls]🇸🇬[www.v2nodes.com] ss-SG-1581...'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1538...'
   - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1557...'
-  - 🇨🇦 加拿大-BEAUHARNOIS-2
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1559...'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1546...'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1558...'
   - '[peasoft/NoMoreWalls]🇫🇷[www.v2nodes.com] ss-FR-1536...'
+  - '[peasoft/NoMoreWalls]🏳[www.v2nodes.com] ss-'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1545...'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1559... #1'
   - 🇵🇱 波兰 | POL_2
   - tg频道:@ripaojiedian
   - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1588...'
@@ -933,21 +965,22 @@ proxy-groups:
   - 🇳🇱_荷兰_243
   - 🇵🇱_波兰_216
   - 🇺🇸US_1|354KB/s|YT-US|GPT⁺|NF|20%
+  - ⚡ b2n.ir/v2ray-configs | 849
   - 🇳🇱_荷兰_241
   - 🇯🇵_日本_141
-  - 🇩🇪 德国 | DEU_6
+  - 🇩🇪 德国 | DEU_8
   - 🇰🇿_哈萨克斯坦_32
   - 🇦🇺_澳大利亚_212
   - 🇺🇸_美国_118
   - 🇺🇸_美国_112
   - 🇺🇸_美国_113
   - 🇬🇧_英国_152
-  - 挪威+V2CROSS.COM
-  - 🇩🇪 德国 | DEU_2
+  - 🇩🇪 德国 | DEU_3
   - 🇩🇪 德国 | DEU
   - 🇯🇵_日本_268
   - 🇸🇬_新加坡_258
   - 🇿🇦_南非_101
+  - 美国+圣凯瑟琳女子大学
   - ✅ 🇫🇷 法国 | FRA
   - 🇸🇬_新加坡_121
   - 🇩🇪_德国_257
@@ -956,6 +989,7 @@ proxy-groups:
   - 🇰🇷_韩国_265
   - 🇩🇪_德国_26
   - 🇸🇬_新加坡_201
+  - 比利时+V2CROSS.COM_2
   - 🇳🇱_荷兰_35
   - 🇫🇮_芬兰_38
   - 🇹🇷_土耳其_44
@@ -1004,7 +1038,7 @@ proxy-groups:
   - 🇳🇱_荷兰_244
   - 🇫🇷_法国_22
   - 🇨🇭_瑞士_185
-  - 🇩🇪 德国 | DEU_5
+  - 🇩🇪 德国 | DEU_7
   - 🇳🇱_荷兰_238
   - 🇨🇿_捷克_240
   - 🇫🇮_芬兰_41
@@ -1044,18 +1078,25 @@ proxy-groups:
   - 🇯🇵_日本_27
   - 🇩🇪_德国_206
   - 🇭🇰_香港_254
+  - 🇷🇺 俄罗斯 | RUS
   - 🇸🇬_新加坡_168
   - 🇮🇹_意大利_225
+  - 🇨🇦_加拿大_245
+  - 日本+V2CROSS.COM
   - 🇸🇬_新加坡_61
   - 🇭🇰_香港_260
+  - 🇺🇸 美国 | USA
   - 🇳🇱_荷兰_67
   - 🇷🇺_俄罗斯_31
   - 🇷🇺_俄罗斯_28
   - 🇯🇵JP_1|330KB/s|YT-JP|GPT⁺|NF|0%
   - 🇯🇵_日本_267
+  - 🇳🇱 荷兰 | NLD_3
   - 🇩🇪_德国_256
   - 🇸🇪_瑞典_29
   - 🇳🇱_荷兰_202
+  - 🇺🇸_美国_42
+  - ⚡ b2n.ir/v2ray-configs | 42
   - 🇳🇱_荷兰_235
   - 🇺🇸 美国-洛杉矶-PRO-1I
   - 🇺🇸 美国-洛杉矶-PRO-1A
@@ -1069,24 +1110,29 @@ proxy-groups:
   - 🇷🇺_俄罗斯_39
   - 🇩🇪_德国_75
   - 🇺🇸US_2|1.2MB/s|YT-CN
+  - 🇬🇧 英国 | GBR
   - 🇸🇬_新加坡_132
   - 🇬🇧_英国_71
   - US美国(mibei77.com 米贝节点分享)_41
   - 🇯🇵_日本_100
   - 🇸🇬SG_2|757KB/s
   - ❓Other_39|1.0MB/s|YT-RU|GPT-SG
+  - 🇲🇾 马来西亚 | MYS
   - XRAY-直连01
   - 🇺🇸US_4|250KB/s|YT-NL|GPT⁺|NF|0%
   - 🇺🇸US_9|265KB/s|GPT⁺|NF|0%
+  - 🇳🇱 荷兰 | NLD_2
   - 🇲🇾_马来西亚_161
   - 🇳🇱_荷兰_211
   - 🇧🇬_保加利亚_250
-  - 🇺🇸 美国 | USA
-  - 🇺🇸 美国 | USA_2
+  - 🇺🇸 美国 | USA_3
+  - 🇺🇸 美国 | USA_4
   - 🇳🇱_荷兰_89
+  - 🇩🇪 德国 | DEU_5
   - 🇮🇹_意大利_213
   - 🇳🇱_荷兰_192
   - US美国(mibei77.com 米贝节点分享)_27
+  - 🇹🇷 土耳其 | TUR
   - 🇱🇹_立陶宛_20
   - ❓Other_5|2.4MB/s|TK-NL|YT-US|GPT⁺-NL
   - 🇳🇱NL_1|280KB/s|YT-US|GPT⁺|NF
@@ -1098,17 +1144,24 @@ proxy-groups:
   - 🇳🇱_荷兰_45
   - 🇩🇪_德国_205
   - US美国(mibei77.com 米贝节点分享)_28
+  - 🇺🇸 美国 | USA_2
   - 🇩🇪_德国_215
   - 🇫🇮_芬兰_18
   - 🇳🇱_荷兰_208
   - 🇳🇱_荷兰_246
+  - 🇳🇱 荷兰 | NLD
+  - 🇲🇾 马来西亚 | MYS_2
+  - 🇩🇪 德国 | DEU_4
+  - 🇻🇳 越南 | VNM
+  - 🇬🇧 英国 | GBR_2
   - DE德国(mibei77.com 米贝节点分享)_1
   - 🇺🇸 美国高速-AI专用-1B
   - 🇺🇸 美国直连-备用
-  - 美国+V2CROSS.COM
   - ✅ US美国(mibei77.com 米贝节点分享)_49
   - ⚡ b2n.ir/v2ray-configs | 789
   - HK香港(mibei77.com 米贝节点分享)
+  - 🇬🇧 英国 | GBR_3
+  - 美国+V2CROSS.COM
   - 🇪🇪EE_1|277KB/s|YT-RU|GPT⁺|NF|50%
   - 🇳🇱NL_1|896KB/s
   - RU俄罗斯(mibei77.com 米贝节点分享)_1
@@ -1207,16 +1260,16 @@ proxy-groups:
   - FV2026-7-7-4G
   - FV2026-7-7-4A
   - FV2026-7-7-3V
-  - 🇩🇪 德国 | DEU_4
+  - 🇩🇪 德国 | DEU_6
   - 🇺🇸US_6|268KB/s|YT-NL|GPT⁺|0%
   - 🇺🇸_US_美国
   - NL荷兰(mibei77.com 米贝节点分享)
   - 🇺🇸US_5|290KB/s|YT-NL|GPT⁺|NF|0%
   - 🇵🇱 波兰 | POL
-  - 🇷🇺 俄罗斯 | RUS_2
-  - 巴西(mibei77.com 米贝节点分享)
   - 🇷🇺 俄罗斯 | RUS_3
-  - 🇺🇸_美国_48
+  - 巴西(mibei77.com 米贝节点分享)
+  - 🇷🇺 俄罗斯 | RUS_2
+  - ✅ 🇺🇸_美国_48
   - US美国(mibei77.com 米贝节点分享)_2
   - 🇺🇸US_8|259KB/s|YT-US|GPT⁺|NF|0%
   - 🇩🇪DE_4|351KB/s|GPT⁺|NF|17%
@@ -1274,10 +1327,9 @@ proxy-groups:
   - ❓Other_6|1.8MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_5|2.9MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_4|2.4MB/s|YT-US|GPT⁺-US|GM-US
-  - 🇩🇪 德国 | DEU_3
+  - 🇩🇪 德国 | DEU_2
   - DE 🇩🇪 | @Raydikalx | F75229
   - KR 🇰🇷 | @Raydikalx | D518F1
-  - DE 🇩🇪 | @Raydikalx | F68888
   - JP 🇯🇵 | @Raydikalx | 4F9D7D
   - FR 🇫🇷 | @Raydikalx | 9FDBC9
   - HK 🇭🇰 | @Raydikalx | 570F14
@@ -1293,14 +1345,14 @@ proxy-groups:
   - 🇺🇸 硅谷-01-1B
   - 🇺🇸 硅谷-01-1C
   - 🇺🇸 硅谷-01-1G
-  - 🇭🇰 香港 | HKG_2
+  - 🇭🇰 香港 | HKG_3
   - HK 🇭🇰 | @Raydikalx | 812E02
   - '[peasoft/NoMoreWalls]🇭🇰 香港 | HKG #7'
   - '[ermaozi/get_subscribe]🇭🇰 香港 | HKG'
   - 🇭🇰HK-47.244.120.197-5067
   - HK 🇭🇰 | @Raydikalx | 4023A7
   - 🇺🇸 美国
-  - 🇭🇰 香港 | HKG_3
+  - 🇭🇰 香港 | HKG_2
   - 🇸🇬 新加坡2
   - 🇩🇪DE-78.46.129.226-3120
   - 🇭🇰 香港 | HKG
@@ -1316,9 +1368,8 @@ proxy-groups:
   - 🇭🇰 香港4
   - DE 🇩🇪 | @Raydikalx | 3A6795
   - 🇺🇸 美国2
-  - HK 🇭🇰 | @Raydikalx | 72DF1A
   - IR 🇮🇷 | @Raydikalx | 59FFA1
-  - 俄罗斯 V2CROSS.COM
+  - HK 🇭🇰 | @Raydikalx | ED46C4
   - IR 🇮🇷 | @Raydikalx | F184CD
   - '[peasoft/NoMoreWalls]🇭🇰 香港 | HKG #2'
   - IR 🇮🇷 | @Raydikalx | D6FAB1
@@ -1332,13 +1383,14 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | C2165A
   - 🇳🇱_荷兰_49
   - DE 🇩🇪 | @Raydikalx | 20F25F
-  - 🇷🇺 俄罗斯 | RUS
+  - ✅ 🇷🇺 俄罗斯 | RUS
   - HK 🇭🇰 | @Raydikalx | 6EE3FB
   - 🇭🇰HK_2|753KB/s
   - 🇭🇰 香港
   - HK 🇭🇰 | @Raydikalx | E1CFF1
   - '[1808.ga]🇫🇷'
   - US美国(mibei77.com 米贝节点分享)_5
+  - HK 🇭🇰 | @Raydikalx | 982AC8
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -1360,20 +1412,20 @@ proxy-groups:
   - ✅ 🇯🇵JP_3|8.4MB/s|YT-US|GPT⁺-JP|GM-US
   - ✅ ❓Other_18|2.2MB/s|TK-US|YT-US|GPT⁺-US
   - ✅ 🇪🇸ES_2|3.4MB/s|TK-ES|GPT⁺-ES|GM-ES
-  - ✅ 🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES
+  - 🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES
   - ✅ 🇯🇵JP_1|3.1MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ 🇰🇷KR_3|4.8MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ 🇹🇭TH_1|2.5MB/s|YT-TH|GPT⁺-TH|GM-TH
   - ✅ 🇧🇪BE_1|4.7MB/s|TK-BE|GPT⁺-BE|GM-BE
   - ✅ 🇸🇪SE_1|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ ❓Other_45|2.1MB/s|TK-AT|GPT⁺-AT|GM-AT
-  - ✅ 🇸🇬SG_3|3.4MB/s|TK-SG|YT-ID|GPT⁺-SG|GM-ID
+  - 🇸🇬SG_3|3.4MB/s|TK-SG|YT-ID|GPT⁺-SG|GM-ID
   - ✅ 🇭🇰HK_1|5.0MB/s|YT-HK
   - ✅ ❓Other_49|2.2MB/s|TK-FR|GPT⁺-FR|GM-FR
   - ✅ ❓Other_44|2.2MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_13|2.5MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_50|2.4MB/s|GPT⁺-DE|GM-DE
-  - ❓Other_51|2.3MB/s|TK-DE|GPT⁺-DE|GM-DE
+  - ✅ ❓Other_51|2.3MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_28|2.9MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_38|1.8MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
@@ -1418,7 +1470,7 @@ proxy-groups:
   - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_14|1.0MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_1|2.2MB/s|YT-US|GPT⁺-US|GM-US
-  - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
+  - 🇷🇺RU_1|2.0MB/s|YT-RU
   - ❓Other_3|2.3MB/s|TK-FI|YT-RU|GPT⁺-LV
   - 🇸🇬SG_1|4.0MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
@@ -1426,8 +1478,8 @@ proxy-groups:
   - 🇺🇸US_7|3.5MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_6|5.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
+  - 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ❓Other_54|2.6MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -1505,9 +1557,15 @@ proxy-groups:
   - 🇭🇰 HONG KONG-1B
   - 🇮🇹IT_1|1.6MB/s|YT-RO|GPT⁺-IT|GM-RO
   - '[peasoft/NoMoreWalls]🇸🇬[www.v2nodes.com] ss-SG-1581...'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1538...'
   - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1557...'
-  - 🇨🇦 加拿大-BEAUHARNOIS-2
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1559...'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1546...'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1558...'
   - '[peasoft/NoMoreWalls]🇫🇷[www.v2nodes.com] ss-FR-1536...'
+  - '[peasoft/NoMoreWalls]🏳[www.v2nodes.com] ss-'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1545...'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1559... #1'
   - 🇵🇱 波兰 | POL_2
   - tg频道:@ripaojiedian
   - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1588...'
@@ -1583,21 +1641,22 @@ proxy-groups:
   - 🇳🇱_荷兰_243
   - 🇵🇱_波兰_216
   - 🇺🇸US_1|354KB/s|YT-US|GPT⁺|NF|20%
+  - ⚡ b2n.ir/v2ray-configs | 849
   - 🇳🇱_荷兰_241
   - 🇯🇵_日本_141
-  - 🇩🇪 德国 | DEU_6
+  - 🇩🇪 德国 | DEU_8
   - 🇰🇿_哈萨克斯坦_32
   - 🇦🇺_澳大利亚_212
   - 🇺🇸_美国_118
   - 🇺🇸_美国_112
   - 🇺🇸_美国_113
   - 🇬🇧_英国_152
-  - 挪威+V2CROSS.COM
-  - 🇩🇪 德国 | DEU_2
+  - 🇩🇪 德国 | DEU_3
   - 🇩🇪 德国 | DEU
   - 🇯🇵_日本_268
   - 🇸🇬_新加坡_258
   - 🇿🇦_南非_101
+  - 美国+圣凯瑟琳女子大学
   - ✅ 🇫🇷 法国 | FRA
   - 🇸🇬_新加坡_121
   - 🇩🇪_德国_257
@@ -1606,6 +1665,7 @@ proxy-groups:
   - 🇰🇷_韩国_265
   - 🇩🇪_德国_26
   - 🇸🇬_新加坡_201
+  - 比利时+V2CROSS.COM_2
   - 🇳🇱_荷兰_35
   - 🇫🇮_芬兰_38
   - 🇹🇷_土耳其_44
@@ -1654,7 +1714,7 @@ proxy-groups:
   - 🇳🇱_荷兰_244
   - 🇫🇷_法国_22
   - 🇨🇭_瑞士_185
-  - 🇩🇪 德国 | DEU_5
+  - 🇩🇪 德国 | DEU_7
   - 🇳🇱_荷兰_238
   - 🇨🇿_捷克_240
   - 🇫🇮_芬兰_41
@@ -1694,18 +1754,25 @@ proxy-groups:
   - 🇯🇵_日本_27
   - 🇩🇪_德国_206
   - 🇭🇰_香港_254
+  - 🇷🇺 俄罗斯 | RUS
   - 🇸🇬_新加坡_168
   - 🇮🇹_意大利_225
+  - 🇨🇦_加拿大_245
+  - 日本+V2CROSS.COM
   - 🇸🇬_新加坡_61
   - 🇭🇰_香港_260
+  - 🇺🇸 美国 | USA
   - 🇳🇱_荷兰_67
   - 🇷🇺_俄罗斯_31
   - 🇷🇺_俄罗斯_28
   - 🇯🇵JP_1|330KB/s|YT-JP|GPT⁺|NF|0%
   - 🇯🇵_日本_267
+  - 🇳🇱 荷兰 | NLD_3
   - 🇩🇪_德国_256
   - 🇸🇪_瑞典_29
   - 🇳🇱_荷兰_202
+  - 🇺🇸_美国_42
+  - ⚡ b2n.ir/v2ray-configs | 42
   - 🇳🇱_荷兰_235
   - 🇺🇸 美国-洛杉矶-PRO-1I
   - 🇺🇸 美国-洛杉矶-PRO-1A
@@ -1719,24 +1786,29 @@ proxy-groups:
   - 🇷🇺_俄罗斯_39
   - 🇩🇪_德国_75
   - 🇺🇸US_2|1.2MB/s|YT-CN
+  - 🇬🇧 英国 | GBR
   - 🇸🇬_新加坡_132
   - 🇬🇧_英国_71
   - US美国(mibei77.com 米贝节点分享)_41
   - 🇯🇵_日本_100
   - 🇸🇬SG_2|757KB/s
   - ❓Other_39|1.0MB/s|YT-RU|GPT-SG
+  - 🇲🇾 马来西亚 | MYS
   - XRAY-直连01
   - 🇺🇸US_4|250KB/s|YT-NL|GPT⁺|NF|0%
   - 🇺🇸US_9|265KB/s|GPT⁺|NF|0%
+  - 🇳🇱 荷兰 | NLD_2
   - 🇲🇾_马来西亚_161
   - 🇳🇱_荷兰_211
   - 🇧🇬_保加利亚_250
-  - 🇺🇸 美国 | USA
-  - 🇺🇸 美国 | USA_2
+  - 🇺🇸 美国 | USA_3
+  - 🇺🇸 美国 | USA_4
   - 🇳🇱_荷兰_89
+  - 🇩🇪 德国 | DEU_5
   - 🇮🇹_意大利_213
   - 🇳🇱_荷兰_192
   - US美国(mibei77.com 米贝节点分享)_27
+  - 🇹🇷 土耳其 | TUR
   - 🇱🇹_立陶宛_20
   - ❓Other_5|2.4MB/s|TK-NL|YT-US|GPT⁺-NL
   - 🇳🇱NL_1|280KB/s|YT-US|GPT⁺|NF
@@ -1748,17 +1820,24 @@ proxy-groups:
   - 🇳🇱_荷兰_45
   - 🇩🇪_德国_205
   - US美国(mibei77.com 米贝节点分享)_28
+  - 🇺🇸 美国 | USA_2
   - 🇩🇪_德国_215
   - 🇫🇮_芬兰_18
   - 🇳🇱_荷兰_208
   - 🇳🇱_荷兰_246
+  - 🇳🇱 荷兰 | NLD
+  - 🇲🇾 马来西亚 | MYS_2
+  - 🇩🇪 德国 | DEU_4
+  - 🇻🇳 越南 | VNM
+  - 🇬🇧 英国 | GBR_2
   - DE德国(mibei77.com 米贝节点分享)_1
   - 🇺🇸 美国高速-AI专用-1B
   - 🇺🇸 美国直连-备用
-  - 美国+V2CROSS.COM
   - ✅ US美国(mibei77.com 米贝节点分享)_49
   - ⚡ b2n.ir/v2ray-configs | 789
   - HK香港(mibei77.com 米贝节点分享)
+  - 🇬🇧 英国 | GBR_3
+  - 美国+V2CROSS.COM
   - 🇪🇪EE_1|277KB/s|YT-RU|GPT⁺|NF|50%
   - 🇳🇱NL_1|896KB/s
   - RU俄罗斯(mibei77.com 米贝节点分享)_1
@@ -1857,16 +1936,16 @@ proxy-groups:
   - FV2026-7-7-4G
   - FV2026-7-7-4A
   - FV2026-7-7-3V
-  - 🇩🇪 德国 | DEU_4
+  - 🇩🇪 德国 | DEU_6
   - 🇺🇸US_6|268KB/s|YT-NL|GPT⁺|0%
   - 🇺🇸_US_美国
   - NL荷兰(mibei77.com 米贝节点分享)
   - 🇺🇸US_5|290KB/s|YT-NL|GPT⁺|NF|0%
   - 🇵🇱 波兰 | POL
-  - 🇷🇺 俄罗斯 | RUS_2
-  - 巴西(mibei77.com 米贝节点分享)
   - 🇷🇺 俄罗斯 | RUS_3
-  - 🇺🇸_美国_48
+  - 巴西(mibei77.com 米贝节点分享)
+  - 🇷🇺 俄罗斯 | RUS_2
+  - ✅ 🇺🇸_美国_48
   - US美国(mibei77.com 米贝节点分享)_2
   - 🇺🇸US_8|259KB/s|YT-US|GPT⁺|NF|0%
   - 🇩🇪DE_4|351KB/s|GPT⁺|NF|17%
@@ -1924,10 +2003,9 @@ proxy-groups:
   - ❓Other_6|1.8MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_5|2.9MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_4|2.4MB/s|YT-US|GPT⁺-US|GM-US
-  - 🇩🇪 德国 | DEU_3
+  - 🇩🇪 德国 | DEU_2
   - DE 🇩🇪 | @Raydikalx | F75229
   - KR 🇰🇷 | @Raydikalx | D518F1
-  - DE 🇩🇪 | @Raydikalx | F68888
   - JP 🇯🇵 | @Raydikalx | 4F9D7D
   - FR 🇫🇷 | @Raydikalx | 9FDBC9
   - HK 🇭🇰 | @Raydikalx | 570F14
@@ -1943,14 +2021,14 @@ proxy-groups:
   - 🇺🇸 硅谷-01-1B
   - 🇺🇸 硅谷-01-1C
   - 🇺🇸 硅谷-01-1G
-  - 🇭🇰 香港 | HKG_2
+  - 🇭🇰 香港 | HKG_3
   - HK 🇭🇰 | @Raydikalx | 812E02
   - '[peasoft/NoMoreWalls]🇭🇰 香港 | HKG #7'
   - '[ermaozi/get_subscribe]🇭🇰 香港 | HKG'
   - 🇭🇰HK-47.244.120.197-5067
   - HK 🇭🇰 | @Raydikalx | 4023A7
   - 🇺🇸 美国
-  - 🇭🇰 香港 | HKG_3
+  - 🇭🇰 香港 | HKG_2
   - 🇸🇬 新加坡2
   - 🇩🇪DE-78.46.129.226-3120
   - 🇭🇰 香港 | HKG
@@ -1966,9 +2044,8 @@ proxy-groups:
   - 🇭🇰 香港4
   - DE 🇩🇪 | @Raydikalx | 3A6795
   - 🇺🇸 美国2
-  - HK 🇭🇰 | @Raydikalx | 72DF1A
   - IR 🇮🇷 | @Raydikalx | 59FFA1
-  - 俄罗斯 V2CROSS.COM
+  - HK 🇭🇰 | @Raydikalx | ED46C4
   - IR 🇮🇷 | @Raydikalx | F184CD
   - '[peasoft/NoMoreWalls]🇭🇰 香港 | HKG #2'
   - IR 🇮🇷 | @Raydikalx | D6FAB1
@@ -1982,13 +2059,14 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | C2165A
   - 🇳🇱_荷兰_49
   - DE 🇩🇪 | @Raydikalx | 20F25F
-  - 🇷🇺 俄罗斯 | RUS
+  - ✅ 🇷🇺 俄罗斯 | RUS
   - HK 🇭🇰 | @Raydikalx | 6EE3FB
   - 🇭🇰HK_2|753KB/s
   - 🇭🇰 香港
   - HK 🇭🇰 | @Raydikalx | E1CFF1
   - '[1808.ga]🇫🇷'
   - US美国(mibei77.com 米贝节点分享)_5
+  - HK 🇭🇰 | @Raydikalx | 982AC8
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -2622,7 +2700,7 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ 🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES
+- name: 🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES
   port: 443
   server: 130.195.250.34
   sin: https://t.me/WangCai2🇨🇳
@@ -2668,7 +2746,7 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ 🇸🇬SG_3|3.4MB/s|TK-SG|YT-ID|GPT⁺-SG|GM-ID
+- name: 🇸🇬SG_3|3.4MB/s|TK-SG|YT-ID|GPT⁺-SG|GM-ID
   password: e4b72b531a2d10900519
   port: 443
   server: 146.70.29.45
@@ -2710,7 +2788,7 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ❓Other_51|2.3MB/s|TK-DE|GPT⁺-DE|GM-DE
+- name: ✅ ❓Other_51|2.3MB/s|TK-DE|GPT⁺-DE|GM-DE
   port: 443
   server: 149.36.50.157
   sin: https://t.me/WangCai2🇨🇳
@@ -3009,7 +3087,7 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
+- name: 🇷🇺RU_1|2.0MB/s|YT-RU
   port: 1446
   server: 46.29.166.134
   skip-cert-verify: true
@@ -3062,14 +3140,14 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+- name: 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
   port: 443
   server: 82.102.25.210
   sin: https://t.me/WangCai2🇨🇳
   skip-cert-verify: true
   tls: true
   type: http
-- name: 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
+- name: ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   port: 443
   server: 82.102.25.50
   sin: https://t.me/WangCai2🇨🇳
@@ -3671,6 +3749,15 @@ proxies:
   security_scheme: aead
   proto: ss
   peer: 45.128.12.20
+- name: '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1538...'
+  type: ss
+  server: 51.222.12.127
+  port: 445
+  cipher: aes-256-gcm
+  password: zDNVedRFPQexG9v
+  security_scheme: aead
+  proto: ss
+  peer: 51.222.12.127
 - name: '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1557...'
   type: ss
   server: 51.222.136.236
@@ -3680,13 +3767,33 @@ proxies:
   security_scheme: aead
   proto: ss
   peer: 51.222.136.236
-- name: 🇨🇦 加拿大-BEAUHARNOIS-2
+- name: '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1559...'
+  type: ss
+  server: 51.222.141.125
+  port: 445
+  cipher: aes-256-gcm
+  password: zDNVedRFPQexG9v
+  security_scheme: aead
+  proto: ss
+  peer: 51.222.141.125
+- name: '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1546...'
+  type: ss
   server: 51.222.155.113
   port: 5601
-  type: ss
   cipher: aes-256-gcm
   password: Y6R9pAtvxxzmGC
-  udp: true
+  security_scheme: aead
+  proto: ss
+  peer: 51.222.155.113
+- name: '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1558...'
+  type: ss
+  server: 51.222.200.165
+  port: 5000
+  cipher: aes-256-gcm
+  password: Y6R9pAtvxxzmGC
+  security_scheme: aead
+  proto: ss
+  peer: 51.222.200.165
 - name: '[peasoft/NoMoreWalls]🇫🇷[www.v2nodes.com] ss-FR-1536...'
   type: ss
   server: 51.255.13.232
@@ -3696,6 +3803,33 @@ proxies:
   security_scheme: aead
   proto: ss
   peer: 51.255.13.232
+- name: '[peasoft/NoMoreWalls]🏳[www.v2nodes.com] ss-'
+  type: ss
+  server: 51.79.49.116
+  port: 8882
+  cipher: aes-256-gcm
+  password: kDWvXYZoTBcGkC4
+  security_scheme: aead
+  proto: ss
+  peer: 51.79.49.116
+- name: '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1545...'
+  type: ss
+  server: 51.79.64.198
+  port: 8119
+  cipher: aes-256-gcm
+  password: cdBIDV42DCwnfIN
+  security_scheme: aead
+  proto: ss
+  peer: 51.79.64.198
+- name: '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1559... #1'
+  type: ss
+  server: 51.79.85.185
+  port: 8118
+  cipher: aes-256-gcm
+  password: cdBIDV42DCwnfIN
+  security_scheme: aead
+  proto: ss
+  peer: 51.79.85.185
 - name: 🇵🇱 波兰 | POL_2
   type: ss
   server: 54.36.174.140
@@ -4543,6 +4677,16 @@ proxies:
     headers:
       Host: wzknb.pages.dev
     path: /proxyip=179.255.104.87,179.255.116.198,179.255.101.56,142.248.218.6,142.248.218.4,45.76.79.239,179.255.152.163,208.68.180.240
+- name: ⚡ b2n.ir/v2ray-configs | 849
+  type: vless
+  server: 104.243.33.154
+  port: 45299
+  uuid: 261f011c-e97a-4d72-b596-e6329b50b47b
+  tls: false
+  network: tcp
+  security_scheme: none
+  proto: vless
+  peer: 104.243.33.154
 - name: 🇳🇱_荷兰_241
   type: vless
   server: 104.249.40.219
@@ -4575,7 +4719,7 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: 3t1yvbyla-rj740g.28m7r63dttya6gazmhoo.workers.dev
-- name: 🇩🇪 德国 | DEU_6
+- name: 🇩🇪 德国 | DEU_8
   type: vless
   server: 109.172.54.135
   port: 8444
@@ -4690,25 +4834,7 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: woc0zvrf11w2endu.dphdlc1u77bs3y4kvussbuap4p576f1ws7igthq8zbf3.workers.dev
-- name: 挪威+V2CROSS.COM
-  type: vless
-  server: 138.124.98.219
-  port: 443
-  uuid: 92295a0d-b610-4075-85e9-bfab09ec6f3a
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: www.ah.nl
-  servername: www.ah.nl
-  reality-opts:
-    public-key: IyUvo6owCe4Zfr8aIVdtweSNHQSpSyiO-OKsRDJ9BBs
-    short-id: a111111111111111
-    spider-x: ''
-    fingerprint: chrome
-  security_scheme: reality
-  proto: vless
-  peer: www.ah.nl
-- name: 🇩🇪 德国 | DEU_2
+- name: 🇩🇪 德国 | DEU_3
   type: vless
   server: 139.100.212.52
   port: 443
@@ -4780,6 +4906,24 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: vlso5.1d.mom
+- name: 美国+圣凯瑟琳女子大学
+  type: vless
+  server: 140.225.199.210
+  port: 443
+  uuid: 6c713691-3ca2-0009-ad25-113d1bed6b03
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: hatch.senko.ru
+  servername: hatch.senko.ru
+  reality-opts:
+    public-key: JWDpSUaLgiXGXpgZzzxfDnYGvi4MBFcadN6cHZ-He1E
+    short-id: b8c6965f3596688a
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: hatch.senko.ru
 - name: ✅ 🇫🇷 法国 | FRA
   type: vless
   server: 140.248.186.45
@@ -4910,6 +5054,24 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: 3t1yvbyla-rj740g.28m7r63dttya6gazmhoo.workers.dev
+- name: 比利时+V2CROSS.COM_2
+  type: vless
+  server: 150.251.141.90
+  port: 443
+  uuid: 8d790ba0-5407-441b-b545-8ab369c591ce
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: n1.coconutsvpn.com
+  servername: n1.coconutsvpn.com
+  reality-opts:
+    public-key: 2f_7ERsv1xlrHryC9Fmaw5D8_Dgo3B5pP0OMctsCngs
+    short-id: 3b3afe877e7dec9b
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: n1.coconutsvpn.com
 - name: 🇳🇱_荷兰_35
   type: vless
   server: 150.251.143.220
@@ -5685,7 +5847,7 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: rnxq-1lpi3m.linmeisoft.com
-- name: 🇩🇪 德国 | DEU_5
+- name: 🇩🇪 德国 | DEU_7
   type: vless
   server: 194.48.250.194
   port: 2053
@@ -6328,6 +6490,19 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: snip.edgeoneai.cc.cd
+- name: 🇷🇺 俄罗斯 | RUS
+  type: vless
+  server: 3856671a.bilibiliapp.cn
+  port: 443
+  uuid: d5556fce-cc34-4df9-b1ff-755b02a3fc9a
+  flow: xtls-rprx-vision
+  tls: true
+  network: xhttp
+  sni: 4444fb13.m3u8.ahdsic.pay.cfcndns.pp.ua
+  servername: 4444fb13.m3u8.ahdsic.pay.cfcndns.pp.ua
+  security_scheme: tls
+  proto: vless
+  peer: 4444fb13.m3u8.ahdsic.pay.cfcndns.pp.ua
 - name: 🇸🇬_新加坡_168
   type: vless
   server: 4.194.24.240
@@ -6360,6 +6535,38 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: vp58.cc.cd
+- name: 🇨🇦_加拿大_245
+  type: vless
+  server: 40.233.116.225
+  port: 443
+  uuid: 7b102311-43fd-4e8f-877e-8090623c101d
+  tls: true
+  network: ws
+  sni: vp58.cc.cd
+  servername: vp58.cc.cd
+  ws-opts:
+    path: /TelegramU0001F1E8U0001F1F3 @VPNine1fp=chrome
+    headers:
+      Host: vp58.cc.cd
+  security_scheme: tls
+  proto: vless
+  peer: vp58.cc.cd
+- name: 日本+V2CROSS.COM
+  type: vless
+  server: 43.174.193.1
+  port: 443
+  uuid: d342d11e-d224-4463-b982-532309285094
+  tls: true
+  network: ws
+  sni: ccc.010304.xyz
+  servername: ccc.010304.xyz
+  ws-opts:
+    path: /
+    headers:
+      Host: ccc.010304.xyz
+  security_scheme: tls
+  proto: vless
+  peer: ccc.010304.xyz
 - name: 🇸🇬_新加坡_61
   type: vless
   server: 43.174.195.1
@@ -6392,6 +6599,19 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: snip.edgeoneai.cc.cd
+- name: 🇺🇸 美国 | USA
+  type: vless
+  server: 44baeee5.bilibiliapp.cn
+  port: 443
+  uuid: d5556fce-cc34-4df9-b1ff-755b02a3fc9a
+  flow: xtls-rprx-vision
+  tls: true
+  network: xhttp
+  sni: a1a90bd6.m3u8.dsicbuygd.pay.cfcndns.pp.ua
+  servername: a1a90bd6.m3u8.dsicbuygd.pay.cfcndns.pp.ua
+  security_scheme: tls
+  proto: vless
+  peer: a1a90bd6.m3u8.dsicbuygd.pay.cfcndns.pp.ua
 - name: 🇳🇱_荷兰_67
   type: vless
   server: 45.12.69.152
@@ -6474,6 +6694,19 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: snip.edgeoneai.cc.cd
+- name: 🇳🇱 荷兰 | NLD_3
+  type: vless
+  server: 459414db.bilibiliapp.cn
+  port: 443
+  uuid: d5556fce-cc34-4df9-b1ff-755b02a3fc9a
+  flow: xtls-rprx-vision
+  tls: true
+  network: xhttp
+  sni: 32fa146c.m3u8.asdihcdstv.pay.cfcndns.pp.ua
+  servername: 32fa146c.m3u8.asdihcdstv.pay.cfcndns.pp.ua
+  security_scheme: tls
+  proto: vless
+  peer: 32fa146c.m3u8.asdihcdstv.pay.cfcndns.pp.ua
 - name: 🇩🇪_德国_256
   type: vless
   server: 46.101.156.111
@@ -6524,6 +6757,42 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: vp58.cc.cd
+- name: 🇺🇸_美国_42
+  type: vless
+  server: 5.161.243.170
+  port: 443
+  uuid: a16a3e32-8d63-4dec-8c67-1361388a64ca
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: ajax.aspnetcdn.com
+  servername: ajax.aspnetcdn.com
+  reality-opts:
+    public-key: wGU52D9ma5glfMZBlecIb1nVcBdG1nKsBtSXxMTttCA
+    short-id: 844a9f695e96785e
+    spider-x: ''
+    fingerprint: random
+  security_scheme: reality
+  proto: vless
+  peer: ajax.aspnetcdn.com
+- name: ⚡ b2n.ir/v2ray-configs | 42
+  type: vless
+  server: 5.181.171.2
+  port: 443
+  uuid: 8e6acce9-8b56-7190-d491-7d84f8189e26
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: speed.cloudflare.com
+  servername: speed.cloudflare.com
+  reality-opts:
+    public-key: YNGotlyAx3ELUmi4lxOUjiEDmibqf1pPUTE9o3YYT2Y
+    short-id: ''
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: speed.cloudflare.com
 - name: 🇳🇱_荷兰_235
   type: vless
   server: 5.253.189.62
@@ -6719,6 +6988,19 @@ proxies:
   udp: true
   uuid: f1fa0ad9-b122-4b7c-da82-4bea9edc48dd
   xudp: true
+- name: 🇬🇧 英国 | GBR
+  type: vless
+  server: 526a7d6a.bilibiliapp.cn
+  port: 443
+  uuid: d5556fce-cc34-4df9-b1ff-755b02a3fc9a
+  flow: xtls-rprx-vision
+  tls: true
+  network: xhttp
+  sni: 90de84a0.m3u8.dsicbuygd.pay.cfcndns.pp.ua
+  servername: 90de84a0.m3u8.dsicbuygd.pay.cfcndns.pp.ua
+  security_scheme: tls
+  proto: vless
+  peer: 90de84a0.m3u8.dsicbuygd.pay.cfcndns.pp.ua
 - name: 🇸🇬_新加坡_132
   type: vless
   server: 54.179.79.12
@@ -6813,6 +7095,19 @@ proxies:
     host: sg.oaklandjoseph.top
     path: /assets/build/_app/immutable/chunks/
   xudp: true
+- name: 🇲🇾 马来西亚 | MYS
+  type: vless
+  server: 67bcadb7.bilibiliapp.cn
+  port: 443
+  uuid: d5556fce-cc34-4df9-b1ff-755b02a3fc9a
+  flow: xtls-rprx-vision
+  tls: true
+  network: xhttp
+  sni: cca92147.m3u8.mdasuna.pay.cfcndns.pp.ua
+  servername: cca92147.m3u8.mdasuna.pay.cfcndns.pp.ua
+  security_scheme: tls
+  proto: vless
+  peer: cca92147.m3u8.mdasuna.pay.cfcndns.pp.ua
 - name: XRAY-直连01
   server: 69.165.75.160
   port: 10086
@@ -6861,6 +7156,19 @@ proxies:
       User-Agent: Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36
     path: /ws/a49e04d8-427e-789a-2ee5-28de156e61a6
   xudp: true
+- name: 🇳🇱 荷兰 | NLD_2
+  type: vless
+  server: 74235f86.bilibiliapp.cn
+  port: 443
+  uuid: d5556fce-cc34-4df9-b1ff-755b02a3fc9a
+  flow: xtls-rprx-vision
+  tls: true
+  network: xhttp
+  sni: d478a891.m3u8.asdihcdstv.pay.cfcndns.pp.ua
+  servername: d478a891.m3u8.asdihcdstv.pay.cfcndns.pp.ua
+  security_scheme: tls
+  proto: vless
+  peer: d478a891.m3u8.asdihcdstv.pay.cfcndns.pp.ua
 - name: 🇲🇾_马来西亚_161
   type: vless
   server: 76.13.218.192
@@ -6909,7 +7217,7 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: vp58.cc.cd
-- name: 🇺🇸 美国 | USA
+- name: 🇺🇸 美国 | USA_3
   type: vless
   server: 78.24.216.134
   port: 2096
@@ -6926,7 +7234,7 @@ proxies:
   security_scheme: reality
   proto: vless
   peer: id.vk.com
-- name: 🇺🇸 美国 | USA_2
+- name: 🇺🇸 美国 | USA_4
   type: vless
   server: 78.24.217.215
   port: 2096
@@ -6959,6 +7267,19 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: jln31qtswdkut5.60kohcognywybguuq3ouc818oofnxfvn35daott.workers.dev
+- name: 🇩🇪 德国 | DEU_5
+  type: vless
+  server: 7af9de29.bilibiliapp.cn
+  port: 443
+  uuid: d5556fce-cc34-4df9-b1ff-755b02a3fc9a
+  flow: xtls-rprx-vision
+  tls: true
+  network: xhttp
+  sni: 5c6bae81.m3u8.cdvncacga.pay.cfcndns.pp.ua
+  servername: 5c6bae81.m3u8.cdvncacga.pay.cfcndns.pp.ua
+  security_scheme: tls
+  proto: vless
+  peer: 5c6bae81.m3u8.cdvncacga.pay.cfcndns.pp.ua
 - name: 🇮🇹_意大利_213
   type: vless
   server: 80.211.170.53
@@ -7004,6 +7325,19 @@ proxies:
       Host: vms.lifetime02.workers.dev
   skip-cert-verify: true
   udp: true
+- name: 🇹🇷 土耳其 | TUR
+  type: vless
+  server: 83c010e3.bilibiliapp.cn
+  port: 443
+  uuid: d5556fce-cc34-4df9-b1ff-755b02a3fc9a
+  flow: xtls-rprx-vision
+  tls: true
+  network: xhttp
+  sni: fe10f967.m3u8.tryasiha.pay.cfcndns.pp.ua
+  servername: fe10f967.m3u8.tryasiha.pay.cfcndns.pp.ua
+  security_scheme: tls
+  proto: vless
+  peer: fe10f967.m3u8.tryasiha.pay.cfcndns.pp.ua
 - name: 🇱🇹_立陶宛_20
   type: vless
   server: 84.32.109.20
@@ -7182,6 +7516,19 @@ proxies:
       Host: vms.lifetime19.workers.dev
   skip-cert-verify: true
   udp: true
+- name: 🇺🇸 美国 | USA_2
+  type: vless
+  server: 926368e7.bilibiliapp.cn
+  port: 443
+  uuid: d5556fce-cc34-4df9-b1ff-755b02a3fc9a
+  flow: xtls-rprx-vision
+  tls: true
+  network: xhttp
+  sni: eef40dc9.m3u8.dalsusa.pay.cfcndns.pp.ua
+  servername: eef40dc9.m3u8.dalsusa.pay.cfcndns.pp.ua
+  security_scheme: tls
+  proto: vless
+  peer: eef40dc9.m3u8.dalsusa.pay.cfcndns.pp.ua
 - name: 🇩🇪_德国_215
   type: vless
   server: 94.159.110.41
@@ -7248,6 +7595,71 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: vp58.cc.cd
+- name: 🇳🇱 荷兰 | NLD
+  type: vless
+  server: 9a6311a4.bilibiliapp.cn
+  port: 443
+  uuid: d5556fce-cc34-4df9-b1ff-755b02a3fc9a
+  flow: xtls-rprx-vision
+  tls: true
+  network: xhttp
+  sni: ec6e9262.m3u8.acgsadoiha.pay.cfcndns.pp.ua
+  servername: ec6e9262.m3u8.acgsadoiha.pay.cfcndns.pp.ua
+  security_scheme: tls
+  proto: vless
+  peer: ec6e9262.m3u8.acgsadoiha.pay.cfcndns.pp.ua
+- name: 🇲🇾 马来西亚 | MYS_2
+  type: vless
+  server: a45b7a8a.bilibiliapp.cn
+  port: 443
+  uuid: d5556fce-cc34-4df9-b1ff-755b02a3fc9a
+  flow: xtls-rprx-vision
+  tls: true
+  network: xhttp
+  sni: c22f6e62.m3u8.mdasuna.pay.cfcndns.pp.ua
+  servername: c22f6e62.m3u8.mdasuna.pay.cfcndns.pp.ua
+  security_scheme: tls
+  proto: vless
+  peer: c22f6e62.m3u8.mdasuna.pay.cfcndns.pp.ua
+- name: 🇩🇪 德国 | DEU_4
+  type: vless
+  server: b9c1b995.bilibiliapp.cn
+  port: 443
+  uuid: d5556fce-cc34-4df9-b1ff-755b02a3fc9a
+  flow: xtls-rprx-vision
+  tls: true
+  network: xhttp
+  sni: 2b8c318d.m3u8.dfgilocfgoa.pay.cfcndns.pp.ua
+  servername: 2b8c318d.m3u8.dfgilocfgoa.pay.cfcndns.pp.ua
+  security_scheme: tls
+  proto: vless
+  peer: 2b8c318d.m3u8.dfgilocfgoa.pay.cfcndns.pp.ua
+- name: 🇻🇳 越南 | VNM
+  type: vless
+  server: c564eebf.bilibiliapp.cn
+  port: 443
+  uuid: d5556fce-cc34-4df9-b1ff-755b02a3fc9a
+  flow: xtls-rprx-vision
+  tls: true
+  network: xhttp
+  sni: 2fb527a4.m3u8.awdhhb.pay.cfcndns.pp.ua
+  servername: 2fb527a4.m3u8.awdhhb.pay.cfcndns.pp.ua
+  security_scheme: tls
+  proto: vless
+  peer: 2fb527a4.m3u8.awdhhb.pay.cfcndns.pp.ua
+- name: 🇬🇧 英国 | GBR_2
+  type: vless
+  server: c65129b6.bilibiliapp.cn
+  port: 443
+  uuid: d5556fce-cc34-4df9-b1ff-755b02a3fc9a
+  flow: xtls-rprx-vision
+  tls: true
+  network: xhttp
+  sni: 81848b74.m3u8.dsicbuygd.pay.cfcndns.pp.ua
+  servername: 81848b74.m3u8.dsicbuygd.pay.cfcndns.pp.ua
+  security_scheme: tls
+  proto: vless
+  peer: 81848b74.m3u8.dsicbuygd.pay.cfcndns.pp.ua
 - name: DE德国(mibei77.com 米贝节点分享)_1
   type: vless
   server: cf.130519.xyz
@@ -7289,23 +7701,6 @@ proxies:
     headers:
       Host: cf2.laowu.life
   udp: true
-- name: 美国+V2CROSS.COM
-  type: vless
-  server: ch.srv.vbuste.ru
-  port: 444
-  uuid: 318c935d-c195-41d3-99ad-9bbcfdab3386
-  tls: true
-  network: grpc
-  sni: ch.srv.vbuste.ru
-  servername: ch.srv.vbuste.ru
-  reality-opts:
-    public-key: 0-or5ogGhYbBgsVSrSC2Fhxyp2BN97Y9pqIdg61Qd08
-    short-id: 4be4110078ebed4a
-    spider-x: ''
-    fingerprint: chrome
-  security_scheme: reality
-  proto: vless
-  peer: ch.srv.vbuste.ru
 - name: ✅ US美国(mibei77.com 米贝节点分享)_49
   type: vless
   server: de-gdd-1.unturned-rust-dead.lol
@@ -7356,6 +7751,37 @@ proxies:
     mode: stream-one
   skip-cert-verify: true
   udp: true
+- name: 🇬🇧 英国 | GBR_3
+  type: vless
+  server: ec41652b.bilibiliapp.cn
+  port: 443
+  uuid: d5556fce-cc34-4df9-b1ff-755b02a3fc9a
+  flow: xtls-rprx-vision
+  tls: true
+  network: xhttp
+  sni: b7ce8b5f.m3u8.dsicbuygd.pay.cfcndns.pp.ua
+  servername: b7ce8b5f.m3u8.dsicbuygd.pay.cfcndns.pp.ua
+  security_scheme: tls
+  proto: vless
+  peer: b7ce8b5f.m3u8.dsicbuygd.pay.cfcndns.pp.ua
+- name: 美国+V2CROSS.COM
+  type: vless
+  server: eng0.khovanski.mom
+  port: 2053
+  uuid: ace33fb8-c593-4b17-8f72-f3359b6e9638
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: eng0.khovanski.mom
+  servername: eng0.khovanski.mom
+  reality-opts:
+    public-key: 372lhUM0WJWBCShaAu0u3JGvIqCWGvBRRXQyjsAHt0Q
+    short-id: 685ffe8ade96f0b2
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: eng0.khovanski.mom
 - client-fingerprint: chrome
   encryption: none
   flow: xtls-rprx-vision
@@ -8732,7 +9158,7 @@ proxies:
   client-fingerprint: chrome
   network: tcp
   udp: true
-- name: 🇩🇪 德国 | DEU_4
+- name: 🇩🇪 德国 | DEU_6
   type: vless
   server: hehehe.hohoterz.beer
   port: 443
@@ -8834,7 +9260,7 @@ proxies:
   security_scheme: reality
   proto: vless
   peer: www.ceneo.pl
-- name: 🇷🇺 俄罗斯 | RUS_2
+- name: 🇷🇺 俄罗斯 | RUS_3
   type: vless
   server: randomquaint.net
   port: 2053
@@ -8861,7 +9287,7 @@ proxies:
   - h2
   skip-cert-verify: true
   udp: true
-- name: 🇷🇺 俄罗斯 | RUS_3
+- name: 🇷🇺 俄罗斯 | RUS_2
   type: vless
   server: ru-1-6.unturned-rust-dead.lol
   port: 443
@@ -8878,7 +9304,7 @@ proxies:
   security_scheme: reality
   proto: vless
   peer: ru-1-6.unturned-rust-dead.lol
-- name: 🇺🇸_美国_48
+- name: ✅ 🇺🇸_美国_48
   type: vless
   server: s880.gogocs.xyz
   port: 443
@@ -9737,7 +10163,7 @@ proxies:
     host: xuius.907737.xyz
     mode: auto
     path: /
-- name: 🇩🇪 德国 | DEU_3
+- name: 🇩🇪 德国 | DEU_2
   type: vless
   server: zhechengtoy.com
   port: 443
@@ -9789,19 +10215,6 @@ proxies:
   sni: kr02.a0a.xyz
   proto: vmess
   peer: kr02.a0a.xyz
-- name: DE 🇩🇪 | @Raydikalx | F68888
-  type: vmess
-  server: 136.243.83.105
-  port: 46277
-  uuid: aa8a26cd-94f4-4f11-a3b3-48f30a127627
-  alterId: 0
-  cipher: auto
-  tls: false
-  network: grpc
-  security_scheme: none
-  sni: 136.243.83.105
-  proto: vmess
-  peer: 136.243.83.105
 - name: JP 🇯🇵 | @Raydikalx | 4F9D7D
   type: vmess
   server: 140.83.57.20
@@ -9992,7 +10405,7 @@ proxies:
   cipher: auto
   tls: false
   udp: true
-- name: 🇭🇰 香港 | HKG_2
+- name: 🇭🇰 香港 | HKG_3
   type: vmess
   server: 47.243.153.153
   port: 443
@@ -10106,7 +10519,7 @@ proxies:
     path: /ws-vmess
     headers:
       Host: 53vXOVarmgcreAsv.v.3dns.vip
-- name: 🇭🇰 香港 | HKG_3
+- name: 🇭🇰 香港 | HKG_2
   type: vmess
   server: 6JDvArazgU3qQR6Q.v.3dns.vip
   port: 443
@@ -10360,19 +10773,6 @@ proxies:
     path: /ws-vmess
     headers:
       Host: bJ1Aa2ZyJxYamYuK.v.3dns.vip
-- name: HK 🇭🇰 | @Raydikalx | 72DF1A
-  type: vmess
-  server: board-02.ddnskunlun.com
-  port: 11885
-  uuid: a8bcce43-abda-315b-8e81-e3e65bcb3d07
-  alterId: 0
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: board-02.ddnskunlun.com
-  proto: vmess
-  peer: board-02.ddnskunlun.com
 - name: IR 🇮🇷 | @Raydikalx | 59FFA1
   type: vmess
   server: dashboard.ojestore.top
@@ -10386,23 +10786,19 @@ proxies:
   sni: dashboard.ojestore.top
   proto: vmess
   peer: dashboard.ojestore.top
-- name: 俄罗斯 V2CROSS.COM
+- name: HK 🇭🇰 | @Raydikalx | ED46C4
   type: vmess
-  server: de-d21e56c13c.shamanapp.online
-  port: 33744
-  uuid: b3a11068-1a7e-4643-85de-7c82cce46943
+  server: dog-hk.kunlun01dns.com
+  port: 21021
+  uuid: 9464ca40-dd75-3742-a628-d931a9f413b2
   alterId: 0
   cipher: auto
   tls: false
-  network: ws
-  ws-opts:
-    path: /ShamanVMESS2026
-    headers:
-      Host: de-d21e56c13c.shamanapp.online:33744
+  network: tcp
   security_scheme: none
-  sni: de-d21e56c13c.shamanapp.online:33744
+  sni: dog-hk.kunlun01dns.com
   proto: vmess
-  peer: de-d21e56c13c.shamanapp.online:33744
+  peer: dog-hk.kunlun01dns.com
 - name: IR 🇮🇷 | @Raydikalx | F184CD
   type: vmess
   server: eeetst.aparatratinfo.ir
@@ -10596,7 +10992,7 @@ proxies:
   sni: d052c66d50dcf7c3cfab75ed7f8e8322.mobgslb.tbcache.com
   proto: vmess
   peer: d052c66d50dcf7c3cfab75ed7f8e8322.mobgslb.tbcache.com
-- name: 🇷🇺 俄罗斯 | RUS
+- name: ✅ 🇷🇺 俄罗斯 | RUS
   type: vmess
   server: renderer-stream-2-114.mirra.now
   port: 443
@@ -10698,3 +11094,16 @@ proxies:
     headers:
       Host: jmp1.907737.xyz
   udp: true
+- name: HK 🇭🇰 | @Raydikalx | 982AC8
+  type: vmess
+  server: zfd-jpv2.kunlun01dns.com
+  port: 16120
+  uuid: 0802ac03-7973-39ef-a019-ba02de6c01e1
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: zfd-jpv2.kunlun01dns.com
+  proto: vmess
+  peer: zfd-jpv2.kunlun01dns.com
