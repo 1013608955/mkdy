@@ -1,0 +1,92 @@
+name: check-devstation
+# ============================================================================
+# 一次性诊断（B 路线一票否决项验证，2026-10-15）
+#
+# 目的：旧「开发者空间·容器版」将于 2026-10-30 下线，需确认接班产品
+#      「AI 开发者空间（DevStation）」能否被 hdspace CLI 接管——
+#      即 `hdspace devenv list` 里除了旧的两个 DevEnvC 容器，
+#      是否还能看到 AI 开发者空间的环境。
+#
+# 本 workflow 是**只读诊断**：仅配置 AK/SK 并执行 list，不做任何变更，
+# 不开关机、不推送。验证完即可删除本文件。
+#
+# 凭据配置逻辑直接复用 hds-cycle.yml 的 [1] 步骤（gcr 弹窗自动应答 +
+# tools/config_hds.py），因为那条链路已在生产中稳定运行数月。
+# ============================================================================
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装依赖
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq gnome-keyring dbus-x11 libsecret-1-0 \
+            python3-secretstorage xvfb xdotool openbox
+
+      - name: 写入 AK/SK（复用 hds-cycle [1]）
+        env:
+          HDS_AK: ${{ secrets.HDS_AK }}
+          HDS_SK: ${{ secrets.HDS_SK }}
+        run: |
+          export DISPLAY=:99
+          dbus-run-session -- bash -exs <<'SESSION'
+          DISPLAY=:99 openbox >/dev/null 2>&1 &
+          sleep 2
+          mkdir -p ~/.cache ~/.local/share/keyrings
+          eval "$(printf 'ci-unlock' | gnome-keyring-daemon --unlock)" || true
+          eval "$(printf 'ci-unlock' | gnome-keyring-daemon --start)" || true
+          (
+            for i in $(seq 1 200); do
+              WINS=$( { xdotool search --onlyvisible --name 'gcr' 2>/dev/null;
+                        xdotool search --onlyvisible --class 'Gcr' 2>/dev/null; } | sort -u)
+              if [ -z "$WINS" ]; then sleep 1; continue; fi
+              echo "[autoresponder] 命中 gcr 窗口: $WINS" >&2
+              for W in $WINS; do
+                eval "$(xdotool getwindowgeometry --shell "$W" 2>/dev/null)"
+                xdotool mousemove --window "$W" $((WIDTH/2)) $((HEIGHT/2)) click 1 2>/dev/null
+                xdotool windowfocus "$W" 2>/dev/null
+                sleep 0.5
+                xdotool type --delay 80 'ci-unlock'
+                xdotool key Tab
+                xdotool type --delay 80 'ci-unlock'
+                xdotool key Return
+                sleep 3
+              done
+              sleep 1
+            done
+          ) &
+          AR=$!
+          CRED_RC=0
+          timeout 170 python3 tools/config_hds.py || CRED_RC=$?
+          echo "[cred][rc=$CRED_RC] 凭据配置流程结束"
+          kill $AR 2>/dev/null
+          SESSION
+
+      - name: 决定性验证 —— devenv list 能否看到 AI 开发者空间环境
+        run: |
+          echo "===== hdspace 版本 ====="
+          ./tools/bin/hdspace-linux version
+          echo
+          echo "===== devenv list ====="
+          set +e
+          ./tools/bin/hdspace-linux devenv list 2>&1 | tee /tmp/list.txt
+          echo
+          echo "===== 自动判定 ====="
+          if grep -qi "invalid\|reconfigure\|sign agreement" /tmp/list.txt; then
+            echo "判定：【凭据/账号侧问题】list 未成功，未进入环境比对"
+          elif grep -qE "[0-9a-f]{32}" /tmp/list.txt; then
+            echo "判定：【list 成功】共 $(grep -oE '[0-9a-f]{32}' /tmp/list.txt | sort -u | wc -l) 个环境实例："
+            grep -oE '[0-9a-f]{32}' /tmp/list.txt | sort -u | while read -r id; do
+              echo "--- $id ---"
+              grep -F "$id" /tmp/list.txt
+            done
+          else
+            echo "判定：【输出异常】需人工判读上方原始输出"
+          fi
