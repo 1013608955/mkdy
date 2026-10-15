@@ -1,0 +1,153 @@
+name: init-newcontainer
+# ============================================================================
+# 一次性初始化：把 AI 开发者空间·持久化版容器（8v16G, EVS→/root）部署成可运行环境。
+#
+# 为什么不用「改 hds-cycle 的 INSTANCE 触发一轮」来做：
+#   那样会让**生产链路**指向未初始化的容器，每轮都失败并发失败邮件
+#   （2026-10-16 run#5155~#5157 就是这么造成 3 连失败的，教训已记入记忆）。
+#   本 workflow 完全独立，生产 hds-cycle 的 INSTANCE 一行不动。
+#
+# 完成后：/root/mkdy 是 git 仓库（含 push URL 带 PAT）、pylibs 已装、
+#         mihomo 已就位 —— 此后 hds-cycle 只需改 INSTANCE + PERSIST_ROOT 两行即可接管。
+#
+# 幂等：cloud_init.sh 本身幂等（已克隆则 pull、不存在则 clone）。
+# ============================================================================
+on:
+  workflow_dispatch:
+
+env:
+  TGT: "590c40975c684f0d81b98e748ef756c9"      # DEVSPACE_imWPKj  8v16G
+  PERSIST_ROOT: "/root"                        # 该容器 EVS 挂载点
+
+jobs:
+  init:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装依赖
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq gnome-keyring dbus-x11 libsecret-1-0 \
+            python3-secretstorage xvfb xdotool openbox
+
+      - name: 准备（照抄 hds-cycle）
+        run: |
+          chmod +x tools/bin/hdspace-linux tools/config_hds.py \
+                   tools/hds_session.sh tools/boot_job.sh
+          mkdir -p ~/.devenv/logs ~/.cache ~/.local/share/keyrings ~/.ssh
+          printf '%s\n' "${{ secrets.HDS_SSH_KEY }}" > ~/.ssh/hds_key
+          chmod 600 ~/.ssh/hds_key
+          nohup Xvfb :99 -screen 0 1280x1024x24 >/dev/null 2>&1 &
+          sleep 2
+          pgrep -a Xvfb || { echo "[ERR] Xvfb 未启动"; exit 1; }
+
+      - name: 写入 AK/SK（照抄 hds-cycle [1]）
+        env:
+          HDS_AK: ${{ secrets.HDS_AK }}
+          HDS_SK: ${{ secrets.HDS_SK }}
+        run: |
+          export DISPLAY=:99
+          dbus-run-session -- bash -exs <<'SESSION'
+          DISPLAY=:99 openbox >/dev/null 2>&1 &
+          sleep 2
+          mkdir -p ~/.cache ~/.local/share/keyrings
+          eval "$(printf 'ci-unlock' | gnome-keyring-daemon --unlock)" || true
+          eval "$(printf 'ci-unlock' | gnome-keyring-daemon --start)" || true
+          (
+            for i in $(seq 1 200); do
+              WINS=$( { xdotool search --onlyvisible --name 'gcr' 2>/dev/null;
+                        xdotool search --onlyvisible --class 'Gcr' 2>/dev/null; } | sort -u)
+              [ -z "$WINS" ] && { sleep 1; continue; }
+              echo "[autoresponder] 命中 gcr 窗口: $WINS" >&2
+              for W in $WINS; do
+                eval "$(xdotool getwindowgeometry --shell "$W" 2>/dev/null)"
+                xdotool mousemove --window "$W" $((WIDTH/2)) $((HEIGHT/2)) click 1 2>/dev/null
+                xdotool windowfocus "$W" 2>/dev/null
+                sleep 0.5
+                xdotool type --delay 80 'ci-unlock'
+                xdotool key Tab
+                xdotool type --delay 80 'ci-unlock'
+                xdotool key Return
+                sleep 3
+              done
+              sleep 1
+            done
+          ) &
+          AR=$!
+          timeout 170 python3 tools/config_hds.py || true
+          kill $AR 2>/dev/null
+          SESSION
+
+      - name: 开机 + 隧道
+        run: |
+          echo "[boot] 启动 $TGT …"
+          for i in $(seq 1 30); do
+            S=$(HDS_NO_TIMEOUT=1 tools/hds_session.sh devenv list </dev/null 2>&1 \
+                 | grep -F "$TGT" | grep -oE 'Running|Ready|Starting' | head -1)
+            echo "  [$i] 状态=$S"
+            [ "$S" = "Running" ] && break
+            if [ "$S" = "Ready" ]; then
+              HDS_NO_TIMEOUT=1 tools/hds_session.sh devenv start --instance-id="$TGT" </dev/null 2>&1 | tail -3
+            fi
+            sleep 20
+          done
+          echo "[keyreset] 取私钥"
+          timeout -k 5 420 bash tools/hds_key_reset.sh "$TGT"
+          ls -l ~/.devenv/.ssh/IdentityFile/$TGT
+          echo "[tunnel] 建隧道"
+          HDS_NO_TIMEOUT=1 tools/hds_session.sh devenv start-tunnel \
+            --instance-id="$TGT" --ports=10022:22 >/tmp/tunnel.log 2>&1 &
+          for i in $(seq 1 40); do
+            (echo > /dev/tcp/127.0.0.1/10022) 2>/dev/null && { echo "[tunnel] OK"; break; }
+            sleep 5
+          done
+          (echo > /dev/tcp/127.0.0.1/10022) 2>/dev/null || { echo "[ERR] 隧道未通"; tail -20 /tmp/tunnel.log; exit 1; }
+
+      - name: 在容器内执行 cloud_init.sh（初始化部署）
+        env:
+          GH_PAT: ${{ secrets.PAT_TOKEN }}
+        run: |
+          KEY=~/.devenv/.ssh/IdentityFile/$TGT
+          ssh_run(){ timeout -k 5 "$1" ssh -p 10022 -i "$KEY" -o StrictHostKeyChecking=no \
+              -o UserKnownHostsFile=/dev/null -o ConnectTimeout=10 -o BatchMode=yes \
+              root@127.0.0.1 "${@:2}"; }
+          # 先探测容器现状
+          echo "===== 容器现状 ====="
+          ssh_run 30 "uname -m; python3 -V; ls -la $PERSIST_ROOT | head -10; df -h $PERSIST_ROOT | tail -1"
+          # 上传并执行（PAT 走环境变量前缀，容器内仅 root 可见 ps）
+          echo "===== 执行 cloud_init.sh（PERSIST_ROOT=$PERSIST_ROOT）====="
+          ssh_run 900 "cat > /tmp/cloud_init.sh && chmod +x /tmp/cloud_init.sh && \
+            PERSIST_ROOT='$PERSIST_ROOT' GITHUB_PAT='$GH_PAT' \
+              bash /tmp/cloud_init.sh" < verify_cn/cloud_init.sh 2>&1 | tail -40
+
+      - name: 校验初始化结果
+        run: |
+          KEY=~/.devenv/.ssh/IdentityFile/$TGT
+          ssh_run(){ timeout -k 5 "$1" ssh -p 10022 -i "$KEY" -o StrictHostKeyChecking=no \
+              -o UserKnownHostsFile=/dev/null -o ConnectTimeout=10 -o BatchMode=yes \
+              root@127.0.0.1 "${@:2}"; }
+          echo "===== 校验：仓库 / PAT / 依赖 / mihomo ====="
+          ssh_run 90 "set -x
+            ls -ld $PERSIST_ROOT/mkdy/.git
+            cd $PERSIST_ROOT/mkdy && git log --oneline -1
+            echo '--- push URL 是否带 PAT ---'
+            cd $PERSIST_ROOT/mkdy && git remote get-url --push origin | sed 's#//[^@]*@#//***@#'
+            echo '--- run_local.py 在位？ ---'
+            ls -l $PERSIST_ROOT/mkdy/verify_cn/run_local.py
+            echo '--- pylibs ---'
+            ls $PERSIST_ROOT/pylibs 2>/dev/null | head -3
+            echo '--- mihomo ---'
+            ls -l $PERSIST_ROOT/mihomo* 2>/dev/null | head -3
+            which mihomo 2>/dev/null
+            echo '--- 停掉 cloud_init 起的常驻循环（避免与 boot_job 双跑抢CPU）---'
+            pkill -f run_loop.sh 2>/dev/null && echo 'run_loop killed' || echo 'no run_loop running'
+          " 2>&1 | tail -30
+
+      - name: 关机（无论成败）
+        if: always()
+        run: |
+          echo "[stop] 关闭 $TGT"
+          HDS_NO_TIMEOUT=1 tools/hds_session.sh devenv stop --instance-id="$TGT" </dev/null 2>&1 | tail -3
+          echo "[done] 已发出关机指令"
