@@ -530,7 +530,6 @@ proxy-groups:
   - '🇫🇷[www.v2nodes.com] vless-FR-1... #1'
   - '🇫🇷[www.v2nodes.com] vless-FR-1... #8'
   - '🏳[www.v2nodes.com] vless- #4'
-  - 🇺🇸_美国_42
   - 🇺🇸US_2|1.2MB/s|YT-CN
   - '🇬🇧[www.v2nodes.com] vless-GB-1... #2'
   - 🇸🇬_新加坡_93
@@ -768,7 +767,6 @@ proxy-groups:
   - 🇺🇸US_8|259KB/s|YT-US|GPT⁺|NF|0%
   - '🇳🇱[www.v2nodes.com] vless-NL-1... #8'
   - '🇹🇷[www.v2nodes.com] vless-TR-1... #4'
-  - '🇺🇸[www.v2nodes.com] vless-US-1... #9'
   - '🇬🇧[www.v2nodes.com] vless-GB-1... #3'
   - 🇷🇺_俄罗斯_19
   - '🏳[www.v2nodes.com] vless- #6'
@@ -1382,7 +1380,6 @@ proxy-groups:
   - '🇫🇷[www.v2nodes.com] vless-FR-1... #1'
   - '🇫🇷[www.v2nodes.com] vless-FR-1... #8'
   - '🏳[www.v2nodes.com] vless- #4'
-  - 🇺🇸_美国_42
   - 🇺🇸US_2|1.2MB/s|YT-CN
   - '🇬🇧[www.v2nodes.com] vless-GB-1... #2'
   - 🇸🇬_新加坡_93
@@ -1620,7 +1617,6 @@ proxy-groups:
   - 🇺🇸US_8|259KB/s|YT-US|GPT⁺|NF|0%
   - '🇳🇱[www.v2nodes.com] vless-NL-1... #8'
   - '🇹🇷[www.v2nodes.com] vless-TR-1... #4'
-  - '🇺🇸[www.v2nodes.com] vless-US-1... #9'
   - '🇬🇧[www.v2nodes.com] vless-GB-1... #3'
   - 🇷🇺_俄罗斯_19
   - '🏳[www.v2nodes.com] vless- #6'
@@ -2236,7 +2232,6 @@ proxy-groups:
   - '🇫🇷[www.v2nodes.com] vless-FR-1... #1'
   - '🇫🇷[www.v2nodes.com] vless-FR-1... #8'
   - '🏳[www.v2nodes.com] vless- #4'
-  - 🇺🇸_美国_42
   - 🇺🇸US_2|1.2MB/s|YT-CN
   - '🇬🇧[www.v2nodes.com] vless-GB-1... #2'
   - 🇸🇬_新加坡_93
@@ -2474,7 +2469,6 @@ proxy-groups:
   - 🇺🇸US_8|259KB/s|YT-US|GPT⁺|NF|0%
   - '🇳🇱[www.v2nodes.com] vless-NL-1... #8'
   - '🇹🇷[www.v2nodes.com] vless-TR-1... #4'
-  - '🇺🇸[www.v2nodes.com] vless-US-1... #9'
   - '🇬🇧[www.v2nodes.com] vless-GB-1... #3'
   - 🇷🇺_俄罗斯_19
   - '🏳[www.v2nodes.com] vless- #6'
@@ -8619,24 +8613,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: play-fe.googleapis.com
-- name: 🇺🇸_美国_42
-  type: vless
-  server: 51.81.203.63
-  port: 443
-  uuid: cb2dbb6a-a1ea-4023-9ace-6466cee57241
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: www.icloud.com
-  servername: www.icloud.com
-  reality-opts:
-    public-key: nqwCf6oW49tEtmQ0EzxigZ0uu1pg0E30CS54G40Iti0
-    short-id: 4477382ff6d3d41c
-    spider-x: ''
-    fingerprint: chrome
-  security_scheme: reality
-  proto: vless
-  peer: www.icloud.com
 - client-fingerprint: chrome
   flow: xtls-rprx-vision
   name: 🇺🇸US_2|1.2MB/s|YT-CN
@@ -12008,19 +11984,6 @@ proxies:
   security_scheme: none
   proto: vless
   peer: test.keoplentuio.xyz
-- name: '🇺🇸[www.v2nodes.com] vless-US-1... #9'
-  type: vless
-  server: tk1.high-speed-test-56424.me
-  port: 443
-  uuid: 37615d66-5467-44a3-bc23-f2c3bef7f761
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: aws.amazon.com
-  servername: aws.amazon.com
-  security_scheme: tls
-  proto: vless
-  peer: aws.amazon.com
 - name: '🇬🇧[www.v2nodes.com] vless-GB-1... #3'
   type: vless
   server: tomaz1337shellbuy.vvzzkontaktezzvv.garden
@@ -13002,20 +12965,19 @@ proxies:
   peer: 152.67.8.205
 - name: '✅ [peasoft/NoMoreWalls]🇺🇸 美国 | USA #10'
   type: vmess
-  server: 172.66.203.67
-  port: 443
-  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
+  server: 172.64.229.124
+  port: 8880
+  uuid: 4b5e4565-322f-4223-a891-78a84f189726
   alterId: 0
   cipher: auto
-  tls: true
+  tls: false
   network: ws
   ws-opts:
-    path: /ws
+    path: /RpT6kZjkw45EenmTcDYWs
     headers:
-      Host: vmess.lbw666.dpdns.org
-  servername: vmess.lbw666.dpdns.org
-  security_scheme: tls
-  sni: vmess.lbw666.dpdns.org
+      Host: 172.64.229.124
+  security_scheme: none
+  sni: 172.64.229.124
   proto: vmess
   peer: vmess.lbw666.dpdns.org
 - name: 🏁RELAY-172.67.179.37-1009
