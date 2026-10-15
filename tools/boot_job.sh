@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 # boot_job.sh — 容器侧开机引导：装依赖 → 拉代码 → 跑一轮验证并推送。
 # 由 CI 经 SSH(tunnel) 调用；幂等，系统盘重置后也能自举。
+#
+# PERSIST_ROOT（2026-10-16 新增）：持久盘挂载点。默认 /workspace（旧容器），
+# AI 开发者空间·持久化版的 EVS 挂在 /root，故由 CI 用环境变量传入。
+# 用 ${PERSIST_ROOT:-/workspace} 而非硬编码，是为了旧容器行为完全不变（零风险）。
 set -u
-cd /workspace/mkdy || exit 9
+PERSIST_ROOT="${PERSIST_ROOT:-/workspace}"
+cd "$PERSIST_ROOT/mkdy" || exit 9
 
 # 1) Python 依赖装到持久盘（系统盘重置也不丢，冷启动秒过）
-export PYTHONPATH="/workspace/pylibs${PYTHONPATH:+:$PYTHONPATH}"
+export PYTHONPATH="$PERSIST_ROOT/pylibs${PYTHONPATH:+:$PYTHONPATH}"
 if ! python3 -c "import yaml, requests" 2>/dev/null; then
-  pip3 install --quiet --target /workspace/pylibs pyyaml requests \
+  pip3 install --quiet --target "$PERSIST_ROOT/pylibs" pyyaml requests \
     -i https://pypi.tuna.tsinghua.edu.cn/simple
 fi
 

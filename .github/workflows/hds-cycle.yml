@@ -25,6 +25,9 @@ on:
 env:
   INSTANCE: "21ce28b8230a43f2ab414327f68bb1a0"          # 主实例 DevEnvC_W4yNKt（ARM 2vCPU/4GiB）
   FALLBACK_INSTANCE: "30b343ba477f4944b5344300b63a3549" # 兜底实例 DevEnvC_FA6Ihu（ARM 4vCPU/8GiB），主实例无算力时切换
+  # 持久盘挂载点（2026-10-16 新增）。旧容器 EVS 挂 /workspace；AI 开发者空间·持久化版挂 /root。
+  # 默认 /workspace → 旧容器行为完全不变（零风险）；换实例时同步改这一行即可。
+  PERSIST_ROOT: "/workspace"
 
 concurrency:
   group: hds-cycle
@@ -596,11 +599,14 @@ jobs:
           #    （正常 4~7min，慢窗 >14min 就撑爆步骤上限，且 ConnectTimeout/ServerAlive 拦不住）。
           #  - 改用 `( nohup ... < /dev/null & )`：subshell 立即返回、子进程被 init 接管，
           #    三路 IO 全部脱离 SSH 通道，本次 SSH 秒回；远端若 setsid 可用则更干净（nohup 已够）。
-          LOG=/workspace/mkdy/verify_cn/logs/ci_boot.log
-          echo "[upload] 上传并分离启动 boot_job.sh（预算内 $(left)s）..."
-          ssh_run 90 "mkdir -p /workspace/mkdy/verify_cn/logs && cat > /tmp/boot_job.sh && \
+          # PERSIST_ROOT 需显式注入容器：SSH 远程会话不继承 CI 环境变量
+          # （boot_job.sh 用 ${PERSIST_ROOT:-/workspace} 兜底，但兜底只是保险，
+          #  真正生效靠这里传进去）
+          LOG="$PERSIST_ROOT/mkdy/verify_cn/logs/ci_boot.log"
+          echo "[upload] 上传并分离启动 boot_job.sh（PERSIST_ROOT=$PERSIST_ROOT，预算内 $(left)s）..."
+          ssh_run 90 "mkdir -p $PERSIST_ROOT/mkdy/verify_cn/logs && cat > /tmp/boot_job.sh && \
                 chmod +x /tmp/boot_job.sh && rm -f $LOG && \
-                ( nohup /tmp/boot_job.sh > $LOG 2>&1 < /dev/null & ) && \
+                ( PERSIST_ROOT='$PERSIST_ROOT' nohup /tmp/boot_job.sh > $LOG 2>&1 < /dev/null & ) && \
                 sleep 2 && { [ -e $LOG ] && echo LAUNCHED || echo NOT_LAUNCHED; }" \
             < tools/boot_job.sh
 
