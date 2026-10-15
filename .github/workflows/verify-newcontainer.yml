@@ -120,7 +120,20 @@ jobs:
             cd $PERSIST_ROOT/mkdy && git remote get-url --push origin | sed 's#//[^@]*@#//***@#'"
           LOG_REMOTE="$PERSIST_ROOT/mkdy/verify_cn/logs/verify_boot.log"
           echo "[upload] 上传并分离启动 boot_job.sh（PERSIST_ROOT=$PERSIST_ROOT）"
-          # 与 hds-cycle [3] 逐步对齐：mkdir → cat → chmod → 注入 PERSIST_ROOT → nohup 分离启动
+          # ── 强制把基线拉到最新 ──────────────────────────────────────────
+          # 10-29 自动切换那一刻，新容器的工作树就是「clone 当天的基线 +
+          # 之后 main 上陆续产生的提交」，与现在这个状态高度相似。
+          # 这里主动制造同样的条件（reset 到最新 + 制造脏生成物），
+          # 才能真正验证 025781a4 的清理逻辑在「切换首轮」这个场景下有效，
+          # 而不是只在「干净的现成状态」下通过。
+          echo "[reset] 基线对齐到 origin/main 并制造脏工作区（模拟切换首轮）"
+          ssh_run 120 "cd $PERSIST_ROOT/mkdy && \
+            git fetch origin main --quiet 2>&1 | tail -2; \
+            git reset --hard origin/main 2>&1 | tail -1; \
+            echo 'x' >> s-clash.yaml; echo 'y' >> source_health.json; \
+            echo '--- 制造后的脏文件 ---'; \
+            git status --porcelain | head -8"
+          # 与生产 [3] 逐步对齐：mkdir → cat → chmod → 注入 PERSIST_ROOT → nohup 分离启动
           ssh_run 90 "mkdir -p $PERSIST_ROOT/mkdy/verify_cn/logs && cat > /tmp/boot_job.sh && \
                 chmod +x /tmp/boot_job.sh && rm -f $LOG_REMOTE && \
                 ( PERSIST_ROOT='$PERSIST_ROOT' nohup /tmp/boot_job.sh > $LOG_REMOTE 2>&1 < /dev/null & ) && \
