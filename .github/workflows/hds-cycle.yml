@@ -28,6 +28,10 @@ env:
   # 持久盘挂载点（2026-10-16 新增）。旧容器 EVS 挂 /workspace；AI 开发者空间·持久化版挂 /root。
   # 默认 /workspace → 旧容器行为完全不变（零风险）；换实例时同步改这一行即可。
   PERSIST_ROOT: "/workspace"
+  # 时间节流阈值（分钟）：FunctionGraph 每 15 分钟触发，但按需开关机模式下每轮都真开机，
+  # 8v16G 规格下 96 轮/天 ≈ 53 核时/天（余额 6780 仅够 ~127 天）。
+  # 设为 55 → 实际约每小时真跑一轮 ≈ 13 核时/天（够 500+ 天）；设 0 = 关闭节流。
+  MIN_INTERVAL_MIN: "55"
 
 concurrency:
   group: hds-cycle
@@ -59,6 +63,45 @@ jobs:
             echo "[skip] 检测到 $OTHERS 个更新的轮次在排队/运行中，本次冗余，跳过后续全部步骤。"
             echo "skip=1" >> "$GITHUB_OUTPUT"
             exit 0
+          fi
+
+          # ── 时间节流（2026-10-16 新增）─────────────────────────────────────
+          # 目的：FunctionGraph 仍每 15 分钟 dispatch 一次，但按需开关机模式下
+          # 每轮都要真开机跑验证，8v16G 规格下 96 轮/天 ≈ 53 核时/天（余额只够 ~127 天）。
+          # 这里用「距上次【真实验证成功】的间隔」压制多余轮次：不足阈值就整轮跳过，
+          # **跳过的轮次不进容器 → 零核时消耗**（这是与「防重入门卫」的本质区别：
+          # 门卫解决的是并发冗余，本节流解决的是频率过剩）。
+          #
+          # 阈值 MIN_INTERVAL_MIN 可在 env 调整；设为 0 即关闭节流（恢复 15 分钟一轮）。
+          # 若 FunctionGraph 侧已改为每小时触发，本判断几乎不会触发（间隔≈60min > 阈值），
+          # 因此它同时充当「云侧配置没改成功」的兜底保险。
+          #
+          # 判据用 [3] 步骤的 conclusion 而非 run 的 conclusion：门卫/节流跳过的轮次
+          # run 同样是 success，但 [3] 是 skipped——只有 [3]=success 才是真跑过验证。
+          MIN_INTERVAL_MIN="${MIN_INTERVAL_MIN:-55}"
+          if [ "${MIN_INTERVAL_MIN:-0}" -gt 0 ] 2>/dev/null; then
+            REPO_Q="${{ github.repository }}"
+            LAST_REAL=""
+            for r in $(gh api "repos/$REPO_Q/actions/workflows/hds-cycle.yml/runs?per_page=5" \
+                         --jq '[.workflow_runs[] | select(.status=="completed" and .id != '"${{ github.run_id }}"')] | .[].id' 2>/dev/null); do
+              sig=$(gh api "repos/$REPO_Q/actions/runs/$r/jobs" \
+                --jq '(.jobs[0].steps | map(select(.name | startswith("[3]")))[0].conclusion // "none")' 2>/dev/null || echo none)
+              if [ "$sig" = "success" ]; then LAST_REAL="$r"; break; fi
+            done
+            if [ -n "$LAST_REAL" ]; then
+              LAST_AT=$(gh api "repos/$REPO_Q/actions/runs/$LAST_REAL" --jq '.created_at' 2>/dev/null || true)
+              if [ -n "$LAST_AT" ]; then
+                AGE_MIN=$(( ( $(date -u +%s) - $(date -u -d "$LAST_AT" +%s) ) / 60 ))
+                if [ "$AGE_MIN" -lt "$MIN_INTERVAL_MIN" ]; then
+                  echo "[skip] 时间节流：距上次真实验证成功（run $LAST_REAL）仅 ${AGE_MIN} 分钟 < ${MIN_INTERVAL_MIN}，本轮跳过（不进容器，零核时）。"
+                  echo "skip=1" >> "$GITHUB_OUTPUT"
+                  exit 0
+                fi
+                echo "[gate] 时间节流检查通过：距上次真实验证 ${AGE_MIN} 分钟 ≥ ${MIN_INTERVAL_MIN}。"
+              fi
+            else
+              echo "[gate] 时间节流：近 5 轮未找到 [3]=success 的真实验证，按不节流处理（跑本轮）。"
+            fi
           fi
           echo "[pass] 无冗余轮次，继续执行。"
 
