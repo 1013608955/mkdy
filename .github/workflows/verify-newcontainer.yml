@@ -1,0 +1,166 @@
+name: verify-newcontainer
+# ============================================================================
+# 一次性验证：用**生产路径**（boot_job.sh）在 8v16G 新容器上跑一轮真实验证。
+#
+# 为什么必须单独验这一轮（2026-10-16）：
+#   run#5160 曾在切到新容器后失败，但原因当时是「容器未初始化」
+#   （/root/mkdy 非 git 仓库），该原因已被 init-newcontainer 修掉；
+#   而 init-newcontainer 里的那次验证走的是 **cloud_init.sh 内部循环**，
+#   **不是生产实际使用的 boot_job.sh**（SSH 上传 + PERSIST_ROOT 注入 + git pull + push）。
+#   两条路径不同，不能互相证明。到 10-29 自动切换前必须把生产路径也验证一遍。
+#
+# 与 run#5160 的关键区别：那时是「没初始化就试」，这次是「初始化之后再试」。
+#
+# 与切换无关：本 workflow 完全独立，hds-cycle 的 INSTANCE/PERSIST_ROOT 一行不动。
+# ============================================================================
+on:
+  workflow_dispatch:
+
+env:
+  TGT: "590c40975c684f0d81b98e748ef756c9"      # DEVSPACE_imWPKj  8v16G
+  PERSIST_ROOT: "/root"                        # 该容器 EVS 挂载点
+  # 轮询上限：boot_job 在 8 核上实测 206s，保守给 12 分钟
+  POLL_MAX: "72"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装依赖
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq gnome-keyring dbus-x11 libsecret-1-0 \
+            python3-secretstorage xvfb xdotool openbox
+
+      - name: 准备（照抄 hds-cycle）
+        run: |
+          chmod +x tools/bin/hdspace-linux tools/config_hds.py \
+                   tools/hds_session.sh tools/boot_job.sh
+          mkdir -p ~/.devenv/logs ~/.cache ~/.local/share/keyrings ~/.ssh
+          printf '%s\n' "${{ secrets.HDS_SSH_KEY }}" > ~/.ssh/hds_key
+          chmod 600 ~/.ssh/hds_key
+          nohup Xvfb :99 -screen 0 1280x1024x24 >/dev/null 2>&1 &
+          sleep 2
+          pgrep -a Xvfb || { echo "[ERR] Xvfb 未启动"; exit 1; }
+
+      - name: 写入 AK/SK（照抄 hds-cycle [1]）
+        env:
+          HDS_AK: ${{ secrets.HDS_AK }}
+          HDS_SK: ${{ secrets.HDS_SK }}
+        run: |
+          export DISPLAY=:99
+          dbus-run-session -- bash -exs <<'SESSION'
+          DISPLAY=:99 openbox >/dev/null 2>&1 &
+          sleep 2
+          mkdir -p ~/.cache ~/.local/share/keyrings
+          eval "$(printf 'ci-unlock' | gnome-keyring-daemon --unlock)" || true
+          eval "$(printf 'ci-unlock' | gnome-keyring-daemon --start)" || true
+          (
+            for i in $(seq 1 200); do
+              WINS=$( { xdotool search --onlyvisible --name 'gcr' 2>/dev/null;
+                        xdotool search --onlyvisible --class 'Gcr' 2>/dev/null; } | sort -u)
+              [ -z "$WINS" ] && { sleep 1; continue; }
+              echo "[autoresponder] 命中 gcr 窗口: $WINS" >&2
+              for W in $WINS; do
+                eval "$(xdotool getwindowgeometry --shell "$W" 2>/dev/null)"
+                xdotool mousemove --window "$W" $((WIDTH/2)) $((HEIGHT/2)) click 1 2>/dev/null
+                xdotool windowfocus "$W" 2>/dev/null
+                sleep 0.5
+                xdotool type --delay 80 'ci-unlock'
+                xdotool key Tab
+                xdotool type --delay 80 'ci-unlock'
+                xdotool key Return
+                sleep 3
+              done
+              sleep 1
+            done
+          ) &
+          AR=$!
+          timeout 170 python3 tools/config_hds.py || true
+          kill $AR 2>/dev/null
+          SESSION
+
+      - name: 开机 + 隧道
+        run: |
+          echo "[boot] 启动 $TGT …"
+          for i in $(seq 1 30); do
+            S=$(HDS_NO_TIMEOUT=1 tools/hds_session.sh devenv list </dev/null 2>&1 \
+                 | grep -F "$TGT" | grep -oE 'Running|Ready|Starting' | head -1)
+            echo "  [$i] 状态=$S"
+            [ "$S" = "Running" ] && break
+            if [ "$S" = "Ready" ]; then
+              HDS_NO_TIMEOUT=1 tools/hds_session.sh devenv start --instance-id="$TGT" </dev/null 2>&1 | tail -3
+            fi
+            sleep 20
+          done
+          echo "[keyreset] 取私钥"
+          timeout -k 5 420 bash tools/hds_key_reset.sh "$TGT"
+          echo "[tunnel] 建隧道"
+          HDS_NO_TIMEOUT=1 tools/hds_session.sh devenv start-tunnel \
+            --instance-id="$TGT" --ports=10022:22 >/tmp/tunnel.log 2>&1 &
+          for i in $(seq 1 40); do
+            (echo > /dev/tcp/127.0.0.1/10022) 2>/dev/null && { echo "[tunnel] OK"; break; }
+            sleep 5
+          done
+          (echo > /dev/tcp/127.0.0.1/10022) 2>/dev/null || { echo "[ERR] 隧道未通"; tail -20 /tmp/tunnel.log; exit 1; }
+
+      - name: 上传并分离启动 boot_job.sh（生产路径）
+        run: |
+          KEY=~/.devenv/.ssh/IdentityFile/$TGT
+          ssh_run(){ timeout -k 5 "$1" ssh -p 10022 -i "$KEY" -o StrictHostKeyChecking=no \
+              -o UserKnownHostsFile=/dev/null -o ConnectTimeout=10 -o BatchMode=yes \
+              root@127.0.0.1 "${@:2}"; }
+          echo "[preflight] 执行前快照"
+          ssh_run 60 "uname -m; python3 -V; \
+            ls -ld $PERSIST_ROOT/mkdy/.git 2>&1; \
+            cd $PERSIST_ROOT/mkdy && git log --oneline -1 2>&1; \
+            cd $PERSIST_ROOT/mkdy && git remote get-url --push origin | sed 's#//[^@]*@#//***@#'"
+          LOG_REMOTE="$PERSIST_ROOT/mkdy/verify_cn/logs/verify_boot.log"
+          echo "[upload] 上传并分离启动 boot_job.sh（PERSIST_ROOT=$PERSIST_ROOT）"
+          # 与 hds-cycle [3] 逐步对齐：mkdir → cat → chmod → 注入 PERSIST_ROOT → nohup 分离启动
+          ssh_run 90 "mkdir -p $PERSIST_ROOT/mkdy/verify_cn/logs && cat > /tmp/boot_job.sh && \
+                chmod +x /tmp/boot_job.sh && rm -f $LOG_REMOTE && \
+                ( PERSIST_ROOT='$PERSIST_ROOT' nohup /tmp/boot_job.sh > $LOG_REMOTE 2>&1 < /dev/null & ) && \
+                sleep 2 && { [ -e $LOG_REMOTE ] && echo LAUNCHED || echo NOT_LAUNCHED; }" \
+            < tools/boot_job.sh
+
+      - name: 轮询验证结果
+        run: |
+          KEY=~/.devenv/.ssh/IdentityFile/$TGT
+          ssh_run(){ timeout -k 5 "$1" ssh -p 10022 -i "$KEY" -o StrictHostKeyChecking=no \
+              -o UserKnownHostsFile=/dev/null -o ConnectTimeout=10 -o BatchMode=yes \
+              root@127.0.0.1 "${@:2}"; }
+          LOG_REMOTE="$PERSIST_ROOT/mkdy/verify_cn/logs/verify_boot.log"
+          echo "[poll] 开始轮询（上限 $POLL_MAX × 10s = $((POLL_MAX*10))s）"
+          DONE=""
+          for i in $(seq 1 "$POLL_MAX"); do
+            sleep 10
+            DONE=$(ssh_run 30 "grep -oE '\[boot_job\] done rc=[0-9]+' $LOG_REMOTE 2>/dev/null | tail -1")
+            if [ -n "$DONE" ]; then echo "  [$i] $DONE"; break; fi
+            echo "  [$i] 进行中…"
+          done
+          echo
+          echo "===== boot_job 日志尾 60 行 ====="
+          ssh_run 60 "tail -60 $LOG_REMOTE" 2>&1 || true
+          echo
+          echo "===== 结果判定 ====="
+          RC=$(ssh_run 30 "grep -oE 'done rc=[0-9]+' $LOG_REMOTE 2>/dev/null | tail -1 | grep -oE '[0-9]+'" || echo "")
+          if [ -z "$DONE" ]; then
+            echo "【超时】boot_job 未在 $((POLL_MAX*10))s 内结束，需人工排查"
+            exit 1
+          elif [ "$RC" != "0" ]; then
+            echo "【失败】boot_job rc=$RC —— 生产路径在新容器上未通过"
+            exit 1
+          fi
+          echo "【通过】boot_job rc=0 —— 生产路径已在 8v16G 新容器上验证成功"
+          ssh_run 60 "grep -oE '[0-9]+/[0-9]+ 节点可用' $LOG_REMOTE | tail -1" || true
+
+      - name: 关机（无论成败）
+        if: always()
+        run: |
+          echo "[stop] 关闭 $TGT"
+          HDS_NO_TIMEOUT=1 tools/hds_session.sh devenv stop --instance-id="$TGT" </dev/null 2>&1 | tail -3
+          echo "[done] 已发出关机指令"
