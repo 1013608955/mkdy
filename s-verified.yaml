@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=77
+# verified=78
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -122,6 +122,7 @@ proxy-groups:
   - ✅ 🇩🇪_德国_102
   - ✅ 🇩🇪_德国_276
   - ✅ 🏳️_未知_347
+  - ✅ HK 🇭🇰 | @Raydikalx | CA891B
 - name: 自动选择
   type: url-test
   proxies:
@@ -202,6 +203,7 @@ proxy-groups:
   - ✅ 🇩🇪_德国_102
   - ✅ 🇩🇪_德国_276
   - ✅ 🏳️_未知_347
+  - ✅ HK 🇭🇰 | @Raydikalx | CA891B
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -284,6 +286,7 @@ proxy-groups:
   - ✅ 🇩🇪_德国_102
   - ✅ 🇩🇪_德国_276
   - ✅ 🏳️_未知_347
+  - ✅ HK 🇭🇰 | @Raydikalx | CA891B
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -1397,3 +1400,16 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
+- name: ✅ HK 🇭🇰 | @Raydikalx | CA891B
+  type: vmess
+  server: v35.hdacd.com
+  port: 30835
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: v35.hdacd.com
+  proto: vmess
+  peer: v35.hdacd.com
