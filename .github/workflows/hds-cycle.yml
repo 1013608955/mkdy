@@ -28,6 +28,20 @@ env:
   # 持久盘挂载点（2026-10-16 新增）。旧容器 EVS 挂 /workspace；AI 开发者空间·持久化版挂 /root。
   # 默认 /workspace → 旧容器行为完全不变（零风险）；换实例时同步改这一行即可。
   PERSIST_ROOT: "/workspace"
+  # ── 自动切换（2026-10-16 新增）─────────────────────────────────────────────
+  # 旧「开发者空间·容器版」2026-10-30 下线。到 SWITCH_AT 之后自动改用
+  # 「AI 开发者空间·持久化版」容器 DEVSPACE_imWPKj（8v16G / EVS100G → /root）。
+  # 留 1 天缓冲（10-29 切，10-30 才死线）—— 宁可提前暴露问题，别卡在当天。
+  #
+  # 为什么是「自动」而不是某天手动改：迁移成败取决于那天是否有人在。
+  # 自动切换后，观察窗口有整整 1 天 + 降频节流让每次验证间隔 55 分钟，
+  # 出问题最多损失一轮验证，且随时能把 SWITCH_AT 推后来回滚。
+  #
+  # 该容器已于 2026-10-16 实测跑通完整验证（73/666 可用 / 206s / push URL 带 PAT /
+  # pylibs 与 mihomo 就位），代码侧 PERSIST_ROOT 改造已提交（bdd0f72d / e2792e9b）。
+  SWITCH_AT: "2026-10-29T00:00:00+08:00"
+  INSTANCE_AFTER: "590c40975c684f0d81b98e748ef756c9"   # DEVSPACE_imWPKj 8v16G
+  PERSIST_ROOT_AFTER: "/root"                          # 该容器 EVS 挂载点
   # 时间节流阈值（分钟）：FunctionGraph 每 15 分钟触发，但按需开关机模式下每轮都真开机，
   # 8v16G 规格下 96 轮/天 ≈ 53 核时/天（余额 6780 仅够 ~127 天）。
   # 设为 55 → 实际约每小时真跑一轮 ≈ 13 核时/天（够 500+ 天）；设 0 = 关闭节流。
@@ -50,6 +64,28 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # ── 自动切换判定（2026-10-16）─────────────────────────────────────
+          # 在写 GITHUB_ENV 之前做：后续步骤里所有 $INSTANCE / $PERSIST_ROOT 引用
+          # 都会自动拿到这里的取值，无需改动那 8 处引用点。
+          # 用 date -d 解析 ISO8601(含时区) → epoch，纯 POSIX 可移植。
+          if [ -n "${SWITCH_AT:-}" ] && [ -n "${INSTANCE_AFTER:-}" ]; then
+            NOW_E=$(date -u +%s)
+            SW_E=$(date -u -d "$SWITCH_AT" +%s 2>/dev/null || echo "")
+            if [ -n "$SW_E" ]; then
+              if [ "$NOW_E" -ge "$SW_E" ]; then
+                echo "[switch] 已到切换时刻（$SWITCH_AT）→ 启用 DEVSPACE 容器 $INSTANCE_AFTER（PERSIST_ROOT=$PERSIST_ROOT_AFTER）"
+                echo "[switch] 旧容器 $INSTANCE 将于 2026-10-30 下线；如需回滚，把 SWITCH_AT 推后即可"
+                echo "INSTANCE=$INSTANCE_AFTER"     >> "$GITHUB_ENV"
+                echo "PERSIST_ROOT=$PERSIST_ROOT_AFTER" >> "$GITHUB_ENV"
+              else
+                LEFT_MIN=$(( (SW_E - NOW_E) / 60 ))
+                echo "[switch] 尚未到切换时刻（还剩 $((LEFT_MIN/60)) 小时 $((LEFT_MIN%60)) 分），本轮仍用 $INSTANCE"
+              fi
+            else
+              echo "[switch][WARN] SWITCH_AT 解析失败（$SWITCH_AT），本轮保持 $INSTANCE"
+            fi
+          fi
+
           # concurrency(FIFO) 保证本运行拿到执行权时，其余未完成轮次必然全部比本次新
           # ——它们会产出更新的验证结果，本次属冗余触发（外部 dispatch 与迟到 schedule
           # 撞车时出现），跳过后续全部步骤即可，不必再跑完整容器流程。
