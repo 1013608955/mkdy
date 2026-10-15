@@ -92,6 +92,37 @@ jobs:
             # 无 -X ours 则 merge CONFLICT 且 bash -e 中止整轮；下轮会再刷新，自愈）。
             git fetch origin main
             git merge origin/main --no-edit --no-ff -X ours
-            git push
+            # ── push 带重试（2026-10-14 run#3877 实证）──────────────────────────
+            #   现象：commit / fetch / merge 全部成功，唯独 git push 被 GitHub 拒：
+            #     remote: Internal Server Error
+            #     ! [remote rejected] main -> main (Internal Server Error)
+            #   平台瞬时 5xx 让整轮 failure + 失败邮件 + 本轮订阅更新丢失。
+            #   此前「push 治理」只存在于 run_local.py（5 次重试 + ls-remote 终判，
+            #   见 commit 1d7a1f7e），本 workflow 裸奔 → 同类故障两种待遇。
+            #   ⚠ 仓库约定：任何 workflow 的 git push 都必须带重试与合并回退，
+            #     禁止裸 push。新增推送链路前先看这里和 run_local.py 的 _push_results。
+            #
+            #   设计：失败后「先 fetch+merge 再重推」，而非 sleep 后原样重推——
+            #   push 被拒有两种成因，一种方案同时覆盖：
+            #     ① GitHub 5xx / 网络抖动      → 原样重推即可；
+            #     ② 远端被并发 CI 抢先（non-FF）→ 必须先合并再推。
+            #   merge 失败（真冲突）立即 exit 1：那需要人工介入，重试无意义。
+            #   语义上接受「最终仍失败则下轮补上」：update-subs 每小时一轮，
+            #   订阅更新延迟 1 小时无实际影响，故不做 artifact 级数据保全。
+            PUSH_OK=0
+            for i in 1 2 3 4; do
+              if git push; then
+                PUSH_OK=1
+                echo "[push] 第 $i 次推送成功"
+                break
+              fi
+              echo "[push] 第 $i 次推送失败（平台瞬时故障或远端竞争），合并远端后重试"
+              git fetch origin main
+              git merge origin/main --no-edit --no-ff -X ours \
+                || { echo "[push][ERR] 合并 origin/main 失败（真冲突），需人工处理"; exit 1; }
+              sleep 20
+            done
+            [ "$PUSH_OK" = "1" ] \
+              || { echo "[push][ERROR] 连续 4 次推送失败"; exit 1; }
             echo "[INFO] s-clash.yaml / s-verified.yaml 已更新并推送"
           fi

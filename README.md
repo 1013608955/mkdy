@@ -111,6 +111,11 @@ python merge_subs.py      # -> s-clash.yaml + s-verified.yaml（读已有 verifi
   SSH 私钥由 `ssh-key-reset` 每次开机自动重建，无需托管。
 - `update-subs.yml` 与 `hds-cycle.yml` 各自配置 concurrency，
   防并发推送冲突；生成产物合并冲突以本轮重算为准（`-X ours`）。
+- **推送必须带重试，禁止裸 `git push`**：GitHub 瞬时 5xx / non-FF 会让整轮失败
+  并丢失本轮更新。新增推送链路前先看两处参考实现——
+  `verify_cn/run_local.py` 的 `_push_results`（5 次重试 + ls-remote/merge-base 终判）
+  与 `update-subs.yml` 的推送段（4 次重试 + 真冲突立即退出）。
+  实证：2026-10-14 `update-subs` #3877 因 `remote: Internal Server Error` 整轮失败。
 
 ## 回滚锚点
 
