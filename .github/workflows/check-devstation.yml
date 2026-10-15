@@ -24,6 +24,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: 准备（赋予可执行权限）
+        # 必须与 hds-cycle 的同名步骤一致：git 中的 hdspace-linux 是 644，
+        # config_hds.py 直接 execvp 它 → PermissionError: [Errno 13]。
+        run: chmod +x tools/bin/hdspace-linux tools/config_hds.py
+
       - name: 安装依赖
         run: |
           sudo apt-get update -qq
