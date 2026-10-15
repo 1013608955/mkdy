@@ -1,0 +1,120 @@
+name: check-devcontainer
+# ============================================================================
+# 只读诊断：验证 hdspace CLI 能否管控「开发者空间·云开发环境」里的容器。
+#
+# 背景（2026-10-16）：在 developer.huaweicloud.com/space/devportal/platform/
+#   devEnvironment 页面发现，AI 开发者空间的持久化版在控制台里呈现为
+#   **真正的云开发环境卡片**（鲲鹏 ARM + EVS 数据盘 + /root 挂载 + 远程连接），
+#   与我们现有的 DevEnvC_W4yNKt(2v4G) / DevEnvC_FA6Ihu(4v8G) **同页并列**。
+#   → 推翻此前「DevStation 只是 bwrap 沙箱 Agent 运行时、不可能替代」的判断。
+#
+# 本关卡只验证最后一环：**hdspace CLI 能否看到并管控这些容器**。
+#   能 → CI 可沿用现有 hdspace CLI 链路；不能 → 只能人工操作，路线 B 出局。
+#
+# ⚠ 只读：仅配置 AK/SK 并执行 list，不开关机、不改配置、不推送。
+# ⚠ 前置条件必须完整照抄 hds-cycle 的「准备」步骤，缺一即失败（已踩过两次）：
+#    ① chmod +x 二进制（git 中为 644，execvp 会 PermissionError [Errno 13]）
+#    ② nohup Xvfb :99 &（缺它则 gnome-keyring 的 SystemPrompter 无法创建 GTK 窗口，
+#       服务启动失败 → 凭据写不进去 → list 报 permission denied）
+#    ③ openbox + dbus-run-session + DISPLAY=:99 + 依赖包
+# ============================================================================
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装依赖
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq gnome-keyring dbus-x11 libsecret-1-0 \
+            python3-secretstorage xvfb xdotool openbox
+
+      - name: 准备（完整照抄 hds-cycle 的同名步骤）
+        run: |
+          chmod +x tools/bin/hdspace-linux tools/config_hds.py \
+                   tools/hds_session.sh tools/boot_job.sh
+          mkdir -p ~/.devenv/logs ~/.cache ~/.local/share/keyrings ~/.ssh
+          nohup Xvfb :99 -screen 0 1280x1024x24 >/dev/null 2>&1 &
+          sleep 2
+          # 确认 Xvfb 真的起来了（避免静默失败又浪费三轮）
+          (echo > /dev/tcp/127.0.0.1/6099) 2>/dev/null || true
+          pgrep -a Xvfb || { echo "[ERR] Xvfb 未启动，后续必然失败"; exit 1; }
+
+      - name: 写入 AK/SK（照抄 hds-cycle [1]，含 gcr 弹窗自动应答）
+        env:
+          HDS_AK: ${{ secrets.HDS_AK }}
+          HDS_SK: ${{ secrets.HDS_SK }}
+        run: |
+          export DISPLAY=:99
+          dbus-run-session -- bash -exs <<'SESSION'
+          DISPLAY=:99 openbox >/dev/null 2>&1 &
+          sleep 2
+          mkdir -p ~/.cache ~/.local/share/keyrings
+          eval "$(printf 'ci-unlock' | gnome-keyring-daemon --unlock)" || true
+          eval "$(printf 'ci-unlock' | gnome-keyring-daemon --start)" || true
+          (
+            for i in $(seq 1 200); do
+              WINS=$( { xdotool search --onlyvisible --name 'gcr' 2>/dev/null;
+                        xdotool search --onlyvisible --class 'Gcr' 2>/dev/null; } | sort -u)
+              if [ -z "$WINS" ]; then sleep 1; continue; fi
+              echo "[autoresponder] 命中 gcr 窗口: $WINS" >&2
+              for W in $WINS; do
+                eval "$(xdotool getwindowgeometry --shell "$W" 2>/dev/null)"
+                xdotool mousemove --window "$W" $((WIDTH/2)) $((HEIGHT/2)) click 1 2>/dev/null
+                xdotool windowfocus "$W" 2>/dev/null
+                sleep 0.5
+                xdotool type --delay 80 'ci-unlock'
+                xdotool key Tab
+                xdotool type --delay 80 'ci-unlock'
+                xdotool key Return
+                sleep 3
+              done
+              sleep 1
+            done
+          ) &
+          AR=$!
+          timeout 170 python3 tools/config_hds.py
+          kill $AR 2>/dev/null
+          SESSION
+
+      - name: 决定性验证 —— devenv list 能否看到全部云开发环境（最多 3 次）
+        run: |
+          echo "===== hdspace 版本 ====="
+          ./tools/bin/hdspace-linux version
+          echo
+          OK=0
+          for attempt in 1 2 3; do
+            echo "===== 第 $attempt/3 次 devenv list ====="
+            ./tools/bin/hdspace-linux devenv list > /tmp/list.txt 2>&1 || true
+            cat /tmp/list.txt
+            echo
+            if grep -qE "[0-9a-f]{32}" /tmp/list.txt; then
+              echo "[ok] list 成功，凭据可用"
+              OK=1
+              break
+            fi
+            echo "[warn] 本次未列出任何环境，20s 后重试"
+            sleep 20
+          done
+          echo
+          echo "===== 最终判定 ====="
+          if [ "$OK" != "1" ]; then
+            echo "【3 次均失败】凭据/账号侧问题，本关卡无法判定"
+            exit 0
+          fi
+          echo "【list 成功】CLI 可以访问云开发环境。逐个环境明细："
+          grep -oE '[0-9a-f]{32}' /tmp/list.txt | sort -u | while read -r id; do
+            echo "--- $id ---"
+            grep -F "$id" /tmp/list.txt
+          done
+          echo
+          echo ">>> 判读要点："
+          echo ">>> 1) 列表里若出现**第 3 个及以上**实例（即除 DevEnvC_W4yNKt / DevEnvC_FA6Ihu"
+          echo ">>>    之外的容器，对应控制台里那张 8vCPUs 16GiB 的 DEVSPACE 卡片）"
+          echo ">>>    → 说明 hdspace CLI 能看到 AI 开发者空间的容器，路线 B 在「自动化」这关成立。"
+          echo ">>> 2) 若只出现原来那 2 个 → 新容器不在 hdspace CLI 管辖范围内，路线 B 出局。"
