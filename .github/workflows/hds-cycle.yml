@@ -20,11 +20,15 @@ on:
         type: choice
         options: [status, wake, wake_verify]
       instance_id:
-        default: "21ce28b8230a43f2ab414327f68bb1a0"
+        default: "590c40975c684f0d81b98e748ef756c9"
 
 env:
-  INSTANCE: "21ce28b8230a43f2ab414327f68bb1a0"          # 主实例 DevEnvC_W4yNKt（ARM 2vCPU/4GiB）
-  FALLBACK_INSTANCE: "30b343ba477f4944b5344300b63a3549" # 兜底实例 DevEnvC_FA6Ihu（ARM 4vCPU/8GiB），主实例无算力时切换
+  # ⚠⚠ 临时迁移验证（2026-10-16 01:00 起，验证完立即改回）⚠⚠
+  # 目标切到 AI 开发者空间·持久化版容器 DEVSPACE_imWPKj（ARM 8vCPU/16GiB, EVS 100GiB → /root）
+  # 目的：真机验证 ①devenv start ②start-tunnel+SSH ③/root 路径与镜像内容 ④8核并发
+  # FALLBACK 置空：避免无算力时切回旧 4v8G 实例而掩盖新容器的真实表现
+  INSTANCE: "590c40975c684f0d81b98e748ef756c9"          # 【临时】DEVSPACE_imWPKj（ARM 8vCPU/16GiB）
+  FALLBACK_INSTANCE: ""                                  # 【临时】禁用兜底切换，避免混淆判断
 
 concurrency:
   group: hds-cycle
