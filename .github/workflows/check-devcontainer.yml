@@ -89,8 +89,11 @@ jobs:
           echo
           OK=0
           for attempt in 1 2 3; do
-            echo "===== 第 $attempt/3 次 devenv list ====="
-            ./tools/bin/hdspace-linux devenv list > /tmp/list.txt 2>&1 || true
+            echo "===== 第 $attempt/3 次 devenv list（经 hds_session.sh，与生产链一致）====="
+            # ⚠ 必须走 hds_session.sh 包装，不能裸调 hdspace-linux！
+            #   hds_session.sh 内部会：解锁 login keyring + 挂 gcr 弹窗自动应答器，
+            #   凭据是从 keyring 里读的。裸调会得到 "failed to get AK/SK: permission denied"。
+            HDS_NO_TIMEOUT=1 tools/hds_session.sh devenv list > /tmp/list.txt 2>&1 || true
             cat /tmp/list.txt
             echo
             if grep -qE "[0-9a-f]{32}" /tmp/list.txt; then
