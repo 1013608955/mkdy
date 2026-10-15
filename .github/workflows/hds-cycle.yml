@@ -20,14 +20,14 @@ on:
         type: choice
         options: [status, wake, wake_verify]
       instance_id:
-        default: "590c40975c684f0d81b98e748ef756c9"
+        default: "21ce28b8230a43f2ab414327f68bb1a0"
 
 env:
-  INSTANCE: "590c40975c684f0d81b98e748ef756c9"          # 【临时】DEVSPACE_imWPKj 8v16G
-  FALLBACK_INSTANCE: ""                                  # 【临时】禁用兜底
+  INSTANCE: "21ce28b8230a43f2ab414327f68bb1a0"          # 主实例 DevEnvC_W4yNKt（ARM 2vCPU/4GiB）
+  FALLBACK_INSTANCE: "30b343ba477f4944b5344300b63a3549" # 兜底实例 DevEnvC_FA6Ihu（ARM 4vCPU/8GiB），主实例无算力时切换
   # 持久盘挂载点（2026-10-16 新增）。旧容器 EVS 挂 /workspace；AI 开发者空间·持久化版挂 /root。
   # 默认 /workspace → 旧容器行为完全不变（零风险）；换实例时同步改这一行即可。
-  PERSIST_ROOT: "/root"                                  # 【临时】DEVSPACE 的 EVS 挂在 /root
+  PERSIST_ROOT: "/workspace"
 
 concurrency:
   group: hds-cycle
