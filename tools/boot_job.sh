@@ -39,6 +39,29 @@ esac
 #    2026-09-11 #1658：pull 偶发失败会让本地基线落后，第一推必然 non-FF
 #    被拒。加 90s 上限（stall 不空等）+ 1 次重试；再失败交给 run_local 的
 #    push 重试（non-FF 会自动 fetch+merge）自愈。
+
+# 3.0) 先清脏工作区（2026-10-16，verify-newcontainer 实测暴露）
+#    现象：新容器 clone 后基线停在此刻，之后 main 上陆续有新提交
+#    （本仓库自己的代码提交 + update-subs.yml 每小时提交 s-clash.* /
+#    source_health.json），而工作区里这些生成物处于「已修改未提交」状态。
+#    此时 push 必被 non-FF 拒绝，随后 _push_results 的
+#    `merge -X ours FETCH_HEAD` 也必然失败：
+#      error: Your local changes to the following files would be overwritten
+#             by merge: s-clash.yaml / s-verified.yaml / source_health.json ...
+#    根因是「脏工作区 + 陈旧基线」的组合；旧容器每轮 pull+commit 故从无此问题。
+#
+#    为什么可以放心丢弃：工作区里的改动**全部是生成物**
+#    （s-clash.* / s-verified.* / source_health.json 由 update-subs.yml 在
+#    GitHub 侧产出，本地改动无意义；verified.json 在第 3 步之后才写）。
+#    唯一需要小心的是别丢 verified.json —— 故用 `git stash` 而非 `checkout --`，
+#    若真有未跟踪的本地改动会留在 stash 里而非被静默销毁。
+#    先 fetch 再 reset --hard origin/main，可顺带把陈旧基线一次拉齐。
+echo "[3.0] 清理脏工作区并对齐基线"
+git fetch origin main --quiet 2>/dev/null || true
+git stash push --quiet -u -m "boot_job 预清理 $(date -Is)" 2>/dev/null || true
+git reset --hard origin/main 2>&1 | tail -1 || true
+git stash list 2>/dev/null | head -3 || true
+
 PULLED=""
 for i in 1 2; do
   if timeout 90 git pull --ff-only origin main; then PULLED=1; break; fi
