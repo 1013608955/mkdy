@@ -16,9 +16,14 @@
 set -u
 
 REPO_URL="${REPO_URL:-https://github.com/1013608955/mkdy.git}"
-# 注意：容器重启会重置系统盘 /root，只有数据盘 /workspace（EVS）持久，
-# 故仓库必须落在 /workspace，否则重启后部署全丢。
-REPO_DIR="${REPO_DIR:-/workspace/mkdy}"
+# PERSIST_ROOT（2026-10-16 新增）：持久盘挂载点。
+#   旧「开发者空间·容器版」EVS 挂 /workspace；
+#   「AI 开发者空间·持久化版」EVS 挂 /root（系统盘 /root 会被重启重置）。
+# 默认 /workspace → 旧容器行为完全不变（零风险）；换实例时传 PERSIST_ROOT=/root 即可。
+PERSIST_ROOT="${PERSIST_ROOT:-/workspace}"
+# 注意：容器重启会重置系统盘，只有数据盘（EVS，挂在 $PERSIST_ROOT）持久，
+# 故仓库必须落在 $PERSIST_ROOT，否则重启后部署全丢。
+REPO_DIR="${REPO_DIR:-$PERSIST_ROOT/mkdy}"
 GITHUB_PAT="${GITHUB_PAT:-}"
 MIHOMO_VER="${MIHOMO_VER:-latest}"
 
@@ -122,11 +127,13 @@ else
   cat > "$REPO_DIR/verify_cn/run_loop.sh" <<'LOOP'
 #!/usr/bin/env bash
 # 每 15 分钟循环：优先用控制台注入的 process env GITHUB_PAT，未注入则 fallback 仓库内 .env。
-# 仓库位于持久盘 /workspace（系统盘 /root 重启即丢），故路径硬编码。
+# 仓库位于持久盘（EVS 挂载点，由 PERSIST_ROOT 决定），故用占位符 @REPO_DIR@
+# 由下面的 heredoc 生成后统一 sed 替换 —— 不能直接把 $REPO_DIR 写进 heredoc，
+# 因为本段用 <<'LOOP'（字面量），里面的 $GITHUB_PAT / $(date) 等必须保持字面。
 # 每次跑验证前先 git pull 最新代码（走 ghproxy 镜像 + ff-only），让容器自动跟进仓库改动（方案A 等）。
 # P1-4：先跑验证再 sleep——容器启动/重部署后立即有首轮验证，不再空等 15 分钟。
 while true; do
-  cd /workspace/mkdy
+  cd @REPO_DIR@
   if [ -z "$GITHUB_PAT" ] && [ -f verify_cn/.env ]; then
     set -a; . ./verify_cn/.env; set +a
   fi
@@ -143,10 +150,12 @@ while true; do
   sleep 900
 done
 LOOP
+  # 占位符 → 实际路径（与上面 systemd 文件同一套手法）
+  sed -i "s|@REPO_DIR@|$REPO_DIR|g" "$REPO_DIR/verify_cn/run_loop.sh"
   chmod +x "$REPO_DIR/verify_cn/run_loop.sh"
   nohup "$REPO_DIR/verify_cn/run_loop.sh" >/dev/null 2>&1 &
   disown 2>/dev/null || true
-  echo "    run_loop.sh 已在后台启动（首次 15 分钟后跑，之后每 15 分钟）"
+  echo "    run_loop.sh 已在后台启动（PERSIST_ROOT=$PERSIST_ROOT，REPO_DIR=$REPO_DIR；首次立即跑一次，之后每 15 分钟）"
   # 若系统有可用 cron，也顺手写一份（不影响上面的循环）
   if command -v crontab >/dev/null 2>&1; then
     ( crontab -l 2>/dev/null | grep -v 'run_local.py'; echo "*/15 * * * * $RUN_CMD" ) | crontab - 2>/dev/null \
