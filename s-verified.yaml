@@ -101,6 +101,7 @@ proxy-groups:
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
+  - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
@@ -113,7 +114,6 @@ proxy-groups:
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ KR韩国(mibei77.com 米贝节点分享)
   - ✅ 🇦🇺 澳大利亚 | AUS
-  - ✅ [ermaozi/get_subscribe]🇺🇸 美国 | USA
   - ✅ 🇺🇸_美国_285
   - ✅ 🇺🇸_US_美国
 - name: 自动选择
@@ -175,6 +175,7 @@ proxy-groups:
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
+  - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
@@ -187,7 +188,6 @@ proxy-groups:
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ KR韩国(mibei77.com 米贝节点分享)
   - ✅ 🇦🇺 澳大利亚 | AUS
-  - ✅ [ermaozi/get_subscribe]🇺🇸 美国 | USA
   - ✅ 🇺🇸_美国_285
   - ✅ 🇺🇸_US_美国
   url: http://www.gstatic.com/generate_204
@@ -251,6 +251,7 @@ proxy-groups:
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
+  - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
@@ -263,7 +264,6 @@ proxy-groups:
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - ✅ KR韩国(mibei77.com 米贝节点分享)
   - ✅ 🇦🇺 澳大利亚 | AUS
-  - ✅ [ermaozi/get_subscribe]🇺🇸 美国 | USA
   - ✅ 🇺🇸_美国_285
   - ✅ 🇺🇸_US_美国
   url: http://www.gstatic.com/generate_204
@@ -1165,6 +1165,16 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- cc: 0
+  delay: 258
+  name: ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
+  port: 443
+  server: 5.255.120.238
+  skip-cert-verify: true
+  speed: 1.8
+  tls: true
+  type: http
+  vv: 260626.1313
 - name: ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   port: 8443
   server: 64.176.51.83
@@ -1255,17 +1265,6 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: www.bing.com
-- name: ✅ [ermaozi/get_subscribe]🇺🇸 美国 | USA
-  type: trojan
-  server: 66.23.203.21
-  port: 59689
-  password: ae7eb4dwyaz25pxwgq59
-  tls: true
-  network: tcp
-  skip-cert-verify: true
-  security_scheme: tls
-  proto: trojan
-  peer: 66.23.203.21
 - name: ✅ 🇺🇸_美国_285
   type: vless
   server: 144.34.171.49
