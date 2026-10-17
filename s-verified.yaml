@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=78
+# verified=79
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -115,6 +115,7 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA 3
   - ✅ [peasoft/NoMoreWalls]🇯🇵[www.v2nodes.com] ss-JP-1599...
   - ✅ 🇵🇱_PL_波兰
+  - ✅ 🇨🇦_加拿大_37
   - ✅ 🇰🇷 韩国 | KOR
   - ✅ 🇪🇸 西班牙 | ESP
   - ✅ 🇬🇧 英国 | GBR_2
@@ -196,6 +197,7 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA 3
   - ✅ [peasoft/NoMoreWalls]🇯🇵[www.v2nodes.com] ss-JP-1599...
   - ✅ 🇵🇱_PL_波兰
+  - ✅ 🇨🇦_加拿大_37
   - ✅ 🇰🇷 韩国 | KOR
   - ✅ 🇪🇸 西班牙 | ESP
   - ✅ 🇬🇧 英国 | GBR_2
@@ -279,6 +281,7 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA 3
   - ✅ [peasoft/NoMoreWalls]🇯🇵[www.v2nodes.com] ss-JP-1599...
   - ✅ 🇵🇱_PL_波兰
+  - ✅ 🇨🇦_加拿大_37
   - ✅ 🇰🇷 韩国 | KOR
   - ✅ 🇪🇸 西班牙 | ESP
   - ✅ 🇬🇧 英国 | GBR_2
@@ -1300,6 +1303,17 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: FREETOPLAY-2.TETRIS-GAME.WORLD
+- name: ✅ 🇨🇦_加拿大_37
+  type: trojan
+  server: ca.tronsg.com
+  port: 443
+  password: Trojan@82164024
+  tls: true
+  network: tcp
+  sni: ca.tronsg.com
+  security_scheme: tls
+  proto: trojan
+  peer: ca.tronsg.com
 - name: ✅ 🇰🇷 韩国 | KOR
   type: vless
   server: 13.124.9.166
