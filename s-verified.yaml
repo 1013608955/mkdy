@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=77
+# verified=76
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -104,7 +104,6 @@ proxy-groups:
   - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -121,7 +120,7 @@ proxy-groups:
   - ✅ 🇪🇸 西班牙 | ESP
   - ✅ 🇬🇧 英国 | GBR_2
   - ✅ 🇩🇪 德国 | DEU_4
-  - ✅ 🇯🇵_JP_日本
+  - ✅ 🇬🇧 英国 | GBR
 - name: 自动选择
   type: url-test
   proxies:
@@ -184,7 +183,6 @@ proxy-groups:
   - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -201,7 +199,7 @@ proxy-groups:
   - ✅ 🇪🇸 西班牙 | ESP
   - ✅ 🇬🇧 英国 | GBR_2
   - ✅ 🇩🇪 德国 | DEU_4
-  - ✅ 🇯🇵_JP_日本
+  - ✅ 🇬🇧 英国 | GBR
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -266,7 +264,6 @@ proxy-groups:
   - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -283,7 +280,7 @@ proxy-groups:
   - ✅ 🇪🇸 西班牙 | ESP
   - ✅ 🇬🇧 英国 | GBR_2
   - ✅ 🇩🇪 德国 | DEU_4
-  - ✅ 🇯🇵_JP_日本
+  - ✅ 🇬🇧 英国 | GBR
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -1206,13 +1203,6 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
-  port: 443
-  server: 82.102.25.210
-  sin: https://t.me/WangCai2🇨🇳
-  skip-cert-verify: true
-  tls: true
-  type: http
 - name: ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   port: 443
   server: 82.102.25.50
@@ -1354,16 +1344,13 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 3.124.195.79
-- name: ✅ 🇯🇵_JP_日本
-  type: vmess
-  server: oc.imfun.fun
-  port: 18112
-  uuid: ad45f8f6-0f0a-4cc4-b907-c4582407dc94
-  alterId: 0
-  cipher: auto
+- name: ✅ 🇬🇧 英国 | GBR
+  type: vless
+  server: 3.8.150.222
+  port: 443
+  uuid: 7060231d-b9ba-495f-a218-bf427940cf3e
   tls: false
-  network: tcp
+  network: http
   security_scheme: none
-  sni: oc.imfun.fun
-  proto: vmess
-  peer: oc.imfun.fun
+  proto: vless
+  peer: 3.8.150.222
