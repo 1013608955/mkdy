@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=79
+# verified=77
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -103,6 +103,7 @@ proxy-groups:
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
+  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -115,15 +116,12 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA 3
   - ✅ [peasoft/NoMoreWalls]🇯🇵[www.v2nodes.com] ss-JP-1599...
   - ✅ 🇵🇱_PL_波兰
-  - ✅ 🇨🇦_加拿大_37
   - ✅ 🇰🇷 韩国 | KOR
   - ✅ 🇪🇸 西班牙 | ESP
   - ✅ 🇬🇧 英国 | GBR_2
   - ✅ 🇩🇪 德国 | DEU_4
-  - ✅ 🇬🇧 英国 | GBR
   - ✅ 🇮🇪 爱尔兰 | IRL_2
   - ✅ 🇮🇪 爱尔兰 | IRL
-  - ✅ 🇺🇸 美国 | USA
 - name: 自动选择
   type: url-test
   proxies:
@@ -185,6 +183,7 @@ proxy-groups:
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
+  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -197,15 +196,12 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA 3
   - ✅ [peasoft/NoMoreWalls]🇯🇵[www.v2nodes.com] ss-JP-1599...
   - ✅ 🇵🇱_PL_波兰
-  - ✅ 🇨🇦_加拿大_37
   - ✅ 🇰🇷 韩国 | KOR
   - ✅ 🇪🇸 西班牙 | ESP
   - ✅ 🇬🇧 英国 | GBR_2
   - ✅ 🇩🇪 德国 | DEU_4
-  - ✅ 🇬🇧 英国 | GBR
   - ✅ 🇮🇪 爱尔兰 | IRL_2
   - ✅ 🇮🇪 爱尔兰 | IRL
-  - ✅ 🇺🇸 美国 | USA
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -269,6 +265,7 @@ proxy-groups:
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
+  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -281,15 +278,12 @@ proxy-groups:
   - ✅ 🇺🇸 美国 | USA 3
   - ✅ [peasoft/NoMoreWalls]🇯🇵[www.v2nodes.com] ss-JP-1599...
   - ✅ 🇵🇱_PL_波兰
-  - ✅ 🇨🇦_加拿大_37
   - ✅ 🇰🇷 韩国 | KOR
   - ✅ 🇪🇸 西班牙 | ESP
   - ✅ 🇬🇧 英国 | GBR_2
   - ✅ 🇩🇪 德国 | DEU_4
-  - ✅ 🇬🇧 英国 | GBR
   - ✅ 🇮🇪 爱尔兰 | IRL_2
   - ✅ 🇮🇪 爱尔兰 | IRL
-  - ✅ 🇺🇸 美国 | USA
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -1202,6 +1196,13 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- name: ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+  port: 443
+  server: 82.102.25.210
+  sin: https://t.me/WangCai2🇨🇳
+  skip-cert-verify: true
+  tls: true
+  type: http
 - name: ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   port: 443
   server: 82.102.25.50
@@ -1303,17 +1304,6 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: FREETOPLAY-2.TETRIS-GAME.WORLD
-- name: ✅ 🇨🇦_加拿大_37
-  type: trojan
-  server: ca.tronsg.com
-  port: 443
-  password: Trojan@82164024
-  tls: true
-  network: tcp
-  sni: ca.tronsg.com
-  security_scheme: tls
-  proto: trojan
-  peer: ca.tronsg.com
 - name: ✅ 🇰🇷 韩国 | KOR
   type: vless
   server: 13.124.9.166
@@ -1354,16 +1344,6 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 3.124.195.79
-- name: ✅ 🇬🇧 英国 | GBR
-  type: vless
-  server: 3.8.150.222
-  port: 443
-  uuid: 7060231d-b9ba-495f-a218-bf427940cf3e
-  tls: false
-  network: http
-  security_scheme: none
-  proto: vless
-  peer: 3.8.150.222
 - name: ✅ 🇮🇪 爱尔兰 | IRL_2
   type: vless
   server: 34.245.208.137
@@ -1384,13 +1364,3 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 34.253.212.171
-- name: ✅ 🇺🇸 美国 | USA
-  type: vless
-  server: 35.90.209.22
-  port: 443
-  uuid: 7060231d-b9ba-495f-a218-bf427940cf3e
-  tls: false
-  network: http
-  security_scheme: none
-  proto: vless
-  peer: 35.90.209.22
