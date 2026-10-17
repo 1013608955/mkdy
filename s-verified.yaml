@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=77
+# verified=80
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -101,6 +101,7 @@ proxy-groups:
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
+  - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
@@ -115,6 +116,7 @@ proxy-groups:
   - ✅ 🇦🇺 澳大利亚 | AUS
   - ✅ 🇺🇸 美国 | USA 3
   - ✅ [peasoft/NoMoreWalls]🇯🇵[www.v2nodes.com] ss-JP-1599...
+  - '✅ 🇳🇱[www.v2nodes.com] trojan-NL-... #2'
   - ✅ 🇵🇱_PL_波兰
   - ✅ 🇰🇷 韩国 | KOR
   - ✅ 🇪🇸 西班牙 | ESP
@@ -122,6 +124,7 @@ proxy-groups:
   - ✅ 🇩🇪 德国 | DEU_4
   - ✅ 🇮🇪 爱尔兰 | IRL_2
   - ✅ 🇮🇪 爱尔兰 | IRL
+  - ✅ 🇯🇵_JP_日本
 - name: 自动选择
   type: url-test
   proxies:
@@ -181,6 +184,7 @@ proxy-groups:
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
+  - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
@@ -195,6 +199,7 @@ proxy-groups:
   - ✅ 🇦🇺 澳大利亚 | AUS
   - ✅ 🇺🇸 美国 | USA 3
   - ✅ [peasoft/NoMoreWalls]🇯🇵[www.v2nodes.com] ss-JP-1599...
+  - '✅ 🇳🇱[www.v2nodes.com] trojan-NL-... #2'
   - ✅ 🇵🇱_PL_波兰
   - ✅ 🇰🇷 韩国 | KOR
   - ✅ 🇪🇸 西班牙 | ESP
@@ -202,6 +207,7 @@ proxy-groups:
   - ✅ 🇩🇪 德国 | DEU_4
   - ✅ 🇮🇪 爱尔兰 | IRL_2
   - ✅ 🇮🇪 爱尔兰 | IRL
+  - ✅ 🇯🇵_JP_日本
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -263,6 +269,7 @@ proxy-groups:
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
+  - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
@@ -277,6 +284,7 @@ proxy-groups:
   - ✅ 🇦🇺 澳大利亚 | AUS
   - ✅ 🇺🇸 美国 | USA 3
   - ✅ [peasoft/NoMoreWalls]🇯🇵[www.v2nodes.com] ss-JP-1599...
+  - '✅ 🇳🇱[www.v2nodes.com] trojan-NL-... #2'
   - ✅ 🇵🇱_PL_波兰
   - ✅ 🇰🇷 韩国 | KOR
   - ✅ 🇪🇸 西班牙 | ESP
@@ -284,6 +292,7 @@ proxy-groups:
   - ✅ 🇩🇪 德国 | DEU_4
   - ✅ 🇮🇪 爱尔兰 | IRL_2
   - ✅ 🇮🇪 爱尔兰 | IRL
+  - ✅ 🇯🇵_JP_日本
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -1183,6 +1192,16 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- cc: 0
+  delay: 258
+  name: ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
+  port: 443
+  server: 5.255.120.238
+  skip-cert-verify: true
+  speed: 1.8
+  tls: true
+  type: http
+  vv: 260626.1313
 - name: ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   port: 8443
   server: 64.176.51.83
@@ -1293,6 +1312,21 @@ proxies:
   security_scheme: aead
   proto: ss
   peer: 154.36.158.197
+- name: '✅ 🇳🇱[www.v2nodes.com] trojan-NL-... #2'
+  type: trojan
+  server: 209.38.225.64
+  port: 443
+  password: humanity
+  tls: true
+  network: ws
+  sni: wWw.Volumeroot.cOm.
+  ws-opts:
+    path: /assignment
+    headers:
+      Host: www.volumerOot.coM.
+  security_scheme: tls
+  proto: trojan
+  peer: wWw.Volumeroot.cOm.
 - name: ✅ 🇵🇱_PL_波兰
   type: trojan
   server: 78.17.171.62
@@ -1364,3 +1398,16 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 34.253.212.171
+- name: ✅ 🇯🇵_JP_日本
+  type: vmess
+  server: oc.imfun.fun
+  port: 18112
+  uuid: ad45f8f6-0f0a-4cc4-b907-c4582407dc94
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: tcp
+  security_scheme: none
+  sni: oc.imfun.fun
+  proto: vmess
+  peer: oc.imfun.fun
