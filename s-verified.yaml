@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=78
+# verified=81
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -46,6 +46,8 @@ proxy-groups:
   - 自动选择
   - 故障转移
   - ✅ HK香港(mibei77.com 米贝节点分享)_1
+  - ✅ HK香港(mibei77.com 米贝节点分享)_5
+  - ✅ TW台湾(mibei77.com 米贝节点分享)
   - ✅ TW台湾(mibei77.com 米贝节点分享)
   - ✅ US美国(mibei77.com 米贝节点分享)_7
   - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
@@ -101,6 +103,7 @@ proxy-groups:
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
+  - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
@@ -127,6 +130,8 @@ proxy-groups:
   type: url-test
   proxies:
   - ✅ HK香港(mibei77.com 米贝节点分享)_1
+  - ✅ HK香港(mibei77.com 米贝节点分享)_5
+  - ✅ TW台湾(mibei77.com 米贝节点分享)
   - ✅ TW台湾(mibei77.com 米贝节点分享)
   - ✅ US美国(mibei77.com 米贝节点分享)_7
   - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
@@ -182,6 +187,7 @@ proxy-groups:
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
+  - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
@@ -210,6 +216,8 @@ proxy-groups:
   type: fallback
   proxies:
   - ✅ HK香港(mibei77.com 米贝节点分享)_1
+  - ✅ HK香港(mibei77.com 米贝节点分享)_5
+  - ✅ TW台湾(mibei77.com 米贝节点分享)
   - ✅ TW台湾(mibei77.com 米贝节点分享)
   - ✅ US美国(mibei77.com 米贝节点分享)_7
   - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
@@ -265,6 +273,7 @@ proxy-groups:
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
+  - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
@@ -817,6 +826,25 @@ proxies:
   tls: true
   udp: true
   client-fingerprint: chrome
+- name: ✅ HK香港(mibei77.com 米贝节点分享)_5
+  type: anytls
+  server: 654968169.df6h451rh.xin
+  port: 443
+  password: 0324fbc29561
+  sni: images.ctfassets.net
+  skip-cert-verify: true
+  tls: true
+  udp: true
+- name: ✅ TW台湾(mibei77.com 米贝节点分享)
+  type: anytls
+  server: 684616s4.df6h451rh.xin
+  port: 443
+  password: ec74bb6a86c2
+  sni: px.ads.linkedin.com
+  skip-cert-verify: true
+  tls: true
+  udp: true
+  client-fingerprint: chrome
 - name: ✅ TW台湾(mibei77.com 米贝节点分享)
   type: anytls
   server: er8u54dh.df6h451rh.xin
@@ -1185,6 +1213,16 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- cc: 0
+  delay: 258
+  name: ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
+  port: 443
+  server: 5.255.120.238
+  skip-cert-verify: true
+  speed: 1.8
+  tls: true
+  type: http
+  vv: 260626.1313
 - name: ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   port: 8443
   server: 64.176.51.83
