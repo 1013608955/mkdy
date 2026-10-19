@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=81
+# verified=82
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -113,8 +113,10 @@ proxy-groups:
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
   - ✅ ❓Other_56|2.3MB/s|TK-AL|YT-US|GPT⁺-AL|GM-AL
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
+  - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
+  - ✅ KR韩国(mibei77.com 米贝节点分享)
   - ✅ 🇦🇺 澳大利亚 | AUS
-  - ✅ US美国(mibei77.com 米贝节点分享)_4
+  - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #2'
   - ✅ [peasoft/NoMoreWalls]🇯🇵JP_1|2.5MB/s
   - ✅ 🇺🇸 美国 | USA_2_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)
@@ -123,7 +125,6 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_39
   - ✅ 🇺🇸 美国 | USA_3
   - ✅ RU俄罗斯(mibei77.com 米贝节点分享)
-  - ✅ JP日本(mibei77.com 米贝节点分享)
   - ✅ 🇷🇺_俄罗斯_185
   - ✅ 🏳️_未知_189
 - name: 自动选择
@@ -197,8 +198,10 @@ proxy-groups:
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
   - ✅ ❓Other_56|2.3MB/s|TK-AL|YT-US|GPT⁺-AL|GM-AL
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
+  - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
+  - ✅ KR韩国(mibei77.com 米贝节点分享)
   - ✅ 🇦🇺 澳大利亚 | AUS
-  - ✅ US美国(mibei77.com 米贝节点分享)_4
+  - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #2'
   - ✅ [peasoft/NoMoreWalls]🇯🇵JP_1|2.5MB/s
   - ✅ 🇺🇸 美国 | USA_2_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)
@@ -207,7 +210,6 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_39
   - ✅ 🇺🇸 美国 | USA_3
   - ✅ RU俄罗斯(mibei77.com 米贝节点分享)
-  - ✅ JP日本(mibei77.com 米贝节点分享)
   - ✅ 🇷🇺_俄罗斯_185
   - ✅ 🏳️_未知_189
   url: http://www.gstatic.com/generate_204
@@ -283,8 +285,10 @@ proxy-groups:
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
   - ✅ ❓Other_56|2.3MB/s|TK-AL|YT-US|GPT⁺-AL|GM-AL
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
+  - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
+  - ✅ KR韩国(mibei77.com 米贝节点分享)
   - ✅ 🇦🇺 澳大利亚 | AUS
-  - ✅ US美国(mibei77.com 米贝节点分享)_4
+  - '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #2'
   - ✅ [peasoft/NoMoreWalls]🇯🇵JP_1|2.5MB/s
   - ✅ 🇺🇸 美国 | USA_2_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)
@@ -293,7 +297,6 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享)_39
   - ✅ 🇺🇸 美国 | USA_3
   - ✅ RU俄罗斯(mibei77.com 米贝节点分享)
-  - ✅ JP日本(mibei77.com 米贝节点分享)
   - ✅ 🇷🇺_俄罗斯_185
   - ✅ 🏳️_未知_189
   url: http://www.gstatic.com/generate_204
@@ -1283,6 +1286,23 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- name: ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
+  port: 9443
+  server: 95.153.32.2
+  skip-cert-verify: true
+  tls: true
+  type: http
+- name: ✅ KR韩国(mibei77.com 米贝节点分享)
+  type: hysteria2
+  server: 130.162.134.218
+  port: 20000
+  password: C0DD7bgChaltqnh/T2az6ijM
+  sni: rmgyvpn.rest
+  skip-cert-verify: true
+  obfs: salamander
+  obfs-password: C0DD7bgChaltqnh/T2az6ijM
+  ports: 20000-30000
+  udp: true
 - name: ✅ 🇦🇺 澳大利亚 | AUS
   type: hysteria2
   server: 152.67.115.203
@@ -1296,14 +1316,15 @@ proxies:
   security_scheme: tls
   proto: hysteria2
   peer: www.bing.com
-- name: ✅ US美国(mibei77.com 米贝节点分享)_4
+- name: '✅ [peasoft/NoMoreWalls]🇯🇵 日本 | JPN #2'
   type: ss
-  server: 216.128.153.186
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: gWXhRbGoI53aSRV8fv9alMwr
-  skip-cert-verify: true
-  udp: true
+  server: 154.36.158.197
+  port: 8388
+  cipher: aes-256-gcm
+  password: BeaUf9c0AEWH40Pu
+  security_scheme: aead
+  proto: ss
+  peer: 154.36.158.197
 - name: ✅ [peasoft/NoMoreWalls]🇯🇵JP_1|2.5MB/s
   type: trojan
   server: 45.32.52.173
@@ -1403,21 +1424,6 @@ proxies:
   servername: randomquaint.net
   tls: true
   client-fingerprint: chrome
-  xhttp-opts:
-    path: /api/v1/upload
-    host: randomquaint.net
-    mode: auto
-  skip-cert-verify: true
-  udp: true
-- name: ✅ JP日本(mibei77.com 米贝节点分享)
-  type: vless
-  server: randomquaint.net
-  port: 8443
-  uuid: 2c634977-584e-4e1f-b501-1b70c77a6743
-  network: xhttp
-  servername: randomquaint.net
-  tls: true
-  client-fingerprint: firefox
   xhttp-opts:
     path: /api/v1/upload
     host: randomquaint.net
