@@ -120,13 +120,13 @@ proxy-groups:
   - ✅ [peasoft/NoMoreWalls]🇯🇵JP_1|2.5MB/s
   - ✅ 🇺🇸 美国 | USA_2_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)
-  - ✅ 🇰🇷 韩国 | KOR
   - ✅ 🇺🇸 美国 | USA_4
-  - ✅ RU俄罗斯(mibei77.com 米贝节点分享)_4
+  - ✅ US美国(mibei77.com 米贝节点分享)_39
   - ✅ 🇺🇸 美国 | USA_3
   - ✅ RU俄罗斯(mibei77.com 米贝节点分享)
   - ✅ JP日本(mibei77.com 米贝节点分享)
   - ✅ 🇷🇺_俄罗斯_185
+  - ✅ 🏳️_未知_189
 - name: 自动选择
   type: url-test
   proxies:
@@ -205,13 +205,13 @@ proxy-groups:
   - ✅ [peasoft/NoMoreWalls]🇯🇵JP_1|2.5MB/s
   - ✅ 🇺🇸 美国 | USA_2_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)
-  - ✅ 🇰🇷 韩国 | KOR
   - ✅ 🇺🇸 美国 | USA_4
-  - ✅ RU俄罗斯(mibei77.com 米贝节点分享)_4
+  - ✅ US美国(mibei77.com 米贝节点分享)_39
   - ✅ 🇺🇸 美国 | USA_3
   - ✅ RU俄罗斯(mibei77.com 米贝节点分享)
   - ✅ JP日本(mibei77.com 米贝节点分享)
   - ✅ 🇷🇺_俄罗斯_185
+  - ✅ 🏳️_未知_189
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -292,13 +292,13 @@ proxy-groups:
   - ✅ [peasoft/NoMoreWalls]🇯🇵JP_1|2.5MB/s
   - ✅ 🇺🇸 美国 | USA_2_2
   - ✅ 芬兰(mibei77.com 米贝节点分享)
-  - ✅ 🇰🇷 韩国 | KOR
   - ✅ 🇺🇸 美国 | USA_4
-  - ✅ RU俄罗斯(mibei77.com 米贝节点分享)_4
+  - ✅ US美国(mibei77.com 米贝节点分享)_39
   - ✅ 🇺🇸 美国 | USA_3
   - ✅ RU俄罗斯(mibei77.com 米贝节点分享)
   - ✅ JP日本(mibei77.com 米贝节点分享)
   - ✅ 🇷🇺_俄罗斯_185
+  - ✅ 🏳️_未知_189
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -1360,16 +1360,6 @@ proxies:
     public-key: FWitre1jinQR7qz5HQ0q2Q4Gg9xA9B0SyizCziN7Ch0
   skip-cert-verify: true
   udp: true
-- name: ✅ 🇰🇷 韩国 | KOR
-  type: vless
-  server: 43.202.6.222
-  port: 443
-  uuid: 7060231d-b9ba-495f-a218-bf427940cf3e
-  tls: false
-  network: http
-  security_scheme: none
-  proto: vless
-  peer: 43.202.6.222
 - name: ✅ 🇺🇸 美国 | USA_4
   type: vless
   server: 44.251.76.224
@@ -1380,15 +1370,18 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 44.251.76.224
-- name: ✅ RU俄罗斯(mibei77.com 米贝节点分享)_4
+- name: ✅ US美国(mibei77.com 米贝节点分享)_39
   type: vless
   server: 78.159.246.179
-  port: 2053
-  uuid: 6a2aff19-ff1f-4a13-96c8-a4d8986a9699
+  port: 8443
+  uuid: 2c634977-584e-4e1f-b501-1b70c77a6743
   network: xhttp
   servername: randomquaint.net
   tls: true
   client-fingerprint: firefox
+  alpn:
+  - h2
+  - http/1.1
   xhttp-opts:
     path: /api/v1/upload
     host: randomquaint.net
@@ -1451,3 +1444,21 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: z1q3pv4g78.rucdncomp.pro
+- name: ✅ 🏳️_未知_189
+  type: vmess
+  server: guanwang.awsno.com
+  port: 443
+  uuid: 6a89a215-22bf-4bd7-9642-b95b2e09583a
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /hls/cctv5phd.m3u8
+    headers:
+      Host: guanwang.awsno.com
+  servername: guanwang.awsno.com
+  security_scheme: tls
+  sni: guanwang.awsno.com
+  proto: vmess
+  peer: guanwang.awsno.com
