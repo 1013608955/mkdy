@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=72
+# verified=70
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -45,9 +45,7 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - ✅ HK香港(mibei77.com 米贝节点分享)_1
   - ✅ HK香港(mibei77.com 米贝节点分享)_2
-  - ✅ TW台湾(mibei77.com 米贝节点分享)
   - ✅ KR韩国(mibei77.com 米贝节点分享)_7
   - ✅ AU澳大利亚(mibei77.com 米贝节点分享)
   - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
@@ -120,9 +118,7 @@ proxy-groups:
 - name: 自动选择
   type: url-test
   proxies:
-  - ✅ HK香港(mibei77.com 米贝节点分享)_1
   - ✅ HK香港(mibei77.com 米贝节点分享)_2
-  - ✅ TW台湾(mibei77.com 米贝节点分享)
   - ✅ KR韩国(mibei77.com 米贝节点分享)_7
   - ✅ AU澳大利亚(mibei77.com 米贝节点分享)
   - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
@@ -197,9 +193,7 @@ proxy-groups:
 - name: 故障转移
   type: fallback
   proxies:
-  - ✅ HK香港(mibei77.com 米贝节点分享)_1
   - ✅ HK香港(mibei77.com 米贝节点分享)_2
-  - ✅ TW台湾(mibei77.com 米贝节点分享)
   - ✅ KR韩国(mibei77.com 米贝节点分享)_7
   - ✅ AU澳大利亚(mibei77.com 米贝节点分享)
   - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
@@ -789,18 +783,6 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: ✅ HK香港(mibei77.com 米贝节点分享)_1
-  type: anytls
-  server: 56481.df6h451rh.xin
-  port: 443
-  password: 0324fbc29561
-  sni: images.ctfassets.net
-  alpn:
-  - http/1.1
-  skip-cert-verify: true
-  tls: true
-  udp: true
-  client-fingerprint: chrome
 - name: ✅ HK香港(mibei77.com 米贝节点分享)_2
   type: anytls
   server: 654968169.df6h451rh.xin
@@ -810,18 +792,6 @@ proxies:
   skip-cert-verify: true
   tls: true
   udp: true
-- name: ✅ TW台湾(mibei77.com 米贝节点分享)
-  type: anytls
-  server: er8u54dh.df6h451rh.xin
-  port: 443
-  password: 0324fbc29561
-  sni: px.ads.linkedin.com
-  alpn:
-  - http/1.1
-  skip-cert-verify: true
-  tls: true
-  udp: true
-  client-fingerprint: chrome
 - name: ✅ KR韩国(mibei77.com 米贝节点分享)_7
   type: anytls
   server: svip.skycon808.com
