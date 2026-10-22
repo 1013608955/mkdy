@@ -46,6 +46,12 @@ env:
   # 8v16G 规格下 96 轮/天 ≈ 53 核时/天（余额 6780 仅够 ~127 天）。
   # 设为 55 → 实际约每小时真跑一轮 ≈ 13 核时/天（够 500+ 天）；设 0 = 关闭节流。
   MIN_INTERVAL_MIN: "55"
+  # 失败退避阈值（分钟，2026-10-23 新增）：近期无成功验证时（持续失败/平台限流），
+  # 两轮真实尝试之间至少间隔这么久。原逻辑在「找不到 success」时按"不节流"处理，
+  # 导致持续失败时每 15 分钟撞一次墙、反而加剧平台拥堵（10-22 实测 47/100 轮失败）。
+  # 35 分钟 = 比 FunctionGraph 的 15 分钟触发间隔大一倍多，既避免密集重试，
+  # 又不至于恢复太慢（平台恢复后最多等 35 分钟就重试一次）。
+  FAIL_RETRY_MIN: "35"
 
 concurrency:
   group: hds-cycle
@@ -117,14 +123,27 @@ jobs:
           MIN_INTERVAL_MIN="${MIN_INTERVAL_MIN:-55}"
           if [ "${MIN_INTERVAL_MIN:-0}" -gt 0 ] 2>/dev/null; then
             REPO_Q="${{ github.repository }}"
-            LAST_REAL=""
+            LAST_REAL=""       # 最近一次 [3]=success（真实验证成功）
+            # B（2026-10-23 run#5899 根治）：同时记录「最近一次 [2] 真正执行过」的轮次。
+            #   原实现只找 [3]=success；一旦进入持续失败（如平台限流），就永远找不到
+            #   success → 走「按不节流处理」→ 每 15 分钟真跑一次 → 平台更堵 → 更失败，
+            #   形成自我放大的死循环（10-22 实测 47/100 轮失败，每 15 分钟一封邮件）。
+            #   现改为：无成功记录时按 FAIL_RETRY_MIN 退避，打破 15 分钟撞墙循环。
+            LAST_ATTEMPT=""
             for r in $(gh api "repos/$REPO_Q/actions/workflows/hds-cycle.yml/runs?per_page=5" \
                          --jq '[.workflow_runs[] | select(.status=="completed" and .id != '"${{ github.run_id }}"')] | .[].id' 2>/dev/null); do
-              sig=$(gh api "repos/$REPO_Q/actions/runs/$r/jobs" \
-                --jq '(.jobs[0].steps | map(select(.name | startswith("[3]")))[0].conclusion // "none")' 2>/dev/null || echo none)
-              if [ "$sig" = "success" ]; then LAST_REAL="$r"; break; fi
+              # 一次 API 取 [2]/[3] 两个结论，避免同一 run 查两次
+              sigs=$(gh api "repos/$REPO_Q/actions/runs/$r/jobs" \
+                --jq '((.jobs[0].steps | map(select(.name | startswith("[2] ")))[0].conclusion // "none")) + "/" + ((.jobs[0].steps | map(select(.name | startswith("[3]")))[0].conclusion // "none"))' 2>/dev/null || echo none/none)
+              sig2=${sigs%%/*}; sig3=${sigs##*/}
+              if [ "$sig3" = "success" ] && [ -z "$LAST_REAL" ]; then LAST_REAL="$r"; fi
+              case "$sig2" in
+                success|failure) if [ -z "$LAST_ATTEMPT" ]; then LAST_ATTEMPT="$r"; fi ;;
+              esac
+              if [ -n "$LAST_REAL" ] && [ -n "$LAST_ATTEMPT" ]; then break; fi
             done
             if [ -n "$LAST_REAL" ]; then
+              # A. 正常路径：距上次真实验证成功 < MIN_INTERVAL_MIN → 跳过
               LAST_AT=$(gh api "repos/$REPO_Q/actions/runs/$LAST_REAL" --jq '.created_at' 2>/dev/null || true)
               if [ -n "$LAST_AT" ]; then
                 AGE_MIN=$(( ( $(date -u +%s) - $(date -u -d "$LAST_AT" +%s) ) / 60 ))
@@ -135,8 +154,21 @@ jobs:
                 fi
                 echo "[gate] 时间节流检查通过：距上次真实验证 ${AGE_MIN} 分钟 ≥ ${MIN_INTERVAL_MIN}。"
               fi
+            elif [ -n "$LAST_ATTEMPT" ]; then
+              # B. 降级路径：近期无成功记录（持续失败中）→ 按失败退避阈值节流
+              FAIL_MIN="${FAIL_RETRY_MIN:-30}"
+              LAST_AT=$(gh api "repos/$REPO_Q/actions/runs/$LAST_ATTEMPT" --jq '.created_at' 2>/dev/null || true)
+              if [ -n "$LAST_AT" ]; then
+                AGE_MIN=$(( ( $(date -u +%s) - $(date -u -d "$LAST_AT" +%s) ) / 60 ))
+                if [ "$AGE_MIN" -lt "$FAIL_MIN" ]; then
+                  echo "[skip] 失败退避：近 5 轮无成功验证，距上次尝试（run $LAST_ATTEMPT）仅 ${AGE_MIN} 分钟 < ${FAIL_MIN}，本轮跳过（避免每 15 分钟撞墙、加剧平台拥堵）。"
+                  echo "skip=1" >> "$GITHUB_OUTPUT"
+                  exit 0
+                fi
+                echo "[gate] 失败退避检查通过：距上次尝试 ${AGE_MIN} 分钟 ≥ ${FAIL_MIN}。"
+              fi
             else
-              echo "[gate] 时间节流：近 5 轮未找到 [3]=success 的真实验证，按不节流处理（跑本轮）。"
+              echo "[gate] 时间节流：近 5 轮既无成功也无尝试记录，按不节流处理（跑本轮）。"
             fi
           fi
           echo "[pass] 无冗余轮次，继续执行。"
@@ -347,8 +379,27 @@ jobs:
                     LAST_NOCOMPUTE=1
                     echo "[nocompute] 平台回复无算力（No compute resources）——跳过状态轮询，短等 60s 后重试 start"
                     ;;
+                  # ── 平台限流识别（2026-10-23 run#5899 根治）──────────────────────
+                  # 现象（10-22 全天 47/100 轮失败，抽样 8/8 同一根因）：
+                  #   start 返回 rc=0，但 stdout 是
+                  #     "failed to start dev environment: Too many users are accessing
+                  #      the service. Your request is queued"
+                  #   即**请求已排队**，平台接受了但没有资源立即分配。容器状态因此纹丝不动
+                  #   停在 Ready，代码误判为「僵死态」→ stop（又报 not in running state）
+                  #   → 重新 start → 仍排队 → 最终 [ERR] 未能进入 Running → exit 1 真失败。
+                  #   单轮白耗 18~40 分钟，且每轮都发失败邮件。
+                  #
+                  # 语义与「无算力」同属**平台侧瞬时容量问题**，但有一处关键差别：
+                  #   无算力可以换规格（兜底 4v8G 可能还有货）；限流是**全平台排队**，
+                  #   换任何实例都一样受限、只会多提交一次 start 加剧拥堵。
+                  # 故用独立标记 THROTTLED，收尾时按「平台侧跳过」处理且**不试兜底实例**。
+                  *"Too many users"*|*"request is queued"*|*"Too many requests"*)
+                    THROTTLED=1
+                    echo "[throttled] 平台限流：$(printf '%s' "$START_MSG" | grep -iE 'too many|queued' | head -1)"
+                    echo "[throttled] 请求已排队，容器无法立即分配资源；跳过状态轮询（重试只会加剧排队），本轮按平台侧跳过处理。"
+                    ;;
                 esac
-                if [ "$NOCOMPUTE" = "1" ]; then
+                if [ "$NOCOMPUTE" = "1" ] || [ "${THROTTLED:-0}" = "1" ]; then
                   sleep 60
                   STATE=$(get_state)
                   echo "[nocompute] 短等后复查状态=${STATE:-未知}"
@@ -424,6 +475,20 @@ jobs:
             # （2026-10-13 run#4920：原判据为「2 次均」，但平台可能对第 2 次 start 回
             # rc=0+"is Starting"（无无算力字样）→ 第 2 次记忆丢失 → 误判 failure）：
             # exit 0 + NOCOMPUTE_SKIP 标记（[3] 据此跳过），[4]/[5] 照常收尾，[6] 不触发。
+            # ── 平台限流收尾（2026-10-23 run#5899）────────────────────────────────
+            # 必须放在「无算力判定」之前：两者语义相近但处置不同。
+            #   无算力 → 可换规格（兜底 4v8G 也许有货），走原逻辑；
+            #   限流   → 全平台排队，换任何实例都一样，试兜底只会多提交一次 start
+            #            加剧拥堵，故直接跳过。
+            # 用 NOCOMPUTE_SKIP 复用既有收尾语义（[3] 据此跳过，[4]/[5] 照常，[6] 不触发），
+            # 另设 THROTTLE_SKIP 供 [2b]/告警文案区分病因，避免误报「连续 N 轮无算力」。
+            if [ "${THROTTLED:-0}" = "1" ]; then
+              echo "[throttled] 平台限流未解除（最终态=${STATE:-未知}），本轮按平台侧跳过处理（不告警，下轮自动重试）。"
+              echo "[throttled] 不尝试兜底实例：限流是全平台排队，换规格同样受限，且会加剧拥堵。"
+              echo "NOCOMPUTE_SKIP=1" >> "$GITHUB_ENV"
+              echo "THROTTLE_SKIP=1" >> "$GITHUB_ENV"
+              exit 0
+            fi
             if [ "$LAST_NOCOMPUTE" != "1" ]; then
               echo "[ERR] 容器未能进入 Running（最终态=${STATE:-未知}）"
               # 诊断留痕（2026-10-13 run#4920）：状态恒空可能是「实例行不在 list 里」，
@@ -767,15 +832,33 @@ jobs:
           sleep 30
           tools/hds_session.sh devenv list </dev/null 2>&1 | head -6 || true
 
-      - name: "[6] 失败告警（配置了对应 Secret 才发送）"
+      - name: "[6] 失败告警（连续 N 轮才发，配置了对应 Secret 才发送）"
         if: failure()
         env:
+          GH_TOKEN: ${{ github.token }}
           SERVERCHAN_KEY: ${{ secrets.SERVERCHAN_KEY }}
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          MSG="mkdy 容器周期失败，请查看: $RUN_URL"
+          # C（2026-10-23 run#5899）：连续失败 N 轮才告警。
+          #   原实现只要本 run 失败就发，单轮偶发（平台抖动/限流）即刷屏；
+          #   10-22 实测 47/100 轮失败 → 用户每小时收多封。改为连续计数后，
+          #   只有「持续故障」才通知，偶发一轮静默（日志里仍有记录可查）。
+          #   计数口径：本轮算 1，再往前数连续 failure 的已完成 run。
+          CONSEC_MIN="${ALERT_CONSEC_MIN:-3}"
+          REPO_A="${GITHUB_REPOSITORY}"
+          CONSEC=1
+          for r in $(gh api "repos/$REPO_A/actions/workflows/hds-cycle.yml/runs?per_page=6" \
+                       --jq '[.workflow_runs[] | select(.status=="completed" and .id != '"${GITHUB_RUN_ID}"')] | .[].id' 2>/dev/null); do
+            c=$(gh api "repos/$REPO_A/actions/runs/$r" --jq '.conclusion' 2>/dev/null || echo none)
+            if [ "$c" = "failure" ]; then CONSEC=$((CONSEC+1)); else break; fi
+          done
+          if [ "$CONSEC" -lt "$CONSEC_MIN" ]; then
+            echo "[alert] 连续失败 ${CONSEC} 轮 < 阈值 ${CONSEC_MIN}，本轮不告警（避免偶发失败刷屏）。"
+            exit 0
+          fi
+          MSG="mkdy 容器周期连续失败 ${CONSEC} 轮，请查看: $RUN_URL"
           if [ -n "$SERVERCHAN_KEY" ]; then
             curl -s --max-time 15 -o /dev/null               "https://sctapi.ftqq.com/${SERVERCHAN_KEY}.send?title=mkdy容器周期失败&desp=$(printf %s "$MSG" | sed s/&/%26/g)" || true
           fi
