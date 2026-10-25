@@ -62,6 +62,7 @@ proxy-groups:
   - ✅ ❓Other_18|2.2MB/s|TK-US|YT-US|GPT⁺-US
   - ✅ 🇪🇸ES_2|3.4MB/s|TK-ES|GPT⁺-ES|GM-ES
   - ✅ 🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES
+  - ✅ 🇯🇵JP_1|3.1MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ 🇹🇭TH_1|2.5MB/s|YT-TH|GPT⁺-TH|GM-TH
   - ✅ 🇧🇪BE_1|4.7MB/s|TK-BE|GPT⁺-BE|GM-BE
   - ✅ 🇸🇪SE_1|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
@@ -133,7 +134,6 @@ proxy-groups:
   - ✅ 🇷🇺_俄罗斯_433
   - ✅ US美国(mibei77.com 米贝节点分享)_17
   - '✅ 🇩🇪 德国 | DEU #2'
-  - ✅ 🇷🇺_俄罗斯_233
 - name: 自动选择
   type: url-test
   proxies:
@@ -154,6 +154,7 @@ proxy-groups:
   - ✅ ❓Other_18|2.2MB/s|TK-US|YT-US|GPT⁺-US
   - ✅ 🇪🇸ES_2|3.4MB/s|TK-ES|GPT⁺-ES|GM-ES
   - ✅ 🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES
+  - ✅ 🇯🇵JP_1|3.1MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ 🇹🇭TH_1|2.5MB/s|YT-TH|GPT⁺-TH|GM-TH
   - ✅ 🇧🇪BE_1|4.7MB/s|TK-BE|GPT⁺-BE|GM-BE
   - ✅ 🇸🇪SE_1|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
@@ -225,7 +226,6 @@ proxy-groups:
   - ✅ 🇷🇺_俄罗斯_433
   - ✅ US美国(mibei77.com 米贝节点分享)_17
   - '✅ 🇩🇪 德国 | DEU #2'
-  - ✅ 🇷🇺_俄罗斯_233
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -248,6 +248,7 @@ proxy-groups:
   - ✅ ❓Other_18|2.2MB/s|TK-US|YT-US|GPT⁺-US
   - ✅ 🇪🇸ES_2|3.4MB/s|TK-ES|GPT⁺-ES|GM-ES
   - ✅ 🇪🇸ES_1|3.8MB/s|TK-ES|GPT⁺-ES|GM-ES
+  - ✅ 🇯🇵JP_1|3.1MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ 🇹🇭TH_1|2.5MB/s|YT-TH|GPT⁺-TH|GM-TH
   - ✅ 🇧🇪BE_1|4.7MB/s|TK-BE|GPT⁺-BE|GM-BE
   - ✅ 🇸🇪SE_1|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
@@ -319,7 +320,6 @@ proxy-groups:
   - ✅ 🇷🇺_俄罗斯_433
   - ✅ US美国(mibei77.com 米贝节点分享)_17
   - '✅ 🇩🇪 德国 | DEU #2'
-  - ✅ 🇷🇺_俄罗斯_233
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -978,6 +978,12 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- name: ✅ 🇯🇵JP_1|3.1MB/s|YT-JP|GPT⁺-JP|GM-JP
+  port: 343
+  server: 133.18.200.207
+  skip-cert-verify: true
+  tls: true
+  type: http
 - name: ✅ 🇹🇭TH_1|2.5MB/s|YT-TH|GPT⁺-TH|GM-TH
   port: 443
   server: 141.98.19.221
@@ -1519,19 +1525,3 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 5.175.205.190
-- name: ✅ 🇷🇺_俄罗斯_233
-  type: vless
-  server: z1q3pv4g78.rucdncomp.pro
-  port: 443
-  uuid: c720cb74-4c84-4fce-b8ae-637dbaa16199
-  tls: true
-  network: ws
-  sni: z1q3pv4g78.rucdncomp.pro
-  servername: z1q3pv4g78.rucdncomp.pro
-  ws-opts:
-    path: /useraction/events/b892639b7195/
-    headers:
-      Host: z1q3pv4g78.rucdncomp.pro
-  security_scheme: tls
-  proto: vless
-  peer: z1q3pv4g78.rucdncomp.pro
