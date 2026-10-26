@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=86
+# verified=85
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -114,6 +114,7 @@ proxy-groups:
   - ✅ ❓Other_56|2.3MB/s|TK-AL|YT-US|GPT⁺-AL|GM-AL
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
+  - ✅ [ermaozi/get_subscribe]🇯🇵_JP_日本
   - '✅ 🇬🇧 英国 | GBR #2'
   - '✅ 🇬🇧 英国 | GBR #1'
   - ✅ 🇮🇹 意大利 | ITA
@@ -128,8 +129,6 @@ proxy-groups:
   - ✅ 新西兰+V2CROSS.COM_4_2_2_2
   - '✅ 🇩🇪 德国 | DEU #4'
   - ✅ 🇦🇹 奥地利 | AUT_2
-  - ✅ 🏳️_未知_136
-  - ✅ US美国(mibei77.com 米贝节点分享)_31
   - ✅ 🇺🇸_US_美国
 - name: 自动选择
   type: url-test
@@ -203,6 +202,7 @@ proxy-groups:
   - ✅ ❓Other_56|2.3MB/s|TK-AL|YT-US|GPT⁺-AL|GM-AL
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
+  - ✅ [ermaozi/get_subscribe]🇯🇵_JP_日本
   - '✅ 🇬🇧 英国 | GBR #2'
   - '✅ 🇬🇧 英国 | GBR #1'
   - ✅ 🇮🇹 意大利 | ITA
@@ -217,8 +217,6 @@ proxy-groups:
   - ✅ 新西兰+V2CROSS.COM_4_2_2_2
   - '✅ 🇩🇪 德国 | DEU #4'
   - ✅ 🇦🇹 奥地利 | AUT_2
-  - ✅ 🏳️_未知_136
-  - ✅ US美国(mibei77.com 米贝节点分享)_31
   - ✅ 🇺🇸_US_美国
   url: http://www.gstatic.com/generate_204
   interval: 86400
@@ -294,6 +292,7 @@ proxy-groups:
   - ✅ ❓Other_56|2.3MB/s|TK-AL|YT-US|GPT⁺-AL|GM-AL
   - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
+  - ✅ [ermaozi/get_subscribe]🇯🇵_JP_日本
   - '✅ 🇬🇧 英国 | GBR #2'
   - '✅ 🇬🇧 英国 | GBR #1'
   - ✅ 🇮🇹 意大利 | ITA
@@ -308,8 +307,6 @@ proxy-groups:
   - ✅ 新西兰+V2CROSS.COM_4_2_2_2
   - '✅ 🇩🇪 德国 | DEU #4'
   - ✅ 🇦🇹 奥地利 | AUT_2
-  - ✅ 🏳️_未知_136
-  - ✅ US美国(mibei77.com 米贝节点分享)_31
   - ✅ 🇺🇸_US_美国
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -1311,6 +1308,15 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- name: ✅ [ermaozi/get_subscribe]🇯🇵_JP_日本
+  type: ss
+  server: 154.36.158.197
+  port: 8388
+  cipher: aes-256-gcm
+  password: BeaUf9c0AEWH40Pu
+  security_scheme: aead
+  proto: ss
+  peer: 154.36.158.197
 - name: '✅ 🇬🇧 英国 | GBR #2'
   type: ss
   server: 177.202.111.18
@@ -1448,37 +1454,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: au2.pad-sservice.lat
-- name: ✅ 🏳️_未知_136
-  type: vless
-  server: cdn.ir53.indevs.in
-  port: 443
-  uuid: 511ea264-7344-4759-9462-1f781631453c
-  tls: true
-  network: ws
-  sni: cdn.ir53.indevs.in
-  servername: cdn.ir53.indevs.in
-  ws-opts:
-    path: /varzesh3.com
-    headers:
-      Host: cdn.ir53.indevs.in
-  security_scheme: tls
-  proto: vless
-  peer: cdn.ir53.indevs.in
-- name: ✅ US美国(mibei77.com 米贝节点分享)_31
-  type: vmess
-  server: cf.090227.xyz
-  port: 443
-  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
-  alterId: 0
-  cipher: auto
-  tls: true
-  skip-cert-verify: true
-  network: ws
-  ws-opts:
-    path: /ws
-    headers:
-      Host: vmess.lbw666.dpdns.org
-  udp: true
 - name: ✅ 🇺🇸_US_美国
   type: vmess
   server: guanwang.awsno.com
