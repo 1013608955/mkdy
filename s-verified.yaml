@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=83
+# verified=85
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -101,6 +101,7 @@ proxy-groups:
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
+  - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
@@ -128,6 +129,7 @@ proxy-groups:
   - ✅ 🇷🇺_俄罗斯 (28)
   - ✅ 🇰🇷KR_1|1.1MB/s
   - ✅ 🇺🇸_US_美国
+  - ✅ 未知111
 - name: 自动选择
   type: url-test
   proxies:
@@ -187,6 +189,7 @@ proxy-groups:
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
+  - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
@@ -214,6 +217,7 @@ proxy-groups:
   - ✅ 🇷🇺_俄罗斯 (28)
   - ✅ 🇰🇷KR_1|1.1MB/s
   - ✅ 🇺🇸_US_美国
+  - ✅ 未知111
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -275,6 +279,7 @@ proxy-groups:
   - ✅ ❓Other_58|2.8MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_53|3.1MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ 🇷🇺RU_1|2.0MB/s|YT-RU
+  - ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
   - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
@@ -302,6 +307,7 @@ proxy-groups:
   - ✅ 🇷🇺_俄罗斯 (28)
   - ✅ 🇰🇷KR_1|1.1MB/s
   - ✅ 🇺🇸_US_美国
+  - ✅ 未知111
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -1208,6 +1214,16 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- cc: 0
+  delay: 258
+  name: ✅ 🇳🇱NL_2|2.1MB/s|TK-NL|GPT⁺-NL|GM-NL
+  port: 443
+  server: 5.255.120.238
+  skip-cert-verify: true
+  speed: 1.8
+  tls: true
+  type: http
+  vv: 260626.1313
 - name: ✅ ❓Other_46|2.0MB/s|YT-JP|GPT⁺-JP|GM-JP
   port: 8443
   server: 64.176.51.83
@@ -1453,3 +1469,21 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
+- name: ✅ 未知111
+  type: vmess
+  server: sg-transit-3.nebulacloud.win
+  port: 30330
+  uuid: dfa9f875-3805-49d9-8636-46b6899be24e
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /ca/getData
+    headers:
+      Host: sg-transit-3.nebulacloud.win
+  servername: sg-transit-3.nebulacloud.win
+  security_scheme: tls
+  sni: sg-transit-3.nebulacloud.win
+  proto: vmess
+  peer: sg-transit-3.nebulacloud.win
