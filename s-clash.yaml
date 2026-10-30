@@ -266,7 +266,6 @@ proxy-groups:
   - 🇸🇬_新加坡 (2)
   - 🇸🇬 新加坡-SINGAPORE-1-1B
   - 🇫🇷FR_16|261KB/s|GPT
-  - 🇩🇪_德国 (35)
   - 🇵🇱_波兰 (2)
   - 🇸🇬_新加坡 (6)
   - 🇩🇪_德国 (34)
@@ -407,7 +406,6 @@ proxy-groups:
   - 🇹🇷_土耳其 (3)
   - 🇫🇷_法国 (10)
   - '🇭🇰[www.v2nodes.com] vless-HK-1... #1'
-  - 🇺🇸_美国 (101)
   - '🇯🇵[www.v2nodes.com] vless-JP-1... #3'
   - '🇪🇸[www.v2nodes.com] vless-ES-1... #16'
   - '🇵🇱[www.v2nodes.com] vless-PL-1... #5'
@@ -900,8 +898,6 @@ proxy-groups:
   - 🇭🇰 香港
   - '🇩🇪 德国 | DEU #8'
   - 🇸🇬_新加坡 (7)
-  - 🇭🇰_香港 (9)
-  - 🇭🇰_香港 (3)
 - name: 自动选择
   type: url-test
   proxies:
@@ -1125,7 +1121,6 @@ proxy-groups:
   - 🇸🇬_新加坡 (2)
   - 🇸🇬 新加坡-SINGAPORE-1-1B
   - 🇫🇷FR_16|261KB/s|GPT
-  - 🇩🇪_德国 (35)
   - 🇵🇱_波兰 (2)
   - 🇸🇬_新加坡 (6)
   - 🇩🇪_德国 (34)
@@ -1266,7 +1261,6 @@ proxy-groups:
   - 🇹🇷_土耳其 (3)
   - 🇫🇷_法国 (10)
   - '🇭🇰[www.v2nodes.com] vless-HK-1... #1'
-  - 🇺🇸_美国 (101)
   - '🇯🇵[www.v2nodes.com] vless-JP-1... #3'
   - '🇪🇸[www.v2nodes.com] vless-ES-1... #16'
   - '🇵🇱[www.v2nodes.com] vless-PL-1... #5'
@@ -1759,8 +1753,6 @@ proxy-groups:
   - 🇭🇰 香港
   - '🇩🇪 德国 | DEU #8'
   - 🇸🇬_新加坡 (7)
-  - 🇭🇰_香港 (9)
-  - 🇭🇰_香港 (3)
   url: http://www.gstatic.com/generate_204
   interval: 86400
 - name: 故障转移
@@ -1986,7 +1978,6 @@ proxy-groups:
   - 🇸🇬_新加坡 (2)
   - 🇸🇬 新加坡-SINGAPORE-1-1B
   - 🇫🇷FR_16|261KB/s|GPT
-  - 🇩🇪_德国 (35)
   - 🇵🇱_波兰 (2)
   - 🇸🇬_新加坡 (6)
   - 🇩🇪_德国 (34)
@@ -2127,7 +2118,6 @@ proxy-groups:
   - 🇹🇷_土耳其 (3)
   - 🇫🇷_法国 (10)
   - '🇭🇰[www.v2nodes.com] vless-HK-1... #1'
-  - 🇺🇸_美国 (101)
   - '🇯🇵[www.v2nodes.com] vless-JP-1... #3'
   - '🇪🇸[www.v2nodes.com] vless-ES-1... #16'
   - '🇵🇱[www.v2nodes.com] vless-PL-1... #5'
@@ -2620,8 +2610,6 @@ proxy-groups:
   - 🇭🇰 香港
   - '🇩🇪 德国 | DEU #8'
   - 🇸🇬_新加坡 (7)
-  - 🇭🇰_香港 (9)
-  - 🇭🇰_香港 (3)
   url: http://www.gstatic.com/generate_204
   interval: 7200
 rules:
@@ -4922,22 +4910,6 @@ proxies:
     headers:
       User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36
     path: /assignment
-- name: 🇩🇪_德国 (35)
-  type: trojan
-  server: 144.31.205.106
-  port: 443
-  password: humanity
-  tls: true
-  network: ws
-  sni: www.pleadcourt.org
-  skip-cert-verify: true
-  ws-opts:
-    path: /assignment
-    headers:
-      Host: www.pleadcourt.org
-  security_scheme: tls
-  proto: trojan
-  peer: www.pleadcourt.org
 - name: 🇵🇱_波兰 (2)
   type: trojan
   server: 148.253.212.42
@@ -6846,23 +6818,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: www.apple.com
-- name: 🇺🇸_美国 (101)
-  type: vless
-  server: 156.229.163.237
-  port: 10238
-  uuid: f97f81df-edac-47b6-badb-316125e61bfb
-  tls: true
-  network: ws
-  sni: jln31qtswdkut5.60kohcognywybguuq3ouc818oofnxfvn35daott.workers.dev
-  servername: jln31qtswdkut5.60kohcognywybguuq3ouc818oofnxfvn35daott.workers.dev
-  skip-cert-verify: true
-  ws-opts:
-    path: /@Marisa_kristi
-    headers:
-      Host: jln31qtswdkut5.60kohcognywybguuq3ouc818oofnxfvn35daott.workers.dev
-  security_scheme: tls
-  proto: vless
-  peer: jln31qtswdkut5.60kohcognywybguuq3ouc818oofnxfvn35daott.workers.dev
 - name: '🇯🇵[www.v2nodes.com] vless-JP-1... #3'
   type: vless
   server: 156.246.88.125
@@ -14109,29 +14064,3 @@ proxies:
   sni: ww11.levikogjgfdd.ir
   proto: vmess
   peer: ww11.levikogjgfdd.ir
-- name: 🇭🇰_香港 (9)
-  type: vmess
-  server: zfd-hkv1.kunlun01dns.com
-  port: 16115
-  uuid: 0802ac03-7973-39ef-a019-ba02de6c01e1
-  alterId: 0
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: zfd-hkv1.kunlun01dns.com
-  proto: vmess
-  peer: zfd-hkv1.kunlun01dns.com
-- name: 🇭🇰_香港 (3)
-  type: vmess
-  server: zfd-hkv2.kunlun01dns.com
-  port: 16112
-  uuid: 0802ac03-7973-39ef-a019-ba02de6c01e1
-  alterId: 0
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: zfd-hkv2.kunlun01dns.com
-  proto: vmess
-  peer: zfd-hkv2.kunlun01dns.com
