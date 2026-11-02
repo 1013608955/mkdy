@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=84
+# verified=83
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -79,7 +79,6 @@ proxy-groups:
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
   - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
-  - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_35|3.0MB/s|TK-RU|YT-US
   - ✅ 🇷🇴RO_5|1.7MB/s|TK-RO|GPT⁺-RO|GM-RO
@@ -123,8 +122,8 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇮🇹 意大利 | ITA_3
   - ✅ 新西兰+V2CROSS.COM_4_2_2
   - '✅ [peasoft/NoMoreWalls]🇮🇹[www.v2nodes.com] ss-IT-1602... #8'
+  - ✅ [ermaozi/get_subscribe]🇮🇹_IT_意大利_IPV4 (7)
   - ✅ 🇳🇱_荷兰 (16)
-  - ✅ 🇺🇸_美国 (32)
   - ✅ 🇩🇪_德国 (5)
   - ✅ 🇷🇺_俄罗斯 (10)
   - ✅ 德国+GHOSTnet+GmbH
@@ -166,7 +165,6 @@ proxy-groups:
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
   - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
-  - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_35|3.0MB/s|TK-RU|YT-US
   - ✅ 🇷🇴RO_5|1.7MB/s|TK-RO|GPT⁺-RO|GM-RO
@@ -210,8 +208,8 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇮🇹 意大利 | ITA_3
   - ✅ 新西兰+V2CROSS.COM_4_2_2
   - '✅ [peasoft/NoMoreWalls]🇮🇹[www.v2nodes.com] ss-IT-1602... #8'
+  - ✅ [ermaozi/get_subscribe]🇮🇹_IT_意大利_IPV4 (7)
   - ✅ 🇳🇱_荷兰 (16)
-  - ✅ 🇺🇸_美国 (32)
   - ✅ 🇩🇪_德国 (5)
   - ✅ 🇷🇺_俄罗斯 (10)
   - ✅ 德国+GHOSTnet+GmbH
@@ -255,7 +253,6 @@ proxy-groups:
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
   - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
-  - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_35|3.0MB/s|TK-RU|YT-US
   - ✅ 🇷🇴RO_5|1.7MB/s|TK-RO|GPT⁺-RO|GM-RO
@@ -299,8 +296,8 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇮🇹 意大利 | ITA_3
   - ✅ 新西兰+V2CROSS.COM_4_2_2
   - '✅ [peasoft/NoMoreWalls]🇮🇹[www.v2nodes.com] ss-IT-1602... #8'
+  - ✅ [ermaozi/get_subscribe]🇮🇹_IT_意大利_IPV4 (7)
   - ✅ 🇳🇱_荷兰 (16)
-  - ✅ 🇺🇸_美国 (32)
   - ✅ 🇩🇪_德国 (5)
   - ✅ 🇷🇺_俄罗斯 (10)
   - ✅ 德国+GHOSTnet+GmbH
@@ -1051,13 +1048,6 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
-  port: 443
-  server: 185.183.105.146
-  sin: https://t.me/WangCai2🇨🇳
-  skip-cert-verify: true
-  tls: true
-  type: http
 - name: ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   port: 443
   server: 185.216.35.66
@@ -1381,6 +1371,15 @@ proxies:
   security_scheme: aead
   proto: ss
   peer: 202.50.253.90
+- name: ✅ [ermaozi/get_subscribe]🇮🇹_IT_意大利_IPV4 (7)
+  type: ss
+  server: 202.50.253.99
+  port: 19999
+  cipher: aes-256-gcm
+  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
+  security_scheme: aead
+  proto: ss
+  peer: 202.50.253.99
 - name: ✅ 🇳🇱_荷兰 (16)
   type: vless
   server: 177.177.215.45
@@ -1394,22 +1393,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: ams2.shtil.io
-- name: ✅ 🇺🇸_美国 (32)
-  type: vless
-  server: 188.255.157.136
-  port: 443
-  uuid: 26524cce-d514-4014-a426-365fb266a14d
-  tls: true
-  network: ws
-  sni: xy1ej.stream-node-us.danfeng.qzz.io
-  servername: xy1ej.stream-node-us.danfeng.qzz.io
-  ws-opts:
-    path: /danfeng?ed=2560
-    headers:
-      Host: xy1ej.stream-node-us.danfeng.qzz.io
-  security_scheme: tls
-  proto: vless
-  peer: xy1ej.stream-node-us.danfeng.qzz.io
 - name: ✅ 🇩🇪_德国 (5)
   type: vless
   server: 47.245.134.84
