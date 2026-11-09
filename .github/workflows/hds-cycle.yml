@@ -70,6 +70,21 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # ── 排除 push 事件（2026-11-09 实测发现）──────────────────────────
+          # 现象：push 修改 hds-cycle.yml 本身时，GitHub 会以 event=push 跑一轮
+          #   （#7667/#7668 实证：path=.github/workflows/hds-cycle.yml，
+          #   run_started_at 与本地 push 时间精确到秒对应，jobs=0 立即失败）。
+          # 双重危害：
+          #   ① 白烧核时（每轮 5~8 分钟 × 8vCPU）；
+          #   ② 抢占 concurrency 队列（cancel-in-progress: false 是排队不是并行），
+          #      把 FunctionGraph 的正常轮次挤成「排队→被取替→假失败」。
+          # push 触发的轮次本来也不该操作容器（改代码 ≠ 需要验证节点），故直接跳过。
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "[skip] push 事件触发（修改 workflow 文件时的附带产物），不操作容器。"
+            echo "skip=1" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           # ── 自动切换判定（2026-10-16）─────────────────────────────────────
           # 在写 GITHUB_ENV 之前做：后续步骤里所有 $INSTANCE / $PERSIST_ROOT 引用
           # 都会自动拿到这里的取值，无需改动那 8 处引用点。
