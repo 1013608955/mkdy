@@ -391,9 +391,22 @@ def test_workflow_yaml_parses_with_expected_steps():
 
     tunnel_step = next(s for s in steps if s["name"].startswith("[3] 开隧道"))
     assert tunnel_step["if"] == (
-        "steps.gate.outputs.skip != '1' && env.NOCOMPUTE_SKIP != '1'"
+        "steps.gate.outputs.skip != '1' && env.NOCOMPUTE_SKIP != '1' && env.MODE_SKIP != '1'"
     )
     assert '[ ! -f "$KEYFILE" ]' in tunnel_step["run"]
+
+    # 2026-11-09：status / wake 模式必须写跳过标记，否则
+    #   status 会对一台关机容器建隧道（run#7663 假失败），
+    #   wake 会被 [4] 的 always() 立刻关机（"仅开机"语义失效）。
+    reset_run = reset_step["run"]
+    assert "MODE_SKIP=1" in reset_run, "status/wake 分支必须写 MODE_SKIP"
+    assert "WAKE_ONLY=1" in reset_run, "wake 分支必须写 WAKE_ONLY"
+    assert '= "status"' in reset_run and '= "wake"' in reset_run
+
+    shutdown_step = next(s for s in steps if s["name"].startswith("[4] 关机"))
+    assert "env.WAKE_ONLY != '1'" in shutdown_step["if"], (
+        "wake 模式要求保持 Running，[4] 必须被 WAKE_ONLY 拦住"
+    )
 
     # 跳过语义的既有消费者（[2b]）与告警步骤 [6] 仍在，且 [2b] 触发条件未变
     assert by_name["[2b] 无算力连续多轮兜底告警（仅跳过轮执行；每轮风暴只提醒一次）"]["if"] == (
