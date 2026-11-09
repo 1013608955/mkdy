@@ -54,7 +54,13 @@ env:
   FAIL_RETRY_MIN: "35"
 
 concurrency:
-  group: hds-cycle
+  # 2026-11-09：group 按 event_name 分开。
+  # 原因：push 修改 workflow 文件本身时 GitHub 会附带跑一轮（见门卫里的说明），
+  # 它不操作容器却占用同一个 concurrency group，把 FunctionGraph 每 15 分钟的
+  # 正常轮次挤成「排队 → 被取替 → jobs=0 假失败」。实测 #7667/#7668/#7669 三次
+  # push 之后，#7666 起 20 分钟没有任何 workflow_dispatch 轮次落地。
+  # push 轮次单独成组后，它自己快速失败，不影响正常链路串行。
+  group: hds-cycle-${{ github.event_name }}
   cancel-in-progress: false   # 上一轮未结束时新轮排队等待，绝不并行操作容器
 
 jobs:
