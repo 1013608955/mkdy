@@ -331,7 +331,15 @@ jobs:
           esac
 
           if [ "${{ inputs.action || 'wake_verify' }}" = "status" ]; then
-            echo "当前状态: $(get_state)"; echo "[done] status 模式完成"; exit 0
+            echo "当前状态: $(get_state)"
+            # 2026-11-09（run#7663 根治）：status 只查状态、**不开机**，
+            # 但此前 exit 0 时没设任何跳过标记 → [3] 照跑，对着一台
+            # Ready(关机) 的容器建隧道，空等 240s 后报假失败：
+            #   dev environment is not running, current status: Ready
+            # 该假失败又会触发「失败退避」，把后续 35 分钟的正常轮次一起跳过。
+            echo "MODE_SKIP=1" >> "$GITHUB_ENV"
+            echo "[done] status 模式完成（已标记 MODE_SKIP，后续步骤跳过）"
+            exit 0
           fi
 
           STATE=$(get_state); echo "初始状态: ${STATE:-未知(list 可能瞬时失败)}"
@@ -593,7 +601,13 @@ jobs:
           fi
 
           if [ "${{ inputs.action || 'wake_verify' }}" = "wake" ]; then
-            echo "[done] 仅开机模式，保持 Running"; exit 0
+            # 2026-11-09：wake = 仅开机并保持 Running。
+            # 此前同样缺跳过标记 → [3] 白跑验证、[4]（if: always()）立刻把容器关掉，
+            # 使「仅开机」语义完全失效。现设 MODE_SKIP 跳 [3]、WAKE_ONLY 让 [4] 不关机。
+            echo "MODE_SKIP=1" >> "$GITHUB_ENV"
+            echo "WAKE_ONLY=1" >> "$GITHUB_ENV"
+            echo "[done] 仅开机模式，保持 Running（已标记跳过 [3]，[4] 不关机）"
+            exit 0
           fi
 
       - name: "[2b] 无算力连续多轮兜底告警（仅跳过轮执行；每轮风暴只提醒一次）"
@@ -658,7 +672,7 @@ jobs:
           echo "[alert] 已发送连续跳过兜底告警（病因：$CAUSE）"
 
       - name: "[3] 开隧道 + 分离执行容器验证 + 轮询结果"
-        if: steps.gate.outputs.skip != '1' && env.NOCOMPUTE_SKIP != '1'   # 门卫冗余轮 或 [2] 判定无算力跳过：容器没开/无需本轮，隧道/验证无从谈起
+        if: steps.gate.outputs.skip != '1' && env.NOCOMPUTE_SKIP != '1' && env.MODE_SKIP != '1'   # 附加：status|wake 模式已标记跳过
         timeout-minutes: 17   # 2026-09-10 #1548：验证 ok 但 push merge-retry（ghproxy 慢）耗到 ~11min，660s 预算+14min 步骤上限双双吃紧，放宽
         run: |
           # 诊断留痕：stdout/stderr 改行缓冲，被 kill 也不丢最后一行
@@ -819,7 +833,7 @@ jobs:
           ssh_run 120 "cat $LOG"
 
       - name: "[4] 关机（无论成败必执行）"
-        if: always() && steps.gate.outputs.skip != '1'   # 门卫冗余轮没碰过容器，无需关机
+        if: always() && steps.gate.outputs.skip != '1' && env.WAKE_ONLY != '1'   # 门卫冗余轮没碰过容器；wake 模式要求保持 Running，不能关
         run: |
           # 关本轮实际用的实例：无算力切换成功时 ACTIVE_INSTANCE=兜底实例，否则主实例
           TGT="${ACTIVE_INSTANCE:-$INSTANCE}"
@@ -827,7 +841,7 @@ jobs:
           echo "[done] 已发出关机指令（实例=$TGT）"
 
       - name: "[5] 复核最终状态"
-        if: always() && steps.gate.outputs.skip != '1'
+        if: always() && steps.gate.outputs.skip != '1' && env.MODE_SKIP != '1'   # 附加：status|wake 模式已标记跳过
         run: |
           sleep 30
           tools/hds_session.sh devenv list </dev/null 2>&1 | head -6 || true
