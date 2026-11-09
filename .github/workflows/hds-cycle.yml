@@ -137,9 +137,14 @@ jobs:
                 --jq '((.jobs[0].steps | map(select(.name | startswith("[2] ")))[0].conclusion // "none")) + "/" + ((.jobs[0].steps | map(select(.name | startswith("[3]")))[0].conclusion // "none"))' 2>/dev/null || echo none/none)
               sig2=${sigs%%/*}; sig3=${sigs##*/}
               if [ "$sig3" = "success" ] && [ -z "$LAST_REAL" ]; then LAST_REAL="$r"; fi
-              case "$sig2" in
-                success|failure) if [ -z "$LAST_ATTEMPT" ]; then LAST_ATTEMPT="$r"; fi ;;
-              esac
+              # LAST_ATTEMPT 只认 [3]=failure 的轮次（2026-11-09 修正）。
+              #   原先用 [2]=success|failure 判定，会把 status/wake 探活轮也当成
+              #   「一次验证尝试」——而探活根本不开机、跑不了验证。
+              #   后果实测（#7663 → #7665/#7666）：一次 status 探活的假失败，
+              #   把后续 35 分钟内的正常轮次全部退避掉，反而阻碍恢复。
+              #   正确口径：只有「[3] 真的跑了并失败」才算验证尝试失败。
+              #   （[3]=success 已被 LAST_REAL 覆盖，走上面的 A 分支，不会落到这里）
+              if [ "$sig3" = "failure" ] && [ -z "$LAST_ATTEMPT" ]; then LAST_ATTEMPT="$r"; fi
               if [ -n "$LAST_REAL" ] && [ -n "$LAST_ATTEMPT" ]; then break; fi
             done
             if [ -n "$LAST_REAL" ]; then
