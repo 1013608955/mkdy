@@ -279,6 +279,88 @@ jobs:
           SESSION
 
       - name: "[2] 查状态 + 按需开机（2 次尝试 · 共享轮询预算 · 僵死态恢复 · 无算力跳过）"
+        # ── 原 [2] run 块内的长注释（2026-11-09 移出，内容备查）──────────
+        # 原因：GitHub 把 run: | 块内所有字符（含注释）计入
+        #   「插值后长度 ≤ 21000 字节」限制。本块曾累积到 21690 B，
+        #   导致 workflow_dispatch 返回 HTTP 422 完全不可用。
+        # 移到 run 块外的 YAML 注释不计入该限制。
+        # A. 状态枚举补全：以 hdspace list 真实返回为准（本机实测含 Stopping/Stopped，原模式漏列）
+        # get_state 仅从本实例所在表格行解析状态；若 devenv list 自身失败(输出含 Error 字样但无实例行)
+        # 则返回空，避免把 CLI 报错误判为实例 Error 态而直接放弃（run 381 误判根因）
+        # B. 统一的 start 调用：保留真实返回码 + 完整输出（僵死态恢复需要调两次，故抽成函数）。
+        #    ① 管道退出码取自**最后一个命令 tail**（恒为 0），if 判断形同虚设
+        #    现改为：stdout/stderr 分开落临时文件，rc 取 $? 并作为返回值，输出全量打印。
+        # ── 账号级受限识别（2026-09-28）：华为云开发者空间要求重签协议后，账号被限制，
+        #    devenv list 返回 "the account not sign agreement"，start 退出 0 但零输出，
+        #    状态永远解析为空 → [2] 白跑 ~15min 后 exit 1 → 每 15 分钟一封失败邮件
+        #    （#3421-#3432 连续 12 轮实证，本机 hdspace 同样报错 = 账号级而非 CI 凭证问题）。
+        #    识别到该类签名即按「平台侧跳过」处理：不告警、不发失败邮件，账号恢复后自动继续。
+        #    [1] 的 `config_hds.py || true` 会吞掉 keyring 写入失败，故障无声穿透到 [2]。
+        #    现象链：devenv list / start 全报 "failed to get AK/SK: credentials not found"
+        #    → 状态恒空 → [2] 反复探测；而每次 hds_session.sh 调用还要白等 90s 的 gcr
+        #    应答循环（凭据坏时密码弹窗永不出现）→ 11 次查询耗尽 25min 撞步骤上限
+        #    （实测每次查询稳定 +107s = 90s 空等 + 17s 执行），并因 concurrency 串行
+        #    此处提前识别并快速跳过：25min → 一次探活。语义对齐「平台侧瞬时故障」
+        #    ——runner 环境抖动下轮自愈则不告警；若持续出现，交由 [2b] 连续计数统一提醒。
+        # 该假失败又会触发「失败退避」，把后续 35 分钟的正常轮次一起跳过。
+        # 过渡态只轮询等待；真实 Error 视为可能瞬时，等待恢复而非立即放弃；
+        # 空(状态未知/list 失败)与稳定非运行态(Ready/Stopped/Closing)才发 start
+        # 2026-10-13 run#4920：此处原为 `LAST_NOCOMPUTE=0`（每次尝试开头重置），
+        #   导致第 1 次已识别的无算力在第 2 次被抹掉；而平台对第 2 次 start 可能
+        #   → 第 2 次不设记忆 → 最终判定 LAST_NOCOMPUTE!=1 → 误判 failure 并发出
+        #    两个关键事实：① hdspace CLI 此种失败仍退出 0，返回码查不出来，
+        #    （必须 start 真正成功），探测/长轮询纯属空转——实测 #957 里
+        #    故跳过探测窗与长轮询（也跳过僵死态恢复——它治的是状态卡死，
+        #    治不了没资源），短等 60s 后直接重试 start；失败一轮从 ~13.7min
+        # ── 平台限流识别（2026-10-23 run#5899 根治）──────────────────────
+        #   即**请求已排队**，平台接受了但没有资源立即分配。容器状态因此纹丝不动
+        #   停在 Ready，代码误判为「僵死态」→ stop（又报 not in running state）
+        #   → 重新 start → 仍排队 → 最终 [ERR] 未能进入 Running → exit 1 真失败。
+        # 语义与「无算力」同属**平台侧瞬时容量问题**，但有一处关键差别：
+        #   无算力可以换规格（兜底 4v8G 可能还有货）；限流是**全平台排队**，
+        # 故用独立标记 THROTTLED，收尾时按「平台侧跳过」处理且**不试兜底实例**。
+        #    此时再原样重试 start 只是无效 no-op（原逻辑连试 3 次全是 no-op，
+        #   ① 仅在「确实没动」(MOVED 为空) 且「本轮没恢复过」时才执行；
+        #   ② 动手前**重新** get_state 复检，只对稳定非运行态(Ready/Stopped/Closing)发 stop；
+        #      Running/Starting/Stopping 一律跳过——否则会把正在用/正在起的容器掐掉；
+        # 轮询等待进入 Running；Error/未知 仅继续等待，不立即失败（容错瞬时异常）。
+        # 预算共享：探测窗消耗的次数从 20 里扣除，每轮总轮询次数恒 ≤20 ——
+        # 失败路径最坏耗时会从 ~19.3min 涨到 ~23.6min（我自己刚引入的回归）。
+        # 平台「无算力」是区域性瞬时故障（如 2026-09-04 05:00-06:45 连续 8 轮），
+        # 下轮 15 分钟后自动重试即可恢复。若也标 failure，GitHub 每轮都发失败邮件
+        # （用户收件箱被刷屏）。故本轮「任一次」尝试被回复无算力时按「本轮跳过」处理
+        # （2026-10-13 run#4920：原判据为「2 次均」，但平台可能对第 2 次 start 回
+        # rc=0+"is Starting"（无无算力字样）→ 第 2 次记忆丢失 → 误判 failure）：
+        # exit 0 + NOCOMPUTE_SKIP 标记（[3] 据此跳过），[4]/[5] 照常收尾，[6] 不触发。
+        # ── 平台限流收尾（2026-10-23 run#5899）────────────────────────────────
+        #   限流   → 全平台排队，换任何实例都一样，试兜底只会多提交一次 start
+        # 用 NOCOMPUTE_SKIP 复用既有收尾语义（[3] 据此跳过，[4]/[5] 照常，[6] 不触发），
+        # 另设 THROTTLE_SKIP 供 [2b]/告警文案区分病因，避免误报「连续 N 轮无算力」。
+        # 诊断留痕（2026-10-13 run#4920）：状态恒空可能是「实例行不在 list 里」，
+        # 也可能是「状态列出现未枚举值（STATES 漏列）」。此前无原始输出可查 →
+        # 排查只能停在「状态恒空」这一层。仅在失败路径打印，零正常开销。
+        # ── 连续性门槛（2026-09-08）：连续第 2 轮无算力（≈30 分钟）才动用兜底实例 ──
+        # 单轮无算力是瞬时抖动，跳过等下轮自愈即可；连续 2 轮才算持续短缺。
+        # 判据：上一轮已完成 run 的步骤签名 = success/skipped（[2]=success 且 [3]=skipped，
+        # 与 [2b] 同口径；门卫跳过轮 [2]=skipped 不会误计）。查不到/上一轮正常 →
+        # 本轮按「首轮无算力」处理：跳过不切，下轮再无算力才够格触发兜底。
+        # 兜底也进不了 Running 才按「本轮跳过」收场（NOCOMPUTE_SKIP，不告警）。
+        # 成功则把 ACTIVE_INSTANCE 写入 GITHUB_ENV，[3]/[4] 据此对兜底实例开隧道/关机。
+        # start 未被拒：轮询兜底实例进入 Running（10 次 × 15s ≈ 2.5min，可控）
+        # start 已被平台接受但未达 Running 的兜底实例 best-effort 关掉，避免空转烧核时
+        # 把平台限流错误（Too many requests）整个吞掉——既不重试也不留任何标记，
+        # 一路走到 [3] 的 chmod 才炸：日志里只有一行 `chmod: cannot access ...`，
+        # 零病因，且把本应按「跳过、不告警」收尾的轮次升级成真失败 + 失败告警邮件。
+        # 现交给带退避重试的 tools/hds_key_reset.sh，以「私钥文件是否真实落盘」为唯一判据：
+        #   退出 10 → 重试耗尽且末次错误为平台限流（瞬时故障）→ 按既有跳过语义收尾；
+        #   退出其他 → 真失败，照常向上失败（不放宽任何真实故障的判定）。
+        # 外置 timeout 兜底：脚本自身有 DEADLINE=300s 的内置上限，这里再加一层，
+        # 保证本阶段耗时确定有界（124 = 被此处打断，同属平台侧瞬时故障）。
+        # 容器已开机却本轮用不上：best-effort 关机释放核时（与无算力跳过同口径）
+        # 病因留痕（不改 NOCOMPUTE_SKIP 的兼容语义）：[2b] 的连击计数与告警文案据此可
+        # 区分「平台限流致私钥不可得」与「真无算力」，避免误报「已连续 N 轮无算力」。
+        # 此前同样缺跳过标记 → [3] 白跑验证、[4]（if: always()）立刻把容器关掉，
+        # 使「仅开机」语义完全失效。现设 MODE_SKIP 跳 [3]、WAKE_ONLY 让 [4] 不关机。
         # 2026-09-22 审查（I-1）：本步骤原先没有 timeout-minutes，而 [1]（含 timeout 170）
         # + apt 重试 + 两轮轮询的最坏路径已贴近 24min；新增的私钥重试（内置 DEADLINE=300s）
         # 再叠加就可能顶穿 30min 的 job 上限——job 被取消时 [4] 关机（always()）不会执行，
@@ -288,25 +370,19 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # A. 状态枚举补全：以 hdspace list 真实返回为准（本机实测含 Stopping/Stopped，原模式漏列）
           STATES="Running|Ready|Starting|Stopping|Stopped|Closing|Error"
-          # get_state 仅从本实例所在表格行解析状态；若 devenv list 自身失败(输出含 Error 字样但无实例行)
-          # 则返回空，避免把 CLI 报错误判为实例 Error 态而直接放弃（run 381 误判根因）
           get_state() {
             tools/hds_session.sh devenv list </dev/null 2>&1 \
               | grep -F "$INSTANCE" | grep -oE "$STATES" | head -1
           }
 
-          # B. 统一的 start 调用：保留真实返回码 + 完整输出（僵死态恢复需要调两次，故抽成函数）。
           #    原写法 `cmd 2>&1 | tail -3` 有两个致命缺陷：
-          #    ① 管道退出码取自**最后一个命令 tail**（恒为 0），if 判断形同虚设
           #       —— start 真的失败也会永远打印 "[ok] start 返回 0"；
           #    ② 2>&1 把 hds_session.sh 的 set -x 跟踪行一并灌进管道，
           #       而 tail -3 只剩最后 3 行，恰好全是被合并进来的跟踪行
           #       （+ RC=0 / + kill / + exit 0），hdspace 的真实输出被整段丢弃。
           #    后果：2026-09-04 02:00-03:55 连续 5 轮容器起不来，
           #       日志里没有一行平台侧线索，完全无法定位。
-          #    现改为：stdout/stderr 分开落临时文件，rc 取 $? 并作为返回值，输出全量打印。
           START_MSG=""   # do_start 捕获的平台 stdout（无算力等关键报错在这里）
           do_start() {
             local out err rc
@@ -323,11 +399,6 @@ jobs:
             return $rc
           }
 
-          # ── 账号级受限识别（2026-09-28）：华为云开发者空间要求重签协议后，账号被限制，
-          #    devenv list 返回 "the account not sign agreement"，start 退出 0 但零输出，
-          #    状态永远解析为空 → [2] 白跑 ~15min 后 exit 1 → 每 15 分钟一封失败邮件
-          #    （#3421-#3432 连续 12 轮实证，本机 hdspace 同样报错 = 账号级而非 CI 凭证问题）。
-          #    识别到该类签名即按「平台侧跳过」处理：不告警、不发失败邮件，账号恢复后自动继续。
           LIST_RAW=$(tools/hds_session.sh devenv list </dev/null 2>&1 || true)
           case "$LIST_RAW" in
             *"not sign agreement"*|*"not real name"*)
@@ -338,14 +409,7 @@ jobs:
               exit 0
               ;;
             # ── 凭据不可用识别（2026-10-13 run#4874 根治）：
-            #    [1] 的 `config_hds.py || true` 会吞掉 keyring 写入失败，故障无声穿透到 [2]。
-            #    现象链：devenv list / start 全报 "failed to get AK/SK: credentials not found"
-            #    → 状态恒空 → [2] 反复探测；而每次 hds_session.sh 调用还要白等 90s 的 gcr
-            #    应答循环（凭据坏时密码弹窗永不出现）→ 11 次查询耗尽 25min 撞步骤上限
-            #    （实测每次查询稳定 +107s = 90s 空等 + 17s 执行），并因 concurrency 串行
             #    阻塞后续 3 轮（4875/4876/4877 排队、4878 被挤掉）。
-            #    此处提前识别并快速跳过：25min → 一次探活。语义对齐「平台侧瞬时故障」
-            #    ——runner 环境抖动下轮自愈则不告警；若持续出现，交由 [2b] 连续计数统一提醒。
             *"failed to get AK/SK"*|*"credentials not found"*|*"failed to get system credentials"*)
               echo "[cred] 凭据不可用：$(printf '%s' "$LIST_RAW" | grep -iE 'AK/SK|credential' | head -1)"
               echo "[cred] 疑似 runner keyring/D-Bus 瞬时故障致写凭据失败；本轮跳过不告警，下轮自愈。"
@@ -362,7 +426,6 @@ jobs:
             # 但此前 exit 0 时没设任何跳过标记 → [3] 照跑，对着一台
             # Ready(关机) 的容器建隧道，空等 240s 后报假失败：
             #   dev environment is not running, current status: Ready
-            # 该假失败又会触发「失败退避」，把后续 35 分钟的正常轮次一起跳过。
             echo "MODE_SKIP=1" >> "$GITHUB_ENV"
             echo "[done] status 模式完成（已标记 MODE_SKIP，后续步骤跳过）"
             exit 0
@@ -376,17 +439,12 @@ jobs:
             NOCOMPUTE=0   # 平台明确回复无算力时置 1（仅本轮有效）
             if [ "$STATE" = "Running" ]; then echo "[ok] 已进入 Running"; break; fi
 
-            # 过渡态只轮询等待；真实 Error 视为可能瞬时，等待恢复而非立即放弃；
-            # 空(状态未知/list 失败)与稳定非运行态(Ready/Stopped/Closing)才发 start
             case "$STATE" in
               Running|Starting|Stopping) echo "[info] 过渡态 $STATE，仅等待";;
               Error) echo "[warn] 实例 Error（可能瞬时），等待恢复，不立即放弃";;
               *)
                 PRE="$STATE"
-                # 2026-10-13 run#4920：此处原为 `LAST_NOCOMPUTE=0`（每次尝试开头重置），
-                #   导致第 1 次已识别的无算力在第 2 次被抹掉；而平台对第 2 次 start 可能
                 #   回 rc=0 + "is Starting"（stdout 里没有 "No compute resources" 字样）
-                #   → 第 2 次不设记忆 → 最终判定 LAST_NOCOMPUTE!=1 → 误判 failure 并发出
                 #   失败邮件（实际是「无算力」，本该按跳过静默处理）。
                 #   改为跨尝试累积：本轮「任一次」收到无算力即视为无算力。
                 #   安全性：第 2 次若真的启动成功，会因 STATE=Running 提前 break，
@@ -400,12 +458,8 @@ jobs:
 
                 # D. 无算力快速失败（run #957 根因：平台 stdout 明确回复
                 #    "No compute resources are available for the current specifications"）。
-                #    两个关键事实：① hdspace CLI 此种失败仍退出 0，返回码查不出来，
                 #    只能认 stdout 文本；② 无算力时状态不可能自行迁移到 Running
-                #    （必须 start 真正成功），探测/长轮询纯属空转——实测 #957 里
                 #    13 分钟的全部轮询都停在 Ready。
-                #    故跳过探测窗与长轮询（也跳过僵死态恢复——它治的是状态卡死，
-                #    治不了没资源），短等 60s 后直接重试 start；失败一轮从 ~13.7min
                 #    压到 ~2.5min，且日志出现 [nocompute] 一眼定性。
                 case "$START_MSG" in
                   *"No compute resources"*)
@@ -413,20 +467,13 @@ jobs:
                     LAST_NOCOMPUTE=1
                     echo "[nocompute] 平台回复无算力（No compute resources）——跳过状态轮询，短等 60s 后重试 start"
                     ;;
-                  # ── 平台限流识别（2026-10-23 run#5899 根治）──────────────────────
                   # 现象（10-22 全天 47/100 轮失败，抽样 8/8 同一根因）：
                   #   start 返回 rc=0，但 stdout 是
                   #     "failed to start dev environment: Too many users are accessing
                   #      the service. Your request is queued"
-                  #   即**请求已排队**，平台接受了但没有资源立即分配。容器状态因此纹丝不动
-                  #   停在 Ready，代码误判为「僵死态」→ stop（又报 not in running state）
-                  #   → 重新 start → 仍排队 → 最终 [ERR] 未能进入 Running → exit 1 真失败。
                   #   单轮白耗 18~40 分钟，且每轮都发失败邮件。
                   #
-                  # 语义与「无算力」同属**平台侧瞬时容量问题**，但有一处关键差别：
-                  #   无算力可以换规格（兜底 4v8G 可能还有货）；限流是**全平台排队**，
                   #   换任何实例都一样受限、只会多提交一次 start 加剧拥堵。
-                  # 故用独立标记 THROTTLED，收尾时按「平台侧跳过」处理且**不试兜底实例**。
                   *"Too many users"*|*"request is queued"*|*"Too many requests"*)
                     THROTTLED=1
                     echo "[throttled] 平台限流：$(printf '%s' "$START_MSG" | grep -iE 'too many|queued' | head -1)"
@@ -443,7 +490,6 @@ jobs:
                 # C. 探测 start 是否真的生效（2026-09-04 连续 5 轮起不来的对策）
                 #    故障特征：start 返回 0，但 60s 内状态连 Starting 都没出现过、
                 #    纹丝不动停在 Ready → 平台接受了请求却没真正分配资源。
-                #    此时再原样重试 start 只是无效 no-op（原逻辑连试 3 次全是 no-op，
                 #    空耗 19-20 分钟后失败），必须先 stop 清一次僵死态。
                 MOVED=""
                 for k in 1 2 3 4; do
@@ -455,9 +501,6 @@ jobs:
 
                 # 恢复动作：先 stop 清僵死态，再 start。
                 # 三道护栏，缺一不可：
-                #   ① 仅在「确实没动」(MOVED 为空) 且「本轮没恢复过」时才执行；
-                #   ② 动手前**重新** get_state 复检，只对稳定非运行态(Ready/Stopped/Closing)发 stop；
-                #      Running/Starting/Stopping 一律跳过——否则会把正在用/正在起的容器掐掉；
                 #   ③ RECOVERED 标志确保每轮最多清一次，不反复折腾。
                 if [ -z "$MOVED" ] && [ "$RECOVERED" -eq 0 ]; then
                   NOW=$(get_state)
@@ -488,10 +531,7 @@ jobs:
 
             if [ "$STATE" = "Running" ]; then echo "[ok] 已进入 Running"; break; fi
 
-            # 轮询等待进入 Running；Error/未知 仅继续等待，不立即失败（容错瞬时异常）。
-            # 预算共享：探测窗消耗的次数从 20 里扣除，每轮总轮询次数恒 ≤20 ——
             # 每次轮询实测 ≈19s（sleep 15 + get_state≈4s），若探测不扣预算，
-            # 失败路径最坏耗时会从 ~19.3min 涨到 ~23.6min（我自己刚引入的回归）。
             for i in $(seq 1 $BUDGET); do
               sleep 15
               STATE=$(get_state)
@@ -503,19 +543,9 @@ jobs:
           done
           TARGET_INSTANCE="$INSTANCE"   # 本轮实际使用的实例（默认主实例；无算力切换后为兜底实例）
           if [ "$STATE" != "Running" ]; then
-            # 平台「无算力」是区域性瞬时故障（如 2026-09-04 05:00-06:45 连续 8 轮），
-            # 下轮 15 分钟后自动重试即可恢复。若也标 failure，GitHub 每轮都发失败邮件
-            # （用户收件箱被刷屏）。故本轮「任一次」尝试被回复无算力时按「本轮跳过」处理
-            # （2026-10-13 run#4920：原判据为「2 次均」，但平台可能对第 2 次 start 回
-            # rc=0+"is Starting"（无无算力字样）→ 第 2 次记忆丢失 → 误判 failure）：
-            # exit 0 + NOCOMPUTE_SKIP 标记（[3] 据此跳过），[4]/[5] 照常收尾，[6] 不触发。
-            # ── 平台限流收尾（2026-10-23 run#5899）────────────────────────────────
             # 必须放在「无算力判定」之前：两者语义相近但处置不同。
             #   无算力 → 可换规格（兜底 4v8G 也许有货），走原逻辑；
-            #   限流   → 全平台排队，换任何实例都一样，试兜底只会多提交一次 start
             #            加剧拥堵，故直接跳过。
-            # 用 NOCOMPUTE_SKIP 复用既有收尾语义（[3] 据此跳过，[4]/[5] 照常，[6] 不触发），
-            # 另设 THROTTLE_SKIP 供 [2b]/告警文案区分病因，避免误报「连续 N 轮无算力」。
             if [ "${THROTTLED:-0}" = "1" ]; then
               echo "[throttled] 平台限流未解除（最终态=${STATE:-未知}），本轮按平台侧跳过处理（不告警，下轮自动重试）。"
               echo "[throttled] 不尝试兜底实例：限流是全平台排队，换规格同样受限，且会加剧拥堵。"
@@ -525,18 +555,10 @@ jobs:
             fi
             if [ "$LAST_NOCOMPUTE" != "1" ]; then
               echo "[ERR] 容器未能进入 Running（最终态=${STATE:-未知}）"
-              # 诊断留痕（2026-10-13 run#4920）：状态恒空可能是「实例行不在 list 里」，
-              # 也可能是「状态列出现未枚举值（STATES 漏列）」。此前无原始输出可查 →
-              # 排查只能停在「状态恒空」这一层。仅在失败路径打印，零正常开销。
               echo "[diag] devenv list 原始输出（尾 30 行，用于定位状态解析为空的原因）："
               timeout 60 tools/hds_session.sh devenv list </dev/null 2>&1 | tail -30 || true
               exit 1
             fi
-            # ── 连续性门槛（2026-09-08）：连续第 2 轮无算力（≈30 分钟）才动用兜底实例 ──
-            # 单轮无算力是瞬时抖动，跳过等下轮自愈即可；连续 2 轮才算持续短缺。
-            # 判据：上一轮已完成 run 的步骤签名 = success/skipped（[2]=success 且 [3]=skipped，
-            # 与 [2b] 同口径；门卫跳过轮 [2]=skipped 不会误计）。查不到/上一轮正常 →
-            # 本轮按「首轮无算力」处理：跳过不切，下轮再无算力才够格触发兜底。
             PREV_NOCOMPUTE=0
             REPO="${{ github.repository }}"
             PREV_RID=$(gh api "repos/$REPO/actions/workflows/hds-cycle.yml/runs?per_page=6" \
@@ -556,8 +578,6 @@ jobs:
             fi
             # ── 兜底实例切换：主实例无算力 ≠ 兜底规格无算力 ──
             # 主实例 2vCPU/4GiB 被平台拒绝时，先尝试 4vCPU/8GiB 兜底实例；
-            # 兜底也进不了 Running 才按「本轮跳过」收场（NOCOMPUTE_SKIP，不告警）。
-            # 成功则把 ACTIVE_INSTANCE 写入 GITHUB_ENV，[3]/[4] 据此对兜底实例开隧道/关机。
             echo "[fallback] 主实例连续第 2 轮无算力，尝试兜底实例 $FALLBACK_INSTANCE（4vCPU/8GiB）"
             FB_STATE=$(tools/hds_session.sh devenv list </dev/null 2>&1 | grep -F "$FALLBACK_INSTANCE" | grep -oE "$STATES" | head -1)
             echo "[fallback] 兜底实例当前态=${FB_STATE:-未知}"
@@ -574,7 +594,6 @@ jobs:
                   echo "[fallback] 兜底实例也无算力（4v8G 规格同样被拒）"
                   ;;
                 *)
-                  # start 未被拒：轮询兜底实例进入 Running（10 次 × 15s ≈ 2.5min，可控）
                   for i in $(seq 1 10); do
                     sleep 15
                     FB_STATE=$(tools/hds_session.sh devenv list </dev/null 2>&1 | grep -F "$FALLBACK_INSTANCE" | grep -oE "$STATES" | head -1)
@@ -590,7 +609,6 @@ jobs:
               echo "ACTIVE_INSTANCE=$FALLBACK_INSTANCE" >> "$GITHUB_ENV"
             else
               echo "[nocompute] 主实例与兜底实例均未能运行（无算力），本轮按跳过处理，不告警；下轮自动重试。"
-              # start 已被平台接受但未达 Running 的兜底实例 best-effort 关掉，避免空转烧核时
               tools/hds_session.sh devenv stop --instance-id="$FALLBACK_INSTANCE" </dev/null >/dev/null 2>&1 || true
               echo "NOCOMPUTE_SKIP=1" >> "$GITHUB_ENV"
               exit 0
@@ -600,24 +618,13 @@ jobs:
           echo "===== 重置并获取 SSH 私钥（需容器开机）====="
           # 2026-09-22 run#2777 根因修复：旧写法
           #   `echo yes | ... ssh-key-reset ... > /tmp/reset.log 2>&1 || true`
-          # 把平台限流错误（Too many requests）整个吞掉——既不重试也不留任何标记，
-          # 一路走到 [3] 的 chmod 才炸：日志里只有一行 `chmod: cannot access ...`，
-          # 零病因，且把本应按「跳过、不告警」收尾的轮次升级成真失败 + 失败告警邮件。
-          # 现交给带退避重试的 tools/hds_key_reset.sh，以「私钥文件是否真实落盘」为唯一判据：
           #   退出 0  → 私钥已就绪（chmod 已由脚本完成），本轮继续；
-          #   退出 10 → 重试耗尽且末次错误为平台限流（瞬时故障）→ 按既有跳过语义收尾；
-          #   退出其他 → 真失败，照常向上失败（不放宽任何真实故障的判定）。
           KEY_RESET_RC=0
-          # 外置 timeout 兜底：脚本自身有 DEADLINE=300s 的内置上限，这里再加一层，
-          # 保证本阶段耗时确定有界（124 = 被此处打断，同属平台侧瞬时故障）。
           timeout -k 5 420 bash tools/hds_key_reset.sh "$TARGET_INSTANCE" || KEY_RESET_RC=$?
           if [ "$KEY_RESET_RC" -eq 10 ] || [ "$KEY_RESET_RC" -eq 124 ]; then
             echo "[keyreset] 私钥不可得（rc=$KEY_RESET_RC，平台瞬时故障）；本轮按跳过处理（不告警），下轮自动重试。"
-            # 容器已开机却本轮用不上：best-effort 关机释放核时（与无算力跳过同口径）
             tools/hds_session.sh devenv stop --instance-id="$TARGET_INSTANCE" </dev/null >/dev/null 2>&1 || true
             echo "NOCOMPUTE_SKIP=1" >> "$GITHUB_ENV"
-            # 病因留痕（不改 NOCOMPUTE_SKIP 的兼容语义）：[2b] 的连击计数与告警文案据此可
-            # 区分「平台限流致私钥不可得」与「真无算力」，避免误报「已连续 N 轮无算力」。
             echo "KEY_RESET_SKIP=1" >> "$GITHUB_ENV"
             exit 0
           fi
@@ -628,8 +635,6 @@ jobs:
 
           if [ "${{ inputs.action || 'wake_verify' }}" = "wake" ]; then
             # 2026-11-09：wake = 仅开机并保持 Running。
-            # 此前同样缺跳过标记 → [3] 白跑验证、[4]（if: always()）立刻把容器关掉，
-            # 使「仅开机」语义完全失效。现设 MODE_SKIP 跳 [3]、WAKE_ONLY 让 [4] 不关机。
             echo "MODE_SKIP=1" >> "$GITHUB_ENV"
             echo "WAKE_ONLY=1" >> "$GITHUB_ENV"
             echo "[done] 仅开机模式，保持 Running（已标记跳过 [3]，[4] 不关机）"
