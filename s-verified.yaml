@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=77
+# verified=79
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -78,6 +78,7 @@ proxy-groups:
   - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
+  - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_35|3.0MB/s|TK-RU|YT-US
@@ -120,6 +121,7 @@ proxy-groups:
   - ✅ 🇳🇬 尼日利亚 | NGA
   - ✅ [peasoft/NoMoreWalls]🇹🇷TR_1|3.0MB/s|C002-260622
   - ✅ 🇺🇸_美国 (8)
+  - ✅ 🇸🇬_新加坡 (6)
   - ✅ 🇺🇸_美国 (116)
   - ✅ 🇺🇸 机场推荐:dafei.de 美国 15_IPV4
 - name: 自动选择
@@ -158,6 +160,7 @@ proxy-groups:
   - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
+  - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_35|3.0MB/s|TK-RU|YT-US
@@ -200,6 +203,7 @@ proxy-groups:
   - ✅ 🇳🇬 尼日利亚 | NGA
   - ✅ [peasoft/NoMoreWalls]🇹🇷TR_1|3.0MB/s|C002-260622
   - ✅ 🇺🇸_美国 (8)
+  - ✅ 🇸🇬_新加坡 (6)
   - ✅ 🇺🇸_美国 (116)
   - ✅ 🇺🇸 机场推荐:dafei.de 美国 15_IPV4
   url: http://www.gstatic.com/generate_204
@@ -240,6 +244,7 @@ proxy-groups:
   - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
+  - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_35|3.0MB/s|TK-RU|YT-US
@@ -282,6 +287,7 @@ proxy-groups:
   - ✅ 🇳🇬 尼日利亚 | NGA
   - ✅ [peasoft/NoMoreWalls]🇹🇷TR_1|3.0MB/s|C002-260622
   - ✅ 🇺🇸_美国 (8)
+  - ✅ 🇸🇬_新加坡 (6)
   - ✅ 🇺🇸_美国 (116)
   - ✅ 🇺🇸 机场推荐:dafei.de 美国 15_IPV4
   url: http://www.gstatic.com/generate_204
@@ -1024,6 +1030,12 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- name: ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
+  port: 9443
+  server: 181.215.52.122
+  skip-cert-verify: true
+  tls: true
+  type: http
 - name: ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   port: 443
   server: 185.183.105.146
@@ -1342,6 +1354,23 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: hk.catxstar.com
+- name: ✅ 🇸🇬_新加坡 (6)
+  type: vless
+  server: 161.118.200.170
+  port: 443
+  uuid: 99c5b713-dedf-4a10-8070-916ff3f49b0e
+  tls: true
+  network: ws
+  sni: fs.qicai99.com
+  servername: fs.qicai99.com
+  skip-cert-verify: true
+  ws-opts:
+    path: /fp
+    headers:
+      Host: fs.qicai99.com
+  security_scheme: tls
+  proto: vless
+  peer: fs.qicai99.com
 - name: ✅ 🇺🇸_美国 (116)
   type: vless
   server: 3.169.9.125
