@@ -1,6 +1,6 @@
 # Auto-merged subscription (mkdy) — full Clash config with rules
 # sources: s.txt, s1.txt, s2.txt + s2-clash-1.yaml, s2-clash-2.yaml, s2-clash-3.yaml, s2-clash-4.yaml, s2-clash-5.yaml, s2-clash-6.yaml
-# raw=1061 unique=903 groups=3 rules=516
+# raw=1148 unique=984 groups=3 rules=516
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -75,8 +75,8 @@ proxy-groups:
   - ✅ ❓Other_51|2.3MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_28|2.9MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_38|1.8MB/s|TK-US|YT-US|GPT⁺-US|GM-US
-  - ✅ ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
-  - ✅ ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB
+  - ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
+  - ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB
   - 🇨🇦CA_1|2.3MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ❓Other_64|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
@@ -90,7 +90,7 @@ proxy-groups:
   - ❓Other_42|1.6MB/s|GPT⁺-US|GM-US
   - 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
-  - ✅ ❓Other_23|2.7MB/s|GPT-US
+  - ❓Other_23|2.7MB/s|GPT-US
   - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
@@ -140,7 +140,7 @@ proxy-groups:
   - ❓Other_36|1.2MB/s|TK-RO|GPT⁺-RO
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
   - ✅ ❓Other_56|2.3MB/s|TK-AL|YT-US|GPT⁺-AL|GM-AL
-  - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
+  - ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ❓Other_4|3.5MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - 🇬🇧GB_3|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
@@ -205,6 +205,7 @@ proxy-groups:
   - '[peasoft/NoMoreWalls]🇸🇬[www.v2nodes.com] ss-SG-1615... #1'
   - '[ermaozi/get_subscribe]🇸🇬[www.v2nodes.com] ss-SG-1615... #1'
   - '[peasoft/NoMoreWalls]🇸🇬[www.v2nodes.com] ss-SG-1615... #2'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1555...'
   - '[ermaozi/get_subscribe]🏳[www.v2nodes.com] ss- #22'
   - '[peasoft/NoMoreWalls]🇸🇬[www.v2nodes.com] ss-SG-1616... #1'
   - '[ermaozi/get_subscribe]🇦🇹[www.v2nodes.com] ss-AT-1614...'
@@ -314,6 +315,7 @@ proxy-groups:
   - 🇩🇪_德国 (14)
   - ⚡ b2n.ir/v2ray-configs | 795
   - ⚡ b2n.ir/v2ray-configs | 351
+  - ⚡ b2n.ir/v2ray-configs | 837
   - 🇧🇬_保加利亚
   - '🇨🇭[www.v2nodes.com] trojan-CH-... #1'
   - '[peasoft/NoMoreWalls]🏳[www.v2nodes.com] trojan- #2'
@@ -340,7 +342,8 @@ proxy-groups:
   - 🇭🇰_香港 (4)
   - 🇭🇰_香港
   - ✅ 🇺🇸_美国 (16)
-  - SG新加坡(mibei77.com 米贝节点分享) (2)
+  - 🇺🇸_美国 (15)
+  - '🇹🇷[www.v2nodes.com] trojan-TR-... #1'
   - ✅ 🇺🇸_美国 (20)
   - 🇭🇰_香港 (2)
   - ✅ 🇺🇸_美国 (21)
@@ -355,7 +358,6 @@ proxy-groups:
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #1'
   - '🇯🇵[www.v2nodes.com] vless-JP-1... #1'
   - 🇵🇰 巴基斯坦 | PAK
-  - '🇩🇪[www.v2nodes.com] vless-DE-1... #10'
   - '🏳[www.v2nodes.com] vless- #15'
   - CA加拿大(mibei77.com 米贝节点分享) (2)
   - '🇫🇮[www.v2nodes.com] vless-FI-1... #1'
@@ -363,11 +365,15 @@ proxy-groups:
   - DE德国(mibei77.com 米贝节点分享) (3)
   - 🇺🇸US_1|354KB/s|YT-US|GPT⁺|NF|20%
   - US美国(mibei77.com 米贝节点分享) (28)
+  - '🇯🇵[www.v2nodes.com] vless-JP-1... #3'
   - 🇯🇵_日本 (21)
+  - '🏳[www.v2nodes.com] vless- #22'
+  - 🇺🇸_美国 (79)
   - 🇰🇿[www.v2nodes.com] vless-KZ-1...
   - '🇹🇼 🇨🇳 台湾 | TWN #1'
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #2'
   - 🇫🇮[www.v2nodes.com] vless-FI-1...
+  - 🇺🇸_美国 (58)
   - 🇮🇳[www.v2nodes.com] vless-IN-1...
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #3'
   - 🇺🇸_美国 (2)
@@ -401,6 +407,7 @@ proxy-groups:
   - 🇸🇬_新加坡 (18)
   - 🇸🇬_新加坡 (15)
   - '🇸🇪 瑞典 | SWE #5'
+  - '🏳[www.v2nodes.com] vless- #26'
   - '🏳[www.v2nodes.com] vless- #9'
   - '🇫🇮[www.v2nodes.com] vless-FI-1... #4'
   - 🇸🇬_新加坡 (16)
@@ -424,8 +431,8 @@ proxy-groups:
   - '🇪🇪 爱沙尼亚 | EST #1'
   - '🇩🇪[www.v2nodes.com] vless-DE-1... #9'
   - ⚡ b2n.ir/v2ray-configs | 192
-  - US美国(mibei77.com 米贝节点分享) (20)
-  - US美国(mibei77.com 米贝节点分享) (19)
+  - 🇺🇸_美国 (13)
+  - 🇺🇸US_2|1.1MB/s
   - 🇺🇸_美国 (18)
   - 🇩🇪_德国 (4)
   - 🇯🇵[www.v2nodes.com] vless-JP-1...
@@ -440,11 +447,43 @@ proxy-groups:
   - 🇯🇵_日本 (30)
   - 🇯🇵_日本 (18)
   - 🇮🇹[www.v2nodes.com] vless-IT-1...
-  - 🇺🇸 美国2
-  - 🇺🇸 美国3
+  - 🇺🇸_美国 (66)
+  - 🇺🇸_美国 (94)
+  - 🇺🇸_美国 (60)
+  - 🇺🇸_美国 (89)
+  - 🇺🇸_美国 (72)
+  - 🇺🇸_美国 (85)
+  - 🇺🇸_美国 (93)
+  - 🇺🇸_美国 (80)
+  - 🇺🇸_美国 (87)
+  - 🇺🇸_美国 (65)
+  - 🇺🇸_美国 (86)
+  - 🇺🇸_美国 (92)
+  - 🇺🇸_美国 (61)
+  - 🇺🇸_美国 (74)
+  - 🇺🇸_美国 (63)
+  - 🇺🇸_美国 (62)
+  - 🇺🇸_美国 (82)
+  - 🇺🇸_美国 (75)
+  - 🇺🇸_美国 (67)
+  - 🇺🇸_美国 (78)
+  - 🇺🇸_美国 (69)
+  - 🇺🇸_美国 (64)
+  - 🇺🇸_美国 (84)
+  - 🇺🇸_美国 (68)
+  - 🇺🇸_美国 (91)
+  - 🇺🇸_美国 (88)
+  - 🇺🇸_美国 (81)
+  - 🇺🇸_美国 (73)
+  - 🇺🇸_美国 (71)
+  - 🇺🇸_美国 (83)
   - 🇯🇵_日本 (24)
   - 🇯🇵_日本 (13)
+  - 🇺🇸_美国 (70)
   - CA加拿大(mibei77.com 米贝节点分享)
+  - 🇨🇦[www.v2nodes.com] vless-CA-1...
+  - 美国+CloudFlare节点
+  - '🇸🇬[www.v2nodes.com] vless-SG-8... #2'
   - 🇸🇬_新加坡 (14)
   - '🏳[www.v2nodes.com] vless- #2'
   - '🇧🇾[www.v2nodes.com] vless-BY-1... #1'
@@ -457,14 +496,16 @@ proxy-groups:
   - '🇦🇷 阿根廷 | ARG #1'
   - 🇺🇸 美国 | USA 7
   - 🇳🇱NL_3|374KB/s|GPT⁺|NF|88%
+  - '🇨🇦[www.v2nodes.com] vless-CA-1... #1'
   - US美国(mibei77.com 米贝节点分享) (13)
+  - '🇮🇳 印度 | IND #1'
   - '🇳🇱[www.v2nodes.com] vless-NL-1... #9'
   - '🇩🇪[www.v2nodes.com] vless-DE-1... #8'
   - '🏳[www.v2nodes.com] vless- #14'
   - TR_speednode_0038
   - '🇸🇪[www.v2nodes.com] vless-SE-1... #4'
   - 🇦🇹[www.v2nodes.com] vless-AT-3...
-  - 🇮🇷_伊朗 (4)
+  - ✅ 🇮🇷_伊朗 (4)
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #4'
   - '🇨🇿[www.v2nodes.com] vless-CZ-1... #1'
   - 🇦🇹[www.v2nodes.com] vless-AT-1...
@@ -485,7 +526,8 @@ proxy-groups:
   - '🇮🇷[www.v2nodes.com] vless-IR-1... #2'
   - '🇮🇷[www.v2nodes.com] vless-IR-1... #3'
   - '🇮🇷[www.v2nodes.com] vless-IR-1... #1'
-  - US美国(mibei77.com 米贝节点分享) (21)
+  - '🇺🇸[www.v2nodes.com] vless-US-1... #11'
+  - 🇺🇸_美国 (57)
   - '🇺🇸[www.v2nodes.com] vless-US-1... #14'
   - 🇩🇪_德国 (6)
   - 🇫🇷[www.v2nodes.com] vless-FR-1...
@@ -594,7 +636,6 @@ proxy-groups:
   - 🇳🇱_荷兰 (15)
   - 🇳🇱_荷兰 (26)
   - 🇳🇱_荷兰 (34)
-  - '🇺🇸[www.v2nodes.com] vless-US-1... #13'
   - '🇨🇦 加拿大 | CAN #1'
   - '🇭🇰[www.v2nodes.com] vless-HK-1... #3'
   - 🇨🇦 加拿大 | CAN 2
@@ -611,16 +652,32 @@ proxy-groups:
   - '🇩🇪[www.v2nodes.com] vless-DE-1... #2'
   - 🇹🇷_土耳其 (3)
   - 🇹🇷_土耳其 (2)
+  - 🇺🇸_美国 (41)
+  - 🇺🇸_美国 (42)
+  - 🇺🇸_美国 (43)
+  - 🇺🇸_美国 (38)
+  - 🇺🇸_美国 (39)
+  - 🇺🇸_美国 (40)
   - '🇭🇰[www.v2nodes.com] vless-HK-1... #4'
+  - 🇺🇸_美国 (50)
+  - 🇺🇸_美国 (44)
+  - 🇺🇸_美国 (45)
+  - 🇺🇸_美国 (46)
+  - 🇺🇸_美国 (47)
+  - 🇺🇸_美国 (48)
+  - 🇺🇸_美国 (49)
   - '🇯🇵[www.v2nodes.com] vless-JP-1... #6'
   - '🏳[www.v2nodes.com] vless- #18'
   - '🇪🇬 埃及 | EGY #1'
   - 🇭🇰_香港 (5)
   - 🇸🇬_新加坡 (5)
   - '🇫🇮[www.v2nodes.com] vless-FI-1... #5'
+  - 🇺🇸_美国 (90)
   - '🏳[www.v2nodes.com] vless- #7'
+  - 🇺🇸_美国 (76)
   - 🇯🇵JP_1|330KB/s|YT-JP|GPT⁺|NF|0%
   - 🇯🇵_日本 (22)
+  - 🇺🇸_美国 (77)
   - 🇸🇬_新加坡 (6)
   - 🇯🇵_日本 (26)
   - 🇯🇵_日本 (20)
@@ -727,6 +784,7 @@ proxy-groups:
   - ⚡ b2n.ir/v2ray-configs | 196_2
   - AT_speednode_0001
   - 🇮🇷_伊朗
+  - 🇸🇬[www.v2nodes.com] vless-SG-8...
   - 🇺🇸 美国高速-AI专用-1B
   - 🇺🇸 美国直连-备用
   - 🇸🇪_瑞典
@@ -842,11 +900,14 @@ proxy-groups:
   - 🇺🇸US_5|290KB/s|YT-NL|GPT⁺|NF|0%
   - '🇨🇭[www.v2nodes.com] vless-CH-1... #1'
   - 🇷🇺[www.v2nodes.com] vless-RU-1...
+  - '🇩🇪 德国 | DEU #4'
   - 🇺🇸US_8|259KB/s|YT-US|GPT⁺|NF|0%
   - 🇩🇪_德国 (5)
+  - 🇨🇦[www.v2nodes.com] vless-CA
   - 🇸🇪 瑞典 | SWE 3
   - SG新加坡(mibei77.com 米贝节点分享) (5)
   - 🇩🇪DE_4|351KB/s|GPT⁺|NF|17%
+  - '🇵🇱 波兰 | POL #2'
   - XRAY-VLESS直连
   - XRAY-TLS2053
   - XRAY-TLS2083
@@ -909,6 +970,9 @@ proxy-groups:
   - 🇯🇵_日本 (6)
   - 🇯🇵_日本 (7)
   - '🇩🇪[www.v2nodes.com] vless-DE-1... #4'
+  - 🏁RELAY-104.21.59.29-8893
+  - CA 🇨🇦 | @Raydikalx | 3B9130
+  - 🏁RELAY-104.19.47.79-1463
   - 🇩🇪_德国 (11)
   - 🇩🇪_德国 (9)
   - SE 🇸🇪 | @Raydikalx | 13C720
@@ -916,9 +980,13 @@ proxy-groups:
   - SG 🇸🇬 | @Raydikalx | 0335AF
   - CA 🇨🇦 | @Raydikalx | 27326A
   - 🇩🇪DE-162.55.174.135-3936
+  - 🇺🇸 机场推荐:dafei.de 美国 15_IPV4
   - 🇨🇭_瑞士
   - 🇲🇳MN-180.149.90.66-1273
   - 🇮🇷IR-185.143.234.120-1168
+  - 🏁RELAY-188.114.99.137-0500
+  - 🏁RELAY-188.114.99.9-1542
+  - '[peasoft/NoMoreWalls]🇺🇸 美国 | USA #3'
   - 🇮🇳_印度
   - US 🇺🇸 | @Raydikalx | 42BF00
   - DE 🇩🇪 | @Raydikalx | 53A099
@@ -932,6 +1000,7 @@ proxy-groups:
   - 🇺🇸 硅谷-01-1C
   - 🇺🇸 硅谷-01-1G
   - '🇭🇰 香港 | HKG #1'
+  - 🇺🇸US-47.254.17.235-8031
   - GB 🇬🇧 | @Raydikalx | C96927
   - 日期：11-16
   - US 🇺🇸 | @Raydikalx | 7CF2F0
@@ -941,13 +1010,25 @@ proxy-groups:
   - 🇩🇪_德国 (12)
   - 🇫🇮_芬兰 (2)
   - US 🇺🇸 | @Raydikalx | 960B59
+  - SG 🇸🇬 | @Raydikalx | 02A575
+  - 🏁RELAY-188.114.97.6-1242
+  - CA 🇨🇦 | @Raydikalx | EAD470
   - DE 🇩🇪 | @Raydikalx | A09BDC
   - IR 🇮🇷 | @Raydikalx | 5B3783
+  - 未知111
+  - CA 🇨🇦 | @Raydikalx | 740C2E
+  - CA 🇨🇦 | @Raydikalx | 4D6095
   - DE 🇩🇪 | @Raydikalx | 005985
+  - 🏁RELAY-104.26.9.76-2288
+  - SG 🇸🇬 | @Raydikalx | D326E1
   - IR 🇮🇷 | @Raydikalx | 647F69
+  - 🏁RELAY-172.67.131.245-1833
+  - 🏁RELAY-172.67.75.194-0853
   - 🇭🇰HK_2|753KB/s
+  - CA 🇨🇦 | @Raydikalx | 9C0B53
   - '@V2ray_Alpha🛤️ 8'
   - IR 🇮🇷 | @Raydikalx | 84F15E
+  - CA 🇨🇦 | @Raydikalx | B3074F
   - IR 🇮🇷 | @Raydikalx | B2BE35
 - name: 自动选择
   type: url-test
@@ -981,8 +1062,8 @@ proxy-groups:
   - ✅ ❓Other_51|2.3MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_28|2.9MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_38|1.8MB/s|TK-US|YT-US|GPT⁺-US|GM-US
-  - ✅ ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
-  - ✅ ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB
+  - ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
+  - ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB
   - 🇨🇦CA_1|2.3MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ❓Other_64|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
@@ -996,7 +1077,7 @@ proxy-groups:
   - ❓Other_42|1.6MB/s|GPT⁺-US|GM-US
   - 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
-  - ✅ ❓Other_23|2.7MB/s|GPT-US
+  - ❓Other_23|2.7MB/s|GPT-US
   - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
@@ -1046,7 +1127,7 @@ proxy-groups:
   - ❓Other_36|1.2MB/s|TK-RO|GPT⁺-RO
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
   - ✅ ❓Other_56|2.3MB/s|TK-AL|YT-US|GPT⁺-AL|GM-AL
-  - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
+  - ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ❓Other_4|3.5MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - 🇬🇧GB_3|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
@@ -1111,6 +1192,7 @@ proxy-groups:
   - '[peasoft/NoMoreWalls]🇸🇬[www.v2nodes.com] ss-SG-1615... #1'
   - '[ermaozi/get_subscribe]🇸🇬[www.v2nodes.com] ss-SG-1615... #1'
   - '[peasoft/NoMoreWalls]🇸🇬[www.v2nodes.com] ss-SG-1615... #2'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1555...'
   - '[ermaozi/get_subscribe]🏳[www.v2nodes.com] ss- #22'
   - '[peasoft/NoMoreWalls]🇸🇬[www.v2nodes.com] ss-SG-1616... #1'
   - '[ermaozi/get_subscribe]🇦🇹[www.v2nodes.com] ss-AT-1614...'
@@ -1220,6 +1302,7 @@ proxy-groups:
   - 🇩🇪_德国 (14)
   - ⚡ b2n.ir/v2ray-configs | 795
   - ⚡ b2n.ir/v2ray-configs | 351
+  - ⚡ b2n.ir/v2ray-configs | 837
   - 🇧🇬_保加利亚
   - '🇨🇭[www.v2nodes.com] trojan-CH-... #1'
   - '[peasoft/NoMoreWalls]🏳[www.v2nodes.com] trojan- #2'
@@ -1246,7 +1329,8 @@ proxy-groups:
   - 🇭🇰_香港 (4)
   - 🇭🇰_香港
   - ✅ 🇺🇸_美国 (16)
-  - SG新加坡(mibei77.com 米贝节点分享) (2)
+  - 🇺🇸_美国 (15)
+  - '🇹🇷[www.v2nodes.com] trojan-TR-... #1'
   - ✅ 🇺🇸_美国 (20)
   - 🇭🇰_香港 (2)
   - ✅ 🇺🇸_美国 (21)
@@ -1261,7 +1345,6 @@ proxy-groups:
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #1'
   - '🇯🇵[www.v2nodes.com] vless-JP-1... #1'
   - 🇵🇰 巴基斯坦 | PAK
-  - '🇩🇪[www.v2nodes.com] vless-DE-1... #10'
   - '🏳[www.v2nodes.com] vless- #15'
   - CA加拿大(mibei77.com 米贝节点分享) (2)
   - '🇫🇮[www.v2nodes.com] vless-FI-1... #1'
@@ -1269,11 +1352,15 @@ proxy-groups:
   - DE德国(mibei77.com 米贝节点分享) (3)
   - 🇺🇸US_1|354KB/s|YT-US|GPT⁺|NF|20%
   - US美国(mibei77.com 米贝节点分享) (28)
+  - '🇯🇵[www.v2nodes.com] vless-JP-1... #3'
   - 🇯🇵_日本 (21)
+  - '🏳[www.v2nodes.com] vless- #22'
+  - 🇺🇸_美国 (79)
   - 🇰🇿[www.v2nodes.com] vless-KZ-1...
   - '🇹🇼 🇨🇳 台湾 | TWN #1'
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #2'
   - 🇫🇮[www.v2nodes.com] vless-FI-1...
+  - 🇺🇸_美国 (58)
   - 🇮🇳[www.v2nodes.com] vless-IN-1...
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #3'
   - 🇺🇸_美国 (2)
@@ -1307,6 +1394,7 @@ proxy-groups:
   - 🇸🇬_新加坡 (18)
   - 🇸🇬_新加坡 (15)
   - '🇸🇪 瑞典 | SWE #5'
+  - '🏳[www.v2nodes.com] vless- #26'
   - '🏳[www.v2nodes.com] vless- #9'
   - '🇫🇮[www.v2nodes.com] vless-FI-1... #4'
   - 🇸🇬_新加坡 (16)
@@ -1330,8 +1418,8 @@ proxy-groups:
   - '🇪🇪 爱沙尼亚 | EST #1'
   - '🇩🇪[www.v2nodes.com] vless-DE-1... #9'
   - ⚡ b2n.ir/v2ray-configs | 192
-  - US美国(mibei77.com 米贝节点分享) (20)
-  - US美国(mibei77.com 米贝节点分享) (19)
+  - 🇺🇸_美国 (13)
+  - 🇺🇸US_2|1.1MB/s
   - 🇺🇸_美国 (18)
   - 🇩🇪_德国 (4)
   - 🇯🇵[www.v2nodes.com] vless-JP-1...
@@ -1346,11 +1434,43 @@ proxy-groups:
   - 🇯🇵_日本 (30)
   - 🇯🇵_日本 (18)
   - 🇮🇹[www.v2nodes.com] vless-IT-1...
-  - 🇺🇸 美国2
-  - 🇺🇸 美国3
+  - 🇺🇸_美国 (66)
+  - 🇺🇸_美国 (94)
+  - 🇺🇸_美国 (60)
+  - 🇺🇸_美国 (89)
+  - 🇺🇸_美国 (72)
+  - 🇺🇸_美国 (85)
+  - 🇺🇸_美国 (93)
+  - 🇺🇸_美国 (80)
+  - 🇺🇸_美国 (87)
+  - 🇺🇸_美国 (65)
+  - 🇺🇸_美国 (86)
+  - 🇺🇸_美国 (92)
+  - 🇺🇸_美国 (61)
+  - 🇺🇸_美国 (74)
+  - 🇺🇸_美国 (63)
+  - 🇺🇸_美国 (62)
+  - 🇺🇸_美国 (82)
+  - 🇺🇸_美国 (75)
+  - 🇺🇸_美国 (67)
+  - 🇺🇸_美国 (78)
+  - 🇺🇸_美国 (69)
+  - 🇺🇸_美国 (64)
+  - 🇺🇸_美国 (84)
+  - 🇺🇸_美国 (68)
+  - 🇺🇸_美国 (91)
+  - 🇺🇸_美国 (88)
+  - 🇺🇸_美国 (81)
+  - 🇺🇸_美国 (73)
+  - 🇺🇸_美国 (71)
+  - 🇺🇸_美国 (83)
   - 🇯🇵_日本 (24)
   - 🇯🇵_日本 (13)
+  - 🇺🇸_美国 (70)
   - CA加拿大(mibei77.com 米贝节点分享)
+  - 🇨🇦[www.v2nodes.com] vless-CA-1...
+  - 美国+CloudFlare节点
+  - '🇸🇬[www.v2nodes.com] vless-SG-8... #2'
   - 🇸🇬_新加坡 (14)
   - '🏳[www.v2nodes.com] vless- #2'
   - '🇧🇾[www.v2nodes.com] vless-BY-1... #1'
@@ -1363,14 +1483,16 @@ proxy-groups:
   - '🇦🇷 阿根廷 | ARG #1'
   - 🇺🇸 美国 | USA 7
   - 🇳🇱NL_3|374KB/s|GPT⁺|NF|88%
+  - '🇨🇦[www.v2nodes.com] vless-CA-1... #1'
   - US美国(mibei77.com 米贝节点分享) (13)
+  - '🇮🇳 印度 | IND #1'
   - '🇳🇱[www.v2nodes.com] vless-NL-1... #9'
   - '🇩🇪[www.v2nodes.com] vless-DE-1... #8'
   - '🏳[www.v2nodes.com] vless- #14'
   - TR_speednode_0038
   - '🇸🇪[www.v2nodes.com] vless-SE-1... #4'
   - 🇦🇹[www.v2nodes.com] vless-AT-3...
-  - 🇮🇷_伊朗 (4)
+  - ✅ 🇮🇷_伊朗 (4)
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #4'
   - '🇨🇿[www.v2nodes.com] vless-CZ-1... #1'
   - 🇦🇹[www.v2nodes.com] vless-AT-1...
@@ -1391,7 +1513,8 @@ proxy-groups:
   - '🇮🇷[www.v2nodes.com] vless-IR-1... #2'
   - '🇮🇷[www.v2nodes.com] vless-IR-1... #3'
   - '🇮🇷[www.v2nodes.com] vless-IR-1... #1'
-  - US美国(mibei77.com 米贝节点分享) (21)
+  - '🇺🇸[www.v2nodes.com] vless-US-1... #11'
+  - 🇺🇸_美国 (57)
   - '🇺🇸[www.v2nodes.com] vless-US-1... #14'
   - 🇩🇪_德国 (6)
   - 🇫🇷[www.v2nodes.com] vless-FR-1...
@@ -1500,7 +1623,6 @@ proxy-groups:
   - 🇳🇱_荷兰 (15)
   - 🇳🇱_荷兰 (26)
   - 🇳🇱_荷兰 (34)
-  - '🇺🇸[www.v2nodes.com] vless-US-1... #13'
   - '🇨🇦 加拿大 | CAN #1'
   - '🇭🇰[www.v2nodes.com] vless-HK-1... #3'
   - 🇨🇦 加拿大 | CAN 2
@@ -1517,16 +1639,32 @@ proxy-groups:
   - '🇩🇪[www.v2nodes.com] vless-DE-1... #2'
   - 🇹🇷_土耳其 (3)
   - 🇹🇷_土耳其 (2)
+  - 🇺🇸_美国 (41)
+  - 🇺🇸_美国 (42)
+  - 🇺🇸_美国 (43)
+  - 🇺🇸_美国 (38)
+  - 🇺🇸_美国 (39)
+  - 🇺🇸_美国 (40)
   - '🇭🇰[www.v2nodes.com] vless-HK-1... #4'
+  - 🇺🇸_美国 (50)
+  - 🇺🇸_美国 (44)
+  - 🇺🇸_美国 (45)
+  - 🇺🇸_美国 (46)
+  - 🇺🇸_美国 (47)
+  - 🇺🇸_美国 (48)
+  - 🇺🇸_美国 (49)
   - '🇯🇵[www.v2nodes.com] vless-JP-1... #6'
   - '🏳[www.v2nodes.com] vless- #18'
   - '🇪🇬 埃及 | EGY #1'
   - 🇭🇰_香港 (5)
   - 🇸🇬_新加坡 (5)
   - '🇫🇮[www.v2nodes.com] vless-FI-1... #5'
+  - 🇺🇸_美国 (90)
   - '🏳[www.v2nodes.com] vless- #7'
+  - 🇺🇸_美国 (76)
   - 🇯🇵JP_1|330KB/s|YT-JP|GPT⁺|NF|0%
   - 🇯🇵_日本 (22)
+  - 🇺🇸_美国 (77)
   - 🇸🇬_新加坡 (6)
   - 🇯🇵_日本 (26)
   - 🇯🇵_日本 (20)
@@ -1633,6 +1771,7 @@ proxy-groups:
   - ⚡ b2n.ir/v2ray-configs | 196_2
   - AT_speednode_0001
   - 🇮🇷_伊朗
+  - 🇸🇬[www.v2nodes.com] vless-SG-8...
   - 🇺🇸 美国高速-AI专用-1B
   - 🇺🇸 美国直连-备用
   - 🇸🇪_瑞典
@@ -1748,11 +1887,14 @@ proxy-groups:
   - 🇺🇸US_5|290KB/s|YT-NL|GPT⁺|NF|0%
   - '🇨🇭[www.v2nodes.com] vless-CH-1... #1'
   - 🇷🇺[www.v2nodes.com] vless-RU-1...
+  - '🇩🇪 德国 | DEU #4'
   - 🇺🇸US_8|259KB/s|YT-US|GPT⁺|NF|0%
   - 🇩🇪_德国 (5)
+  - 🇨🇦[www.v2nodes.com] vless-CA
   - 🇸🇪 瑞典 | SWE 3
   - SG新加坡(mibei77.com 米贝节点分享) (5)
   - 🇩🇪DE_4|351KB/s|GPT⁺|NF|17%
+  - '🇵🇱 波兰 | POL #2'
   - XRAY-VLESS直连
   - XRAY-TLS2053
   - XRAY-TLS2083
@@ -1815,6 +1957,9 @@ proxy-groups:
   - 🇯🇵_日本 (6)
   - 🇯🇵_日本 (7)
   - '🇩🇪[www.v2nodes.com] vless-DE-1... #4'
+  - 🏁RELAY-104.21.59.29-8893
+  - CA 🇨🇦 | @Raydikalx | 3B9130
+  - 🏁RELAY-104.19.47.79-1463
   - 🇩🇪_德国 (11)
   - 🇩🇪_德国 (9)
   - SE 🇸🇪 | @Raydikalx | 13C720
@@ -1822,9 +1967,13 @@ proxy-groups:
   - SG 🇸🇬 | @Raydikalx | 0335AF
   - CA 🇨🇦 | @Raydikalx | 27326A
   - 🇩🇪DE-162.55.174.135-3936
+  - 🇺🇸 机场推荐:dafei.de 美国 15_IPV4
   - 🇨🇭_瑞士
   - 🇲🇳MN-180.149.90.66-1273
   - 🇮🇷IR-185.143.234.120-1168
+  - 🏁RELAY-188.114.99.137-0500
+  - 🏁RELAY-188.114.99.9-1542
+  - '[peasoft/NoMoreWalls]🇺🇸 美国 | USA #3'
   - 🇮🇳_印度
   - US 🇺🇸 | @Raydikalx | 42BF00
   - DE 🇩🇪 | @Raydikalx | 53A099
@@ -1838,6 +1987,7 @@ proxy-groups:
   - 🇺🇸 硅谷-01-1C
   - 🇺🇸 硅谷-01-1G
   - '🇭🇰 香港 | HKG #1'
+  - 🇺🇸US-47.254.17.235-8031
   - GB 🇬🇧 | @Raydikalx | C96927
   - 日期：11-16
   - US 🇺🇸 | @Raydikalx | 7CF2F0
@@ -1847,13 +1997,25 @@ proxy-groups:
   - 🇩🇪_德国 (12)
   - 🇫🇮_芬兰 (2)
   - US 🇺🇸 | @Raydikalx | 960B59
+  - SG 🇸🇬 | @Raydikalx | 02A575
+  - 🏁RELAY-188.114.97.6-1242
+  - CA 🇨🇦 | @Raydikalx | EAD470
   - DE 🇩🇪 | @Raydikalx | A09BDC
   - IR 🇮🇷 | @Raydikalx | 5B3783
+  - 未知111
+  - CA 🇨🇦 | @Raydikalx | 740C2E
+  - CA 🇨🇦 | @Raydikalx | 4D6095
   - DE 🇩🇪 | @Raydikalx | 005985
+  - 🏁RELAY-104.26.9.76-2288
+  - SG 🇸🇬 | @Raydikalx | D326E1
   - IR 🇮🇷 | @Raydikalx | 647F69
+  - 🏁RELAY-172.67.131.245-1833
+  - 🏁RELAY-172.67.75.194-0853
   - 🇭🇰HK_2|753KB/s
+  - CA 🇨🇦 | @Raydikalx | 9C0B53
   - '@V2ray_Alpha🛤️ 8'
   - IR 🇮🇷 | @Raydikalx | 84F15E
+  - CA 🇨🇦 | @Raydikalx | B3074F
   - IR 🇮🇷 | @Raydikalx | B2BE35
   url: http://www.gstatic.com/generate_204
   interval: 86400
@@ -1889,8 +2051,8 @@ proxy-groups:
   - ✅ ❓Other_51|2.3MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_28|2.9MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_38|1.8MB/s|TK-US|YT-US|GPT⁺-US|GM-US
-  - ✅ ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
-  - ✅ ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB
+  - ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
+  - ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB
   - 🇨🇦CA_1|2.3MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ❓Other_64|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
@@ -1904,7 +2066,7 @@ proxy-groups:
   - ❓Other_42|1.6MB/s|GPT⁺-US|GM-US
   - 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
-  - ✅ ❓Other_23|2.7MB/s|GPT-US
+  - ❓Other_23|2.7MB/s|GPT-US
   - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
@@ -1954,7 +2116,7 @@ proxy-groups:
   - ❓Other_36|1.2MB/s|TK-RO|GPT⁺-RO
   - ✅ 🇱🇻LV_2|2.8MB/s|TK-LV|YT-US|GPT⁺-LV
   - ✅ ❓Other_56|2.3MB/s|TK-AL|YT-US|GPT⁺-AL|GM-AL
-  - ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
+  - ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ❓Other_4|3.5MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_37|2.2MB/s|TK-EE|GPT⁺-EE
   - 🇬🇧GB_3|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
@@ -2019,6 +2181,7 @@ proxy-groups:
   - '[peasoft/NoMoreWalls]🇸🇬[www.v2nodes.com] ss-SG-1615... #1'
   - '[ermaozi/get_subscribe]🇸🇬[www.v2nodes.com] ss-SG-1615... #1'
   - '[peasoft/NoMoreWalls]🇸🇬[www.v2nodes.com] ss-SG-1615... #2'
+  - '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1555...'
   - '[ermaozi/get_subscribe]🏳[www.v2nodes.com] ss- #22'
   - '[peasoft/NoMoreWalls]🇸🇬[www.v2nodes.com] ss-SG-1616... #1'
   - '[ermaozi/get_subscribe]🇦🇹[www.v2nodes.com] ss-AT-1614...'
@@ -2128,6 +2291,7 @@ proxy-groups:
   - 🇩🇪_德国 (14)
   - ⚡ b2n.ir/v2ray-configs | 795
   - ⚡ b2n.ir/v2ray-configs | 351
+  - ⚡ b2n.ir/v2ray-configs | 837
   - 🇧🇬_保加利亚
   - '🇨🇭[www.v2nodes.com] trojan-CH-... #1'
   - '[peasoft/NoMoreWalls]🏳[www.v2nodes.com] trojan- #2'
@@ -2154,7 +2318,8 @@ proxy-groups:
   - 🇭🇰_香港 (4)
   - 🇭🇰_香港
   - ✅ 🇺🇸_美国 (16)
-  - SG新加坡(mibei77.com 米贝节点分享) (2)
+  - 🇺🇸_美国 (15)
+  - '🇹🇷[www.v2nodes.com] trojan-TR-... #1'
   - ✅ 🇺🇸_美国 (20)
   - 🇭🇰_香港 (2)
   - ✅ 🇺🇸_美国 (21)
@@ -2169,7 +2334,6 @@ proxy-groups:
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #1'
   - '🇯🇵[www.v2nodes.com] vless-JP-1... #1'
   - 🇵🇰 巴基斯坦 | PAK
-  - '🇩🇪[www.v2nodes.com] vless-DE-1... #10'
   - '🏳[www.v2nodes.com] vless- #15'
   - CA加拿大(mibei77.com 米贝节点分享) (2)
   - '🇫🇮[www.v2nodes.com] vless-FI-1... #1'
@@ -2177,11 +2341,15 @@ proxy-groups:
   - DE德国(mibei77.com 米贝节点分享) (3)
   - 🇺🇸US_1|354KB/s|YT-US|GPT⁺|NF|20%
   - US美国(mibei77.com 米贝节点分享) (28)
+  - '🇯🇵[www.v2nodes.com] vless-JP-1... #3'
   - 🇯🇵_日本 (21)
+  - '🏳[www.v2nodes.com] vless- #22'
+  - 🇺🇸_美国 (79)
   - 🇰🇿[www.v2nodes.com] vless-KZ-1...
   - '🇹🇼 🇨🇳 台湾 | TWN #1'
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #2'
   - 🇫🇮[www.v2nodes.com] vless-FI-1...
+  - 🇺🇸_美国 (58)
   - 🇮🇳[www.v2nodes.com] vless-IN-1...
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #3'
   - 🇺🇸_美国 (2)
@@ -2215,6 +2383,7 @@ proxy-groups:
   - 🇸🇬_新加坡 (18)
   - 🇸🇬_新加坡 (15)
   - '🇸🇪 瑞典 | SWE #5'
+  - '🏳[www.v2nodes.com] vless- #26'
   - '🏳[www.v2nodes.com] vless- #9'
   - '🇫🇮[www.v2nodes.com] vless-FI-1... #4'
   - 🇸🇬_新加坡 (16)
@@ -2238,8 +2407,8 @@ proxy-groups:
   - '🇪🇪 爱沙尼亚 | EST #1'
   - '🇩🇪[www.v2nodes.com] vless-DE-1... #9'
   - ⚡ b2n.ir/v2ray-configs | 192
-  - US美国(mibei77.com 米贝节点分享) (20)
-  - US美国(mibei77.com 米贝节点分享) (19)
+  - 🇺🇸_美国 (13)
+  - 🇺🇸US_2|1.1MB/s
   - 🇺🇸_美国 (18)
   - 🇩🇪_德国 (4)
   - 🇯🇵[www.v2nodes.com] vless-JP-1...
@@ -2254,11 +2423,43 @@ proxy-groups:
   - 🇯🇵_日本 (30)
   - 🇯🇵_日本 (18)
   - 🇮🇹[www.v2nodes.com] vless-IT-1...
-  - 🇺🇸 美国2
-  - 🇺🇸 美国3
+  - 🇺🇸_美国 (66)
+  - 🇺🇸_美国 (94)
+  - 🇺🇸_美国 (60)
+  - 🇺🇸_美国 (89)
+  - 🇺🇸_美国 (72)
+  - 🇺🇸_美国 (85)
+  - 🇺🇸_美国 (93)
+  - 🇺🇸_美国 (80)
+  - 🇺🇸_美国 (87)
+  - 🇺🇸_美国 (65)
+  - 🇺🇸_美国 (86)
+  - 🇺🇸_美国 (92)
+  - 🇺🇸_美国 (61)
+  - 🇺🇸_美国 (74)
+  - 🇺🇸_美国 (63)
+  - 🇺🇸_美国 (62)
+  - 🇺🇸_美国 (82)
+  - 🇺🇸_美国 (75)
+  - 🇺🇸_美国 (67)
+  - 🇺🇸_美国 (78)
+  - 🇺🇸_美国 (69)
+  - 🇺🇸_美国 (64)
+  - 🇺🇸_美国 (84)
+  - 🇺🇸_美国 (68)
+  - 🇺🇸_美国 (91)
+  - 🇺🇸_美国 (88)
+  - 🇺🇸_美国 (81)
+  - 🇺🇸_美国 (73)
+  - 🇺🇸_美国 (71)
+  - 🇺🇸_美国 (83)
   - 🇯🇵_日本 (24)
   - 🇯🇵_日本 (13)
+  - 🇺🇸_美国 (70)
   - CA加拿大(mibei77.com 米贝节点分享)
+  - 🇨🇦[www.v2nodes.com] vless-CA-1...
+  - 美国+CloudFlare节点
+  - '🇸🇬[www.v2nodes.com] vless-SG-8... #2'
   - 🇸🇬_新加坡 (14)
   - '🏳[www.v2nodes.com] vless- #2'
   - '🇧🇾[www.v2nodes.com] vless-BY-1... #1'
@@ -2271,14 +2472,16 @@ proxy-groups:
   - '🇦🇷 阿根廷 | ARG #1'
   - 🇺🇸 美国 | USA 7
   - 🇳🇱NL_3|374KB/s|GPT⁺|NF|88%
+  - '🇨🇦[www.v2nodes.com] vless-CA-1... #1'
   - US美国(mibei77.com 米贝节点分享) (13)
+  - '🇮🇳 印度 | IND #1'
   - '🇳🇱[www.v2nodes.com] vless-NL-1... #9'
   - '🇩🇪[www.v2nodes.com] vless-DE-1... #8'
   - '🏳[www.v2nodes.com] vless- #14'
   - TR_speednode_0038
   - '🇸🇪[www.v2nodes.com] vless-SE-1... #4'
   - 🇦🇹[www.v2nodes.com] vless-AT-3...
-  - 🇮🇷_伊朗 (4)
+  - ✅ 🇮🇷_伊朗 (4)
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #4'
   - '🇨🇿[www.v2nodes.com] vless-CZ-1... #1'
   - 🇦🇹[www.v2nodes.com] vless-AT-1...
@@ -2299,7 +2502,8 @@ proxy-groups:
   - '🇮🇷[www.v2nodes.com] vless-IR-1... #2'
   - '🇮🇷[www.v2nodes.com] vless-IR-1... #3'
   - '🇮🇷[www.v2nodes.com] vless-IR-1... #1'
-  - US美国(mibei77.com 米贝节点分享) (21)
+  - '🇺🇸[www.v2nodes.com] vless-US-1... #11'
+  - 🇺🇸_美国 (57)
   - '🇺🇸[www.v2nodes.com] vless-US-1... #14'
   - 🇩🇪_德国 (6)
   - 🇫🇷[www.v2nodes.com] vless-FR-1...
@@ -2408,7 +2612,6 @@ proxy-groups:
   - 🇳🇱_荷兰 (15)
   - 🇳🇱_荷兰 (26)
   - 🇳🇱_荷兰 (34)
-  - '🇺🇸[www.v2nodes.com] vless-US-1... #13'
   - '🇨🇦 加拿大 | CAN #1'
   - '🇭🇰[www.v2nodes.com] vless-HK-1... #3'
   - 🇨🇦 加拿大 | CAN 2
@@ -2425,16 +2628,32 @@ proxy-groups:
   - '🇩🇪[www.v2nodes.com] vless-DE-1... #2'
   - 🇹🇷_土耳其 (3)
   - 🇹🇷_土耳其 (2)
+  - 🇺🇸_美国 (41)
+  - 🇺🇸_美国 (42)
+  - 🇺🇸_美国 (43)
+  - 🇺🇸_美国 (38)
+  - 🇺🇸_美国 (39)
+  - 🇺🇸_美国 (40)
   - '🇭🇰[www.v2nodes.com] vless-HK-1... #4'
+  - 🇺🇸_美国 (50)
+  - 🇺🇸_美国 (44)
+  - 🇺🇸_美国 (45)
+  - 🇺🇸_美国 (46)
+  - 🇺🇸_美国 (47)
+  - 🇺🇸_美国 (48)
+  - 🇺🇸_美国 (49)
   - '🇯🇵[www.v2nodes.com] vless-JP-1... #6'
   - '🏳[www.v2nodes.com] vless- #18'
   - '🇪🇬 埃及 | EGY #1'
   - 🇭🇰_香港 (5)
   - 🇸🇬_新加坡 (5)
   - '🇫🇮[www.v2nodes.com] vless-FI-1... #5'
+  - 🇺🇸_美国 (90)
   - '🏳[www.v2nodes.com] vless- #7'
+  - 🇺🇸_美国 (76)
   - 🇯🇵JP_1|330KB/s|YT-JP|GPT⁺|NF|0%
   - 🇯🇵_日本 (22)
+  - 🇺🇸_美国 (77)
   - 🇸🇬_新加坡 (6)
   - 🇯🇵_日本 (26)
   - 🇯🇵_日本 (20)
@@ -2541,6 +2760,7 @@ proxy-groups:
   - ⚡ b2n.ir/v2ray-configs | 196_2
   - AT_speednode_0001
   - 🇮🇷_伊朗
+  - 🇸🇬[www.v2nodes.com] vless-SG-8...
   - 🇺🇸 美国高速-AI专用-1B
   - 🇺🇸 美国直连-备用
   - 🇸🇪_瑞典
@@ -2656,11 +2876,14 @@ proxy-groups:
   - 🇺🇸US_5|290KB/s|YT-NL|GPT⁺|NF|0%
   - '🇨🇭[www.v2nodes.com] vless-CH-1... #1'
   - 🇷🇺[www.v2nodes.com] vless-RU-1...
+  - '🇩🇪 德国 | DEU #4'
   - 🇺🇸US_8|259KB/s|YT-US|GPT⁺|NF|0%
   - 🇩🇪_德国 (5)
+  - 🇨🇦[www.v2nodes.com] vless-CA
   - 🇸🇪 瑞典 | SWE 3
   - SG新加坡(mibei77.com 米贝节点分享) (5)
   - 🇩🇪DE_4|351KB/s|GPT⁺|NF|17%
+  - '🇵🇱 波兰 | POL #2'
   - XRAY-VLESS直连
   - XRAY-TLS2053
   - XRAY-TLS2083
@@ -2723,6 +2946,9 @@ proxy-groups:
   - 🇯🇵_日本 (6)
   - 🇯🇵_日本 (7)
   - '🇩🇪[www.v2nodes.com] vless-DE-1... #4'
+  - 🏁RELAY-104.21.59.29-8893
+  - CA 🇨🇦 | @Raydikalx | 3B9130
+  - 🏁RELAY-104.19.47.79-1463
   - 🇩🇪_德国 (11)
   - 🇩🇪_德国 (9)
   - SE 🇸🇪 | @Raydikalx | 13C720
@@ -2730,9 +2956,13 @@ proxy-groups:
   - SG 🇸🇬 | @Raydikalx | 0335AF
   - CA 🇨🇦 | @Raydikalx | 27326A
   - 🇩🇪DE-162.55.174.135-3936
+  - 🇺🇸 机场推荐:dafei.de 美国 15_IPV4
   - 🇨🇭_瑞士
   - 🇲🇳MN-180.149.90.66-1273
   - 🇮🇷IR-185.143.234.120-1168
+  - 🏁RELAY-188.114.99.137-0500
+  - 🏁RELAY-188.114.99.9-1542
+  - '[peasoft/NoMoreWalls]🇺🇸 美国 | USA #3'
   - 🇮🇳_印度
   - US 🇺🇸 | @Raydikalx | 42BF00
   - DE 🇩🇪 | @Raydikalx | 53A099
@@ -2746,6 +2976,7 @@ proxy-groups:
   - 🇺🇸 硅谷-01-1C
   - 🇺🇸 硅谷-01-1G
   - '🇭🇰 香港 | HKG #1'
+  - 🇺🇸US-47.254.17.235-8031
   - GB 🇬🇧 | @Raydikalx | C96927
   - 日期：11-16
   - US 🇺🇸 | @Raydikalx | 7CF2F0
@@ -2755,13 +2986,25 @@ proxy-groups:
   - 🇩🇪_德国 (12)
   - 🇫🇮_芬兰 (2)
   - US 🇺🇸 | @Raydikalx | 960B59
+  - SG 🇸🇬 | @Raydikalx | 02A575
+  - 🏁RELAY-188.114.97.6-1242
+  - CA 🇨🇦 | @Raydikalx | EAD470
   - DE 🇩🇪 | @Raydikalx | A09BDC
   - IR 🇮🇷 | @Raydikalx | 5B3783
+  - 未知111
+  - CA 🇨🇦 | @Raydikalx | 740C2E
+  - CA 🇨🇦 | @Raydikalx | 4D6095
   - DE 🇩🇪 | @Raydikalx | 005985
+  - 🏁RELAY-104.26.9.76-2288
+  - SG 🇸🇬 | @Raydikalx | D326E1
   - IR 🇮🇷 | @Raydikalx | 647F69
+  - 🏁RELAY-172.67.131.245-1833
+  - 🏁RELAY-172.67.75.194-0853
   - 🇭🇰HK_2|753KB/s
+  - CA 🇨🇦 | @Raydikalx | 9C0B53
   - '@V2ray_Alpha🛤️ 8'
   - IR 🇮🇷 | @Raydikalx | 84F15E
+  - CA 🇨🇦 | @Raydikalx | B3074F
   - IR 🇮🇷 | @Raydikalx | B2BE35
   url: http://www.gstatic.com/generate_204
   interval: 7200
@@ -3476,13 +3719,13 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
+- name: ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
   port: 9443
   server: 149.88.27.46
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB
+- name: ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB
   port: 9443
   server: 149.88.99.209
   skip-cert-verify: true
@@ -3575,7 +3818,7 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ ❓Other_23|2.7MB/s|GPT-US
+- name: ❓Other_23|2.7MB/s|GPT-US
   port: 443
   server: 167.88.60.242
   sin: https://t.me/WangCai2🇨🇳
@@ -3909,7 +4152,7 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
+- name: ❓Other_21|2.0MB/s|TK-DE|GPT⁺-DE|GM-DE
   port: 443
   server: 87.249.132.97
   sin: https://t.me/WangCai2🇨🇳
@@ -4444,6 +4687,15 @@ proxies:
   security_scheme: aead
   proto: ss
   peer: 149.88.107.74
+- name: '[peasoft/NoMoreWalls]🇨🇦[www.v2nodes.com] ss-CA-1555...'
+  type: ss
+  server: 15.235.121.109
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: 575hiopq2h28yao6
+  security_scheme: aead
+  proto: ss
+  peer: 15.235.121.109
 - name: '[ermaozi/get_subscribe]🏳[www.v2nodes.com] ss- #22'
   type: ss
   server: 15.235.164.133
@@ -5507,6 +5759,16 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: de.01.naiun.bilibili.com
+- name: ⚡ b2n.ir/v2ray-configs | 837
+  type: trojan
+  server: 192.236.151.43
+  port: 443
+  password: OnHLrkVqZVtZyulTwC4bHrIbW7GyUDttKVNGEYVR12Y=
+  tls: true
+  network: tcp
+  security_scheme: tls
+  proto: trojan
+  peer: 192.236.151.43
 - name: 🇧🇬_保加利亚
   type: trojan
   server: 193.239.160.134
@@ -5800,16 +6062,28 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: hk.catxstar.com
-- type: trojan
-  name: SG新加坡(mibei77.com 米贝节点分享) (2)
+- name: 🇺🇸_美国 (15)
+  type: trojan
   server: sclass-b1.catcat321.com
   port: 20027
   password: d7563108-615c-4338-a7bd-77f359869a4a
-  udp: true
   tls: true
-  servername: hk.catxstar.com
+  network: tcp
   sni: hk.catxstar.com
-  skip-cert-verify: false
+  security_scheme: tls
+  proto: trojan
+  peer: hk.catxstar.com
+- name: '🇹🇷[www.v2nodes.com] trojan-TR-... #1'
+  type: trojan
+  server: sclass-b1.catcat321.com
+  port: 20028
+  password: d7563108-615c-4338-a7bd-77f359869a4a
+  tls: true
+  network: tcp
+  sni: hk.catxstar.com
+  security_scheme: tls
+  proto: trojan
+  peer: hk.catxstar.com
 - name: ✅ 🇺🇸_美国 (20)
   type: trojan
   server: sclass-b1.catcat321.com
@@ -5981,22 +6255,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: download.nvidia.com
-- name: '🇩🇪[www.v2nodes.com] vless-DE-1... #10'
-  type: vless
-  server: 103.31.4.160
-  port: 8443
-  uuid: 9443badf-414f-4b12-b19a-7cc2c7431163
-  tls: true
-  network: ws
-  sni: moz.ar-marz.fun
-  servername: moz.ar-marz.fun
-  ws-opts:
-    path: /manfp=firefox
-    headers:
-      Host: moz.ar-marz.fun
-  security_scheme: tls
-  proto: vless
-  peer: moz.ar-marz.fun
 - name: '🏳[www.v2nodes.com] vless- #15'
   type: vless
   server: 103.75.118.228
@@ -6105,6 +6363,22 @@ proxies:
     path: /?ed=2048
     headers:
       Host: joeypg.ezbiz.dynv6.net
+- name: '🇯🇵[www.v2nodes.com] vless-JP-1... #3'
+  type: vless
+  server: 104.21.70.228
+  port: 443
+  uuid: 4e4f1f70-5e56-4a76-bb9d-db087f4690c4
+  tls: true
+  network: ws
+  sni: jp3.yohototo.top
+  servername: jp3.yohototo.top
+  ws-opts:
+    path: /tyxywsfp=firefox
+    headers:
+      Host: jp3.yohototo.top
+  security_scheme: tls
+  proto: vless
+  peer: jp3.yohototo.top
 - name: 🇯🇵_日本 (21)
   type: vless
   server: 104.238.160.118
@@ -6121,6 +6395,43 @@ proxies:
   reality-opts:
     public-key: noQmtZ2k0k7U_tlDJEXfL8Xxvv5t13LS6fm8NrvdCUY
     short-id: 7b11dca1
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: '🏳[www.v2nodes.com] vless- #22'
+  type: vless
+  server: 104.26.13.31
+  port: 8080
+  uuid: 3e06b1db-2efb-446e-ba2d-68850dfd2f9d
+  tls: false
+  network: ws
+  sni: ip.sb
+  servername: ip.sb
+  ws-opts:
+    path: /
+    headers:
+      Host: bdfba-cool-tree-b580.v8fz4kbv.workers.dev
+  security_scheme: none
+  proto: vless
+  peer: ip.sb
+- name: 🇺🇸_美国 (79)
+  type: vless
+  server: 107.191.58.86
+  port: 443
+  uuid: 4444e77e-3d2a-4dc9-bf31-936f038f5570
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: ZZwZGoX0Us8t6nLvckDWskC1c25F9rL0_nUXmd8BFxQ
+    short-id: 8dd324c1
     spider-x: ''
     fingerprint: chrome
   security_scheme: reality
@@ -6180,6 +6491,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: db-28.topp-con.xyz
+- name: 🇺🇸_美国 (58)
+  type: vless
+  server: 129.153.71.28
+  port: 28863
+  uuid: 572b2f63-62b5-4e79-a6c8-d2211bf33576
+  tls: true
+  network: ws
+  sni: wjwkhoaftdgrt8qus.mp8pmwdgwf3sdapasouszjobjr57nrxxgtx9n.workers.dev
+  servername: wjwkhoaftdgrt8qus.mp8pmwdgwf3sdapasouszjobjr57nrxxgtx9n.workers.dev
+  ws-opts:
+    path: /@Marisa_kristi
+    headers:
+      Host: wjwkhoaftdgrt8qus.mp8pmwdgwf3sdapasouszjobjr57nrxxgtx9n.workers.dev
+  security_scheme: tls
+  proto: vless
+  peer: wjwkhoaftdgrt8qus.mp8pmwdgwf3sdapasouszjobjr57nrxxgtx9n.workers.dev
 - name: 🇮🇳[www.v2nodes.com] vless-IN-1...
   type: vless
   server: 13.140.253.35
@@ -6761,6 +7088,18 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: sweden13.clearorbitllc.com
+- name: '🏳[www.v2nodes.com] vless- #26'
+  type: vless
+  server: 143.246.62.191
+  port: 8443
+  uuid: eb8c97f7-a154-4442-91b0-54c0d055ad0b
+  tls: true
+  network: tcp
+  sni: github.githubassets.com
+  servername: github.githubassets.com
+  security_scheme: tls
+  proto: vless
+  peer: github.githubassets.com
 - name: '🏳[www.v2nodes.com] vless- #9'
   type: vless
   server: 145.223.68.58
@@ -7081,38 +7420,36 @@ proxies:
   security_scheme: reality
   proto: vless
   peer: blog.worldoftanks.eu
-- type: vless
-  name: US美国(mibei77.com 米贝节点分享) (20)
+- name: 🇺🇸_美国 (13)
+  type: vless
   server: 162.35.101.168
   port: 44333
   uuid: 256eab05-abfc-4747-8671-01e92fb95192
   flow: xtls-rprx-vision
-  udp: true
   tls: true
-  servername: www.apple.com
+  network: tcp
   sni: www.apple.com
-  skip-cert-verify: false
-  client-fingerprint: chrome
+  servername: www.apple.com
   reality-opts:
     public-key: vhtQBb9x0bXClfNSSGals7dBBUEDZ7PuW0sllAsyzDM
     short-id: a1b2c3d4
-- type: vless
-  name: US美国(mibei77.com 米贝节点分享) (19)
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: www.apple.com
+- name: 🇺🇸US_2|1.1MB/s
+  type: vless
   server: 162.35.101.177
   port: 443
   uuid: cda0862a-0f87-4be9-8ed8-1d0c9e382839
-  udp: true
   tls: true
-  servername: 0592efg.us8.h1clayd.click
-  sni: 0592efg.us8.h1clayd.click
-  skip-cert-verify: false
-  client-fingerprint: edge
-  reality-opts:
-    public-key: cO3wYHISTeorXcM8ffaDCDdqZ-olBQL-GyZqb-W7rTk
-    short-id: bd8f712209a9c283
   network: grpc
-  grpc-opts:
-    grpc-service-name: 99f2107b03f8
+  sni: 0592efg.us8.h1clayd.click
+  servername: 0592efg.us8.h1clayd.click
+  security_scheme: tls
+  proto: vless
+  peer: 0592efg.us8.h1clayd.click
 - name: 🇺🇸_美国 (18)
   type: vless
   server: 162.35.38.156
@@ -7378,40 +7715,636 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: www.apple.com
-- name: 🇺🇸 美国2
+- name: 🇺🇸_美国 (66)
+  type: vless
+  server: 172.233.129.172
+  port: 443
+  uuid: 40a4b915-5e6f-4316-9bb1-e899f30608e3
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: LWfC_chpo4uDtzJ9VVnuTcf6zTzWKx-LCJAE2Ltl7h4
+    short-id: 5818adc3
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (94)
+  type: vless
+  server: 172.233.129.179
+  port: 443
+  uuid: 8d602a84-d258-4953-8ef7-d64afff2e879
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: 5UVOUoMBYxyWuF-FCbXoEt8LHFkj7iZqZOABlvyvXV8
+    short-id: 955c702b
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (60)
+  type: vless
+  server: 172.233.129.187
+  port: 443
+  uuid: ac28b793-b9cb-4795-8a49-311595469328
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: iNGO54Z98Rf8PR858MMTGjqGaEEOpcqEFSrZJbeGtlY
+    short-id: 4a979563
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (89)
+  type: vless
+  server: 172.233.129.46
+  port: 443
+  uuid: 325a2d32-286c-44d8-8bf7-d6dc85ecfd53
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: Z0yUixOaVZhwnYyI9XtSSqgxBCerCWqticoYPmwPzzA
+    short-id: dd282cb2
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (72)
+  type: vless
+  server: 172.233.129.65
+  port: 443
+  uuid: 9d91b606-9117-4f8f-8df7-dda7facf3a57
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: Z-RbKKLYcL0Rs6FgAjrrIyN6pAuZjP0JmaP9kLKoER0
+    short-id: 08d9f55d
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (85)
+  type: vless
+  server: 172.233.139.212
+  port: 443
+  uuid: b21a60ef-9042-42c8-bb13-160528ea19c6
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: bRB-Z_UOQ_sk8UFczAjrpkgKIg6cVdTNGnsyC7vAoyg
+    short-id: 7a87386b
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (93)
+  type: vless
+  server: 172.233.139.98
+  port: 443
+  uuid: 62b5a30a-89de-4da7-b1c0-08abfad0cd1d
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: ZtWVf2gAix3etGziWVZ9apsWfWb5UOepCWQqVyIGxHI
+    short-id: 4d3f31a1
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (80)
+  type: vless
+  server: 172.233.140.139
+  port: 443
+  uuid: 82b258c9-f4ae-46f6-8c1a-322b316a2e0d
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: l1Tts2VQAnD1We9lPKqw9GqnMAHiIlYhsaw5ASVrTGM
+    short-id: 5c298270
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (87)
+  type: vless
+  server: 172.233.142.149
+  port: 443
+  uuid: 61e3954d-0d66-4b69-b6cd-9b4fc2352303
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: f9D1ZzG6vP1HgjCaCIutbykWkab8VEDuitwuwaeuBgY
+    short-id: 4206512a
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (65)
+  type: vless
+  server: 172.233.146.140
+  port: 443
+  uuid: 23ef891c-d5bc-400d-84a2-f3a0c8c102d0
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: wn6AvldKYnxY_vOi6LqsI7fgBj8wqCNw3_YpyOPDhig
+    short-id: 618ad724
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (86)
+  type: vless
+  server: 172.233.156.229
+  port: 443
+  uuid: b9bc6f6c-09b7-43ce-b9c7-312d37f1a312
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: jTnoGvXzAIa2lsfioHHRJ1lAj1xqjowhcCwGcfme8QY
+    short-id: 826efd30
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (92)
+  type: vless
+  server: 172.233.157.18
+  port: 443
+  uuid: 9a10a216-c8db-48d5-bb91-cf1ef245bd1d
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: 4DL3ZveBq9TIQbtIp2ZtIPI6zRFHGdcVAW-poC0UqDA
+    short-id: 30aa62c5
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (61)
+  type: vless
+  server: 172.235.32.253
+  port: 443
+  uuid: 62fe4c8e-2620-478c-9c39-3d4e12848ff4
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: r__vI0YVD9j6Fttsb4aZ0TwvUggV493v6GILKXWIZwA
+    short-id: ac184496
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (74)
+  type: vless
+  server: 172.235.36.11
+  port: 443
+  uuid: a15c47e7-0d24-4e82-a759-891d0e951a01
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: lhkyTN5zj2bK7HhMVfer5RoDz0K67YK8VyiiK8TvkEE
+    short-id: afc7874d
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (63)
+  type: vless
+  server: 172.235.36.156
+  port: 443
+  uuid: 5b01153c-1cde-4efb-ae09-d97dbc4da44b
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: 0RcPjVCZ7X7qXylKu6eGttBaRCh1YmAqpXL6IRXu6Cc
+    short-id: 7e759265
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (62)
+  type: vless
+  server: 172.235.37.163
+  port: 443
+  uuid: ac5752cd-bcf5-46c7-84d8-cadabbc8ead4
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: Gfo4sYcQIKnnr25rMF36kSrkqTupybXwgsfdMDbpv0w
+    short-id: d20ad1f3
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (82)
+  type: vless
+  server: 172.235.37.168
+  port: 443
+  uuid: dbac71f3-ab05-4194-985b-f07088bf1a4a
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: 1iwAzh_XzSCYWZEVZ0lfczKFd--jXx3coCt5le58gEM
+    short-id: c52e85fe
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (75)
+  type: vless
+  server: 172.235.40.143
+  port: 443
+  uuid: 44fd6b93-9cc5-4ca1-9c2d-77a6497eaf7c
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: JbbnGIAzXawujJHGI4QWdKMGDi01uSjyasC3VhpMMQU
+    short-id: f0d46c7f
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (67)
+  type: vless
+  server: 172.235.48.213
+  port: 443
+  uuid: 25999cd3-10ed-4429-8329-dc651f1adafc
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: Sf-7bsdlDkigFJRVwZ99MmSTqKCIh26ZP_x8RzPLJhg
+    short-id: e1ac70b6
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (78)
+  type: vless
+  server: 172.235.48.245
+  port: 443
+  uuid: c923b26b-a941-456d-8ccc-834f3b4080e0
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: WoN4MfFQoLTmHhsa6cgsjjDtditjn2VfDbp9jd3hbSs
+    short-id: 7378fab7
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (69)
+  type: vless
+  server: 172.235.49.52
+  port: 443
+  uuid: ff5fc681-8548-4621-87d1-6b123db48f64
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: Md-qJgtcKVbuLuwCX8r-VZnfKq3z_3CtyPt3CRcqdQE
+    short-id: 270d474c
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (64)
+  type: vless
+  server: 172.235.50.209
+  port: 443
+  uuid: 1d53bb9d-5c26-4706-b067-a09df0d22578
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: eHN-Pl9ZQX_SHlIYSUWV-YF4BHDo2d2zKRC4FPF-HTU
+    short-id: 0c2ca327
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (84)
+  type: vless
+  server: 172.235.51.71
+  port: 443
+  uuid: 3c17ead6-201a-4fba-8246-6327b911a1be
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: rzeXNEmuocvPVMnmettRsJbHQGjQGaZoH7jNw_3GUD8
+    short-id: 4bf84b30
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (68)
+  type: vless
   server: 172.235.53.103
   port: 443
-  type: vless
   uuid: 38ae2bc6-577c-4e0a-b49c-81c44a0b4383
   tls: true
-  tfo: false
-  skip-cert-verify: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
   reality-opts:
     public-key: YS1T3hKkZSWZBej5I1O2s3QQ-jf5JOAY24EZbp9faX8
     short-id: 60e39a7e
-  servername: itunes.apple.com
-  client-fingerprint: chrome
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (91)
+  type: vless
+  server: 172.235.63.167
+  port: 443
+  uuid: d95f222c-3a63-47f8-8e61-af83e1f143f5
+  tls: true
   network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
   ws-opts:
     path: /ws
-  udp: true
-- name: 🇺🇸 美国3
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: oxf_WPNwjjrO2uknpE9vbM9uwiQ4vbasL-Bgy3lwCHg
+    short-id: dd78b5c3
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (88)
+  type: vless
+  server: 172.236.227.60
+  port: 443
+  uuid: 3c8a110d-f04d-4f0e-9579-fd00631b8830
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: BHBzo_I0M-sChoOqTyOczYBP8l1L_dkmB6u3ijAOaGo
+    short-id: 664c1530
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (81)
+  type: vless
+  server: 172.236.233.130
+  port: 443
+  uuid: a663dc28-28dc-4f97-9665-6ac215c8e567
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: 4wXbhUoSy9s9bGy9PaK18XVTTw3wXkBDjEusiMHaMB4
+    short-id: '53908445'
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (73)
+  type: vless
+  server: 172.236.238.71
+  port: 443
+  uuid: 10c27b32-441b-4e73-9987-33b66298ca50
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: pdd8WbKVyeQOAGdDTzBxRGdote46rGljB7ZSuUsTAhw
+    short-id: 2419337b
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (71)
+  type: vless
   server: 172.236.239.126
   port: 443
-  type: vless
   uuid: 6b4861de-7316-4a5a-bc45-0cbd8bf97eab
   tls: true
-  tfo: false
-  skip-cert-verify: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
   reality-opts:
     public-key: SJAHlQal4h4gy7BFInw13ute3ZM49kXMWCkJj3F4tW0
     short-id: 357a37e1
-  servername: itunes.apple.com
-  client-fingerprint: chrome
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (83)
+  type: vless
+  server: 172.236.241.130
+  port: 443
+  uuid: 21117a67-21c2-4e2a-ba8f-bc49e23b0ae8
+  tls: true
   network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
   ws-opts:
     path: /ws
-  udp: true
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: ibi0jOH5SfYhh7ycxdBrqq5oN4ajN3-dNiHKWC2VYWs
+    short-id: 51ecfe9e
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
 - name: 🇯🇵_日本 (24)
   type: vless
   server: 172.237.14.205
@@ -7454,6 +8387,27 @@ proxies:
   security_scheme: reality
   proto: vless
   peer: itunes.apple.com
+- name: 🇺🇸_美国 (70)
+  type: vless
+  server: 172.239.67.142
+  port: 443
+  uuid: b0d814b5-7232-4fe9-9ce9-e552c9abbae8
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: Knpni0SBmL6d1nGWtqmHRDsOQvQxcD2Wd0eOf2KZtgs
+    short-id: ba356a45
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
 - type: vless
   name: CA加拿大(mibei77.com 米贝节点分享)
   server: 172.64.149.88
@@ -7470,6 +8424,54 @@ proxies:
     path: /
     headers:
       Host: top-e4s.pages.dev
+- name: 🇨🇦[www.v2nodes.com] vless-CA-1...
+  type: vless
+  server: 172.67.141.182
+  port: 443
+  uuid: ce440dcf-e570-4a50-af37-bf588ee8a988
+  tls: true
+  network: ws
+  sni: 6qwoom7kdrcoan3ui4ra5dy.pages.dev
+  servername: 6qwoom7kdrcoan3ui4ra5dy.pages.dev
+  ws-opts:
+    path: /vl/KSPdmco70dfoXFS292o2Nv6yPt?ed=2560#Telegram---PLANB_NET---PLANB_NET---PLANB_NET---PLANB_NETfp=unsafe
+    headers:
+      Host: 6qwoom7kdrcoan3ui4ra5dy.pages.dev
+  security_scheme: tls
+  proto: vless
+  peer: 6qwoom7kdrcoan3ui4ra5dy.pages.dev
+- name: 美国+CloudFlare节点
+  type: vless
+  server: 172.67.199.126
+  port: 2053
+  uuid: c83f15bf-1817-4ec8-a19f-6393d226434c
+  tls: true
+  network: ws
+  sni: fast.145779.xyz
+  servername: fast.145779.xyz
+  ws-opts:
+    path: /ws-tesla
+    headers:
+      Host: fast.145779.xyz
+  security_scheme: tls
+  proto: vless
+  peer: fast.145779.xyz
+- name: '🇸🇬[www.v2nodes.com] vless-SG-8... #2'
+  type: vless
+  server: 172.67.74.177
+  port: 443
+  uuid: 99c5b713-dedf-4a10-8070-916ff3f49b0e
+  tls: true
+  network: ws
+  sni: fs.qicai99.com
+  servername: fs.qicai99.com
+  ws-opts:
+    path: /fp=chrome
+    headers:
+      Host: fs.qicai99.com
+  security_scheme: tls
+  proto: vless
+  peer: fs.qicai99.com
 - name: 🇸🇬_新加坡 (14)
   type: vless
   server: 178.128.114.149
@@ -7646,6 +8648,22 @@ proxies:
     headers:
       Host: wzknb.pages.dev
     path: /proxyip=179.255.104.87,179.255.116.198,179.255.101.56,142.248.218.6,142.248.218.4,45.76.79.239,179.255.152.163,208.68.180.240
+- name: '🇨🇦[www.v2nodes.com] vless-CA-1... #1'
+  type: vless
+  server: 188.114.98.0
+  port: 443
+  uuid: d4733e5a-5850-4523-942e-f28f82ebf4a9
+  tls: true
+  network: ws
+  sni: party-5cn.pages.dev
+  servername: party-5cn.pages.dev
+  ws-opts:
+    path: /?TELEGRAM--MARAMBASHI--MARAMBASHI--MARAMBASHI--MARAMBASHI?ed=2560fp=chrome
+    headers:
+      Host: party-5cn.pages.dev
+  security_scheme: tls
+  proto: vless
+  peer: party-5cn.pages.dev
 - type: vless
   name: US美国(mibei77.com 米贝节点分享) (13)
   server: 188.114.98.112
@@ -7659,6 +8677,22 @@ proxies:
     path: /ELiV2-RAY----ELiV2-RAY----ELiV2-RAY----ELiV2-RAY----ELiV2-RAY----ELiV2-RAY?ed=2560
     headers:
       Host: elenaaaaaaaaaa.cloudns.pro.
+- name: '🇮🇳 印度 | IND #1'
+  type: vless
+  server: 188.114.99.137
+  port: 443
+  uuid: c1208c5a-2350-0003-affd-fc41b4319286
+  tls: true
+  network: ws
+  sni: decdn-28.nome-rkp.net
+  servername: decdn-28.nome-rkp.net
+  ws-opts:
+    path: /media/ws/fp=firefox
+    headers:
+      Host: decdn-28.nome-rkp.net
+  security_scheme: tls
+  proto: vless
+  peer: decdn-28.nome-rkp.net
 - name: '🇳🇱[www.v2nodes.com] vless-NL-1... #9'
   type: vless
   server: 188.116.27.6
@@ -7740,7 +8774,7 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 193.219.97.198
-- name: 🇮🇷_伊朗 (4)
+- name: ✅ 🇮🇷_伊朗 (4)
   type: vless
   server: 194.60.228.97
   port: 443
@@ -8044,21 +9078,35 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: www.apple.com
-- type: vless
-  name: US美国(mibei77.com 米贝节点分享) (21)
+- name: '🇺🇸[www.v2nodes.com] vless-US-1... #11'
+  type: vless
+  server: 198.247.127.131
+  port: 443
+  uuid: 59548d2d-5d7c-4328-aa81-0d5614da0c1b
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: addons.mozilla.org
+  servername: addons.mozilla.org
+  security_scheme: tls
+  proto: vless
+  peer: addons.mozilla.org
+- name: 🇺🇸_美国 (57)
+  type: vless
   server: 199.232.78.120
   port: 443
   uuid: 8d2cbffd-43d0-458d-906b-7c54b7b51f38
-  udp: true
   tls: true
-  servername: cdn.akamai.steamstatic.com
-  sni: cdn.akamai.steamstatic.com
-  skip-cert-verify: false
   network: ws
+  sni: cdn.akamai.steamstatic.com
+  servername: cdn.akamai.steamstatic.com
   ws-opts:
     path: /
     headers:
       Host: ushetzijji.global.ssl.fastly.net.
+  security_scheme: tls
+  proto: vless
+  peer: cdn.akamai.steamstatic.com
 - name: '🇺🇸[www.v2nodes.com] vless-US-1... #14'
   type: vless
   server: 199.7.140.201
@@ -9927,19 +10975,6 @@ proxies:
   security_scheme: reality
   proto: vless
   peer: www.apple.com
-- name: '🇺🇸[www.v2nodes.com] vless-US-1... #13'
-  type: vless
-  server: 216.152.155.189
-  port: 443
-  uuid: dbf3f074-3b18-43f3-b82a-debd8c879c69
-  flow: xtls-rprx-vision
-  tls: true
-  network: tcp
-  sni: www.apple.com
-  servername: www.apple.com
-  security_scheme: tls
-  proto: vless
-  peer: www.apple.com
 - name: '🇨🇦 加拿大 | CAN #1'
   type: vless
   server: 23.155.44.105
@@ -10168,6 +11203,114 @@ proxies:
   security_scheme: reality
   proto: vless
   peer: www.apple.com
+- name: 🇺🇸_美国 (41)
+  type: vless
+  server: 38.145.220.38
+  port: 443
+  uuid: 67f6aca5-a4c7-49e6-94b3-184e3b528b2a
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: www.apple.com
+  servername: www.apple.com
+  reality-opts:
+    public-key: bvG7GBU_gOKuBuAagnC07EbQZ_2tJ8OhBNSVGkHSugo
+    short-id: 66d62ef550107695
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: www.apple.com
+- name: 🇺🇸_美国 (42)
+  type: vless
+  server: 38.145.220.38
+  port: 2053
+  uuid: 67f6aca5-a4c7-49e6-94b3-184e3b528b2a
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: www.apple.com
+  servername: www.apple.com
+  reality-opts:
+    public-key: bvG7GBU_gOKuBuAagnC07EbQZ_2tJ8OhBNSVGkHSugo
+    short-id: 66d62ef550107695
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: www.apple.com
+- name: 🇺🇸_美国 (43)
+  type: vless
+  server: 38.145.220.38
+  port: 2083
+  uuid: 67f6aca5-a4c7-49e6-94b3-184e3b528b2a
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: www.apple.com
+  servername: www.apple.com
+  reality-opts:
+    public-key: bvG7GBU_gOKuBuAagnC07EbQZ_2tJ8OhBNSVGkHSugo
+    short-id: 66d62ef550107695
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: www.apple.com
+- name: 🇺🇸_美国 (38)
+  type: vless
+  server: 38.145.220.58
+  port: 443
+  uuid: 67f6aca5-a4c7-49e6-94b3-184e3b528b2a
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: www.apple.com
+  servername: www.apple.com
+  reality-opts:
+    public-key: bvG7GBU_gOKuBuAagnC07EbQZ_2tJ8OhBNSVGkHSugo
+    short-id: 66d62ef550107695
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: www.apple.com
+- name: 🇺🇸_美国 (39)
+  type: vless
+  server: 38.145.220.58
+  port: 2053
+  uuid: 67f6aca5-a4c7-49e6-94b3-184e3b528b2a
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: www.apple.com
+  servername: www.apple.com
+  reality-opts:
+    public-key: bvG7GBU_gOKuBuAagnC07EbQZ_2tJ8OhBNSVGkHSugo
+    short-id: 66d62ef550107695
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: www.apple.com
+- name: 🇺🇸_美国 (40)
+  type: vless
+  server: 38.145.220.58
+  port: 2083
+  uuid: 67f6aca5-a4c7-49e6-94b3-184e3b528b2a
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: www.apple.com
+  servername: www.apple.com
+  reality-opts:
+    public-key: bvG7GBU_gOKuBuAagnC07EbQZ_2tJ8OhBNSVGkHSugo
+    short-id: 66d62ef550107695
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: www.apple.com
 - name: '🇭🇰[www.v2nodes.com] vless-HK-1... #4'
   type: vless
   server: 38.207.177.204
@@ -10184,6 +11327,132 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: fs.qicai99.com
+- name: 🇺🇸_美国 (50)
+  type: vless
+  server: 38.34.190.209
+  port: 2053
+  uuid: 67f6aca5-a4c7-49e6-94b3-184e3b528b2a
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: www.apple.com
+  servername: www.apple.com
+  reality-opts:
+    public-key: bvG7GBU_gOKuBuAagnC07EbQZ_2tJ8OhBNSVGkHSugo
+    short-id: 66d62ef550107695
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: www.apple.com
+- name: 🇺🇸_美国 (44)
+  type: vless
+  server: 38.34.190.210
+  port: 443
+  uuid: 67f6aca5-a4c7-49e6-94b3-184e3b528b2a
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: www.apple.com
+  servername: www.apple.com
+  reality-opts:
+    public-key: bvG7GBU_gOKuBuAagnC07EbQZ_2tJ8OhBNSVGkHSugo
+    short-id: 66d62ef550107695
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: www.apple.com
+- name: 🇺🇸_美国 (45)
+  type: vless
+  server: 38.34.190.210
+  port: 2053
+  uuid: 67f6aca5-a4c7-49e6-94b3-184e3b528b2a
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: www.apple.com
+  servername: www.apple.com
+  reality-opts:
+    public-key: bvG7GBU_gOKuBuAagnC07EbQZ_2tJ8OhBNSVGkHSugo
+    short-id: 66d62ef550107695
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: www.apple.com
+- name: 🇺🇸_美国 (46)
+  type: vless
+  server: 38.34.190.210
+  port: 2083
+  uuid: 67f6aca5-a4c7-49e6-94b3-184e3b528b2a
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: www.apple.com
+  servername: www.apple.com
+  reality-opts:
+    public-key: bvG7GBU_gOKuBuAagnC07EbQZ_2tJ8OhBNSVGkHSugo
+    short-id: 66d62ef550107695
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: www.apple.com
+- name: 🇺🇸_美国 (47)
+  type: vless
+  server: 38.34.190.211
+  port: 443
+  uuid: 67f6aca5-a4c7-49e6-94b3-184e3b528b2a
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: www.apple.com
+  servername: www.apple.com
+  reality-opts:
+    public-key: bvG7GBU_gOKuBuAagnC07EbQZ_2tJ8OhBNSVGkHSugo
+    short-id: 66d62ef550107695
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: www.apple.com
+- name: 🇺🇸_美国 (48)
+  type: vless
+  server: 38.34.190.211
+  port: 2053
+  uuid: 67f6aca5-a4c7-49e6-94b3-184e3b528b2a
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: www.apple.com
+  servername: www.apple.com
+  reality-opts:
+    public-key: bvG7GBU_gOKuBuAagnC07EbQZ_2tJ8OhBNSVGkHSugo
+    short-id: 66d62ef550107695
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: www.apple.com
+- name: 🇺🇸_美国 (49)
+  type: vless
+  server: 38.34.190.211
+  port: 2083
+  uuid: 67f6aca5-a4c7-49e6-94b3-184e3b528b2a
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: www.apple.com
+  servername: www.apple.com
+  reality-opts:
+    public-key: bvG7GBU_gOKuBuAagnC07EbQZ_2tJ8OhBNSVGkHSugo
+    short-id: 66d62ef550107695
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: www.apple.com
 - name: '🇯🇵[www.v2nodes.com] vless-JP-1... #6'
   type: vless
   server: 38.47.96.220
@@ -10275,6 +11544,27 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 45.144.234.157
+- name: 🇺🇸_美国 (90)
+  type: vless
+  server: 45.32.70.42
+  port: 443
+  uuid: 8c392beb-524d-4d0a-a3a6-4d542d54a1ff
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: cQZ-dTY4QSQteDYpngP2PavOsn9yY9lIP-OscwzwAio
+    short-id: 4dda4608
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
 - name: '🏳[www.v2nodes.com] vless- #7'
   type: vless
   server: 45.38.143.210
@@ -10287,6 +11577,27 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: m.vk.com
+- name: 🇺🇸_美国 (76)
+  type: vless
+  server: 45.63.53.81
+  port: 443
+  uuid: c512dcbd-1847-40a2-9c99-989c8bfe4717
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: 6nTROV2ELz-3vNUl0A00hp378QngpYABrPgjCpUknD0
+    short-id: f436f707
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
 - client-fingerprint: chrome
   flow: xtls-rprx-vision
   name: 🇯🇵JP_1|330KB/s|YT-JP|GPT⁺|NF|0%
@@ -10317,6 +11628,27 @@ proxies:
   reality-opts:
     public-key: nZzY--8K_-mm8x4JDzkUFt1be1SQzriGIOmYkbpq1C8
     short-id: 034f5d5a
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: itunes.apple.com
+- name: 🇺🇸_美国 (77)
+  type: vless
+  server: 45.76.172.197
+  port: 443
+  uuid: b256c867-a020-48e0-be80-1b079f2613a2
+  tls: true
+  network: ws
+  sni: itunes.apple.com
+  servername: itunes.apple.com
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+  reality-opts:
+    public-key: Ag8SQ5QdqfHO9pKWA93kqGmH5EQo7Xm5Z4RbPnwPBBE
+    short-id: ff3597db
     spider-x: ''
     fingerprint: chrome
   security_scheme: reality
@@ -11912,6 +13244,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: base.hosamobenl.co.uk
+- name: 🇸🇬[www.v2nodes.com] vless-SG-8...
+  type: vless
+  server: cf.090227.xyz
+  port: 8443
+  uuid: 889fa37f-6bce-4674-8a49-1cc435e11de7
+  tls: false
+  network: ws
+  sni: liusuyan.cc.cd
+  servername: liusuyan.cc.cd
+  ws-opts:
+    path: /proxyip=ProxyIP.SG.CMLiussss.Netsecurity=tls
+    headers:
+      Host: liusuyan.cc.cd
+  security_scheme: none
+  proto: vless
+  peer: liusuyan.cc.cd
 - name: 🇺🇸 美国高速-AI专用-1B
   server: cf.laowu.life
   port: 443
@@ -13539,6 +14887,16 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: ru1.japancase.site
+- name: '🇩🇪 德国 | DEU #4'
+  type: vless
+  server: shh-hja-bbw.speedbluepanel.sbs
+  port: 2053
+  uuid: 39397ce8-51f5-4780-957f-942b4dfd75f7
+  tls: false
+  network: tcp
+  security_scheme: none
+  proto: vless
+  peer: shh-hja-bbw.speedbluepanel.sbs
 - alpn:
   - http/1.1
   client-fingerprint: chrome
@@ -13571,6 +14929,22 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: tcptlsdigikala.savfasf.ir
+- name: 🇨🇦[www.v2nodes.com] vless-CA
+  type: vless
+  server: stf839dvvyog9d2qa4-b8z6ahgn7b7qi.pages.dev
+  port: 443
+  uuid: b2f2f9f2-1864-48ea-839b-22815faff1f1
+  tls: false
+  network: ws
+  sni: stf839dvvyog9d2qa4-b8z6ahgn7b7qi.pages.dev
+  servername: stf839dvvyog9d2qa4-b8z6ahgn7b7qi.pages.dev
+  ws-opts:
+    path: /fp=chromesecurity=tls
+    headers:
+      Host: stf839dvvyog9d2qa4-b8z6ahgn7b7qi.pages.dev
+  security_scheme: none
+  proto: vless
+  peer: stf839dvvyog9d2qa4-b8z6ahgn7b7qi.pages.dev
 - name: 🇸🇪 瑞典 | SWE 3
   type: vless
   server: sweden.dance-tonic.rutube.info
@@ -13611,6 +14985,17 @@ proxies:
     headers:
       Host: uwu.blueknightnet.qzz.io
     path: /@BlueKnight_net--@BlueKnight_net
+- name: '🇵🇱 波兰 | POL #2'
+  type: vless
+  server: uyt24-k2.miniseries.ir
+  port: 49673
+  uuid: 39397ce8-51f5-4780-957f-942b4dfd75f7
+  flow: xtls-rprx-vision
+  tls: false
+  network: tcp
+  security_scheme: none
+  proto: vless
+  peer: uyt24-k2.miniseries.ir
 - name: XRAY-VLESS直连
   server: v2panel.ccwu.cc
   port: 443
@@ -14533,6 +15918,57 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: ai.android
+- name: 🏁RELAY-104.21.59.29-8893
+  type: vmess
+  server: 081d1aad-rwcsg0-1n7jq.bn.p5pv.com
+  port: 80
+  uuid: 4a75c3ba-f2e9-11ed-bf1b-f23c91369f2d
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: 081d1aad-rwcsg0-1n7jq.bn.p5pv.com
+  security_scheme: none
+  sni: 081d1aad-rwcsg0-1n7jq.bn.p5pv.com
+  proto: vmess
+  peer: 081d1aad-rwcsg0-1n7jq.bn.p5pv.com
+- name: CA 🇨🇦 | @Raydikalx | 3B9130
+  type: vmess
+  server: 104.16.61.8
+  port: 2086
+  uuid: 441da342-ce90-441e-bff9-d2ceb55e68ca
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: ws
+  ws-opts:
+    path: /ivideos.sbs/linkws
+    headers:
+      Host: vmess.taxar71054.workers.dev
+  security_scheme: none
+  sni: vmess.taxar71054.workers.dev
+  proto: vmess
+  peer: vmess.taxar71054.workers.dev
+- name: 🏁RELAY-104.19.47.79-1463
+  type: vmess
+  server: 104.19.47.79
+  port: 2086
+  uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: ws
+  ws-opts:
+    path: github.com/Alvin9999
+    headers:
+      Host: ip14.freegradely.xyz
+  security_scheme: none
+  sni: ip14.freegradely.xyz
+  proto: vmess
+  peer: ip14.freegradely.xyz
 - name: 🇩🇪_德国 (11)
   type: vmess
   server: 111.88.74.167
@@ -14639,6 +16075,24 @@ proxies:
   sni: 162.55.174.135
   proto: vmess
   peer: 162.55.174.135
+- name: 🇺🇸 机场推荐:dafei.de 美国 15_IPV4
+  type: vmess
+  server: 172.67.190.164
+  port: 443
+  uuid: 6a89a215-22bf-4bd7-9642-b95b2e09583a
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /hls/cctv5phd.m3u8
+    headers:
+      Host: guanwang.awsno.com
+  servername: guanwang.awsno.com
+  security_scheme: tls
+  sni: guanwang.awsno.com
+  proto: vmess
+  peer: guanwang.awsno.com
 - name: 🇨🇭_瑞士
   type: vmess
   server: 179.43.140.24
@@ -14687,6 +16141,58 @@ proxies:
   sni: koochehpas.com
   proto: vmess
   peer: koochehpas.com
+- name: 🏁RELAY-188.114.99.137-0500
+  type: vmess
+  server: 188.114.99.137
+  port: 443
+  uuid: 6a89a215-22bf-4bd7-9642-b95b2e09583a
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /hls/cctv5phd.m3u8
+    headers:
+      Host: guanwang.awsno.com
+  servername: guanwang.awsno.com
+  security_scheme: tls
+  sni: guanwang.awsno.com
+  proto: vmess
+  peer: guanwang.awsno.com
+- name: 🏁RELAY-188.114.99.9-1542
+  type: vmess
+  server: 188.114.99.9
+  port: 443
+  uuid: 40d496a6-ceeb-4096-baeb-4cc52b205621
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /ECTCJ0DF
+    headers:
+      Host: lg1.trump2023.us
+  security_scheme: tls
+  sni: lg1.trump2023.us
+  proto: vmess
+  peer: lg1.trump2023.us
+- name: '[peasoft/NoMoreWalls]🇺🇸 美国 | USA #3'
+  type: vmess
+  server: 192.74.236.148
+  port: 30004
+  uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
+  alterId: 64
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /path/1733477783705
+    headers:
+      Host: www.91334565.xyz
+  security_scheme: tls
+  sni: www.91334565.xyz
+  proto: vmess
+  peer: www.91334565.xyz
 - name: 🇮🇳_印度
   type: vmess
   server: 20.235.220.189
@@ -14849,6 +16355,23 @@ proxies:
   sni: 47.244.120.197
   proto: vmess
   peer: 47.244.120.197
+- name: 🇺🇸US-47.254.17.235-8031
+  type: vmess
+  server: 47.254.17.235
+  port: 80
+  uuid: 2caa5a0e-519b-4503-80d4-5363193e5018
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: ws
+  ws-opts:
+    path: /Ogl9djGbo2NTAt3Ovj1NvwjJ
+    headers:
+      Host: 47.254.17.235
+  security_scheme: none
+  sni: 47.254.17.235
+  proto: vmess
+  peer: 47.254.17.235
 - name: GB 🇬🇧 | @Raydikalx | C96927
   type: vmess
   server: 57.128.164.21
@@ -15007,6 +16530,58 @@ proxies:
   sni: tr.mikhconnection.ir
   proto: vmess
   peer: tr.mikhconnection.ir
+- name: SG 🇸🇬 | @Raydikalx | 02A575
+  type: vmess
+  server: am45enad-production.up.railway.app
+  port: 443
+  uuid: a92753e3-b87c-4f9e-926b-20a9f96ed7a9
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /gw/4083472c-e157-47d0-b69e-7cda1c15d1be?ed=2560
+    headers:
+      Host: am45enad-production.up.railway.app
+  servername: am45enad-production.up.railway.app
+  security_scheme: tls
+  sni: am45enad-production.up.railway.app
+  proto: vmess
+  peer: am45enad-production.up.railway.app
+- name: 🏁RELAY-188.114.97.6-1242
+  type: vmess
+  server: bmi.ir.kolman.com.de
+  port: 80
+  uuid: cfe7a80d-34c6-46df-909d-2daa14f98136
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: ws
+  ws-opts:
+    path: /f9bGbG7ZNy5L0tzXKZNxSX4q
+    headers:
+      Host: 4n2TjrBWPojRe.6.server.marandcity.com.de.
+  security_scheme: none
+  sni: 4n2TjrBWPojRe.6.server.marandcity.com.de.
+  proto: vmess
+  peer: 4n2TjrBWPojRe.6.server.marandcity.com.de.
+- name: CA 🇨🇦 | @Raydikalx | EAD470
+  type: vmess
+  server: c7.620720.xyz
+  port: 8443
+  uuid: 516d8a7a-3f0b-41d3-bad0-246116381516
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: c7.620720.xyz
+  security_scheme: tls
+  sni: c7.620720.xyz
+  proto: vmess
+  peer: c7.620720.xyz
 - name: DE 🇩🇪 | @Raydikalx | A09BDC
   type: vmess
   server: de-d21e56c13c.shamanapp.online
@@ -15037,6 +16612,59 @@ proxies:
   sni: ir.yzcq.ir
   proto: vmess
   peer: ir.yzcq.ir
+- name: 未知111
+  type: vmess
+  server: mortedaxsq-production.up.railway.app
+  port: 443
+  uuid: 1558fb81-e3d9-4a6d-848e-d2d321e7363e
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /api/0zAYgT
+    headers:
+      Host: mortedaxsq-production.up.railway.app
+  servername: mortedaxsq-production.up.railway.app
+  security_scheme: tls
+  sni: mortedaxsq-production.up.railway.app
+  proto: vmess
+  peer: mortedaxsq-production.up.railway.app
+- name: CA 🇨🇦 | @Raydikalx | 740C2E
+  type: vmess
+  server: nickgus.cc.cd
+  port: 443
+  uuid: 56eee791-99e8-4e11-9d27-539b46c14368
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /photos
+    headers:
+      Host: nickgus.cc.cd
+  security_scheme: tls
+  sni: nickgus.cc.cd
+  proto: vmess
+  peer: nickgus.cc.cd
+- name: CA 🇨🇦 | @Raydikalx | 4D6095
+  type: vmess
+  server: nomino.11hi8itbaf.workers.dev
+  port: 443
+  uuid: 6a89a215-22bf-4bd7-9642-b95b2e09583a
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /guanwang.awsno.com/hls/cctv5phd.m3u8
+    headers:
+      Host: nomino.11hi8itbaf.workers.dev
+  servername: nomino.11hi8itbaf.workers.dev
+  security_scheme: tls
+  sni: nomino.11hi8itbaf.workers.dev
+  proto: vmess
+  peer: nomino.11hi8itbaf.workers.dev
 - name: DE 🇩🇪 | @Raydikalx | 005985
   type: vmess
   server: planb.mojcn.com.linuxlh.xin
@@ -15054,6 +16682,41 @@ proxies:
   sni: f2a1fd8cc931919f1ada44cdfa8310e9.mobgslb.tbcache.com
   proto: vmess
   peer: f2a1fd8cc931919f1ada44cdfa8310e9.mobgslb.tbcache.com
+- name: 🏁RELAY-104.26.9.76-2288
+  type: vmess
+  server: powerservice.com
+  port: 443
+  uuid: 0764a598-82c4-4b41-ba10-551a625beed5
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: powerservice.com
+  security_scheme: tls
+  sni: powerservice.com
+  proto: vmess
+  peer: powerservice.com
+- name: SG 🇸🇬 | @Raydikalx | D326E1
+  type: vmess
+  server: puohertestc-production.up.railway.app
+  port: 443
+  uuid: 0354d7d4-b444-41f5-9441-68378aa4e537
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /api/Salvu0
+    headers:
+      Host: puohertestc-production.up.railway.app
+  servername: puohertestc-production.up.railway.app
+  security_scheme: tls
+  sni: puohertestc-production.up.railway.app
+  proto: vmess
+  peer: puohertestc-production.up.railway.app
 - name: IR 🇮🇷 | @Raydikalx | 647F69
   type: vmess
   server: s1.connect.bloroxy.net
@@ -15068,6 +16731,40 @@ proxies:
   sni: none
   proto: vmess
   peer: none
+- name: 🏁RELAY-172.67.131.245-1833
+  type: vmess
+  server: series-v1.samanehha.co
+  port: 80
+  uuid: 0b65bb06-6b28-487a-8e3c-820dda51e977
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: ws
+  ws-opts:
+    path: /dT9s3HqgZeD3eApzDAfhOHq
+    headers:
+      Host: series-v1.samanehha.co
+  security_scheme: none
+  sni: series-v1.samanehha.co
+  proto: vmess
+  peer: series-v1.samanehha.co
+- name: 🏁RELAY-172.67.75.194-0853
+  type: vmess
+  server: singapore.com
+  port: 2095
+  uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: ws
+  ws-opts:
+    path: /github.com/Alvin9999
+    headers:
+      Host: ip20.6016725.xyz
+  security_scheme: none
+  sni: ip20.6016725.xyz
+  proto: vmess
+  peer: ip20.6016725.xyz
 - alterId: '0'
   cipher: auto
   name: 🇭🇰HK_2|753KB/s
@@ -15084,6 +16781,23 @@ proxies:
       Host: 82d16f3a12ad1d0871e0270510bf2ef6.mobgslb.tbcache.com
     path: /
   xudp: true
+- name: CA 🇨🇦 | @Raydikalx | 9C0B53
+  type: vmess
+  server: us122208.ssgreen.org
+  port: 443
+  uuid: 19f71384-452b-4765-843b-cbbea716da0f
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /wes
+    headers:
+      Host: us122208.ssgreen.org
+  security_scheme: tls
+  sni: us122208.ssgreen.org
+  proto: vmess
+  peer: us122208.ssgreen.org
 - name: '@V2ray_Alpha🛤️ 8'
   type: vmess
   server: usa.webpathway.eu
@@ -15110,6 +16824,24 @@ proxies:
   sni: vip2.showtimeless.site
   proto: vmess
   peer: vip2.showtimeless.site
+- name: CA 🇨🇦 | @Raydikalx | B3074F
+  type: vmess
+  server: www.gptcloudai.com
+  port: 443
+  uuid: e70a5b70-f63c-4450-af8b-94990cdf80c0
+  alterId: 0
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /truth
+    headers:
+      Host: www.gptcloudai.com
+  servername: www.gptcloudai.com
+  security_scheme: tls
+  sni: www.gptcloudai.com
+  proto: vmess
+  peer: www.gptcloudai.com
 - name: IR 🇮🇷 | @Raydikalx | B2BE35
   type: vmess
   server: xgr.goldnshop.com
