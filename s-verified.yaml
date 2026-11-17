@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=73
+# verified=74
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -70,6 +70,7 @@ proxy-groups:
   - ✅ ❓Other_28|2.9MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_38|1.8MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
+  - ✅ ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
@@ -146,6 +147,7 @@ proxy-groups:
   - ✅ ❓Other_28|2.9MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_38|1.8MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
+  - ✅ ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
@@ -224,6 +226,7 @@ proxy-groups:
   - ✅ ❓Other_28|2.9MB/s|TK-NL|GPT⁺-NL|GM-NL
   - ✅ ❓Other_38|1.8MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
+  - ✅ ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
   - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
@@ -956,6 +959,12 @@ proxies:
 - name: ✅ ❓Other_17|1.6MB/s|TK-CH|GPT⁺-CH|GM-CH
   port: 9443
   server: 149.88.27.46
+  skip-cert-verify: true
+  tls: true
+  type: http
+- name: ✅ ❓Other_31|2.4MB/s|GPT⁺-SG|GM-GB
+  port: 9443
+  server: 149.88.99.209
   skip-cert-verify: true
   tls: true
   type: http
