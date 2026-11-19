@@ -1,6 +1,6 @@
 # Auto-merged subscription (mkdy) — full Clash config with rules
 # sources: s.txt, s1.txt, s2.txt + s2-clash-1.yaml, s2-clash-2.yaml, s2-clash-3.yaml, s2-clash-4.yaml, s2-clash-5.yaml, s2-clash-6.yaml
-# raw=1077 unique=903 groups=3 rules=516
+# raw=876 unique=701 groups=3 rules=516
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -51,7 +51,7 @@ proxy-groups:
   - ✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇦🇺AU_4|3.2MB/s|YT-AU|GPT⁺-AU|GM-AU
-  - 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
+  - ✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
   - ❓Other_9|1.0MB/s|TK-US|YT-US|GPT⁺-US
   - ✅ ❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG
   - ✅ ❓Other_43|2.1MB/s|YT-US|GPT⁺-LV
@@ -80,18 +80,18 @@ proxy-groups:
   - 🇨🇦CA_1|2.3MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ❓Other_64|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
-  - ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
+  - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ❓Other_8|2.0MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
+  - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ❓Other_11|2.1MB/s|TK-US|GPT⁺-US|GM-US
   - ❓Other_42|1.6MB/s|GPT⁺-US|GM-US
   - 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
-  - ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
+  - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ❓Other_25|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
@@ -125,8 +125,8 @@ proxy-groups:
   - 🇺🇸US_7|3.5MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_6|5.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
+  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ❓Other_54|2.6MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -147,9 +147,6 @@ proxy-groups:
   - '@confiig_hub #1'
   - 🇬🇱GL_1|798KB/s|YT-RU|GPT⁺|NF|6%
   - 🇯🇵JP_2|477KB/s|YT-JP|GPT⁺|NF|2%
-  - FRANKFURT-3-1B
-  - FRANKFURT-3-1A
-  - FRANKFURT-3-1C
   - 🇺🇸US_3|311KB/s|GPT
   - 🇰🇷KR_1|863KB/s|YT-KR|GPT⁺|NF|2%
   - 🇧🇷BR_1|921KB/s|YT-US|GPT⁺|NF|0%
@@ -174,27 +171,12 @@ proxy-groups:
   - 🇨🇦CA_1|548KB/s|YT-CA|GPT⁺|NF|12%
   - '[ermaozi/get_subscribe]🇿🇦[www.v2nodes.com] ss-ZA-1333...'
   - '[peasoft/NoMoreWalls]🇿🇦[www.v2nodes.com] ss-ZA-1336...'
-  - 🇹🇭 泰国-BANGKOK-1
-  - 🇰🇷[www.v2nodes.com] ss-KR-1126...
+  - 🇹🇭TH_1|988KB/s
   - 🇰🇷KR_2|1.5MB/s
   - 🇬🇧GB_2|3.4MB/s|TK-GB|YT-GB|GPT⁺-GB|GM-GB
-  - CHILE-1B
-  - CHILE-1A
   - 🇬🇧GB_1|2.5MB/s|TK-GB|GPT-GB
   - '[ermaozi/get_subscribe]🇦🇱[www.v2nodes.com] ss-AL-1490...'
-  - 🇰🇷 KOREA-1B
-  - 🇰🇷 KOREA-1A
   - '[peasoft/NoMoreWalls]🇸🇪[www.v2nodes.com] ss-SE-1615...'
-  - 🇨🇦 CANADA-1B
-  - 🇨🇦 CANADA-1A
-  - SWITZERLAND-1B
-  - SWITZERLAND-1A
-  - 🇬🇧 THE UNITED KINGDOM-1A
-  - 🇬🇧 THE UNITED KINGDOM-1B
-  - 🇸🇬 SINGAPORE-1B
-  - 🇸🇬 SINGAPORE-1A
-  - 🇫🇷 FRANCE-1B
-  - 🇫🇷 FRANCE-1A
   - '[peasoft/NoMoreWalls]🏳[www.v2nodes.com] ss- #10'
   - '[ermaozi/get_subscribe]🇬🇧[www.v2nodes.com] ss-GB-1615...'
   - '[ermaozi/get_subscribe]🇯🇵[www.v2nodes.com] ss-JP-5141...'
@@ -209,8 +191,6 @@ proxy-groups:
   - '[peasoft/NoMoreWalls]🇳🇱[www.v2nodes.com] ss-NL-1614... #1'
   - '[ermaozi/get_subscribe]🇳🇱[www.v2nodes.com] ss-NL-1614...'
   - '[ermaozi/get_subscribe]🏳[www.v2nodes.com] ss-'
-  - 🇺🇸 UNITED STATES-1B
-  - 🇺🇸 UNITED STATES-1A
   - ⚡ b2n.ir/v2ray-configs | 578
   - '[ermaozi/get_subscribe]🇳🇱[www.v2nodes.com] ss-NL-1618...'
   - '[ermaozi/get_subscribe]🇬🇧[www.v2nodes.com] ss-GB-1451...'
@@ -229,8 +209,6 @@ proxy-groups:
   - '[ermaozi/get_subscribe]🇳🇱[www.v2nodes.com] ss-NL-1622...'
   - '[ermaozi/get_subscribe]🇬🇧[www.v2nodes.com] ss-GB-1616...'
   - '[peasoft/NoMoreWalls]🏳[www.v2nodes.com] ss- #9'
-  - 🇭🇰 HONG KONG-1A
-  - 🇭🇰 HONG KONG-1B
   - ✅ [ermaozi/get_subscribe]🇮🇹 意大利 | ITA
   - ✅ [ermaozi/get_subscribe]意大利2|@ripaojiedian
   - '✅ [peasoft/NoMoreWalls]🇮🇹 意大利 | ITA #3'
@@ -271,7 +249,6 @@ proxy-groups:
   - '[ermaozi/get_subscribe]🏳[www.v2nodes.com] ss- #3'
   - '[peasoft/NoMoreWalls]🇦🇹[www.v2nodes.com] ss-AT-1595...'
   - ⚡ b2n.ir/v2ray-configs | 776
-  - ⚡ b2n.ir/v2ray-configs | 572
   - ⚡ b2n.ir/v2ray-configs | 523
   - '[peasoft/NoMoreWalls]🇯🇵[www.v2nodes.com] ss-JP-1544...'
   - '[peasoft/NoMoreWalls]🇷🇺[www.v2nodes.com] ss-RU-1163...'
@@ -302,7 +279,6 @@ proxy-groups:
   - 🇫🇷FR_5|258KB/s|GPT|NF
   - 🇫🇷FR_11|292KB/s|GPT⁺|NF
   - 🇫🇷FR_2|302KB/s|GPT⁺|NF
-  - 🇸🇬 新加坡-SINGAPORE-1-1B
   - 🇿🇦_南非
   - 🇫🇷FR_16|261KB/s|GPT
   - 🇸🇬_新加坡 (7)
@@ -338,12 +314,7 @@ proxy-groups:
   - 🇨🇭_瑞士 (4)
   - 🇨🇭_瑞士 (3)
   - 🇨🇭_瑞士 (5)
-  - 🇺🇸_美国 (10)
   - 🇺🇸_美国 (11)
-  - 🇺🇸_美国 (7)
-  - 🇺🇸_美国 (2)
-  - 🇺🇸_美国 (24)
-  - 🇺🇸_美国 (3)
   - 🇨🇦_加拿大 (7)
   - 🇨🇦_加拿大 (5)
   - 🇨🇦_加拿大 (8)
@@ -365,7 +336,6 @@ proxy-groups:
   - 🇺🇸_美国 (62)
   - 🇧🇷_巴西
   - 🇹🇼_台湾
-  - 🇺🇸_美国 (72)
   - 🇫🇷FR_4|299KB/s|GPT⁺|NF
   - '[ermaozi/get_subscribe]🏳[www.v2nodes.com] trojan- #2'
   - 🇭🇰_香港
@@ -397,7 +367,6 @@ proxy-groups:
   - 🇫🇷FR_17|257KB/s|GPT⁺
   - ⚡ b2n.ir/v2ray-configs | 252
   - ✅ GB英国mibei77.com 米贝节点分享) (4)
-  - 🇺🇸_美国 (8)
   - 🇹🇭TH_1|450KB/s|YT-CN|GPT⁺|NF|0%
   - ✅ 🇭🇰_香港 (3)
   - ✅ FR法国(mibei77.com 米贝节点分享)
@@ -405,7 +374,6 @@ proxy-groups:
   - ✅ 🇺🇸_美国 (77)
   - 🇭🇰_香港 (5)
   - ✅ US美国(mibei77.com 米贝节点分享) (16)
-  - 🇺🇸 美国高速-AI专用-1A
   - 🇺🇸_美国 (4)
   - 🇩🇪DE_1|762KB/s
   - 日本2|@ripaojiedian
@@ -431,8 +399,8 @@ proxy-groups:
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #1'
   - 🇳🇱_荷兰 (16)
   - 🇳🇱_荷兰 (17)
-  - 🇺🇸_美国 (7)_2
-  - 🇺🇸_美国 (8)_2
+  - 🇺🇸_美国 (7)
+  - 🇺🇸_美国 (8)
   - '🇬🇧[www.v2nodes.com] vless-GB-1... #2'
   - 🇳🇱_荷兰 (9)
   - 🇬🇧_英国 (2)
@@ -468,14 +436,13 @@ proxy-groups:
   - 🇦🇱[www.v2nodes.com] vless-AL-1...
   - US美国(mibei77.com 米贝节点分享) (45)
   - TW台湾(mibei77.com 米贝节点分享)
-  - 🇺🇸 美国 | USA_2
-  - 🇺🇸_美国
+  - US美国(mibei77.com 米贝节点分享) (12)
+  - 🇺🇸_美国_2
   - 🇩🇪_德国 (27)
   - 🇯🇵_日本
   - 🇵🇱PL_3|1.3MB/s
   - '🇩🇪 德国 | DEU #3'
   - '🇷🇺 俄罗斯 | RUS #1'
-  - '🇩🇪 德国 | DEU #4'
   - 🇸🇬_SG_新加坡_IPV4 (3)
   - 🇯🇵_JP_日本_IPV4 (2)
   - 🇯🇵_JP_日本_IPV4 (3)
@@ -509,7 +476,6 @@ proxy-groups:
   - 🇩🇪_德国 (18)
   - 🇩🇪_德国 (6)
   - 🇳🇱NL_3|374KB/s|GPT⁺|NF|88%
-  - 🇮🇳[www.v2nodes.com] vless-IN-1...
   - '🇳🇱[www.v2nodes.com] vless-NL-1... #7'
   - 意大利(mibei77.com 米贝节点分享) (4)
   - '🇸🇪 瑞典 | SWE #1'
@@ -520,6 +486,7 @@ proxy-groups:
   - '🇩🇪 德国 | DEU #8'
   - TR_speednode_0038
   - '🇩🇪 德国 | DEU #5'
+  - '🇸🇪[www.v2nodes.com] vless-SE-1... #4'
   - 🇮🇷_伊朗 (5)
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #2'
   - 🇨🇿[www.v2nodes.com] vless-CZ-1...
@@ -569,9 +536,6 @@ proxy-groups:
   - '🏳[www.v2nodes.com] vless- #18'
   - 🇩🇪_德国 (13)
   - 🇩🇪_德国 (10)_2
-  - LOS ANGELES-1A
-  - LOS ANGELES-1B
-  - LOS ANGELES-1C
   - 🇰🇷KR_1|1.1MB/s
   - '🇳🇱[www.v2nodes.com] vless-NL-1... #5'
   - 🇺🇦[www.v2nodes.com] vless-UA-1...
@@ -585,7 +549,6 @@ proxy-groups:
   - ⚡ b2n.ir/v2ray-configs | 893
   - ⚡ b2n.ir/v2ray-configs | 484
   - 🇹🇷_土耳其_2
-  - 🇺🇸_美国 (26)
   - 🇦🇺[www.v2nodes.com] vless-AU-1...
   - '🏳[www.v2nodes.com] vless- #6'
   - SG新加坡(mibei77.com 米贝节点分享)
@@ -617,14 +580,6 @@ proxy-groups:
   - 🇸🇨_塞舌尔 (2)
   - 爱尔兰(mibei77.com 米贝节点分享)
   - '🇸🇪[www.v2nodes.com] vless-SE-1... #3'
-  - 🇺🇸 美国-洛杉矶-PRO-1I
-  - 🇺🇸 美国-洛杉矶-PRO-1A
-  - 🇺🇸 美国-洛杉矶-PRO-1E
-  - 🇺🇸 美国-洛杉矶-PRO-1B
-  - 🇺🇸 美国-洛杉矶-PRO-1K
-  - 🇺🇸 美国-洛杉矶-PRO-1L
-  - 🇺🇸 美国-洛杉矶-PRO-1C
-  - 🇺🇸 美国-洛杉矶-PRO-1J
   - '🏳[www.v2nodes.com] vless- #12'
   - '🏳[www.v2nodes.com] vless- #2'
   - '🇫🇷[www.v2nodes.com] vless-FR-1... #6'
@@ -642,7 +597,6 @@ proxy-groups:
   - ❓Other_39|1.0MB/s|YT-RU|GPT-SG
   - 🇸🇬_新加坡
   - 🇪🇸[www.v2nodes.com] vless-ES-1...
-  - XRAY-直连01
   - 🇺🇸US_4|250KB/s|YT-NL|GPT⁺|NF|0%
   - 🇺🇸US_9|265KB/s|GPT⁺|NF|0%
   - 🇨🇭[www.v2nodes.com] vless-CH-1...
@@ -658,6 +612,7 @@ proxy-groups:
   - 意大利(mibei77.com 米贝节点分享) (3)
   - 🇵🇱_波兰 (2)
   - 🇳🇱 荷兰 | NLD_4
+  - 🇷🇺 俄罗斯 | RUS_2
   - '🇷🇺 俄罗斯 | RUS #4'
   - 🇸🇦[www.v2nodes.com] vless-SA-1...
   - '🇮🇹[www.v2nodes.com] vless-IT-1... #2'
@@ -694,8 +649,6 @@ proxy-groups:
   - 🇩🇪_德国 (17)
   - AT_speednode_0001
   - 🇮🇷_伊朗
-  - 🇺🇸 美国高速-AI专用-1B
-  - 🇺🇸 美国直连-备用
   - JP日本(mibei77.com 米贝节点分享) (20)
   - '🇵🇱[www.v2nodes.com] vless-PL-1... #1'
   - '🇵🇱[www.v2nodes.com] vless-PL-1... #2'
@@ -710,99 +663,6 @@ proxy-groups:
   - 🇹🇼_台湾_2
   - 🇹🇼_台湾 (2)
   - 🇹🇼_台湾 (5)
-  - FV2026-7-7-3Z
-  - FV2026-7-7-4J
-  - FV2026-7-7-3T
-  - FV2026-7-7-4N
-  - FV2026-7-7-1K
-  - FV2026-7-7-3R
-  - FV2026-7-7-3H
-  - FV2026-7-7-1O
-  - FV2026-7-7-1B
-  - FV2026-7-7-4I
-  - FV2026-7-7-2D
-  - FV2026-7-7-2Z
-  - FV2026-7-7-2K
-  - FV2026-7-7-1H
-  - FV2026-7-7-3x
-  - FV2026-7-7-3S
-  - FV2026-7-7-3Y
-  - FV2026-7-7-4O
-  - FV2026-7-7-4V
-  - FV2026-7-7-4P
-  - FV2026-7-7-3G
-  - FV2026-7-7-3C
-  - FV2026-7-7-4S
-  - FV2026-7-7-2N
-  - FV2026-7-7-1A
-  - FV2026-7-7-3F
-  - FV2026-7-7-2I
-  - FV2026-7-7-2O
-  - FV2026-7-7-2W
-  - FV2026-7-7-3Q
-  - FV2026-7-7-3D
-  - FV2026-7-7-4W
-  - FV2026-7-7-4M
-  - FV2026-7-7-3J
-  - FV2026-7-7-1J
-  - FV2026-7-7-2V
-  - FV2026-7-7-4D
-  - FV2026-7-7-3M
-  - FV2026-7-7-2M
-  - FV2026-7-7-2T
-  - FV2026-7-7-4C
-  - FV2026-7-7-1M
-  - FV2026-7-7-4x
-  - FV2026-7-7-3L
-  - FV2026-7-7-1N
-  - FV2026-7-7-2B
-  - FV2026-7-7-3U
-  - FV2026-7-7-3N
-  - FV2026-7-7-4B
-  - FV2026-7-7-2A
-  - FV2026-7-7-4Q
-  - FV2026-7-7-1V
-  - FV2026-7-7-2E
-  - FV2026-7-7-2L
-  - FV2026-7-7-1E
-  - FV2026-7-7-1Z
-  - FV2026-7-7-2U
-  - FV2026-7-7-2Y
-  - FV2026-7-7-2F
-  - FV2026-7-7-1G
-  - FV2026-7-7-3P
-  - FV2026-7-7-1W
-  - FV2026-7-7-4L
-  - FV2026-7-7-3O
-  - FV2026-7-7-2x
-  - FV2026-7-7-4H
-  - FV2026-7-7-4R
-  - FV2026-7-7-3W
-  - FV2026-7-7-2C
-  - FV2026-7-7-4T
-  - FV2026-7-7-2G
-  - FV2026-7-7-2Q
-  - FV2026-7-7-3E
-  - FV2026-7-7-2S
-  - FV2026-7-7-1D
-  - FV2026-7-7-1Y
-  - FV2026-7-7-3K
-  - FV2026-7-7-4U
-  - FV2026-7-7-1T
-  - FV2026-7-7-2R
-  - FV2026-7-7-4F
-  - FV2026-7-7-3A
-  - FV2026-7-7-1x
-  - FV2026-7-7-3I
-  - FV2026-7-7-2P
-  - FV2026-7-7-2J
-  - FV2026-7-7-4K
-  - FV2026-7-7-1L
-  - FV2026-7-7-2H
-  - FV2026-7-7-3B
-  - FV2026-7-7-4G
-  - FV2026-7-7-4A
-  - FV2026-7-7-3V
   - '🇹🇷 土耳其 | TUR #3'
   - US美国(mibei77.com 米贝节点分享) (18)
   - 🇺🇸US_6|268KB/s|YT-NL|GPT⁺|0%
@@ -826,56 +686,10 @@ proxy-groups:
   - 🇩🇪_德国 (3)_2
   - 🇺🇸 美国 | USA
   - 🇩🇪DE_4|351KB/s|GPT⁺|NF|17%
-  - XRAY-VLESS直连
-  - XRAY-TLS2053
-  - XRAY-TLS2083
-  - XRAY-TLS2087
-  - XRAY-TLS2096
-  - XRAY-TLS8443
   - 🇰🇷 韩国 | KOR
-  - 🇺🇸 美国 抗封线-1G
-  - 🇺🇸 美国 抗封线-2B
-  - 🇺🇸 美国 抗封线-1B
-  - 🇺🇸 美国 抗封线-1L
-  - 🇺🇸 美国 抗封线-1A
-  - 🇺🇸 美国 抗封线-1Y
-  - 🇺🇸 美国 抗封线-1Z
-  - 🇺🇸 美国 抗封线-2A
-  - 🇺🇸 美国 抗封线-1H
-  - 🇺🇸 美国 抗封线-2F
-  - 🇺🇸 美国 抗封线-1K
-  - 🇺🇸 美国 抗封线-1D
-  - 🇺🇸 美国 抗封线-1M
-  - 🇺🇸 美国 抗封线-2M
-  - 🇺🇸 美国 抗封线-2H
-  - 🇺🇸 美国 抗封线-1P
-  - 🇺🇸 美国 抗封线-1I
-  - 🇺🇸 美国 抗封线-1J
-  - 🇺🇸 美国 抗封线-1O
-  - 🇺🇸 美国 抗封线-2J
-  - 🇺🇸 美国 抗封线-2N
-  - 🇺🇸 美国 抗封线-1N
-  - 🇺🇸 美国 抗封线-2L
-  - 🇺🇸 美国 抗封线-2K
-  - 🇺🇸 美国 抗封线-1C
-  - 🇺🇸 美国 抗封线-2E
-  - 🇺🇸 美国 抗封线-1E
-  - 🇺🇸 美国 抗封线-1F
   - 🇺🇸US_2|263KB/s|YT-NL|GPT⁺|NF|0%
   - '🇫🇷[www.v2nodes.com] vless-FR-1... #5'
-  - 🇺🇸 美国 01 联通电信推荐-1C
-  - 🇺🇸 美国 01 联通电信推荐-1F
-  - 🇺🇸 美国 01 联通电信推荐-1A
-  - 🇺🇸 美国 01 联通电信推荐-1D
-  - 🇺🇸 美国 01 联通电信推荐-1B
-  - 🇺🇸 美国 01 联通电信推荐-1E
   - 🇩🇪DE_2|284KB/s
-  - 10G试用智能线路-1B
-  - 10G试用智能线路-1A
-  - 10G试用智能线路-1F
-  - 10G试用智能线路-1E
-  - 10G试用智能线路-1C
-  - 10G试用智能线路-1D
   - 🇸🇬_新加坡 (5)
   - 🇮🇳_印度 (2)
   - ❓Other_6|1.8MB/s|YT-US|GPT⁺-US|GM-US
@@ -888,13 +702,12 @@ proxy-groups:
   - JP日本(mibei77.com 米贝节点分享) (6)
   - JP日本(mibei77.com 米贝节点分享) (10)
   - 🇺🇸US-13.248.169.48-4755
-  - CA 🇨🇦 | @Raydikalx | 3F4E6C
-  - 🏁RELAY-104.21.7.50-8194
+  - 🇺🇸_美国 (13)
   - 🇰🇷_韩国 (2)
+  - KR 🇰🇷 | @Raydikalx | A99D73
   - 🇨🇦_加拿大
   - 🇸🇬SG-146.190.82.241-2247
   - FR 🇫🇷 | @Raydikalx | 24D78E
-  - US 🇺🇸 | @Raydikalx | 9053F6
   - 🇸🇬_新加坡 (8)
   - 🇸🇬_新加坡 (3)
   - 🇮🇳_印度
@@ -903,30 +716,16 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | 411161
   - 🇯🇵_日本 (19)
   - 🇯🇵_日本 (20)
-  - ✅ 🇺🇸 机场推荐:dafei.de 美国 15_IPV4
-  - 🏁RELAY-172.67.193.109-7770
   - US美国(mibei77.com 米贝节点分享) (21)
   - 🇫🇮_芬兰 (6)
-  - CA 🇨🇦 | @Raydikalx | 23FD2E
   - ✅ 🇺🇸 机场推荐:dafei.de 美国 89_IPV4
-  - '[peasoft/NoMoreWalls]🇺🇸 美国 | USA #6'
   - 🇸🇬_新加坡 (2)
-  - 🇰🇷_韩国
   - 🇨🇦_加拿大 (3)
   - HK 🇭🇰 | @Raydikalx | E4EE0B
-  - 🇺🇸_美国 (27)_2
   - 🇺🇸_美国 (64)
   - US 🇺🇸 | @Raydikalx | E7611E
   - US7
   - 🇺🇸_美国 (67)
-  - 🇺🇸 硅谷-01-1A
-  - 🇺🇸 硅谷-01-1F
-  - 🇺🇸 硅谷-01-1E
-  - 🇺🇸 硅谷-01-1D
-  - 🇺🇸 硅谷-01-1B
-  - 🇺🇸 硅谷-01-1C
-  - 🇺🇸 硅谷-01-1G
-  - 🇯🇵_日本 (18)
   - HK3
   - 电报群：t.me/vvkj11
   - 🇲🇾_马来西亚
@@ -935,12 +734,11 @@ proxy-groups:
   - US 🇺🇸 | @Raydikalx | AD2F7C
   - 🇺🇸_美国 (42)
   - 🇺🇸_美国 (47)
-  - 🇺🇸_美国_2
+  - 🇺🇸_美国
   - US 🇺🇸 | @Raydikalx | B021CB
   - DE 🇩🇪 | @Raydikalx | D007C9
   - DE 🇩🇪 | @Raydikalx | 97EFA3
   - DE 🇩🇪 | @Raydikalx | C91663
-  - CA 🇨🇦 | @Raydikalx | 57621C
   - 🇩🇪_德国 (11)
   - 🇭🇰_香港 (2)
   - 🇭🇰_香港 (3)
@@ -957,7 +755,7 @@ proxy-groups:
   - ✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇦🇺AU_4|3.2MB/s|YT-AU|GPT⁺-AU|GM-AU
-  - 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
+  - ✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
   - ❓Other_9|1.0MB/s|TK-US|YT-US|GPT⁺-US
   - ✅ ❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG
   - ✅ ❓Other_43|2.1MB/s|YT-US|GPT⁺-LV
@@ -986,18 +784,18 @@ proxy-groups:
   - 🇨🇦CA_1|2.3MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ❓Other_64|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
-  - ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
+  - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ❓Other_8|2.0MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
+  - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ❓Other_11|2.1MB/s|TK-US|GPT⁺-US|GM-US
   - ❓Other_42|1.6MB/s|GPT⁺-US|GM-US
   - 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
-  - ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
+  - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ❓Other_25|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
@@ -1031,8 +829,8 @@ proxy-groups:
   - 🇺🇸US_7|3.5MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_6|5.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
+  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ❓Other_54|2.6MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -1053,9 +851,6 @@ proxy-groups:
   - '@confiig_hub #1'
   - 🇬🇱GL_1|798KB/s|YT-RU|GPT⁺|NF|6%
   - 🇯🇵JP_2|477KB/s|YT-JP|GPT⁺|NF|2%
-  - FRANKFURT-3-1B
-  - FRANKFURT-3-1A
-  - FRANKFURT-3-1C
   - 🇺🇸US_3|311KB/s|GPT
   - 🇰🇷KR_1|863KB/s|YT-KR|GPT⁺|NF|2%
   - 🇧🇷BR_1|921KB/s|YT-US|GPT⁺|NF|0%
@@ -1080,27 +875,12 @@ proxy-groups:
   - 🇨🇦CA_1|548KB/s|YT-CA|GPT⁺|NF|12%
   - '[ermaozi/get_subscribe]🇿🇦[www.v2nodes.com] ss-ZA-1333...'
   - '[peasoft/NoMoreWalls]🇿🇦[www.v2nodes.com] ss-ZA-1336...'
-  - 🇹🇭 泰国-BANGKOK-1
-  - 🇰🇷[www.v2nodes.com] ss-KR-1126...
+  - 🇹🇭TH_1|988KB/s
   - 🇰🇷KR_2|1.5MB/s
   - 🇬🇧GB_2|3.4MB/s|TK-GB|YT-GB|GPT⁺-GB|GM-GB
-  - CHILE-1B
-  - CHILE-1A
   - 🇬🇧GB_1|2.5MB/s|TK-GB|GPT-GB
   - '[ermaozi/get_subscribe]🇦🇱[www.v2nodes.com] ss-AL-1490...'
-  - 🇰🇷 KOREA-1B
-  - 🇰🇷 KOREA-1A
   - '[peasoft/NoMoreWalls]🇸🇪[www.v2nodes.com] ss-SE-1615...'
-  - 🇨🇦 CANADA-1B
-  - 🇨🇦 CANADA-1A
-  - SWITZERLAND-1B
-  - SWITZERLAND-1A
-  - 🇬🇧 THE UNITED KINGDOM-1A
-  - 🇬🇧 THE UNITED KINGDOM-1B
-  - 🇸🇬 SINGAPORE-1B
-  - 🇸🇬 SINGAPORE-1A
-  - 🇫🇷 FRANCE-1B
-  - 🇫🇷 FRANCE-1A
   - '[peasoft/NoMoreWalls]🏳[www.v2nodes.com] ss- #10'
   - '[ermaozi/get_subscribe]🇬🇧[www.v2nodes.com] ss-GB-1615...'
   - '[ermaozi/get_subscribe]🇯🇵[www.v2nodes.com] ss-JP-5141...'
@@ -1115,8 +895,6 @@ proxy-groups:
   - '[peasoft/NoMoreWalls]🇳🇱[www.v2nodes.com] ss-NL-1614... #1'
   - '[ermaozi/get_subscribe]🇳🇱[www.v2nodes.com] ss-NL-1614...'
   - '[ermaozi/get_subscribe]🏳[www.v2nodes.com] ss-'
-  - 🇺🇸 UNITED STATES-1B
-  - 🇺🇸 UNITED STATES-1A
   - ⚡ b2n.ir/v2ray-configs | 578
   - '[ermaozi/get_subscribe]🇳🇱[www.v2nodes.com] ss-NL-1618...'
   - '[ermaozi/get_subscribe]🇬🇧[www.v2nodes.com] ss-GB-1451...'
@@ -1135,8 +913,6 @@ proxy-groups:
   - '[ermaozi/get_subscribe]🇳🇱[www.v2nodes.com] ss-NL-1622...'
   - '[ermaozi/get_subscribe]🇬🇧[www.v2nodes.com] ss-GB-1616...'
   - '[peasoft/NoMoreWalls]🏳[www.v2nodes.com] ss- #9'
-  - 🇭🇰 HONG KONG-1A
-  - 🇭🇰 HONG KONG-1B
   - ✅ [ermaozi/get_subscribe]🇮🇹 意大利 | ITA
   - ✅ [ermaozi/get_subscribe]意大利2|@ripaojiedian
   - '✅ [peasoft/NoMoreWalls]🇮🇹 意大利 | ITA #3'
@@ -1177,7 +953,6 @@ proxy-groups:
   - '[ermaozi/get_subscribe]🏳[www.v2nodes.com] ss- #3'
   - '[peasoft/NoMoreWalls]🇦🇹[www.v2nodes.com] ss-AT-1595...'
   - ⚡ b2n.ir/v2ray-configs | 776
-  - ⚡ b2n.ir/v2ray-configs | 572
   - ⚡ b2n.ir/v2ray-configs | 523
   - '[peasoft/NoMoreWalls]🇯🇵[www.v2nodes.com] ss-JP-1544...'
   - '[peasoft/NoMoreWalls]🇷🇺[www.v2nodes.com] ss-RU-1163...'
@@ -1208,7 +983,6 @@ proxy-groups:
   - 🇫🇷FR_5|258KB/s|GPT|NF
   - 🇫🇷FR_11|292KB/s|GPT⁺|NF
   - 🇫🇷FR_2|302KB/s|GPT⁺|NF
-  - 🇸🇬 新加坡-SINGAPORE-1-1B
   - 🇿🇦_南非
   - 🇫🇷FR_16|261KB/s|GPT
   - 🇸🇬_新加坡 (7)
@@ -1244,12 +1018,7 @@ proxy-groups:
   - 🇨🇭_瑞士 (4)
   - 🇨🇭_瑞士 (3)
   - 🇨🇭_瑞士 (5)
-  - 🇺🇸_美国 (10)
   - 🇺🇸_美国 (11)
-  - 🇺🇸_美国 (7)
-  - 🇺🇸_美国 (2)
-  - 🇺🇸_美国 (24)
-  - 🇺🇸_美国 (3)
   - 🇨🇦_加拿大 (7)
   - 🇨🇦_加拿大 (5)
   - 🇨🇦_加拿大 (8)
@@ -1271,7 +1040,6 @@ proxy-groups:
   - 🇺🇸_美国 (62)
   - 🇧🇷_巴西
   - 🇹🇼_台湾
-  - 🇺🇸_美国 (72)
   - 🇫🇷FR_4|299KB/s|GPT⁺|NF
   - '[ermaozi/get_subscribe]🏳[www.v2nodes.com] trojan- #2'
   - 🇭🇰_香港
@@ -1303,7 +1071,6 @@ proxy-groups:
   - 🇫🇷FR_17|257KB/s|GPT⁺
   - ⚡ b2n.ir/v2ray-configs | 252
   - ✅ GB英国mibei77.com 米贝节点分享) (4)
-  - 🇺🇸_美国 (8)
   - 🇹🇭TH_1|450KB/s|YT-CN|GPT⁺|NF|0%
   - ✅ 🇭🇰_香港 (3)
   - ✅ FR法国(mibei77.com 米贝节点分享)
@@ -1311,7 +1078,6 @@ proxy-groups:
   - ✅ 🇺🇸_美国 (77)
   - 🇭🇰_香港 (5)
   - ✅ US美国(mibei77.com 米贝节点分享) (16)
-  - 🇺🇸 美国高速-AI专用-1A
   - 🇺🇸_美国 (4)
   - 🇩🇪DE_1|762KB/s
   - 日本2|@ripaojiedian
@@ -1337,8 +1103,8 @@ proxy-groups:
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #1'
   - 🇳🇱_荷兰 (16)
   - 🇳🇱_荷兰 (17)
-  - 🇺🇸_美国 (7)_2
-  - 🇺🇸_美国 (8)_2
+  - 🇺🇸_美国 (7)
+  - 🇺🇸_美国 (8)
   - '🇬🇧[www.v2nodes.com] vless-GB-1... #2'
   - 🇳🇱_荷兰 (9)
   - 🇬🇧_英国 (2)
@@ -1374,14 +1140,13 @@ proxy-groups:
   - 🇦🇱[www.v2nodes.com] vless-AL-1...
   - US美国(mibei77.com 米贝节点分享) (45)
   - TW台湾(mibei77.com 米贝节点分享)
-  - 🇺🇸 美国 | USA_2
-  - 🇺🇸_美国
+  - US美国(mibei77.com 米贝节点分享) (12)
+  - 🇺🇸_美国_2
   - 🇩🇪_德国 (27)
   - 🇯🇵_日本
   - 🇵🇱PL_3|1.3MB/s
   - '🇩🇪 德国 | DEU #3'
   - '🇷🇺 俄罗斯 | RUS #1'
-  - '🇩🇪 德国 | DEU #4'
   - 🇸🇬_SG_新加坡_IPV4 (3)
   - 🇯🇵_JP_日本_IPV4 (2)
   - 🇯🇵_JP_日本_IPV4 (3)
@@ -1415,7 +1180,6 @@ proxy-groups:
   - 🇩🇪_德国 (18)
   - 🇩🇪_德国 (6)
   - 🇳🇱NL_3|374KB/s|GPT⁺|NF|88%
-  - 🇮🇳[www.v2nodes.com] vless-IN-1...
   - '🇳🇱[www.v2nodes.com] vless-NL-1... #7'
   - 意大利(mibei77.com 米贝节点分享) (4)
   - '🇸🇪 瑞典 | SWE #1'
@@ -1426,6 +1190,7 @@ proxy-groups:
   - '🇩🇪 德国 | DEU #8'
   - TR_speednode_0038
   - '🇩🇪 德国 | DEU #5'
+  - '🇸🇪[www.v2nodes.com] vless-SE-1... #4'
   - 🇮🇷_伊朗 (5)
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #2'
   - 🇨🇿[www.v2nodes.com] vless-CZ-1...
@@ -1475,9 +1240,6 @@ proxy-groups:
   - '🏳[www.v2nodes.com] vless- #18'
   - 🇩🇪_德国 (13)
   - 🇩🇪_德国 (10)_2
-  - LOS ANGELES-1A
-  - LOS ANGELES-1B
-  - LOS ANGELES-1C
   - 🇰🇷KR_1|1.1MB/s
   - '🇳🇱[www.v2nodes.com] vless-NL-1... #5'
   - 🇺🇦[www.v2nodes.com] vless-UA-1...
@@ -1491,7 +1253,6 @@ proxy-groups:
   - ⚡ b2n.ir/v2ray-configs | 893
   - ⚡ b2n.ir/v2ray-configs | 484
   - 🇹🇷_土耳其_2
-  - 🇺🇸_美国 (26)
   - 🇦🇺[www.v2nodes.com] vless-AU-1...
   - '🏳[www.v2nodes.com] vless- #6'
   - SG新加坡(mibei77.com 米贝节点分享)
@@ -1523,14 +1284,6 @@ proxy-groups:
   - 🇸🇨_塞舌尔 (2)
   - 爱尔兰(mibei77.com 米贝节点分享)
   - '🇸🇪[www.v2nodes.com] vless-SE-1... #3'
-  - 🇺🇸 美国-洛杉矶-PRO-1I
-  - 🇺🇸 美国-洛杉矶-PRO-1A
-  - 🇺🇸 美国-洛杉矶-PRO-1E
-  - 🇺🇸 美国-洛杉矶-PRO-1B
-  - 🇺🇸 美国-洛杉矶-PRO-1K
-  - 🇺🇸 美国-洛杉矶-PRO-1L
-  - 🇺🇸 美国-洛杉矶-PRO-1C
-  - 🇺🇸 美国-洛杉矶-PRO-1J
   - '🏳[www.v2nodes.com] vless- #12'
   - '🏳[www.v2nodes.com] vless- #2'
   - '🇫🇷[www.v2nodes.com] vless-FR-1... #6'
@@ -1548,7 +1301,6 @@ proxy-groups:
   - ❓Other_39|1.0MB/s|YT-RU|GPT-SG
   - 🇸🇬_新加坡
   - 🇪🇸[www.v2nodes.com] vless-ES-1...
-  - XRAY-直连01
   - 🇺🇸US_4|250KB/s|YT-NL|GPT⁺|NF|0%
   - 🇺🇸US_9|265KB/s|GPT⁺|NF|0%
   - 🇨🇭[www.v2nodes.com] vless-CH-1...
@@ -1564,6 +1316,7 @@ proxy-groups:
   - 意大利(mibei77.com 米贝节点分享) (3)
   - 🇵🇱_波兰 (2)
   - 🇳🇱 荷兰 | NLD_4
+  - 🇷🇺 俄罗斯 | RUS_2
   - '🇷🇺 俄罗斯 | RUS #4'
   - 🇸🇦[www.v2nodes.com] vless-SA-1...
   - '🇮🇹[www.v2nodes.com] vless-IT-1... #2'
@@ -1600,8 +1353,6 @@ proxy-groups:
   - 🇩🇪_德国 (17)
   - AT_speednode_0001
   - 🇮🇷_伊朗
-  - 🇺🇸 美国高速-AI专用-1B
-  - 🇺🇸 美国直连-备用
   - JP日本(mibei77.com 米贝节点分享) (20)
   - '🇵🇱[www.v2nodes.com] vless-PL-1... #1'
   - '🇵🇱[www.v2nodes.com] vless-PL-1... #2'
@@ -1616,99 +1367,6 @@ proxy-groups:
   - 🇹🇼_台湾_2
   - 🇹🇼_台湾 (2)
   - 🇹🇼_台湾 (5)
-  - FV2026-7-7-3Z
-  - FV2026-7-7-4J
-  - FV2026-7-7-3T
-  - FV2026-7-7-4N
-  - FV2026-7-7-1K
-  - FV2026-7-7-3R
-  - FV2026-7-7-3H
-  - FV2026-7-7-1O
-  - FV2026-7-7-1B
-  - FV2026-7-7-4I
-  - FV2026-7-7-2D
-  - FV2026-7-7-2Z
-  - FV2026-7-7-2K
-  - FV2026-7-7-1H
-  - FV2026-7-7-3x
-  - FV2026-7-7-3S
-  - FV2026-7-7-3Y
-  - FV2026-7-7-4O
-  - FV2026-7-7-4V
-  - FV2026-7-7-4P
-  - FV2026-7-7-3G
-  - FV2026-7-7-3C
-  - FV2026-7-7-4S
-  - FV2026-7-7-2N
-  - FV2026-7-7-1A
-  - FV2026-7-7-3F
-  - FV2026-7-7-2I
-  - FV2026-7-7-2O
-  - FV2026-7-7-2W
-  - FV2026-7-7-3Q
-  - FV2026-7-7-3D
-  - FV2026-7-7-4W
-  - FV2026-7-7-4M
-  - FV2026-7-7-3J
-  - FV2026-7-7-1J
-  - FV2026-7-7-2V
-  - FV2026-7-7-4D
-  - FV2026-7-7-3M
-  - FV2026-7-7-2M
-  - FV2026-7-7-2T
-  - FV2026-7-7-4C
-  - FV2026-7-7-1M
-  - FV2026-7-7-4x
-  - FV2026-7-7-3L
-  - FV2026-7-7-1N
-  - FV2026-7-7-2B
-  - FV2026-7-7-3U
-  - FV2026-7-7-3N
-  - FV2026-7-7-4B
-  - FV2026-7-7-2A
-  - FV2026-7-7-4Q
-  - FV2026-7-7-1V
-  - FV2026-7-7-2E
-  - FV2026-7-7-2L
-  - FV2026-7-7-1E
-  - FV2026-7-7-1Z
-  - FV2026-7-7-2U
-  - FV2026-7-7-2Y
-  - FV2026-7-7-2F
-  - FV2026-7-7-1G
-  - FV2026-7-7-3P
-  - FV2026-7-7-1W
-  - FV2026-7-7-4L
-  - FV2026-7-7-3O
-  - FV2026-7-7-2x
-  - FV2026-7-7-4H
-  - FV2026-7-7-4R
-  - FV2026-7-7-3W
-  - FV2026-7-7-2C
-  - FV2026-7-7-4T
-  - FV2026-7-7-2G
-  - FV2026-7-7-2Q
-  - FV2026-7-7-3E
-  - FV2026-7-7-2S
-  - FV2026-7-7-1D
-  - FV2026-7-7-1Y
-  - FV2026-7-7-3K
-  - FV2026-7-7-4U
-  - FV2026-7-7-1T
-  - FV2026-7-7-2R
-  - FV2026-7-7-4F
-  - FV2026-7-7-3A
-  - FV2026-7-7-1x
-  - FV2026-7-7-3I
-  - FV2026-7-7-2P
-  - FV2026-7-7-2J
-  - FV2026-7-7-4K
-  - FV2026-7-7-1L
-  - FV2026-7-7-2H
-  - FV2026-7-7-3B
-  - FV2026-7-7-4G
-  - FV2026-7-7-4A
-  - FV2026-7-7-3V
   - '🇹🇷 土耳其 | TUR #3'
   - US美国(mibei77.com 米贝节点分享) (18)
   - 🇺🇸US_6|268KB/s|YT-NL|GPT⁺|0%
@@ -1732,56 +1390,10 @@ proxy-groups:
   - 🇩🇪_德国 (3)_2
   - 🇺🇸 美国 | USA
   - 🇩🇪DE_4|351KB/s|GPT⁺|NF|17%
-  - XRAY-VLESS直连
-  - XRAY-TLS2053
-  - XRAY-TLS2083
-  - XRAY-TLS2087
-  - XRAY-TLS2096
-  - XRAY-TLS8443
   - 🇰🇷 韩国 | KOR
-  - 🇺🇸 美国 抗封线-1G
-  - 🇺🇸 美国 抗封线-2B
-  - 🇺🇸 美国 抗封线-1B
-  - 🇺🇸 美国 抗封线-1L
-  - 🇺🇸 美国 抗封线-1A
-  - 🇺🇸 美国 抗封线-1Y
-  - 🇺🇸 美国 抗封线-1Z
-  - 🇺🇸 美国 抗封线-2A
-  - 🇺🇸 美国 抗封线-1H
-  - 🇺🇸 美国 抗封线-2F
-  - 🇺🇸 美国 抗封线-1K
-  - 🇺🇸 美国 抗封线-1D
-  - 🇺🇸 美国 抗封线-1M
-  - 🇺🇸 美国 抗封线-2M
-  - 🇺🇸 美国 抗封线-2H
-  - 🇺🇸 美国 抗封线-1P
-  - 🇺🇸 美国 抗封线-1I
-  - 🇺🇸 美国 抗封线-1J
-  - 🇺🇸 美国 抗封线-1O
-  - 🇺🇸 美国 抗封线-2J
-  - 🇺🇸 美国 抗封线-2N
-  - 🇺🇸 美国 抗封线-1N
-  - 🇺🇸 美国 抗封线-2L
-  - 🇺🇸 美国 抗封线-2K
-  - 🇺🇸 美国 抗封线-1C
-  - 🇺🇸 美国 抗封线-2E
-  - 🇺🇸 美国 抗封线-1E
-  - 🇺🇸 美国 抗封线-1F
   - 🇺🇸US_2|263KB/s|YT-NL|GPT⁺|NF|0%
   - '🇫🇷[www.v2nodes.com] vless-FR-1... #5'
-  - 🇺🇸 美国 01 联通电信推荐-1C
-  - 🇺🇸 美国 01 联通电信推荐-1F
-  - 🇺🇸 美国 01 联通电信推荐-1A
-  - 🇺🇸 美国 01 联通电信推荐-1D
-  - 🇺🇸 美国 01 联通电信推荐-1B
-  - 🇺🇸 美国 01 联通电信推荐-1E
   - 🇩🇪DE_2|284KB/s
-  - 10G试用智能线路-1B
-  - 10G试用智能线路-1A
-  - 10G试用智能线路-1F
-  - 10G试用智能线路-1E
-  - 10G试用智能线路-1C
-  - 10G试用智能线路-1D
   - 🇸🇬_新加坡 (5)
   - 🇮🇳_印度 (2)
   - ❓Other_6|1.8MB/s|YT-US|GPT⁺-US|GM-US
@@ -1794,13 +1406,12 @@ proxy-groups:
   - JP日本(mibei77.com 米贝节点分享) (6)
   - JP日本(mibei77.com 米贝节点分享) (10)
   - 🇺🇸US-13.248.169.48-4755
-  - CA 🇨🇦 | @Raydikalx | 3F4E6C
-  - 🏁RELAY-104.21.7.50-8194
+  - 🇺🇸_美国 (13)
   - 🇰🇷_韩国 (2)
+  - KR 🇰🇷 | @Raydikalx | A99D73
   - 🇨🇦_加拿大
   - 🇸🇬SG-146.190.82.241-2247
   - FR 🇫🇷 | @Raydikalx | 24D78E
-  - US 🇺🇸 | @Raydikalx | 9053F6
   - 🇸🇬_新加坡 (8)
   - 🇸🇬_新加坡 (3)
   - 🇮🇳_印度
@@ -1809,30 +1420,16 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | 411161
   - 🇯🇵_日本 (19)
   - 🇯🇵_日本 (20)
-  - ✅ 🇺🇸 机场推荐:dafei.de 美国 15_IPV4
-  - 🏁RELAY-172.67.193.109-7770
   - US美国(mibei77.com 米贝节点分享) (21)
   - 🇫🇮_芬兰 (6)
-  - CA 🇨🇦 | @Raydikalx | 23FD2E
   - ✅ 🇺🇸 机场推荐:dafei.de 美国 89_IPV4
-  - '[peasoft/NoMoreWalls]🇺🇸 美国 | USA #6'
   - 🇸🇬_新加坡 (2)
-  - 🇰🇷_韩国
   - 🇨🇦_加拿大 (3)
   - HK 🇭🇰 | @Raydikalx | E4EE0B
-  - 🇺🇸_美国 (27)_2
   - 🇺🇸_美国 (64)
   - US 🇺🇸 | @Raydikalx | E7611E
   - US7
   - 🇺🇸_美国 (67)
-  - 🇺🇸 硅谷-01-1A
-  - 🇺🇸 硅谷-01-1F
-  - 🇺🇸 硅谷-01-1E
-  - 🇺🇸 硅谷-01-1D
-  - 🇺🇸 硅谷-01-1B
-  - 🇺🇸 硅谷-01-1C
-  - 🇺🇸 硅谷-01-1G
-  - 🇯🇵_日本 (18)
   - HK3
   - 电报群：t.me/vvkj11
   - 🇲🇾_马来西亚
@@ -1841,12 +1438,11 @@ proxy-groups:
   - US 🇺🇸 | @Raydikalx | AD2F7C
   - 🇺🇸_美国 (42)
   - 🇺🇸_美国 (47)
-  - 🇺🇸_美国_2
+  - 🇺🇸_美国
   - US 🇺🇸 | @Raydikalx | B021CB
   - DE 🇩🇪 | @Raydikalx | D007C9
   - DE 🇩🇪 | @Raydikalx | 97EFA3
   - DE 🇩🇪 | @Raydikalx | C91663
-  - CA 🇨🇦 | @Raydikalx | 57621C
   - 🇩🇪_德国 (11)
   - 🇭🇰_香港 (2)
   - 🇭🇰_香港 (3)
@@ -1865,7 +1461,7 @@ proxy-groups:
   - ✅ 🇦🇺AU_1|2.7MB/s|YT-AU|GPT⁺-AU|GM-AU
   - ✅ 🇸🇬SG_6|5.1MB/s|TK-SG|YT-SG|GPT⁺-JP|GM-SG
   - ✅ 🇦🇺AU_4|3.2MB/s|YT-AU|GPT⁺-AU|GM-AU
-  - 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
+  - ✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
   - ❓Other_9|1.0MB/s|TK-US|YT-US|GPT⁺-US
   - ✅ ❓Other_16|2.0MB/s|TK-GB|GPT⁺-BG
   - ✅ ❓Other_43|2.1MB/s|YT-US|GPT⁺-LV
@@ -1894,18 +1490,18 @@ proxy-groups:
   - 🇨🇦CA_1|2.3MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ❓Other_64|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ✅ ❓Other_27|1.1MB/s|TK-DE|GPT⁺-DE|GM-DE
-  - ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
+  - ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ✅ 🇭🇷HR_1|2.5MB/s|TK-HR|GPT⁺-HR|GM-HR
   - 🇿🇦ZA_1|3.6MB/s|YT-US|GPT⁺-US|GM-US
   - ❓Other_8|2.0MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_26|2.7MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
+  - ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   - ❓Other_11|2.1MB/s|TK-US|GPT⁺-US|GM-US
   - ❓Other_42|1.6MB/s|GPT⁺-US|GM-US
   - 🇰🇷KR_1|2.4MB/s|YT-KR|GPT⁺-KR|GM-KR
   - ✅ ❓Other_40|2.7MB/s|TK-NL|YT-US|GPT⁺-NL
   - ✅ ❓Other_23|2.7MB/s|GPT-US
-  - ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
+  - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
   - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ❓Other_25|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
@@ -1939,8 +1535,8 @@ proxy-groups:
   - 🇺🇸US_7|3.5MB/s|YT-US|GPT⁺-US|GM-US
   - 🇺🇸US_6|5.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_32|2.5MB/s|TK-SE|GPT⁺-SE|GM-SE
-  - 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
-  - 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
+  - ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+  - ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   - ❓Other_54|2.6MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ 🇬🇧GB_4|2.3MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_19|2.0MB/s|TK-US|YT-US|GPT⁺-US|GM-US
@@ -1961,9 +1557,6 @@ proxy-groups:
   - '@confiig_hub #1'
   - 🇬🇱GL_1|798KB/s|YT-RU|GPT⁺|NF|6%
   - 🇯🇵JP_2|477KB/s|YT-JP|GPT⁺|NF|2%
-  - FRANKFURT-3-1B
-  - FRANKFURT-3-1A
-  - FRANKFURT-3-1C
   - 🇺🇸US_3|311KB/s|GPT
   - 🇰🇷KR_1|863KB/s|YT-KR|GPT⁺|NF|2%
   - 🇧🇷BR_1|921KB/s|YT-US|GPT⁺|NF|0%
@@ -1988,27 +1581,12 @@ proxy-groups:
   - 🇨🇦CA_1|548KB/s|YT-CA|GPT⁺|NF|12%
   - '[ermaozi/get_subscribe]🇿🇦[www.v2nodes.com] ss-ZA-1333...'
   - '[peasoft/NoMoreWalls]🇿🇦[www.v2nodes.com] ss-ZA-1336...'
-  - 🇹🇭 泰国-BANGKOK-1
-  - 🇰🇷[www.v2nodes.com] ss-KR-1126...
+  - 🇹🇭TH_1|988KB/s
   - 🇰🇷KR_2|1.5MB/s
   - 🇬🇧GB_2|3.4MB/s|TK-GB|YT-GB|GPT⁺-GB|GM-GB
-  - CHILE-1B
-  - CHILE-1A
   - 🇬🇧GB_1|2.5MB/s|TK-GB|GPT-GB
   - '[ermaozi/get_subscribe]🇦🇱[www.v2nodes.com] ss-AL-1490...'
-  - 🇰🇷 KOREA-1B
-  - 🇰🇷 KOREA-1A
   - '[peasoft/NoMoreWalls]🇸🇪[www.v2nodes.com] ss-SE-1615...'
-  - 🇨🇦 CANADA-1B
-  - 🇨🇦 CANADA-1A
-  - SWITZERLAND-1B
-  - SWITZERLAND-1A
-  - 🇬🇧 THE UNITED KINGDOM-1A
-  - 🇬🇧 THE UNITED KINGDOM-1B
-  - 🇸🇬 SINGAPORE-1B
-  - 🇸🇬 SINGAPORE-1A
-  - 🇫🇷 FRANCE-1B
-  - 🇫🇷 FRANCE-1A
   - '[peasoft/NoMoreWalls]🏳[www.v2nodes.com] ss- #10'
   - '[ermaozi/get_subscribe]🇬🇧[www.v2nodes.com] ss-GB-1615...'
   - '[ermaozi/get_subscribe]🇯🇵[www.v2nodes.com] ss-JP-5141...'
@@ -2023,8 +1601,6 @@ proxy-groups:
   - '[peasoft/NoMoreWalls]🇳🇱[www.v2nodes.com] ss-NL-1614... #1'
   - '[ermaozi/get_subscribe]🇳🇱[www.v2nodes.com] ss-NL-1614...'
   - '[ermaozi/get_subscribe]🏳[www.v2nodes.com] ss-'
-  - 🇺🇸 UNITED STATES-1B
-  - 🇺🇸 UNITED STATES-1A
   - ⚡ b2n.ir/v2ray-configs | 578
   - '[ermaozi/get_subscribe]🇳🇱[www.v2nodes.com] ss-NL-1618...'
   - '[ermaozi/get_subscribe]🇬🇧[www.v2nodes.com] ss-GB-1451...'
@@ -2043,8 +1619,6 @@ proxy-groups:
   - '[ermaozi/get_subscribe]🇳🇱[www.v2nodes.com] ss-NL-1622...'
   - '[ermaozi/get_subscribe]🇬🇧[www.v2nodes.com] ss-GB-1616...'
   - '[peasoft/NoMoreWalls]🏳[www.v2nodes.com] ss- #9'
-  - 🇭🇰 HONG KONG-1A
-  - 🇭🇰 HONG KONG-1B
   - ✅ [ermaozi/get_subscribe]🇮🇹 意大利 | ITA
   - ✅ [ermaozi/get_subscribe]意大利2|@ripaojiedian
   - '✅ [peasoft/NoMoreWalls]🇮🇹 意大利 | ITA #3'
@@ -2085,7 +1659,6 @@ proxy-groups:
   - '[ermaozi/get_subscribe]🏳[www.v2nodes.com] ss- #3'
   - '[peasoft/NoMoreWalls]🇦🇹[www.v2nodes.com] ss-AT-1595...'
   - ⚡ b2n.ir/v2ray-configs | 776
-  - ⚡ b2n.ir/v2ray-configs | 572
   - ⚡ b2n.ir/v2ray-configs | 523
   - '[peasoft/NoMoreWalls]🇯🇵[www.v2nodes.com] ss-JP-1544...'
   - '[peasoft/NoMoreWalls]🇷🇺[www.v2nodes.com] ss-RU-1163...'
@@ -2116,7 +1689,6 @@ proxy-groups:
   - 🇫🇷FR_5|258KB/s|GPT|NF
   - 🇫🇷FR_11|292KB/s|GPT⁺|NF
   - 🇫🇷FR_2|302KB/s|GPT⁺|NF
-  - 🇸🇬 新加坡-SINGAPORE-1-1B
   - 🇿🇦_南非
   - 🇫🇷FR_16|261KB/s|GPT
   - 🇸🇬_新加坡 (7)
@@ -2152,12 +1724,7 @@ proxy-groups:
   - 🇨🇭_瑞士 (4)
   - 🇨🇭_瑞士 (3)
   - 🇨🇭_瑞士 (5)
-  - 🇺🇸_美国 (10)
   - 🇺🇸_美国 (11)
-  - 🇺🇸_美国 (7)
-  - 🇺🇸_美国 (2)
-  - 🇺🇸_美国 (24)
-  - 🇺🇸_美国 (3)
   - 🇨🇦_加拿大 (7)
   - 🇨🇦_加拿大 (5)
   - 🇨🇦_加拿大 (8)
@@ -2179,7 +1746,6 @@ proxy-groups:
   - 🇺🇸_美国 (62)
   - 🇧🇷_巴西
   - 🇹🇼_台湾
-  - 🇺🇸_美国 (72)
   - 🇫🇷FR_4|299KB/s|GPT⁺|NF
   - '[ermaozi/get_subscribe]🏳[www.v2nodes.com] trojan- #2'
   - 🇭🇰_香港
@@ -2211,7 +1777,6 @@ proxy-groups:
   - 🇫🇷FR_17|257KB/s|GPT⁺
   - ⚡ b2n.ir/v2ray-configs | 252
   - ✅ GB英国mibei77.com 米贝节点分享) (4)
-  - 🇺🇸_美国 (8)
   - 🇹🇭TH_1|450KB/s|YT-CN|GPT⁺|NF|0%
   - ✅ 🇭🇰_香港 (3)
   - ✅ FR法国(mibei77.com 米贝节点分享)
@@ -2219,7 +1784,6 @@ proxy-groups:
   - ✅ 🇺🇸_美国 (77)
   - 🇭🇰_香港 (5)
   - ✅ US美国(mibei77.com 米贝节点分享) (16)
-  - 🇺🇸 美国高速-AI专用-1A
   - 🇺🇸_美国 (4)
   - 🇩🇪DE_1|762KB/s
   - 日本2|@ripaojiedian
@@ -2245,8 +1809,8 @@ proxy-groups:
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #1'
   - 🇳🇱_荷兰 (16)
   - 🇳🇱_荷兰 (17)
-  - 🇺🇸_美国 (7)_2
-  - 🇺🇸_美国 (8)_2
+  - 🇺🇸_美国 (7)
+  - 🇺🇸_美国 (8)
   - '🇬🇧[www.v2nodes.com] vless-GB-1... #2'
   - 🇳🇱_荷兰 (9)
   - 🇬🇧_英国 (2)
@@ -2282,14 +1846,13 @@ proxy-groups:
   - 🇦🇱[www.v2nodes.com] vless-AL-1...
   - US美国(mibei77.com 米贝节点分享) (45)
   - TW台湾(mibei77.com 米贝节点分享)
-  - 🇺🇸 美国 | USA_2
-  - 🇺🇸_美国
+  - US美国(mibei77.com 米贝节点分享) (12)
+  - 🇺🇸_美国_2
   - 🇩🇪_德国 (27)
   - 🇯🇵_日本
   - 🇵🇱PL_3|1.3MB/s
   - '🇩🇪 德国 | DEU #3'
   - '🇷🇺 俄罗斯 | RUS #1'
-  - '🇩🇪 德国 | DEU #4'
   - 🇸🇬_SG_新加坡_IPV4 (3)
   - 🇯🇵_JP_日本_IPV4 (2)
   - 🇯🇵_JP_日本_IPV4 (3)
@@ -2323,7 +1886,6 @@ proxy-groups:
   - 🇩🇪_德国 (18)
   - 🇩🇪_德国 (6)
   - 🇳🇱NL_3|374KB/s|GPT⁺|NF|88%
-  - 🇮🇳[www.v2nodes.com] vless-IN-1...
   - '🇳🇱[www.v2nodes.com] vless-NL-1... #7'
   - 意大利(mibei77.com 米贝节点分享) (4)
   - '🇸🇪 瑞典 | SWE #1'
@@ -2334,6 +1896,7 @@ proxy-groups:
   - '🇩🇪 德国 | DEU #8'
   - TR_speednode_0038
   - '🇩🇪 德国 | DEU #5'
+  - '🇸🇪[www.v2nodes.com] vless-SE-1... #4'
   - 🇮🇷_伊朗 (5)
   - '🇮🇳[www.v2nodes.com] vless-IN-1... #2'
   - 🇨🇿[www.v2nodes.com] vless-CZ-1...
@@ -2383,9 +1946,6 @@ proxy-groups:
   - '🏳[www.v2nodes.com] vless- #18'
   - 🇩🇪_德国 (13)
   - 🇩🇪_德国 (10)_2
-  - LOS ANGELES-1A
-  - LOS ANGELES-1B
-  - LOS ANGELES-1C
   - 🇰🇷KR_1|1.1MB/s
   - '🇳🇱[www.v2nodes.com] vless-NL-1... #5'
   - 🇺🇦[www.v2nodes.com] vless-UA-1...
@@ -2399,7 +1959,6 @@ proxy-groups:
   - ⚡ b2n.ir/v2ray-configs | 893
   - ⚡ b2n.ir/v2ray-configs | 484
   - 🇹🇷_土耳其_2
-  - 🇺🇸_美国 (26)
   - 🇦🇺[www.v2nodes.com] vless-AU-1...
   - '🏳[www.v2nodes.com] vless- #6'
   - SG新加坡(mibei77.com 米贝节点分享)
@@ -2431,14 +1990,6 @@ proxy-groups:
   - 🇸🇨_塞舌尔 (2)
   - 爱尔兰(mibei77.com 米贝节点分享)
   - '🇸🇪[www.v2nodes.com] vless-SE-1... #3'
-  - 🇺🇸 美国-洛杉矶-PRO-1I
-  - 🇺🇸 美国-洛杉矶-PRO-1A
-  - 🇺🇸 美国-洛杉矶-PRO-1E
-  - 🇺🇸 美国-洛杉矶-PRO-1B
-  - 🇺🇸 美国-洛杉矶-PRO-1K
-  - 🇺🇸 美国-洛杉矶-PRO-1L
-  - 🇺🇸 美国-洛杉矶-PRO-1C
-  - 🇺🇸 美国-洛杉矶-PRO-1J
   - '🏳[www.v2nodes.com] vless- #12'
   - '🏳[www.v2nodes.com] vless- #2'
   - '🇫🇷[www.v2nodes.com] vless-FR-1... #6'
@@ -2456,7 +2007,6 @@ proxy-groups:
   - ❓Other_39|1.0MB/s|YT-RU|GPT-SG
   - 🇸🇬_新加坡
   - 🇪🇸[www.v2nodes.com] vless-ES-1...
-  - XRAY-直连01
   - 🇺🇸US_4|250KB/s|YT-NL|GPT⁺|NF|0%
   - 🇺🇸US_9|265KB/s|GPT⁺|NF|0%
   - 🇨🇭[www.v2nodes.com] vless-CH-1...
@@ -2472,6 +2022,7 @@ proxy-groups:
   - 意大利(mibei77.com 米贝节点分享) (3)
   - 🇵🇱_波兰 (2)
   - 🇳🇱 荷兰 | NLD_4
+  - 🇷🇺 俄罗斯 | RUS_2
   - '🇷🇺 俄罗斯 | RUS #4'
   - 🇸🇦[www.v2nodes.com] vless-SA-1...
   - '🇮🇹[www.v2nodes.com] vless-IT-1... #2'
@@ -2508,8 +2059,6 @@ proxy-groups:
   - 🇩🇪_德国 (17)
   - AT_speednode_0001
   - 🇮🇷_伊朗
-  - 🇺🇸 美国高速-AI专用-1B
-  - 🇺🇸 美国直连-备用
   - JP日本(mibei77.com 米贝节点分享) (20)
   - '🇵🇱[www.v2nodes.com] vless-PL-1... #1'
   - '🇵🇱[www.v2nodes.com] vless-PL-1... #2'
@@ -2524,99 +2073,6 @@ proxy-groups:
   - 🇹🇼_台湾_2
   - 🇹🇼_台湾 (2)
   - 🇹🇼_台湾 (5)
-  - FV2026-7-7-3Z
-  - FV2026-7-7-4J
-  - FV2026-7-7-3T
-  - FV2026-7-7-4N
-  - FV2026-7-7-1K
-  - FV2026-7-7-3R
-  - FV2026-7-7-3H
-  - FV2026-7-7-1O
-  - FV2026-7-7-1B
-  - FV2026-7-7-4I
-  - FV2026-7-7-2D
-  - FV2026-7-7-2Z
-  - FV2026-7-7-2K
-  - FV2026-7-7-1H
-  - FV2026-7-7-3x
-  - FV2026-7-7-3S
-  - FV2026-7-7-3Y
-  - FV2026-7-7-4O
-  - FV2026-7-7-4V
-  - FV2026-7-7-4P
-  - FV2026-7-7-3G
-  - FV2026-7-7-3C
-  - FV2026-7-7-4S
-  - FV2026-7-7-2N
-  - FV2026-7-7-1A
-  - FV2026-7-7-3F
-  - FV2026-7-7-2I
-  - FV2026-7-7-2O
-  - FV2026-7-7-2W
-  - FV2026-7-7-3Q
-  - FV2026-7-7-3D
-  - FV2026-7-7-4W
-  - FV2026-7-7-4M
-  - FV2026-7-7-3J
-  - FV2026-7-7-1J
-  - FV2026-7-7-2V
-  - FV2026-7-7-4D
-  - FV2026-7-7-3M
-  - FV2026-7-7-2M
-  - FV2026-7-7-2T
-  - FV2026-7-7-4C
-  - FV2026-7-7-1M
-  - FV2026-7-7-4x
-  - FV2026-7-7-3L
-  - FV2026-7-7-1N
-  - FV2026-7-7-2B
-  - FV2026-7-7-3U
-  - FV2026-7-7-3N
-  - FV2026-7-7-4B
-  - FV2026-7-7-2A
-  - FV2026-7-7-4Q
-  - FV2026-7-7-1V
-  - FV2026-7-7-2E
-  - FV2026-7-7-2L
-  - FV2026-7-7-1E
-  - FV2026-7-7-1Z
-  - FV2026-7-7-2U
-  - FV2026-7-7-2Y
-  - FV2026-7-7-2F
-  - FV2026-7-7-1G
-  - FV2026-7-7-3P
-  - FV2026-7-7-1W
-  - FV2026-7-7-4L
-  - FV2026-7-7-3O
-  - FV2026-7-7-2x
-  - FV2026-7-7-4H
-  - FV2026-7-7-4R
-  - FV2026-7-7-3W
-  - FV2026-7-7-2C
-  - FV2026-7-7-4T
-  - FV2026-7-7-2G
-  - FV2026-7-7-2Q
-  - FV2026-7-7-3E
-  - FV2026-7-7-2S
-  - FV2026-7-7-1D
-  - FV2026-7-7-1Y
-  - FV2026-7-7-3K
-  - FV2026-7-7-4U
-  - FV2026-7-7-1T
-  - FV2026-7-7-2R
-  - FV2026-7-7-4F
-  - FV2026-7-7-3A
-  - FV2026-7-7-1x
-  - FV2026-7-7-3I
-  - FV2026-7-7-2P
-  - FV2026-7-7-2J
-  - FV2026-7-7-4K
-  - FV2026-7-7-1L
-  - FV2026-7-7-2H
-  - FV2026-7-7-3B
-  - FV2026-7-7-4G
-  - FV2026-7-7-4A
-  - FV2026-7-7-3V
   - '🇹🇷 土耳其 | TUR #3'
   - US美国(mibei77.com 米贝节点分享) (18)
   - 🇺🇸US_6|268KB/s|YT-NL|GPT⁺|0%
@@ -2640,56 +2096,10 @@ proxy-groups:
   - 🇩🇪_德国 (3)_2
   - 🇺🇸 美国 | USA
   - 🇩🇪DE_4|351KB/s|GPT⁺|NF|17%
-  - XRAY-VLESS直连
-  - XRAY-TLS2053
-  - XRAY-TLS2083
-  - XRAY-TLS2087
-  - XRAY-TLS2096
-  - XRAY-TLS8443
   - 🇰🇷 韩国 | KOR
-  - 🇺🇸 美国 抗封线-1G
-  - 🇺🇸 美国 抗封线-2B
-  - 🇺🇸 美国 抗封线-1B
-  - 🇺🇸 美国 抗封线-1L
-  - 🇺🇸 美国 抗封线-1A
-  - 🇺🇸 美国 抗封线-1Y
-  - 🇺🇸 美国 抗封线-1Z
-  - 🇺🇸 美国 抗封线-2A
-  - 🇺🇸 美国 抗封线-1H
-  - 🇺🇸 美国 抗封线-2F
-  - 🇺🇸 美国 抗封线-1K
-  - 🇺🇸 美国 抗封线-1D
-  - 🇺🇸 美国 抗封线-1M
-  - 🇺🇸 美国 抗封线-2M
-  - 🇺🇸 美国 抗封线-2H
-  - 🇺🇸 美国 抗封线-1P
-  - 🇺🇸 美国 抗封线-1I
-  - 🇺🇸 美国 抗封线-1J
-  - 🇺🇸 美国 抗封线-1O
-  - 🇺🇸 美国 抗封线-2J
-  - 🇺🇸 美国 抗封线-2N
-  - 🇺🇸 美国 抗封线-1N
-  - 🇺🇸 美国 抗封线-2L
-  - 🇺🇸 美国 抗封线-2K
-  - 🇺🇸 美国 抗封线-1C
-  - 🇺🇸 美国 抗封线-2E
-  - 🇺🇸 美国 抗封线-1E
-  - 🇺🇸 美国 抗封线-1F
   - 🇺🇸US_2|263KB/s|YT-NL|GPT⁺|NF|0%
   - '🇫🇷[www.v2nodes.com] vless-FR-1... #5'
-  - 🇺🇸 美国 01 联通电信推荐-1C
-  - 🇺🇸 美国 01 联通电信推荐-1F
-  - 🇺🇸 美国 01 联通电信推荐-1A
-  - 🇺🇸 美国 01 联通电信推荐-1D
-  - 🇺🇸 美国 01 联通电信推荐-1B
-  - 🇺🇸 美国 01 联通电信推荐-1E
   - 🇩🇪DE_2|284KB/s
-  - 10G试用智能线路-1B
-  - 10G试用智能线路-1A
-  - 10G试用智能线路-1F
-  - 10G试用智能线路-1E
-  - 10G试用智能线路-1C
-  - 10G试用智能线路-1D
   - 🇸🇬_新加坡 (5)
   - 🇮🇳_印度 (2)
   - ❓Other_6|1.8MB/s|YT-US|GPT⁺-US|GM-US
@@ -2702,13 +2112,12 @@ proxy-groups:
   - JP日本(mibei77.com 米贝节点分享) (6)
   - JP日本(mibei77.com 米贝节点分享) (10)
   - 🇺🇸US-13.248.169.48-4755
-  - CA 🇨🇦 | @Raydikalx | 3F4E6C
-  - 🏁RELAY-104.21.7.50-8194
+  - 🇺🇸_美国 (13)
   - 🇰🇷_韩国 (2)
+  - KR 🇰🇷 | @Raydikalx | A99D73
   - 🇨🇦_加拿大
   - 🇸🇬SG-146.190.82.241-2247
   - FR 🇫🇷 | @Raydikalx | 24D78E
-  - US 🇺🇸 | @Raydikalx | 9053F6
   - 🇸🇬_新加坡 (8)
   - 🇸🇬_新加坡 (3)
   - 🇮🇳_印度
@@ -2717,30 +2126,16 @@ proxy-groups:
   - DE 🇩🇪 | @Raydikalx | 411161
   - 🇯🇵_日本 (19)
   - 🇯🇵_日本 (20)
-  - ✅ 🇺🇸 机场推荐:dafei.de 美国 15_IPV4
-  - 🏁RELAY-172.67.193.109-7770
   - US美国(mibei77.com 米贝节点分享) (21)
   - 🇫🇮_芬兰 (6)
-  - CA 🇨🇦 | @Raydikalx | 23FD2E
   - ✅ 🇺🇸 机场推荐:dafei.de 美国 89_IPV4
-  - '[peasoft/NoMoreWalls]🇺🇸 美国 | USA #6'
   - 🇸🇬_新加坡 (2)
-  - 🇰🇷_韩国
   - 🇨🇦_加拿大 (3)
   - HK 🇭🇰 | @Raydikalx | E4EE0B
-  - 🇺🇸_美国 (27)_2
   - 🇺🇸_美国 (64)
   - US 🇺🇸 | @Raydikalx | E7611E
   - US7
   - 🇺🇸_美国 (67)
-  - 🇺🇸 硅谷-01-1A
-  - 🇺🇸 硅谷-01-1F
-  - 🇺🇸 硅谷-01-1E
-  - 🇺🇸 硅谷-01-1D
-  - 🇺🇸 硅谷-01-1B
-  - 🇺🇸 硅谷-01-1C
-  - 🇺🇸 硅谷-01-1G
-  - 🇯🇵_日本 (18)
   - HK3
   - 电报群：t.me/vvkj11
   - 🇲🇾_马来西亚
@@ -2749,12 +2144,11 @@ proxy-groups:
   - US 🇺🇸 | @Raydikalx | AD2F7C
   - 🇺🇸_美国 (42)
   - 🇺🇸_美国 (47)
-  - 🇺🇸_美国_2
+  - 🇺🇸_美国
   - US 🇺🇸 | @Raydikalx | B021CB
   - DE 🇩🇪 | @Raydikalx | D007C9
   - DE 🇩🇪 | @Raydikalx | 97EFA3
   - DE 🇩🇪 | @Raydikalx | C91663
-  - CA 🇨🇦 | @Raydikalx | 57621C
   - 🇩🇪_德国 (11)
   - 🇭🇰_香港 (2)
   - 🇭🇰_香港 (3)
@@ -3317,7 +2711,7 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
+- name: ✅ 🇮🇳IN_1|2.6MB/s|YT-IN|GPT⁺-IN|GM-IN
   port: 443
   server: 103.26.207.94
   sin: https://t.me/WangCai2🇨🇳
@@ -3506,7 +2900,7 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
+- name: ✅ ❓Other_33|1.1MB/s|YT-SG|GPT⁺-SG|GM-SG
   port: 443
   server: 154.26.139.24
   sin: https://t.me/WangCai2🇨🇳
@@ -3539,7 +2933,7 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
+- name: ✅ ❓Other_62|2.5MB/s|YT-SG|GPT⁺-SG|GM-SG
   port: 443
   server: 156.146.56.97
   sin: https://t.me/WangCai2🇨🇳
@@ -3582,7 +2976,7 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
+- name: ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   port: 9443
   server: 181.215.52.122
   skip-cert-verify: true
@@ -3808,14 +3202,14 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
+- name: ✅ 🇸🇬SG_4|3.4MB/s|YT-SG|GPT⁺-JP|GM-SG
   port: 443
   server: 82.102.25.210
   sin: https://t.me/WangCai2🇨🇳
   skip-cert-verify: true
   tls: true
   type: http
-- name: 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
+- name: ✅ 🇸🇬SG_5|4.6MB/s|YT-US|GPT⁺-JP
   port: 443
   server: 82.102.25.50
   sin: https://t.me/WangCai2🇨🇳
@@ -3963,43 +3357,6 @@ proxies:
   skip-cert-verify: true
   sni: www.bing.com
   type: hysteria2
-- name: FRANKFURT-3-1B
-  server: 157.228.137.81
-  port: 443
-  type: hysteria2
-  password: 585b7bfe-6269-4149-ae22-ff07c57b5510
-  auth: 585b7bfe-6269-4149-ae22-ff07c57b5510
-  sni: msk2.nebuchadnezzar.ink
-  up: 100
-  down: 100
-  skip-cert-verify: false
-  obfs: salamander
-  obfs-password: Xydh1mcz51VQHbbJ
-  udp: true
-- name: FRANKFURT-3-1A
-  server: 157.228.137.81
-  port: 443
-  type: hysteria2
-  password: b92b11bd-8e05-4f4c-8e62-aa691c56a5be
-  auth: b92b11bd-8e05-4f4c-8e62-aa691c56a5be
-  sni: msk2.nebuchadnezzar.ink
-  up: 100
-  down: 100
-  skip-cert-verify: false
-  obfs: salamander
-  obfs-password: Xydh1mcz51VQHbbJ
-  udp: true
-- name: FRANKFURT-3-1C
-  server: 157.228.137.81
-  port: 443
-  type: hysteria2
-  password: 57a45af8-114a-4b37-abe1-67af4ba372ea
-  auth: 57a45af8-114a-4b37-abe1-67af4ba372ea
-  sni: msk2.nebuchadnezzar.ink
-  skip-cert-verify: false
-  obfs: salamander
-  obfs-password: Xydh1mcz51VQHbbJ
-  udp: true
 - auth: 099830134df5ac3a04a4b21d39b8c395
   name: 🇺🇸US_3|311KB/s|GPT
   password: 099830134df5ac3a04a4b21d39b8c395
@@ -4202,22 +3559,13 @@ proxies:
   security_scheme: aead
   proto: ss
   peer: 102.37.156.224
-- name: 🇹🇭 泰国-BANGKOK-1
-  server: 103.169.67.34
-  port: 65443
-  type: ss
-  cipher: aes-256-cfb
+- cipher: aes-256-cfb
+  name: 🇹🇭TH_1|988KB/s
   password: 7eadc6dbe2ae
-  udp: true
-- name: 🇰🇷[www.v2nodes.com] ss-KR-1126...
+  port: '65443'
+  server: 103.169.67.34
   type: ss
-  server: 115.161.136.145
-  port: 10099
-  cipher: chacha20-ietf-poly1305
-  password: '12242'
-  security_scheme: aead
-  proto: ss
-  peer: 115.161.136.145
+  udp: true
 - cipher: aes-256-cfb
   name: 🇰🇷KR_2|1.5MB/s
   password: 7eadc6dbe2ae
@@ -4231,20 +3579,6 @@ proxies:
   port: 61312
   server: 129.151.80.36
   type: ss
-  udp: true
-- name: CHILE-1B
-  server: 129.151.99.94
-  port: 23345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: be6cbb46-ebb0-4726-9202-6a3bac1d0afb
-  udp: true
-- name: CHILE-1A
-  server: 129.151.99.94
-  port: 23345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: e936372a-d976-4e25-8b3b-29c1a5841e06
   udp: true
 - cipher: aes-256-cfb
   name: 🇬🇧GB_1|2.5MB/s|TK-GB|GPT-GB
@@ -4262,20 +3596,6 @@ proxies:
   security_scheme: aead
   proto: ss
   peer: 130.49.189.158
-- name: 🇰🇷 KOREA-1B
-  server: 134.185.109.166
-  port: 32345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: be6cbb46-ebb0-4726-9202-6a3bac1d0afb
-  udp: true
-- name: 🇰🇷 KOREA-1A
-  server: 134.185.109.166
-  port: 32345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: e936372a-d976-4e25-8b3b-29c1a5841e06
-  udp: true
 - name: '[peasoft/NoMoreWalls]🇸🇪[www.v2nodes.com] ss-SE-1615...'
   type: ss
   server: 138.199.55.243
@@ -4285,76 +3605,6 @@ proxies:
   security_scheme: aead
   proto: ss
   peer: 138.199.55.243
-- name: 🇨🇦 CANADA-1B
-  server: 140.238.153.81
-  port: 13345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: be6cbb46-ebb0-4726-9202-6a3bac1d0afb
-  udp: true
-- name: 🇨🇦 CANADA-1A
-  server: 140.238.153.81
-  port: 13345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: e936372a-d976-4e25-8b3b-29c1a5841e06
-  udp: true
-- name: SWITZERLAND-1B
-  server: 140.238.175.124
-  port: 33345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: be6cbb46-ebb0-4726-9202-6a3bac1d0afb
-  udp: true
-- name: SWITZERLAND-1A
-  server: 140.238.175.124
-  port: 33345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: e936372a-d976-4e25-8b3b-29c1a5841e06
-  udp: true
-- name: 🇬🇧 THE UNITED KINGDOM-1A
-  server: 140.238.64.207
-  port: 42345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: e936372a-d976-4e25-8b3b-29c1a5841e06
-  udp: true
-- name: 🇬🇧 THE UNITED KINGDOM-1B
-  server: 140.238.64.207
-  port: 42345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: be6cbb46-ebb0-4726-9202-6a3bac1d0afb
-  udp: true
-- name: 🇸🇬 SINGAPORE-1B
-  server: 140.245.121.101
-  port: 43345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: be6cbb46-ebb0-4726-9202-6a3bac1d0afb
-  udp: true
-- name: 🇸🇬 SINGAPORE-1A
-  server: 140.245.121.101
-  port: 43345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: e936372a-d976-4e25-8b3b-29c1a5841e06
-  udp: true
-- name: 🇫🇷 FRANCE-1B
-  server: 141.253.107.174
-  port: 22345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: be6cbb46-ebb0-4726-9202-6a3bac1d0afb
-  udp: true
-- name: 🇫🇷 FRANCE-1A
-  server: 141.253.107.174
-  port: 22345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: e936372a-d976-4e25-8b3b-29c1a5841e06
-  udp: true
 - name: '[peasoft/NoMoreWalls]🏳[www.v2nodes.com] ss- #10'
   type: ss
   server: 141.98.101.178
@@ -4481,20 +3731,6 @@ proxies:
   security_scheme: aead
   proto: ss
   peer: 152.53.1.57
-- name: 🇺🇸 UNITED STATES-1B
-  server: 152.67.250.45
-  port: 52345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: be6cbb46-ebb0-4726-9202-6a3bac1d0afb
-  udp: true
-- name: 🇺🇸 UNITED STATES-1A
-  server: 152.67.250.45
-  port: 52345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: e936372a-d976-4e25-8b3b-29c1a5841e06
-  udp: true
 - name: ⚡ b2n.ir/v2ray-configs | 578
   type: ss
   server: 156.146.38.170
@@ -4657,20 +3893,6 @@ proxies:
   security_scheme: aead
   proto: ss
   peer: 198.244.202.215
-- name: 🇭🇰 HONG KONG-1A
-  server: 202.155.141.87
-  port: 12345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: e936372a-d976-4e25-8b3b-29c1a5841e06
-  udp: true
-- name: 🇭🇰 HONG KONG-1B
-  server: 202.155.141.87
-  port: 12345
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: be6cbb46-ebb0-4726-9202-6a3bac1d0afb
-  udp: true
 - name: ✅ [ermaozi/get_subscribe]🇮🇹 意大利 | ITA
   type: ss
   server: 202.50.253.18
@@ -5030,15 +4252,6 @@ proxies:
   security_scheme: aead
   proto: ss
   peer: 82.38.31.203
-- name: ⚡ b2n.ir/v2ray-configs | 572
-  type: ss
-  server: 82.38.31.210
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: k1dBOmOB4oqi7Ump37a1bQ
-  security_scheme: aead
-  proto: ss
-  peer: 82.38.31.210
 - name: ⚡ b2n.ir/v2ray-configs | 523
   type: ss
   server: 82.38.31.49
@@ -5369,14 +4582,6 @@ proxies:
     headers:
       User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36
     path: /assignment
-- name: 🇸🇬 新加坡-SINGAPORE-1-1B
-  server: 139.59.238.97
-  port: 50573
-  type: trojan
-  password: pvZE3UfT0ziK1omVLlsjINBqeqqwab1M
-  sni: 139.59.238.97
-  skip-cert-verify: true
-  udp: true
 - name: 🇿🇦_南非
   type: trojan
   server: 139.84.231.142
@@ -5779,17 +4984,6 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: cdn.yourultimateprofessionalcareerhub.com
-- name: 🇺🇸_美国 (10)
-  type: trojan
-  server: 216.106.186.155
-  port: 443
-  password: 0ab6c98dae3b48e8b9c4a776b6c9c19a
-  tls: true
-  network: tcp
-  sni: api.findlocaljobnetworkandbuildcommunityconnections.com
-  security_scheme: tls
-  proto: trojan
-  peer: api.findlocaljobnetworkandbuildcommunityconnections.com
 - name: 🇺🇸_美国 (11)
   type: trojan
   server: 216.106.186.32
@@ -5801,50 +4995,6 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: blog.findlocaljobnetworkandbuildcommunityconnections.com
-- name: 🇺🇸_美国 (7)
-  type: trojan
-  server: 216.106.186.33
-  port: 443
-  password: 0ab6c98dae3b48e8b9c4a776b6c9c19a
-  tls: true
-  network: tcp
-  sni: resources.findlocaljobnetworkandbuildcommunityconnections.com
-  security_scheme: tls
-  proto: trojan
-  peer: resources.findlocaljobnetworkandbuildcommunityconnections.com
-- name: 🇺🇸_美国 (2)
-  type: trojan
-  server: 216.106.186.46
-  port: 443
-  password: 0ab6c98dae3b48e8b9c4a776b6c9c19a
-  tls: true
-  network: tcp
-  sni: cdn.findlocaljobnetworkandbuildcommunityconnections.com
-  security_scheme: tls
-  proto: trojan
-  peer: cdn.findlocaljobnetworkandbuildcommunityconnections.com
-- name: 🇺🇸_美国 (24)
-  type: trojan
-  server: 216.106.186.66
-  port: 443
-  password: 242a3d8eee5e4ed1a6bfa4141d549a25
-  tls: true
-  network: tcp
-  sni: www.findlocaljobnetworkandbuildcommunityconnections.com
-  security_scheme: tls
-  proto: trojan
-  peer: www.findlocaljobnetworkandbuildcommunityconnections.com
-- name: 🇺🇸_美国 (3)
-  type: trojan
-  server: 216.106.186.82
-  port: 443
-  password: 0ab6c98dae3b48e8b9c4a776b6c9c19a
-  tls: true
-  network: tcp
-  sni: courses.findlocaljobnetworkandbuildcommunityconnections.com
-  security_scheme: tls
-  proto: trojan
-  peer: courses.findlocaljobnetworkandbuildcommunityconnections.com
 - name: 🇨🇦_加拿大 (7)
   type: trojan
   server: 216.152.147.152
@@ -6076,17 +5226,6 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: tw.ctt25.uk
-- name: 🇺🇸_美国 (72)
-  type: trojan
-  server: 34.94.152.229
-  port: 443
-  password: '123456'
-  tls: true
-  network: tcp
-  sni: us.ctt25.uk
-  security_scheme: tls
-  proto: trojan
-  peer: us.ctt25.uk
 - client-fingerprint: chrome
   name: 🇫🇷FR_4|299KB/s|GPT⁺|NF
   network: ws
@@ -6439,17 +5578,6 @@ proxies:
   - h2
   - http/1.1
   client-fingerprint: chrome
-- name: 🇺🇸_美国 (8)
-  type: trojan
-  server: blog.findlocaljobnetworkandbuildcommunityconnections.com
-  port: 443
-  password: dba20dcb635e430fa4d3bfc303a149d2
-  tls: true
-  network: tcp
-  sni: blog.findlocaljobnetworkandbuildcommunityconnections.com
-  security_scheme: tls
-  proto: trojan
-  peer: blog.findlocaljobnetworkandbuildcommunityconnections.com
 - name: 🇹🇭TH_1|450KB/s|YT-CN|GPT⁺|NF|0%
   network: tcp
   password: a126f35c-e832-4115-8593-b723ade3f7be
@@ -6523,14 +5651,6 @@ proxies:
   servername: hk.catxstar.com
   sni: hk.catxstar.com
   skip-cert-verify: false
-- name: 🇺🇸 美国高速-AI专用-1A
-  server: suyun.laowu.life
-  port: 49152
-  type: trojan
-  password: 9534fcd9-ded1-4fed-ab90-53a80e2aa799
-  sni: suyun.laowu.life
-  skip-cert-verify: false
-  udp: true
 - name: 🇺🇸_美国 (4)
   type: trojan
   server: us.ctt25.uk
@@ -6910,7 +6030,7 @@ proxies:
   security_scheme: reality
   proto: vless
   peer: f0d7aft.nl13.h1clayd.click
-- name: 🇺🇸_美国 (7)_2
+- name: 🇺🇸_美国 (7)
   type: vless
   server: 130.12.102.125
   port: 443
@@ -6927,7 +6047,7 @@ proxies:
   security_scheme: reality
   proto: vless
   peer: localhost
-- name: 🇺🇸_美国 (8)_2
+- name: 🇺🇸_美国 (8)
   type: vless
   server: 130.12.102.26
   port: 443
@@ -7490,24 +6610,24 @@ proxies:
     path: /
     headers:
       Host: v6-95o.pages.dev
-- name: 🇺🇸 美国 | USA_2
-  type: vless
+- type: vless
+  name: US美国(mibei77.com 米贝节点分享) (12)
   server: 162.35.101.177
   port: 443
   uuid: cda0862a-0f87-4be9-8ed8-1d0c9e382839
+  udp: true
   tls: true
-  network: grpc
-  sni: 0592efg.us8.h1clayd.click
   servername: 0592efg.us8.h1clayd.click
+  sni: 0592efg.us8.h1clayd.click
+  skip-cert-verify: false
+  client-fingerprint: edge
   reality-opts:
     public-key: cO3wYHISTeorXcM8ffaDCDdqZ-olBQL-GyZqb-W7rTk
     short-id: bd8f712209a9c283
-    spider-x: ''
-    fingerprint: edge
-  security_scheme: reality
-  proto: vless
-  peer: 0592efg.us8.h1clayd.click
-- name: 🇺🇸_美国
+  network: grpc
+  grpc-opts:
+    grpc-service-name: 99f2107b03f8
+- name: 🇺🇸_美国_2
   type: vless
   server: 162.35.38.156
   port: 443
@@ -7581,18 +6701,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: nl.krabvpn.pro
-- name: '🇩🇪 德国 | DEU #4'
-  type: vless
-  server: 171.22.133.5
-  port: 8443
-  uuid: 0b22812b-4a79-42b1-93ec-5b157b0f2f7f
-  tls: true
-  network: tcp
-  sni: de.krabvpn.pro
-  servername: de.krabvpn.pro
-  security_scheme: tls
-  proto: vless
-  peer: de.krabvpn.pro
 - name: 🇸🇬_SG_新加坡_IPV4 (3)
   type: vless
   server: 172.104.48.194
@@ -8131,22 +7239,6 @@ proxies:
     headers:
       Host: wzknb.pages.dev
     path: /proxyip=179.255.104.87,179.255.116.198,179.255.101.56,142.248.218.6,142.248.218.4,45.76.79.239,179.255.152.163,208.68.180.240
-- name: 🇮🇳[www.v2nodes.com] vless-IN-1...
-  type: vless
-  server: 188.114.99.137
-  port: 443
-  uuid: c1208c5a-2350-0003-affd-fc41b4319286
-  tls: true
-  network: ws
-  sni: decdn-28.nome-rkp.net
-  servername: decdn-28.nome-rkp.net
-  ws-opts:
-    path: /media/ws/fp=firefox
-    headers:
-      Host: decdn-28.nome-rkp.net
-  security_scheme: tls
-  proto: vless
-  peer: decdn-28.nome-rkp.net
 - name: '🇳🇱[www.v2nodes.com] vless-NL-1... #7'
   type: vless
   server: 188.116.27.6
@@ -8279,6 +7371,19 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: 193.160.208.240
+- name: '🇸🇪[www.v2nodes.com] vless-SE-1... #4'
+  type: vless
+  server: 193.163.203.170
+  port: 443
+  uuid: 11aabba0-5fd1-4f15-8068-74c1a466cefc
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: yandex.ru
+  servername: yandex.ru
+  security_scheme: tls
+  proto: vless
+  peer: yandex.ru
 - name: 🇮🇷_伊朗 (5)
   type: vless
   server: 194.60.228.97
@@ -9024,48 +8129,6 @@ proxies:
   security_scheme: reality
   proto: vless
   peer: 04535dt.us8.h1clayd.click
-- name: LOS ANGELES-1A
-  server: 23.94.239.108
-  port: 443
-  type: vless
-  uuid: 57a45af8-114a-4b37-abe1-67af4ba372ea
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: Ox-9pWkRhMt3-9qfNMoFc4gIQ82xfPpxce_XT_xosys
-    short-id: b21d5263
-  servername: apple.com
-  client-fingerprint: qq
-  network: tcp
-  udp: true
-- name: LOS ANGELES-1B
-  server: 23.94.239.108
-  port: 443
-  type: vless
-  uuid: b92b11bd-8e05-4f4c-8e62-aa691c56a5be
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: Ox-9pWkRhMt3-9qfNMoFc4gIQ82xfPpxce_XT_xosys
-    short-id: b21d5263
-  servername: apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: LOS ANGELES-1C
-  server: 23.94.239.108
-  port: 443
-  type: vless
-  uuid: 585b7bfe-6269-4149-ae22-ff07c57b5510
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: Ox-9pWkRhMt3-9qfNMoFc4gIQ82xfPpxce_XT_xosys
-    short-id: b21d5263
-  servername: apple.com
-  client-fingerprint: ios
-  network: tcp
-  udp: true
 - client-fingerprint: chrome
   encryption: none
   name: 🇰🇷KR_1|1.1MB/s
@@ -9267,20 +8330,6 @@ proxies:
   security_scheme: reality
   proto: vless
   peer: www.apple.com
-- name: 🇺🇸_美国 (26)
-  type: vless
-  server: 38.107.232.36
-  port: 80
-  uuid: 18cf8db1-9f86-43f7-baa0-382efb7f2dfa
-  tls: false
-  network: ws
-  ws-opts:
-    path: /vless/
-    headers:
-      Host: 38.107.232.36
-  security_scheme: none
-  proto: vless
-  peer: 38.107.232.36
 - name: 🇦🇺[www.v2nodes.com] vless-AU-1...
   type: vless
   server: 39.109.111.23
@@ -9760,118 +8809,6 @@ proxies:
   security_scheme: none
   proto: vless
   peer: 5.178.109.174
-- name: 🇺🇸 美国-洛杉矶-PRO-1I
-  server: 5.253.38.67
-  port: 40444
-  type: vless
-  uuid: 752004cd-1b1a-45ab-b618-2ce9909a184e
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: ZZK_Oo5-iDDgoWzxIURTLWoKPbC8NFto3Mk7OvAZgRU
-    short-id: b3f2a1c9
-  servername: www.lovelive-anime.jp
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: 🇺🇸 美国-洛杉矶-PRO-1A
-  server: 5.253.38.67
-  port: 40444
-  type: vless
-  uuid: d6e521e6-e900-474f-9c2b-d27a732d3369
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: ZZK_Oo5-iDDgoWzxIURTLWoKPbC8NFto3Mk7OvAZgRU
-    short-id: b3f2a1c9
-  servername: www.lovelive-anime.jp
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: 🇺🇸 美国-洛杉矶-PRO-1E
-  server: 5.253.38.67
-  port: 40444
-  type: vless
-  uuid: 28c45103-d9d6-44a8-9353-c6237f297aa3
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: ZZK_Oo5-iDDgoWzxIURTLWoKPbC8NFto3Mk7OvAZgRU
-    short-id: b3f2a1c9
-  servername: www.lovelive-anime.jp
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: 🇺🇸 美国-洛杉矶-PRO-1B
-  server: 5.253.38.67
-  port: 40444
-  type: vless
-  uuid: c55624df-095a-49b0-8ba6-0d5429bdc1ac
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: ZZK_Oo5-iDDgoWzxIURTLWoKPbC8NFto3Mk7OvAZgRU
-    short-id: b3f2a1c9
-  servername: www.lovelive-anime.jp
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: 🇺🇸 美国-洛杉矶-PRO-1K
-  server: 5.253.38.67
-  port: 40444
-  type: vless
-  uuid: 09398f4a-43f1-4ccc-974e-eeda2083ef39
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: ZZK_Oo5-iDDgoWzxIURTLWoKPbC8NFto3Mk7OvAZgRU
-    short-id: b3f2a1c9
-  servername: www.lovelive-anime.jp
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: 🇺🇸 美国-洛杉矶-PRO-1L
-  server: 5.253.38.67
-  port: 40444
-  type: vless
-  uuid: e1746e14-3dd4-461a-992f-8ce97395e8be
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: ZZK_Oo5-iDDgoWzxIURTLWoKPbC8NFto3Mk7OvAZgRU
-    short-id: b3f2a1c9
-  servername: www.lovelive-anime.jp
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: 🇺🇸 美国-洛杉矶-PRO-1C
-  server: 5.253.38.67
-  port: 40444
-  type: vless
-  uuid: 80caebae-2e72-4d83-8dd9-f0d074d3deb3
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: ZZK_Oo5-iDDgoWzxIURTLWoKPbC8NFto3Mk7OvAZgRU
-    short-id: b3f2a1c9
-  servername: www.lovelive-anime.jp
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: 🇺🇸 美国-洛杉矶-PRO-1J
-  server: 5.253.38.67
-  port: 40444
-  type: vless
-  uuid: 82a9e168-5530-40aa-8b03-2e38fcb9ba89
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: ZZK_Oo5-iDDgoWzxIURTLWoKPbC8NFto3Mk7OvAZgRU
-    short-id: b3f2a1c9
-  servername: www.lovelive-anime.jp
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
 - name: '🏳[www.v2nodes.com] vless- #12'
   type: vless
   server: 5.34.177.164
@@ -10114,16 +9051,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: www.apple.com
-- name: XRAY-直连01
-  server: 69.165.75.160
-  port: 10086
-  type: vless
-  uuid: d59a88ee-6dcf-4196-9a62-f03dd8540b44
-  tls: false
-  network: ws
-  ws-opts:
-    path: /vless
-  udp: true
 - alpn:
   - http/1.1
   client-fingerprint: chrome
@@ -10375,6 +9302,23 @@ proxies:
   security_scheme: reality
   proto: vless
   peer: 80cb66x.nl13.h1clayd.click
+- name: 🇷🇺 俄罗斯 | RUS_2
+  type: vless
+  server: 80cb66x.nl17.h1clayd.click
+  port: 443
+  uuid: cda0862a-0f87-4be9-8ed8-1d0c9e382839
+  tls: true
+  network: xhttp
+  sni: 80cb66x.nl17.h1clayd.click
+  servername: 80cb66x.nl17.h1clayd.click
+  reality-opts:
+    public-key: jhVdP7NFUaEXGfrmOqJlMCHTvqn3fymbzPfPT6NO4i0
+    short-id: f72d4a2c7cbbacb1
+    spider-x: ''
+    fingerprint: chrome
+  security_scheme: reality
+  proto: vless
+  peer: 80cb66x.nl17.h1clayd.click
 - name: '🇷🇺 俄罗斯 | RUS #4'
   type: vless
   server: 81.200.152.153
@@ -10905,32 +9849,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: base.hosamobenl.co.uk
-- name: 🇺🇸 美国高速-AI专用-1B
-  server: cf.laowu.life
-  port: 443
-  type: vless
-  uuid: 9534fcd9-ded1-4fed-ab90-53a80e2aa799
-  tls: true
-  servername: cf.laowu.life
-  network: ws
-  ws-opts:
-    path: /api/v1/stream
-    headers:
-      Host: cf.laowu.life
-  udp: true
-- name: 🇺🇸 美国直连-备用
-  server: cf2.laowu.life
-  port: 443
-  type: vless
-  uuid: 9534fcd9-ded1-4fed-ab90-53a80e2aa799
-  tls: true
-  servername: cf2.laowu.life
-  network: ws
-  ws-opts:
-    path: /api/v2/stream
-    headers:
-      Host: cf2.laowu.life
-  udp: true
 - type: vless
   name: JP日本(mibei77.com 米贝节点分享) (20)
   server: clover.filnex.baby
@@ -11154,1308 +10072,6 @@ proxies:
   security_scheme: reality
   proto: vless
   peer: swdist.apple.com
-- name: FV2026-7-7-3Z
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: ae3b7910-aab8-47cc-9932-c435a3285bcc
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4J
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: c22181f6-9fd3-4d4d-af00-7c8ee0889d3b
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3T
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 247cc7ba-0a9d-4aea-b84d-c869a011a539
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4N
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 729ee34c-7466-4610-9441-75b613d9b7f7
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1K
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: b3782677-69e3-45b0-93f5-017e5bb71ee0
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3R
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: ea42414a-bfa6-4d16-94b9-9170991ff90a
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3H
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 5a12365e-eff4-4233-8768-db563775acef
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1O
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: b7c40dd1-44ac-4ba0-a5a6-5c3c1a245d22
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1B
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: aa05b4ed-2b6b-4dd2-90ee-6bf950bc226e
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4I
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: e4099270-deb9-4c3f-99a6-7b098271b7a3
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2D
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: e0f8c652-fa60-4c6b-9146-b3b40a9c196c
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2Z
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 8e0edcef-4668-4355-a0e9-88bf781978b0
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2K
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 206638ce-8ac3-4027-ba4d-877e7f14d1c2
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1H
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 891e49de-19ec-4827-abd0-0c99ee3f98fe
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3x
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: c2dcd1dd-f979-421d-8ed1-6fdfc76b633c
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3S
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: aa9f58b2-4500-4188-9f9f-578451a13e80
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3Y
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: ef43cb31-3e9e-466f-b64e-c0469b8accb4
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4O
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: fb5d6cf2-9d2c-487d-89b2-95e75cc07bd2
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4V
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: dab853a1-44a1-4694-af47-6e200f3de6b0
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4P
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: dd8b3cd5-d184-4f78-a67e-7bc4565dc3e4
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3G
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 810462e6-eb8b-4441-9eec-4e97a805f44f
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3C
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 012cc490-dbaf-40bf-abf2-9b8f7f66c35d
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4S
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 9c3bfbb3-44af-48d6-952f-5bf1b6dc01ca
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2N
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 33d070c0-91b7-47d3-84ca-491a80f63e29
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1A
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: b6e4e324-c159-4f72-bbbe-a03b14ce85fa
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3F
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: f027b04b-6284-4ff3-a83b-ccadd4e3159a
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2I
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 3a44238a-12f6-4ec9-a2f5-50de63358cfb
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2O
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 7b7444d1-745c-4698-aa85-91282e4c3958
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2W
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: d6ebe6b1-78f4-4db2-8f39-a43d6abb6dc2
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3Q
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 5328c3a8-7d6d-4b77-99d4-0a49bed5a829
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3D
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 9262fb3e-a327-49df-b755-5b83a99cac9b
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4W
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 39275300-f07b-414a-9866-685088bfbc63
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4M
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 634eea1a-5cfe-49f3-b770-72809cd826b9
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3J
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 92b2e474-7319-44c4-987c-07e5b676439a
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1J
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 7ab7a243-9ec7-48d1-ba8a-60ea30aab0dd
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2V
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: dd421862-a6ba-4a96-b599-73ded29a91fd
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4D
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: efe5b19c-3923-460b-a519-cc3786ce7b34
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3M
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: df959856-a4a2-4f81-9f4f-b3320473f300
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2M
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 33655329-b1bf-4a76-9737-c7e4fd0495fc
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2T
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 8bf0cdc1-b636-4767-836a-157db2965a51
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4C
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 3f30f3ac-b370-4515-9e1b-7d287f936bfe
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1M
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 3a787d38-aa96-4235-bc3e-248f9ad9ea2b
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4x
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 4330f69e-e4ee-4abf-9a04-ae6ca140eb31
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3L
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 6be81b6f-a778-4a5b-8de4-b381a446eac6
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1N
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: cfa170b2-b759-460d-9c55-0a1613ffe59d
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2B
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: c62a9dbe-a62c-44b2-b56e-78837338d292
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3U
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: c59a0e0d-942c-40af-87bf-06a2022125de
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3N
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: b246bccc-9fc2-44bd-a54c-a0b2a156f8c0
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4B
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 5913456c-954b-4e89-bceb-4ef56d905947
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2A
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: a024cebf-1679-4eab-a1c8-e37df2b89698
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4Q
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 4eed5466-8d75-4dfc-84e3-30a1ecde20dc
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1V
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: bc88f3b5-cf22-435e-be2f-5f620ed0d029
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2E
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 9f394366-5786-4ede-b4a6-e2416eeb9dc6
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2L
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 9bfd3564-6d5d-47c6-9f67-12e7776bf274
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1E
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 832b5b70-4c96-446c-ac7d-06f3727e171d
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1Z
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 33ac2fa8-c95a-45b0-b70e-5e4fd2d28153
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2U
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: f15a67e7-ea7f-49ac-8005-7fc44e2d5183
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2Y
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: b766ac1f-e8d9-42fe-b70d-499326b1c6bd
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2F
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 858c9004-acad-4e03-9cb8-21f683fa5f35
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1G
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 9ec06561-cb7b-44be-850b-3b2e61bef817
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3P
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 064d8ec6-a980-4cc8-aa62-931764fa1fca
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1W
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 01c6a2c0-2728-478f-bcf8-bf7f76d933f9
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4L
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: e81c3e21-836b-452b-a34c-e996bc91f10d
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3O
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 3895729f-d4d6-42d4-8b6c-416afa41128e
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2x
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: ff20e048-b624-4e61-ba03-f35d6b76cb97
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4H
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: e2b90562-a6ce-4d93-b7c6-7525eb4f4798
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4R
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 20f001ab-7d19-4bc3-9613-5196372462c1
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3W
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: ec55b723-602f-4a2e-9dd5-95709540f90c
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2C
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 245c3d29-98e6-45e3-8ba4-b1bfa0140b7e
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4T
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 9237e734-c88e-401e-b5e0-3ca3bbe3c422
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2G
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: b7aa4ae6-aad2-4bd6-9e29-2ddbf20afa2b
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2Q
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: d30e0a92-7f4d-4590-b3dc-101082fbd36c
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3E
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 058b5a64-2b15-4a2f-938d-0f96132154d8
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2S
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: d9d695f5-1464-4245-a785-5e8384ed9ed2
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1D
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: a6bdd01e-2d1a-4bae-b6df-9f535be68746
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1Y
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 73be937b-7a97-4281-ac64-56e6a298a2f5
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3K
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: b05ddfe3-f30b-4992-abfb-c741fd6b4331
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4U
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 3a4f22ec-1185-40c4-af29-42afc3800d97
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1T
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: fa9c1ee1-a40a-4960-a1ec-6aa5ac6ce6f2
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2R
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 4fb1f786-2370-4718-9eae-a932bd38d4d5
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4F
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 6011e103-b251-47d4-b9f8-4c8bc90386ee
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3A
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: c76d1d0b-3c8b-4acd-a829-8ca4388fda3c
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1x
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 57e40417-7874-4192-b3f6-d4857b6e37d2
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3I
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 483da3a5-bf37-4793-8636-906e73eb3477
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2P
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 8cc53636-e835-4d20-b35f-34c220f2b46f
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2J
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 03b7946f-d2ec-483a-bc17-80a2fc7666be
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4K
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 57e88070-5fb3-473f-bdfe-181f208f0dab
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-1L
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 9473097b-336b-4a08-b0f7-be1a28fd3076
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-2H
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 6064f72e-12a0-4427-88ee-e2b05ddb8146
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3B
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 560eda33-4671-4ba3-827d-cd13e9a10a73
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4G
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: b58059ec-d8ca-4a89-9618-b8c5f4d25f93
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-4A
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: 34d6dc51-646a-4f77-99e0-6e986b6cf91a
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
-- name: FV2026-7-7-3V
-  server: fv2026.node2.top
-  port: 21001
-  type: vless
-  uuid: d7a7f1ce-5fba-4a22-a8fa-3b5aafd9f984
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: HWUNFHoOryJHQXKF-ZOm6wMYZdVJwH5aHGa5I9_HDGA
-    short-id: dfa28122
-  servername: itunes.apple.com
-  client-fingerprint: chrome
-  network: tcp
-  udp: true
 - name: '🇹🇷 土耳其 | TUR #3'
   type: vless
   server: gold.jafarghasemiturkk.ir
@@ -12798,90 +10414,6 @@ proxies:
     headers:
       Host: uwu.blueknightnet.qzz.io
     path: /@BlueKnight_net--@BlueKnight_net
-- name: XRAY-VLESS直连
-  server: v2panel.ccwu.cc
-  port: 443
-  type: vless
-  uuid: d59a88ee-6dcf-4196-9a62-f03dd8540b44
-  tls: true
-  servername: v2panel.ccwu.cc
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /xray/vless
-    headers:
-      Host: v2panel.ccwu.cc
-  udp: true
-- name: XRAY-TLS2053
-  server: v2panel.ccwu.cc
-  port: 2053
-  type: vless
-  uuid: d59a88ee-6dcf-4196-9a62-f03dd8540b44
-  tls: true
-  servername: v2panel.ccwu.cc
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /xray/vless
-    headers:
-      Host: v2panel.ccwu.cc
-  udp: true
-- name: XRAY-TLS2083
-  server: v2panel.ccwu.cc
-  port: 2083
-  type: vless
-  uuid: d59a88ee-6dcf-4196-9a62-f03dd8540b44
-  tls: true
-  servername: v2panel.ccwu.cc
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /xray/vless
-    headers:
-      Host: v2panel.ccwu.cc
-  udp: true
-- name: XRAY-TLS2087
-  server: v2panel.ccwu.cc
-  port: 2087
-  type: vless
-  uuid: d59a88ee-6dcf-4196-9a62-f03dd8540b44
-  tls: true
-  servername: v2panel.ccwu.cc
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /xray/vless
-    headers:
-      Host: v2panel.ccwu.cc
-  udp: true
-- name: XRAY-TLS2096
-  server: v2panel.ccwu.cc
-  port: 2096
-  type: vless
-  uuid: d59a88ee-6dcf-4196-9a62-f03dd8540b44
-  tls: true
-  servername: v2panel.ccwu.cc
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /xray/vless
-    headers:
-      Host: v2panel.ccwu.cc
-  udp: true
-- name: XRAY-TLS8443
-  server: v2panel.ccwu.cc
-  port: 8443
-  type: vless
-  uuid: d59a88ee-6dcf-4196-9a62-f03dd8540b44
-  tls: true
-  servername: v2panel.ccwu.cc
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /xray/vless
-    headers:
-      Host: v2panel.ccwu.cc
-  udp: true
 - name: 🇰🇷 韩国 | KOR
   type: vless
   server: vl-x1.qz10086.top
@@ -12900,398 +10432,6 @@ proxies:
   security_scheme: reality
   proto: vless
   peer: www.apple.com
-- name: 🇺🇸 美国 抗封线-1G
-  server: w1.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 7ca93a77-3213-4986-a173-d8d94a93da42
-  tls: true
-  servername: w1.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w1.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-2B
-  server: w1.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 51d96995-09f7-4385-95e1-0008ed7fdd73
-  tls: true
-  servername: w1.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w1.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-1B
-  server: w1.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 87612980-8d21-4e72-b0db-dc60bea41c61
-  tls: true
-  servername: w1.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w1.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-1L
-  server: w1.lianjieni.com
-  port: 443
-  type: vless
-  uuid: bdec2f36-15fd-4f9a-9319-1fdb59f63275
-  tls: true
-  servername: w1.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w1.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-1A
-  server: w1.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 5565cff2-ce0c-45f0-b8d9-55b943dbd828
-  tls: true
-  servername: w1.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w1.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-1Y
-  server: w1.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 3eaaebf0-65ea-4bc8-9b8b-feed983eac19
-  tls: true
-  servername: w1.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w1.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-1Z
-  server: w1.lianjieni.com
-  port: 443
-  type: vless
-  uuid: daabc8d2-7121-490d-8b38-79d50e78257f
-  tls: true
-  servername: w1.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w1.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-2A
-  server: w2.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 3eaaebf0-65ea-4bc8-9b8b-feed983eac19
-  tls: true
-  servername: w2.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w2.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-1H
-  server: w2.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 87612980-8d21-4e72-b0db-dc60bea41c61
-  tls: true
-  servername: w2.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w2.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-2F
-  server: w2.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 51d96995-09f7-4385-95e1-0008ed7fdd73
-  tls: true
-  servername: w2.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w2.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-1K
-  server: w2.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 5565cff2-ce0c-45f0-b8d9-55b943dbd828
-  tls: true
-  servername: w2.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w2.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-1D
-  server: w2.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 7ca93a77-3213-4986-a173-d8d94a93da42
-  tls: true
-  servername: w2.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w2.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-1M
-  server: w2.lianjieni.com
-  port: 443
-  type: vless
-  uuid: bdec2f36-15fd-4f9a-9319-1fdb59f63275
-  tls: true
-  servername: w2.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w2.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-2M
-  server: w2.lianjieni.com
-  port: 443
-  type: vless
-  uuid: daabc8d2-7121-490d-8b38-79d50e78257f
-  tls: true
-  servername: w2.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w2.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-2H
-  server: w3.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 51d96995-09f7-4385-95e1-0008ed7fdd73
-  tls: true
-  servername: w3.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w3.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-1P
-  server: w3.lianjieni.com
-  port: 443
-  type: vless
-  uuid: bdec2f36-15fd-4f9a-9319-1fdb59f63275
-  tls: true
-  servername: w3.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w3.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-1I
-  server: w3.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 87612980-8d21-4e72-b0db-dc60bea41c61
-  tls: true
-  servername: w3.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w3.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-1J
-  server: w3.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 7ca93a77-3213-4986-a173-d8d94a93da42
-  tls: true
-  servername: w3.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w3.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-1O
-  server: w3.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 5565cff2-ce0c-45f0-b8d9-55b943dbd828
-  tls: true
-  servername: w3.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w3.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-2J
-  server: w3.lianjieni.com
-  port: 443
-  type: vless
-  uuid: daabc8d2-7121-490d-8b38-79d50e78257f
-  tls: true
-  servername: w3.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w3.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-2N
-  server: w3.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 3eaaebf0-65ea-4bc8-9b8b-feed983eac19
-  tls: true
-  servername: w3.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w3.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-1N
-  server: w4.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 7ca93a77-3213-4986-a173-d8d94a93da42
-  tls: true
-  servername: w4.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w4.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-2L
-  server: w4.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 3eaaebf0-65ea-4bc8-9b8b-feed983eac19
-  tls: true
-  servername: w4.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w4.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-2K
-  server: w4.lianjieni.com
-  port: 443
-  type: vless
-  uuid: daabc8d2-7121-490d-8b38-79d50e78257f
-  tls: true
-  servername: w4.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w4.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-1C
-  server: w4.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 87612980-8d21-4e72-b0db-dc60bea41c61
-  tls: true
-  servername: w4.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w4.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-2E
-  server: w4.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 51d96995-09f7-4385-95e1-0008ed7fdd73
-  tls: true
-  servername: w4.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w4.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-1E
-  server: w4.lianjieni.com
-  port: 443
-  type: vless
-  uuid: bdec2f36-15fd-4f9a-9319-1fdb59f63275
-  tls: true
-  servername: w4.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w4.lianjieni.com
-  udp: true
-- name: 🇺🇸 美国 抗封线-1F
-  server: w4.lianjieni.com
-  port: 443
-  type: vless
-  uuid: 5565cff2-ce0c-45f0-b8d9-55b943dbd828
-  tls: true
-  servername: w4.lianjieni.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: w4.lianjieni.com
-  udp: true
 - alpn:
   - http/1.1
   client-fingerprint: chrome
@@ -13323,90 +10463,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: passport.yandex.ru
-- name: 🇺🇸 美国 01 联通电信推荐-1C
-  server: www.shopify.com
-  port: 2053
-  type: vless
-  uuid: 3456f15c-b600-49bf-91b2-218c2aae0df2
-  tls: true
-  servername: ccsus11-cdn-cdn.nekohub.xyz
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /vless_ws?ed=4096
-    headers:
-      Host: ccsus11-cdn.nekohub.xyz
-  udp: true
-- name: 🇺🇸 美国 01 联通电信推荐-1F
-  server: www.shopify.com
-  port: 2053
-  type: vless
-  uuid: 601e6cf9-3f2e-49d8-a0ee-49db1cb21c57
-  tls: true
-  servername: ccsus11-cdn-cdn.nekohub.xyz
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /vless_ws?ed=4096
-    headers:
-      Host: ccsus11-cdn.nekohub.xyz
-  udp: true
-- name: 🇺🇸 美国 01 联通电信推荐-1A
-  server: www.shopify.com
-  port: 2053
-  type: vless
-  uuid: 5bdc2fd5-f717-4f2a-afea-d243c2bcb27d
-  tls: true
-  servername: ccsus11-cdn-cdn.nekohub.xyz
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /vless_ws?ed=4096
-    headers:
-      Host: ccsus11-cdn.nekohub.xyz
-  udp: true
-- name: 🇺🇸 美国 01 联通电信推荐-1D
-  server: www.shopify.com
-  port: 2053
-  type: vless
-  uuid: 328bff8f-5d24-49ba-8555-da3398070485
-  tls: true
-  servername: ccsus11-cdn-cdn.nekohub.xyz
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /vless_ws?ed=4096
-    headers:
-      Host: ccsus11-cdn.nekohub.xyz
-  udp: true
-- name: 🇺🇸 美国 01 联通电信推荐-1B
-  server: www.shopify.com
-  port: 2053
-  type: vless
-  uuid: 03de98d2-fc3f-4c64-9cd8-60ded968ce9e
-  tls: true
-  servername: ccsus11-cdn-cdn.nekohub.xyz
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /vless_ws?ed=4096
-    headers:
-      Host: ccsus11-cdn.nekohub.xyz
-  udp: true
-- name: 🇺🇸 美国 01 联通电信推荐-1E
-  server: www.shopify.com
-  port: 2053
-  type: vless
-  uuid: e53a5c77-7e89-410d-97f5-db95fbd5ba15
-  tls: true
-  servername: ccsus11-cdn-cdn.nekohub.xyz
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /vless_ws?ed=4096
-    headers:
-      Host: ccsus11-cdn.nekohub.xyz
-  udp: true
 - client-fingerprint: chrome
   encryption: none
   name: 🇩🇪DE_2|284KB/s
@@ -13424,90 +10480,6 @@ proxies:
       User-Agent: Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36
     path: /?ed
   xudp: true
-- name: 10G试用智能线路-1B
-  server: www.usyun.cc
-  port: 443
-  type: vless
-  uuid: e23208d7-7d53-433a-98fe-cfd0d752797f
-  tls: true
-  servername: usyun.cc
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /trial-gs-relay
-    headers:
-      Host: usyun.cc
-  udp: true
-- name: 10G试用智能线路-1A
-  server: www.usyun.cc
-  port: 443
-  type: vless
-  uuid: 64fe682f-68ee-4196-9a7b-ef0baca8ca93
-  tls: true
-  servername: usyun.cc
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /trial-gs-relay
-    headers:
-      Host: usyun.cc
-  udp: true
-- name: 10G试用智能线路-1F
-  server: www.usyun.cc
-  port: 443
-  type: vless
-  uuid: d97b8526-ccde-418c-a06d-da25d4e342ec
-  tls: true
-  servername: usyun.cc
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /trial-gs-relay
-    headers:
-      Host: usyun.cc
-  udp: true
-- name: 10G试用智能线路-1E
-  server: www.usyun.cc
-  port: 443
-  type: vless
-  uuid: 900ba337-eea6-46ef-9d6b-b976f8c0803f
-  tls: true
-  servername: usyun.cc
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /trial-gs-relay
-    headers:
-      Host: usyun.cc
-  udp: true
-- name: 10G试用智能线路-1C
-  server: www.usyun.cc
-  port: 443
-  type: vless
-  uuid: c2427767-23f5-4d1a-ae1d-b6490452ca51
-  tls: true
-  servername: usyun.cc
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /trial-gs-relay
-    headers:
-      Host: usyun.cc
-  udp: true
-- name: 10G试用智能线路-1D
-  server: www.usyun.cc
-  port: 443
-  type: vless
-  uuid: 19f98cf7-3803-4c65-806d-7695a2cbe6b9
-  tls: true
-  servername: usyun.cc
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /trial-gs-relay
-    headers:
-      Host: usyun.cc
-  udp: true
 - name: 🇸🇬_新加坡 (5)
   type: vless
   server: xjpp.zjlo.top
@@ -13712,40 +10684,19 @@ proxies:
   sni: 0218tw02.fans8.xyz
   proto: vmess
   peer: 0218tw02.fans8.xyz
-- name: CA 🇨🇦 | @Raydikalx | 3F4E6C
+- name: 🇺🇸_美国 (13)
   type: vmess
-  server: 104.21.230.53
-  port: 80
-  uuid: 7022982f-da4c-48c9-c660-b2315abdcf7e
+  server: 129.146.143.80
+  port: 48111
+  uuid: d4603cc2-e0ee-4651-83f5-1db5b7168177
   alterId: 0
   cipher: auto
   tls: false
-  network: ws
-  ws-opts:
-    path: /?ed=2048&Telegram🇨🇳
-    headers:
-      Host: a.prapt1.ir
+  network: tcp
   security_scheme: none
-  sni: a.prapt1.ir
+  sni: 129.146.143.80
   proto: vmess
-  peer: a.prapt1.ir
-- name: 🏁RELAY-104.21.7.50-8194
-  type: vmess
-  server: 104.21.7.50
-  port: 443
-  uuid: b3a21def-5fcc-47a8-a6a0-a34e29d5288a
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /wss51068
-    headers:
-      Host: 104.21.7.50
-  security_scheme: tls
-  sni: 104.21.7.50
-  proto: vmess
-  peer: 104.21.7.50
+  peer: 129.146.143.80
 - name: 🇰🇷_韩国 (2)
   type: vmess
   server: 129.154.61.196
@@ -13759,6 +10710,23 @@ proxies:
   sni: 129.154.61.196
   proto: vmess
   peer: 129.154.61.196
+- name: KR 🇰🇷 | @Raydikalx | A99D73
+  type: vmess
+  server: 132.145.80.230
+  port: 80
+  uuid: 5155860e-d07d-46c3-9128-3afbd84626c7
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: ws
+  ws-opts:
+    path: /cctv13.m3u8
+    headers:
+      Host: kr02.a0a.xyz
+  security_scheme: none
+  sni: kr02.a0a.xyz
+  proto: vmess
+  peer: kr02.a0a.xyz
 - name: 🇨🇦_加拿大
   type: vmess
   server: 134.195.196.211
@@ -13806,23 +10774,6 @@ proxies:
   sni: 147.135.213.72
   proto: vmess
   peer: 147.135.213.72
-- name: US 🇺🇸 | @Raydikalx | 9053F6
-  type: vmess
-  server: 147.45.125.231
-  port: 443
-  uuid: db50a20e-7ff5-4e70-948f-17cc9ca7c154
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /api/v1/gpu-stream/socket
-    headers:
-      Host: renderer-stream-2-62.mirra.now
-  security_scheme: tls
-  sni: renderer-stream-2-62.mirra.now
-  proto: vmess
-  peer: renderer-stream-2-62.mirra.now
 - name: 🇸🇬_新加坡 (8)
   type: vmess
   server: 149.88.23.202
@@ -13946,41 +10897,6 @@ proxies:
   sni: 168.138.43.75
   proto: vmess
   peer: 168.138.43.75
-- name: ✅ 🇺🇸 机场推荐:dafei.de 美国 15_IPV4
-  type: vmess
-  server: 172.67.190.164
-  port: 443
-  uuid: 6a89a215-22bf-4bd7-9642-b95b2e09583a
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /hls/cctv5phd.m3u8
-    headers:
-      Host: guanwang.awsno.com
-  servername: guanwang.awsno.com
-  security_scheme: tls
-  sni: guanwang.awsno.com
-  proto: vmess
-  peer: guanwang.awsno.com
-- name: 🏁RELAY-172.67.193.109-7770
-  type: vmess
-  server: 172.67.193.109
-  port: 2095
-  uuid: 417d27fb-cb93-3bd8-9bf7-71cd91319821
-  alterId: 0
-  cipher: auto
-  tls: false
-  network: ws
-  ws-opts:
-    path: /hgcefomn
-    headers:
-      Host: 172.67.193.109
-  security_scheme: none
-  sni: 172.67.193.109
-  proto: vmess
-  peer: 172.67.193.109
 - type: vmess
   name: US美国(mibei77.com 米贝节点分享) (21)
   server: 179.43.140.24
@@ -14004,23 +10920,6 @@ proxies:
   sni: 185.212.149.7
   proto: vmess
   peer: 185.212.149.7
-- name: CA 🇨🇦 | @Raydikalx | 23FD2E
-  type: vmess
-  server: 188.114.98.0
-  port: 8080
-  uuid: e8b1500b-e9e8-5492-8312-f4eadf7d0767
-  alterId: 0
-  cipher: auto
-  tls: false
-  network: ws
-  ws-opts:
-    path: /nasnet/cdn
-    headers:
-      Host: nasnet-162191099.sharghdaily.co
-  security_scheme: none
-  sni: nasnet-162191099.sharghdaily.co
-  proto: vmess
-  peer: nasnet-162191099.sharghdaily.co
 - name: ✅ 🇺🇸 机场推荐:dafei.de 美国 89_IPV4
   type: vmess
   server: 188.114.99.137
@@ -14039,23 +10938,6 @@ proxies:
   sni: guanwang.awsno.com
   proto: vmess
   peer: guanwang.awsno.com
-- name: '[peasoft/NoMoreWalls]🇺🇸 美国 | USA #6'
-  type: vmess
-  server: 192.74.236.148
-  port: 30004
-  uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
-  alterId: 64
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /path/1733477783705
-    headers:
-      Host: www.91334565.xyz
-  security_scheme: tls
-  sni: www.91334565.xyz
-  proto: vmess
-  peer: www.91334565.xyz
 - name: 🇸🇬_新加坡 (2)
   type: vmess
   server: 195.133.135.238
@@ -14069,19 +10951,6 @@ proxies:
   sni: 195.133.135.238
   proto: vmess
   peer: 195.133.135.238
-- name: 🇰🇷_韩国
-  type: vmess
-  server: 217.142.138.61
-  port: 80
-  uuid: ac1b933d-afff-4487-93ef-f57130a55dff
-  alterId: 0
-  cipher: auto
-  tls: false
-  network: tcp
-  security_scheme: none
-  sni: 217.142.138.61
-  proto: vmess
-  peer: 217.142.138.61
 - name: 🇨🇦_加拿大 (3)
   type: vmess
   server: 23.162.200.198
@@ -14113,24 +10982,6 @@ proxies:
   sni: 2b9hwy8ocx7q74nm.v.3dns.vip
   proto: vmess
   peer: 2b9hwy8ocx7q74nm.v.3dns.vip
-- name: 🇺🇸_美国 (27)_2
-  type: vmess
-  server: 38.11.69.48
-  port: 30004
-  uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
-  alterId: 64
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /path/1698843555400
-    headers:
-      Host: www.83761815.xyz
-  servername: www.83761815.xyz
-  security_scheme: tls
-  sni: www.83761815.xyz
-  proto: vmess
-  peer: www.83761815.xyz
 - name: 🇺🇸_美国 (64)
   type: vmess
   server: 38.110.1.246
@@ -14185,86 +11036,6 @@ proxies:
   sni: 38.91.107.49
   proto: vmess
   peer: 38.91.107.49
-- name: 🇺🇸 硅谷-01-1A
-  server: 43.130.35.53
-  port: 10087
-  type: vmess
-  uuid: cdac9c48-7539-4eaf-b333-3aaa5a3a2b12
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇺🇸 硅谷-01-1F
-  server: 43.130.35.53
-  port: 10087
-  type: vmess
-  uuid: f7e71adb-35ad-4981-9c4f-ddf390efbfd5
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇺🇸 硅谷-01-1E
-  server: 43.130.35.53
-  port: 10087
-  type: vmess
-  uuid: 67d46c4d-d254-4df6-978f-035eae72fae5
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇺🇸 硅谷-01-1D
-  server: 43.130.35.53
-  port: 10087
-  type: vmess
-  uuid: b2769730-bc78-4398-967a-da8436d8d3f5
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇺🇸 硅谷-01-1B
-  server: 43.130.35.53
-  port: 10087
-  type: vmess
-  uuid: 8ff4c080-5c64-4c22-896b-81ee16229931
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇺🇸 硅谷-01-1C
-  server: 43.130.35.53
-  port: 10087
-  type: vmess
-  uuid: 8b9df71a-8998-4acd-b83a-3a61cfde85f2
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇺🇸 硅谷-01-1G
-  server: 43.130.35.53
-  port: 10087
-  type: vmess
-  uuid: 8e93b009-f1af-448a-b8ef-b110849a35f0
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇯🇵_日本 (18)
-  type: vmess
-  server: 45.76.100.238
-  port: 10086
-  uuid: ee2927f6-b76a-4011-957c-fe7c4865b36c
-  alterId: 0
-  cipher: auto
-  tls: false
-  network: ws
-  ws-opts:
-    path: /ws
-    headers:
-      Host: 45.76.100.238
-  security_scheme: none
-  sni: 45.76.100.238
-  proto: vmess
-  peer: 45.76.100.238
 - name: HK3
   type: vmess
   server: 47.243.92.155
@@ -14383,7 +11154,7 @@ proxies:
   sni: 67.220.95.3
   proto: vmess
   peer: 67.220.95.3
-- name: 🇺🇸_美国_2
+- name: 🇺🇸_美国
   type: vmess
   server: 84.17.41.2
   port: 18000
@@ -14463,23 +11234,6 @@ proxies:
   sni: WE8gwIzdpz5gX6eh.v.3dns.vip
   proto: vmess
   peer: WE8gwIzdpz5gX6eh.v.3dns.vip
-- name: CA 🇨🇦 | @Raydikalx | 57621C
-  type: vmess
-  server: cf.0sm.com
-  port: 443
-  uuid: 0cf6d970-3f1d-4aae-a989-92a8f76ae3db
-  alterId: 0
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /ws
-    headers:
-      Host: vmess.lbw666.dpdns.org
-  security_scheme: tls
-  sni: vmess.lbw666.dpdns.org
-  proto: vmess
-  peer: vmess.lbw666.dpdns.org
 - name: 🇩🇪_德国 (11)
   type: vmess
   server: de.zhou-yufan.com
