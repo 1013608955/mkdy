@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=75
+# verified=76
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -80,7 +80,6 @@ proxy-groups:
   - ✅ ❓Other_23|2.7MB/s|GPT-US
   - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
-  - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_35|3.0MB/s|TK-RU|YT-US
   - ✅ ❓Other_59|2.7MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_60|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA
@@ -118,6 +117,8 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享) (14)
   - ✅ FR法国(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国 (17)_2
+  - ✅ US美国(mibei77.com 米贝节点分享) (35)
+  - ✅ US美国(mibei77.com 米贝节点分享) (16)
   - ✅ 🇫🇷 法国
   - ✅ 🇺🇸 机场推荐:dafei.de 美国 89_IPV4
 - name: 自动选择
@@ -158,7 +159,6 @@ proxy-groups:
   - ✅ ❓Other_23|2.7MB/s|GPT-US
   - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
-  - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_35|3.0MB/s|TK-RU|YT-US
   - ✅ ❓Other_59|2.7MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_60|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA
@@ -196,6 +196,8 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享) (14)
   - ✅ FR法国(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国 (17)_2
+  - ✅ US美国(mibei77.com 米贝节点分享) (35)
+  - ✅ US美国(mibei77.com 米贝节点分享) (16)
   - ✅ 🇫🇷 法国
   - ✅ 🇺🇸 机场推荐:dafei.de 美国 89_IPV4
   url: http://www.gstatic.com/generate_204
@@ -238,7 +240,6 @@ proxy-groups:
   - ✅ ❓Other_23|2.7MB/s|GPT-US
   - ✅ ❓Other_29|1.3MB/s|GPT⁺-CA|GM-CA
   - ✅ 🇮🇹IT_2|3.7MB/s|TK-IT|GPT⁺-IT|GM-IT
-  - ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
   - ✅ ❓Other_35|3.0MB/s|TK-RU|YT-US
   - ✅ ❓Other_59|2.7MB/s|TK-US|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_60|2.2MB/s|YT-CA|GPT⁺-CA|GM-CA
@@ -276,6 +277,8 @@ proxy-groups:
   - ✅ US美国(mibei77.com 米贝节点分享) (14)
   - ✅ FR法国(mibei77.com 米贝节点分享)
   - ✅ 🇺🇸_美国 (17)_2
+  - ✅ US美国(mibei77.com 米贝节点分享) (35)
+  - ✅ US美国(mibei77.com 米贝节点分享) (16)
   - ✅ 🇫🇷 法国
   - ✅ 🇺🇸 机场推荐:dafei.de 美国 89_IPV4
   url: http://www.gstatic.com/generate_204
@@ -1031,13 +1034,6 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
-- name: ✅ 🇨🇿CZ_1|3.8MB/s|TK-CZ|GPT⁺-CZ|GM-CZ
-  port: 443
-  server: 185.216.35.66
-  sin: https://t.me/WangCai2🇨🇳
-  skip-cert-verify: true
-  tls: true
-  type: http
 - name: ✅ ❓Other_35|3.0MB/s|TK-RU|YT-US
   port: 9443
   server: 192.159.101.174
@@ -1321,6 +1317,26 @@ proxies:
   security_scheme: tls
   proto: trojan
   peer: hk.catxstar.com
+- type: trojan
+  name: ✅ US美国(mibei77.com 米贝节点分享) (35)
+  server: sclass-b1.catcat321.com
+  port: 20051
+  password: d7563108-615c-4338-a7bd-77f359869a4a
+  udp: true
+  tls: true
+  servername: hk.catxstar.com
+  sni: hk.catxstar.com
+  skip-cert-verify: false
+- type: trojan
+  name: ✅ US美国(mibei77.com 米贝节点分享) (16)
+  server: sclass-c2.catcat321.com
+  port: 20051
+  password: d9064589-74af-432a-9390-5d8a9da281bf
+  udp: true
+  tls: true
+  servername: hk.catxstar.com
+  sni: hk.catxstar.com
+  skip-cert-verify: false
 - name: ✅ 🇫🇷 法国
   server: edge.bookmai.com
   port: 443
