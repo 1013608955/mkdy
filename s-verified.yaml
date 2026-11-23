@@ -89,6 +89,7 @@ proxy-groups:
   - ✅ ❓Other_48|2.0MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ✅ ❓Other_12|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_22|2.5MB/s|TK-CY|YT-US|GPT⁺-CY
+  - ✅ ❓Other_57|1.5MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_30|3.2MB/s|TK-CH|YT-PA|GPT⁺-CH|GM-PA
   - ✅ ❓Other_55|2.3MB/s|TK-PL|GPT⁺-PL
   - ✅ ❓Other_15|2.1MB/s|TK-GB|GPT⁺-GB|GM-GB
@@ -125,7 +126,6 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇳🇬 尼日利亚 | NGA
   - ✅ 🇭🇰_香港
   - ✅ 英国+伦敦南岸大学
-  - ✅ 🇬🇧 英国 | GBR
   - ✅ 🇬🇧 英国 | GBR_2
   - ✅ 🇺🇸 机场推荐:dafei.de 美国 15_IPV4
   - ✅ US 🇺🇸 | @Raydikalx | 7DA3D8
@@ -176,6 +176,7 @@ proxy-groups:
   - ✅ ❓Other_48|2.0MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ✅ ❓Other_12|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_22|2.5MB/s|TK-CY|YT-US|GPT⁺-CY
+  - ✅ ❓Other_57|1.5MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_30|3.2MB/s|TK-CH|YT-PA|GPT⁺-CH|GM-PA
   - ✅ ❓Other_55|2.3MB/s|TK-PL|GPT⁺-PL
   - ✅ ❓Other_15|2.1MB/s|TK-GB|GPT⁺-GB|GM-GB
@@ -212,7 +213,6 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇳🇬 尼日利亚 | NGA
   - ✅ 🇭🇰_香港
   - ✅ 英国+伦敦南岸大学
-  - ✅ 🇬🇧 英国 | GBR
   - ✅ 🇬🇧 英国 | GBR_2
   - ✅ 🇺🇸 机场推荐:dafei.de 美国 15_IPV4
   - ✅ US 🇺🇸 | @Raydikalx | 7DA3D8
@@ -265,6 +265,7 @@ proxy-groups:
   - ✅ ❓Other_48|2.0MB/s|YT-CA|GPT⁺-CA|GM-CA
   - ✅ ❓Other_12|2.2MB/s|TK-GB|GPT⁺-GB|GM-GB
   - ✅ ❓Other_22|2.5MB/s|TK-CY|YT-US|GPT⁺-CY
+  - ✅ ❓Other_57|1.5MB/s|YT-US|GPT⁺-US|GM-US
   - ✅ ❓Other_30|3.2MB/s|TK-CH|YT-PA|GPT⁺-CH|GM-PA
   - ✅ ❓Other_55|2.3MB/s|TK-PL|GPT⁺-PL
   - ✅ ❓Other_15|2.1MB/s|TK-GB|GPT⁺-GB|GM-GB
@@ -301,7 +302,6 @@ proxy-groups:
   - ✅ [ermaozi/get_subscribe]🇳🇬 尼日利亚 | NGA
   - ✅ 🇭🇰_香港
   - ✅ 英国+伦敦南岸大学
-  - ✅ 🇬🇧 英国 | GBR
   - ✅ 🇬🇧 英国 | GBR_2
   - ✅ 🇺🇸 机场推荐:dafei.de 美国 15_IPV4
   - ✅ US 🇺🇸 | @Raydikalx | 7DA3D8
@@ -1118,6 +1118,12 @@ proxies:
   skip-cert-verify: true
   tls: true
   type: http
+- name: ✅ ❓Other_57|1.5MB/s|YT-US|GPT⁺-US|GM-US
+  port: 443
+  server: 23.82.137.230
+  skip-cert-verify: true
+  tls: true
+  type: http
 - name: ✅ ❓Other_30|3.2MB/s|TK-CH|YT-PA|GPT⁺-CH|GM-PA
   port: 443
   server: 31.7.62.50
@@ -1415,16 +1421,6 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: szqbx-ru-77dc.my-fade.cloud
-- name: ✅ 🇬🇧 英国 | GBR
-  type: vless
-  server: 167.99.203.0
-  port: 443
-  uuid: 40992c2a-513e-4837-9594-23411fd42afd
-  tls: false
-  network: http
-  security_scheme: none
-  proto: vless
-  peer: 167.99.203.0
 - name: ✅ 🇬🇧 英国 | GBR_2
   type: vless
   server: 64.227.41.219
