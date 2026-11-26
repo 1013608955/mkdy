@@ -1,5 +1,5 @@
 # Auto-merged verified subscription (mkdy) — 中国出口验证通过节点
-# verified=93
+# verified=95
 mode: rule
 log-level: info
 mixed-port: 7890
@@ -45,7 +45,6 @@ proxy-groups:
   proxies:
   - 自动选择
   - 故障转移
-  - ✅ 🇭🇰 香港3
   - ✅ 🇹🇼 台湾2
   - ✅ 🇭🇰 香港2
   - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
@@ -129,8 +128,11 @@ proxy-groups:
   - ✅ JP日本(mibei77.com 米贝节点分享) (32)
   - ✅ JP日本(mibei77.com 米贝节点分享) (30)
   - ✅ JP日本(mibei77.com 米贝节点分享) (54)
+  - ✅ JP日本(mibei77.com 米贝节点分享) (63)
+  - ✅ JP日本(mibei77.com 米贝节点分享) (69)
   - '✅ 🇬🇧 英国 | GBR #3'
   - ✅ 🇷🇺_俄罗斯 (13)
+  - ✅ 🇷🇺_俄罗斯 (10)
   - ✅ 🇷🇺_俄罗斯 (8)
   - ✅ 🇷🇺_俄罗斯 (4)
   - ✅ 🇸🇬 新加坡 | SGP_2
@@ -141,7 +143,6 @@ proxy-groups:
 - name: 自动选择
   type: url-test
   proxies:
-  - ✅ 🇭🇰 香港3
   - ✅ 🇹🇼 台湾2
   - ✅ 🇭🇰 香港2
   - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
@@ -225,8 +226,11 @@ proxy-groups:
   - ✅ JP日本(mibei77.com 米贝节点分享) (32)
   - ✅ JP日本(mibei77.com 米贝节点分享) (30)
   - ✅ JP日本(mibei77.com 米贝节点分享) (54)
+  - ✅ JP日本(mibei77.com 米贝节点分享) (63)
+  - ✅ JP日本(mibei77.com 米贝节点分享) (69)
   - '✅ 🇬🇧 英国 | GBR #3'
   - ✅ 🇷🇺_俄罗斯 (13)
+  - ✅ 🇷🇺_俄罗斯 (10)
   - ✅ 🇷🇺_俄罗斯 (8)
   - ✅ 🇷🇺_俄罗斯 (4)
   - ✅ 🇸🇬 新加坡 | SGP_2
@@ -239,7 +243,6 @@ proxy-groups:
 - name: 故障转移
   type: fallback
   proxies:
-  - ✅ 🇭🇰 香港3
   - ✅ 🇹🇼 台湾2
   - ✅ 🇭🇰 香港2
   - ✅ 🇦🇺AU_3|3.4MB/s|YT-AU|GPT⁺-AU|GM-AU
@@ -323,8 +326,11 @@ proxy-groups:
   - ✅ JP日本(mibei77.com 米贝节点分享) (32)
   - ✅ JP日本(mibei77.com 米贝节点分享) (30)
   - ✅ JP日本(mibei77.com 米贝节点分享) (54)
+  - ✅ JP日本(mibei77.com 米贝节点分享) (63)
+  - ✅ JP日本(mibei77.com 米贝节点分享) (69)
   - '✅ 🇬🇧 英国 | GBR #3'
   - ✅ 🇷🇺_俄罗斯 (13)
+  - ✅ 🇷🇺_俄罗斯 (10)
   - ✅ 🇷🇺_俄罗斯 (8)
   - ✅ 🇷🇺_俄罗斯 (4)
   - ✅ 🇸🇬 新加坡 | SGP_2
@@ -852,15 +858,6 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,自由航线
 proxies:
-- name: ✅ 🇭🇰 香港3
-  server: 5641sdds.df6h451rh.xin
-  port: 443
-  type: anytls
-  password: 0324fbc29561
-  client-fingerprint: chrome
-  udp: true
-  sni: images.ctfassets.net
-  skip-cert-verify: true
 - name: ✅ 🇹🇼 台湾2
   server: a54ge.df6h451rh.xin
   port: 443
@@ -1463,6 +1460,24 @@ proxies:
   udp: true
   tls: false
   skip-cert-verify: false
+- type: ss
+  name: ✅ JP日本(mibei77.com 米贝节点分享) (63)
+  server: 47.74.49.154
+  port: 5555
+  password: '123456'
+  cipher: aes-256-gcm
+  udp: true
+  tls: false
+  skip-cert-verify: false
+- type: ss
+  name: ✅ JP日本(mibei77.com 米贝节点分享) (69)
+  server: 47.91.16.50
+  port: 5555
+  password: '123456'
+  cipher: aes-256-gcm
+  udp: true
+  tls: false
+  skip-cert-verify: false
 - name: '✅ 🇬🇧 英国 | GBR #3'
   type: vless
   server: 136.148.83.70
@@ -1488,6 +1503,20 @@ proxies:
   security_scheme: tls
   proto: vless
   peer: wccfu-ru-79dc.my-fade.cloud
+- name: ✅ 🇷🇺_俄罗斯 (10)
+  type: vless
+  server: 165.231.157.126
+  port: 8443
+  uuid: 0173d52e-8e1b-4681-831e-11529677b72f
+  flow: xtls-rprx-vision
+  tls: true
+  network: tcp
+  sni: api-6b04608f.adhil.uk
+  servername: api-6b04608f.adhil.uk
+  skip-cert-verify: true
+  security_scheme: tls
+  proto: vless
+  peer: api-6b04608f.adhil.uk
 - name: ✅ 🇷🇺_俄罗斯 (8)
   type: vless
   server: 213.183.41.31
